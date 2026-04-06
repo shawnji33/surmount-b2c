@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Order Confirm — Kraken</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  background:#0E0D16;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 24px;
+}
+
+/* ── Modal shell ── */
+.modal{
+  background:#1C1B2C;
+  border-radius:20px;
+  width:364px;
+  padding:28px 24px 24px;
+  position:relative;
+}
+
+/* ── Close ── */
+.close-btn{
+  position:absolute;top:20px;right:20px;
+  background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,0.35);
+  width:28px;height:28px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  transition:color .12s,background .12s;
+}
+.close-btn:hover{color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.07);}
+.close-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;}
+
+/* ── Rows ── */
+.rows{display:flex;flex-direction:column;}
+
+.row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  padding:13px 0;
+  border-bottom:1px dashed rgba(255,255,255,0.09);
+}
+.row:last-child{border-bottom:none;}
+
+.row-label{
+  font-size:14px;font-weight:400;
+  color:rgba(255,255,255,0.4);
+  line-height:22px;
+  flex-shrink:0;
+}
+
+.row-value{
+  font-size:14px;font-weight:500;
+  color:#fff;
+  text-align:right;
+  line-height:22px;
+}
+
+/* Dashed underline on BTC amount */
+.row-value .dashed{
+  text-decoration:underline;
+  text-decoration-style:dashed;
+  text-decoration-color:rgba(255,255,255,0.35);
+  text-underline-offset:3px;
+  cursor:pointer;
+}
+
+/* Sub-label beneath Total */
+.row-value .sub{
+  display:block;
+  font-size:12px;font-weight:400;
+  color:rgba(255,255,255,0.38);
+  margin-top:2px;
+}
+
+/* Pay with USDC row */
+.pay-row{
+  display:inline-flex;align-items:center;gap:7px;
+}
+.usdc-icon{
+  width:20px;height:20px;border-radius:50%;
+  background:#2775CA;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.usdc-icon svg{width:10px;height:10px;fill:#fff;}
+
+/* Auto Earn green */
+.green{color:#3FB87F;font-weight:500;}
+
+/* ── Disclaimer ── */
+.disclaimer{
+  margin-top:18px;
+  font-size:12px;font-weight:400;
+  color:rgba(255,255,255,0.32);
+  line-height:18px;
+}
+.disclaimer a{color:#7B8FFF;text-decoration:none;}
+.disclaimer a:hover{text-decoration:underline;}
+
+/* ── Confirm button ── */
+.confirm-btn{
+  margin-top:20px;
+  width:100%;
+  padding:15px 20px;
+  background:linear-gradient(135deg,#7B5CF5 0%,#5840E8 100%);
+  border:none;
+  border-radius:14px;
+  font-family:'Inter',sans-serif;
+  font-size:16px;font-weight:600;
+  color:#fff;
+  cursor:pointer;
+  letter-spacing:0.1px;
+  transition:opacity .15s;
+}
+.confirm-btn:hover{opacity:.88;}
+</style>
+</head>
+<body>
+
+<div class="modal">
+
+  <!-- Close -->
+  <button class="close-btn">
+    <svg viewBox="0 0 14 14"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+  </button>
+
+  <div class="rows">
+
+    <!-- Buy amount -->
+    <div class="row">
+      <span class="row-label">Buy amount</span>
+      <span class="row-value"><span class="dashed">≈0.00001099 BTC</span></span>
+    </div>
+
+    <!-- Total -->
+    <div class="row">
+      <span class="row-label">Total</span>
+      <span class="row-value">
+        1.0000 USDC
+        <span class="sub">Incl. 0.0099 USDC fee</span>
+      </span>
+    </div>
+
+    <!-- Order type -->
+    <div class="row">
+      <span class="row-label">Order type</span>
+      <span class="row-value">Recurring monthly</span>
+    </div>
+
+    <!-- Starting -->
+    <div class="row">
+      <span class="row-label">Starting</span>
+      <span class="row-value">Jan 28, 12:00 AM GMT+8</span>
+    </div>
+
+    <!-- Pay with -->
+    <div class="row">
+      <span class="row-label">Pay with</span>
+      <span class="row-value">
+        <span class="pay-row">
+          <span class="usdc-icon">
+            <!-- USDC $ mark -->
+            <svg viewBox="0 0 10 14"><text x="1" y="11" font-family="Inter,sans-serif" font-size="11" font-weight="700" fill="white">$</text></svg>
+          </span>
+          USDC balance
+        </span>
+      </span>
+    </div>
+
+    <!-- Auto Earn -->
+    <div class="row">
+      <span class="row-label">Auto Earn</span>
+      <span class="row-value green">Up to 0.02% APR</span>
+    </div>
+
+  </div>
+
+  <!-- Disclaimer -->
+  <p class="disclaimer">
+    By confirming, you authorize Kraken to initiate a recurring order in
+    accordance with the <a href="#">Terms of Service</a>.
+  </p>
+
+  <!-- Confirm -->
+  <button class="confirm-btn">Confirm</button>
+
+</div>
+
+</body>
+</html>

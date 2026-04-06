@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surmount — Find an advisor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="sidebar.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --color-base-white:#FFFFFF;
+  --color-gray-50:#FAFAFA; --color-gray-100:#F5F5F5; --color-gray-200:#E9EAEB;
+  --color-gray-300:#D5D7DA; --color-gray-400:#A4A7AE; --color-gray-500:#717680;
+  --color-gray-600:#535862; --color-gray-700:#414651; --color-gray-900:#181D27;
+
+  --color-brand-50:#F1F6FD; --color-brand-600:#406AD0; --color-brand-700:#3757BE;
+  --color-success-700:#316434;
+
+  --color-surface-default:var(--color-base-white);
+  --color-surface-subtle:var(--color-gray-50);
+  --color-text-primary:var(--color-gray-900);
+  --color-text-secondary:var(--color-gray-700);
+  --color-text-tertiary:var(--color-gray-500);
+  --color-border-default:var(--color-gray-200);
+  --color-border-container:rgba(0,0,0,0.06);
+
+  --font-family-display:'Inter',sans-serif;
+  --font-family-body:'Geist',system-ui,sans-serif;
+
+  --text-xs:12px; --text-sm:14px; --text-md:16px; --text-lg:18px;
+  --text-xl:20px; --text-2xl:24px;
+  --font-weight-regular:400; --font-weight-medium:500;
+  --font-weight-semibold:600; --font-weight-bold:700;
+
+  --space-1:4px; --space-1-5:6px; --space-2:8px; --space-2-5:10px;
+  --space-3:12px; --space-4:16px; --space-5:20px; --space-6:24px;
+  --space-7:28px; --space-8:32px; --space-10:40px;
+
+  --radius-xs:4px; --radius-sm:6px; --radius-md:8px; --radius-lg:10px;
+  --radius-xl:12px; --radius-2xl:16px; --radius-full:9999px;
+
+  --shadow-xs:0px 1px 2px 0px rgba(10,13,18,0.05);
+  --shadow-card:0px 2px 12px 0px rgba(10,13,18,0.03);
+}
+
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--font-family-body);
+  font-size:var(--text-sm);
+  color:var(--color-text-primary);
+  background-color:var(--color-surface-subtle);
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.5px;
+}
+
+/* ─── LAYOUT ──────────────────────────────────────────────────────────── */
+.dashboard-layout{display:flex;height:100vh;width:100%;overflow:hidden}
+app-sidebar{align-self:stretch;display:flex;flex-shrink:0}
+.main-content{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+
+/* ─── PAGE HEADER ─────────────────────────────────────────────────────── */
+.page-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--space-6) var(--space-6) var(--space-5);
+  height:76px;flex-shrink:0;
+}
+.page-title{
+  font-size:var(--text-md);font-weight:var(--font-weight-semibold);
+  color:var(--color-text-primary);letter-spacing:-0.3px;
+}
+.header-right{display:flex;align-items:center;gap:var(--space-3)}
+.btn-secondary{
+  display:flex;align-items:center;gap:var(--space-1-5);
+  padding:var(--space-2) var(--space-3);
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);border-radius:var(--radius-md);
+  cursor:pointer;font-family:var(--font-family-body);
+  font-size:var(--text-sm);font-weight:var(--font-weight-medium);
+  color:var(--color-text-secondary);white-space:nowrap;letter-spacing:-0.5px;
+  transition:background 150ms ease, box-shadow 150ms ease;
+}
+.btn-secondary svg{width:16px;height:16px;flex-shrink:0;color:var(--color-text-tertiary)}
+.btn-secondary:hover{background:var(--color-gray-50);box-shadow:var(--shadow-xs)}
+
+/* ─── FILTER BAR ──────────────────────────────────────────────────────── */
+.filter-bar{
+  display:flex;align-items:center;gap:var(--space-2);
+  padding:0 var(--space-6) var(--space-5);
+  flex-shrink:0;
+}
+.search-input-wrap{
+  display:flex;align-items:center;gap:var(--space-2);
+  flex:1;max-width:320px;
+  padding:var(--space-2) var(--space-3);
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);border-radius:var(--radius-md);
+  box-shadow:var(--shadow-card);cursor:text;
+  transition:border-color 150ms ease;
+}
+.search-input-wrap:hover{border-color:rgba(0,0,0,0.1)}
+.search-input-wrap svg{width:16px;height:16px;flex-shrink:0;color:var(--color-text-tertiary)}
+.search-input-wrap input{
+  border:none;outline:none;background:transparent;
+  font-family:var(--font-family-body);font-size:var(--text-sm);
+  color:var(--color-text-primary);width:100%;letter-spacing:-0.5px;
+}
+.search-input-wrap input::placeholder{color:var(--color-text-tertiary)}
+.filter-divider{width:1px;height:20px;background:var(--color-border-default);margin:0 var(--space-1)}
+.filter-pill{
+  display:flex;align-items:center;gap:var(--space-1-5);
+  padding:var(--space-2) var(--space-3);
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);border-radius:var(--radius-md);
+  box-shadow:var(--shadow-card);
+  font-family:var(--font-family-body);
+  font-size:var(--text-sm);font-weight:var(--font-weight-medium);
+  color:var(--color-text-secondary);cursor:pointer;white-space:nowrap;letter-spacing:-0.5px;
+  transition:background 150ms ease, border-color 150ms ease;
+}
+.filter-pill:hover{background:var(--color-gray-50)}
+.filter-pill svg{width:14px;height:14px;color:var(--color-text-tertiary);flex-shrink:0}
+.filter-pill.active{
+  background:var(--color-brand-50);
+  border-color:rgba(64,106,208,0.2);
+  color:var(--color-brand-700);
+}
+.filter-pill.active svg{color:var(--color-brand-700)}
+.result-count{
+  margin-left:auto;
+  font-size:var(--text-sm);color:var(--color-text-tertiary);white-space:nowrap;
+}
+
+/* ─── ADVISOR GRID ────────────────────────────────────────────────────── */
+.grid-wrapper{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  padding:0 var(--space-6) var(--space-6);
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.grid-wrapper::-webkit-scrollbar{display:none}
+.advisor-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:var(--space-5);
+}
+
+/* ─── ADVISOR CARD ────────────────────────────────────────────────────── */
+.advisor-card{
+  background:var(--color-base-white);
+  border:1px solid rgba(0,0,0,0.06);
+  border-radius:var(--radius-xl);
+  cursor:pointer;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.advisor-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 16px rgba(10,13,18,0.08);
+  border-color:rgba(0,0,0,0.09);
+}
+
+/* Hero area */
+.card-hero{
+  position:relative;
+  height:160px;
+  border-radius:var(--radius-xl) var(--radius-xl) 0 0;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.card-hero-initials{
+  font-family:var(--font-family-display);
+  font-size:36px;
+  font-weight:var(--font-weight-bold);
+  color:var(--color-base-white);
+  letter-spacing:0;
+  user-select:none;
+}
+.card-cert-badge{
+  position:absolute;
+  bottom:var(--space-2-5);
+  left:var(--space-3);
+  background:rgba(255,255,255,0.18);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.25);
+  color:var(--color-base-white);
+  font-size:11px;
+  font-family:var(--font-family-body);
+  font-weight:var(--font-weight-medium);
+  padding:3px 8px;
+  border-radius:var(--radius-full);
+  letter-spacing:-0.3px;
+  white-space:nowrap;
+}
+
+/* Card body */
+.card-body{
+  padding:var(--space-3-5, 14px) var(--space-4);
+  display:flex;flex-direction:column;gap:var(--space-2-5);
+  flex:1;
+}
+.card-name-row{
+  display:flex;align-items:center;gap:var(--space-1-5);
+}
+.card-name{
+  font-size:var(--text-sm);
+  font-weight:var(--font-weight-semibold);
+  color:var(--color-text-primary);
+}
+.verified-icon{width:14px;height:14px;flex-shrink:0;color:var(--color-brand-600)}
+.card-sub-row{
+  font-size:var(--text-xs);
+  color:var(--color-text-tertiary);
+  line-height:1.5;
+  margin-top:-6px;
+}
+.card-tags{display:flex;gap:var(--space-1-5);flex-wrap:wrap;margin-top:var(--space-2-5)}
+.tag{
+  display:inline-flex;align-items:center;
+  padding:2px var(--space-2);
+  background:var(--color-surface-subtle);
+  border:1px solid var(--color-border-default);
+  border-radius:var(--radius-sm);
+  font-size:var(--text-xs);color:var(--color-text-secondary);
+  white-space:nowrap;
+}
+.card-client-type{
+  font-size:var(--text-xs);color:var(--color-text-tertiary);
+  line-height:1.5;
+}
+.card-client-type span{color:var(--color-text-secondary);font-weight:var(--font-weight-medium)}
+
+/* Performance signal */
+.card-signal{
+  display:flex;align-items:center;gap:var(--space-1-5);
+  padding:var(--space-2) var(--space-3);
+  background:var(--color-surface-subtle);
+  border:1px solid var(--color-border-default);
+  border-radius:var(--radius-sm);
+  align-self:flex-start;
+}
+.card-signal-value{
+  font-size:var(--text-xs);font-weight:var(--font-weight-semibold);
+  color:var(--color-success-700);font-variant-numeric:tabular-nums;
+}
+.card-signal-label{font-size:var(--text-xs);color:var(--color-text-tertiary)}
+
+/* Divider */
+.card-divider{height:1px;background:rgba(0,0,0,0.06);margin:0;flex-shrink:0}
+
+/* Bottom stats */
+.card-bottom{
+  display:flex;align-items:center;
+  padding:var(--space-2-5) var(--space-4);
+  gap:var(--space-4);
+  flex-shrink:0;
+}
+.card-bottom-stat{display:flex;flex-direction:column;gap:1px;flex:1}
+.card-bottom-stat+.card-bottom-stat{border-left:1px solid rgba(0,0,0,0.06);padding-left:var(--space-4)}
+.card-bottom-value{
+  font-size:var(--text-sm);font-weight:var(--font-weight-medium);
+  color:var(--color-text-primary);font-variant-numeric:tabular-nums;
+  font-family:var(--font-family-display);letter-spacing:0;
+}
+.card-bottom-label{font-size:var(--text-xs);color:var(--color-text-tertiary)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:0.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="dashboard-layout">
+
+  <app-sidebar active="advisors"></app-sidebar>
+
+  <main class="main-content">
+
+    <!-- Page header -->
+    <header class="page-header">
+      <span class="page-title">Find an advisor</span>
+      <div class="header-right">
+        <button class="btn-secondary">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 5h14M6 10h8M9 15h2" stroke-linecap="round"/>
+          </svg>
+          How it works
+        </button>
+      </div>
+    </header>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="9" cy="9" r="5.5"/><path d="M13.5 13.5L17 17" stroke-linecap="round"/>
+        </svg>
+        <input type="text" placeholder="Search advisors…" />
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <button class="filter-pill" onclick="toggleFilter(this)">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M10 10.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+          <path d="M10 17.5S4 12.5 4 8a6 6 0 0 1 12 0c0 4.5-6 9.5-6 9.5Z" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Location
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button class="filter-pill" onclick="toggleFilter(this)">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/>
+          <rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/>
+        </svg>
+        Specialization
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <span class="result-count">9 advisors</span>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid-wrapper">
+      <div class="advisor-grid">
+
+        <!-- 1: Sarah Mitchell -->
+        <div class="advisor-card" onclick="window.location.href='advisor-profile.html'">
+          <div class="card-hero" style="background:linear-gradient(160deg,#7C6FAEcc 0%,#7C6FAE 100%)">
+            <span class="card-hero-initials">SM</span>
+            <span class="card-cert-badge">CFP</span>
+          </div>
+          <div class="card-body">
+            <div class="card-name-row">
+              <span class="card-name">Sarah Mitchell</span>
+              <svg class="verified-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="card-sub-row">Portfolio Manager · New York, NY</div>
+            <div class="card-tags">
+              <span class="tag">Wealth management</span>
+              <span class="tag">Retirement</span>
+              <span class="tag">Tax optimization</span>
+            </div>
+            <div class="card-client-type">Works with: <span>HNW individuals, Retirees</span></div>
+            <div class="card-signal">
+              <span class="card-signal-value">+18.4%</span>
+              <span class="card-signal-label">Top strategy · 1Y return</span>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-bottom">
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">$50M–$100M</span>
+              <span class="card-bottom-label">AUM range</span>
+            </div>
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">Merrill Lynch</span>
+              <span class="card-bottom-label">Firm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2: James Chen -->
+        <div class="advisor-card" onclick="window.location.href='advisor-profile.html'">
+          <div class="card-hero" style="background:linear-gradient(160deg,#4A7CB5cc 0%,#4A7CB5 100%)">
+            <span class="card-hero-initials">JC</span>
+            <span class="card-cert-badge">CFA</span>
+          </div>
+          <div class="card-body">
+            <div class="card-name-row">
+              <span class="card-name">James Chen</span>
+              <svg class="verified-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="card-sub-row">Senior Analyst · San Francisco, CA</div>
+            <div class="card-tags">
+              <span class="tag">Growth investing</span>
+              <span class="tag">Tech sector</span>
+              <span class="tag">Crypto</span>
+            </div>
+            <div class="card-client-type">Works with: <span>Beginners, Tech professionals</span></div>
+            <div class="card-signal">
+              <span class="card-signal-value">+31.2%</span>
+              <span class="card-signal-label">Top strategy · 1Y return</span>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-bottom">
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">$100M–$150M</span>
+              <span class="card-bottom-label">AUM range</span>
+            </div>
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">Fidelity</span>
+              <span class="card-bottom-label">Firm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3: Elena Rodriguez -->
+        <div class="advisor-card" onclick="window.location.href='advisor-profile.html'">
+          <div class="card-hero" style="background:linear-gradient(160deg,#B56C4Acc 0%,#B56C4A 100%)">
+            <span class="card-hero-initials">ER</span>
+            <span class="card-cert-badge">CFP, RICP</span>
+          </div>
+          <div class="card-body">
+            <div class="card-name-row">
+              <span class="card-name">Elena Rodriguez</span>
+              <svg class="verified-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="card-sub-row">Financial Planner · Miami, FL</div>
+            <div class="card-tags">
+              <span class="tag">Retirement planning</span>
+              <span class="tag">Income</span>
+            </div>
+            <div class="card-client-type">Works with: <span>Pre-retirees, Business owners</span></div>
+            <div class="card-signal">
+              <span class="card-signal-value">Risk: Moderate</span>
+              <span class="card-signal-label">Focus: Income ETFs</span>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-bottom">
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">$25M–$75M</span>
+              <span class="card-bottom-label">AUM range</span>
+            </div>
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">Raymond James</span>
+              <span class="card-bottom-label">Firm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4: David Park -->
+        <div class="advisor-card" onclick="window.location.href='advisor-profile.html'">
+          <div class="card-hero" style="background:linear-gradient(160deg,#4A8B7Ccc 0%,#4A8B7C 100%)">
+            <span class="card-hero-initials">DP</span>
+            <span class="card-cert-badge">CFA, CPA</span>
+          </div>
+          <div class="card-body">
+            <div class="card-name-row">
+              <span class="card-name">David Park</span>
+              <svg class="verified-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="card-sub-row">Wealth Advisor · Chicago, IL</div>
+            <div class="card-tags">
+              <span class="tag">Tax-efficient</span>
+              <span class="tag">Estate planning</span>
+            </div>
+            <div class="card-client-type">Works with: <span>HNW, Business owners</span></div>
+            <div class="card-signal">
+              <span class="card-signal-value">+14.7%</span>
+              <span class="card-signal-label">Top strategy · 1Y return</span>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-bottom">
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">$75M–$100M</span>
+              <span class="card-bottom-label">AUM range</span>
+            </div>
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">Edward Jones</span>
+              <span class="card-bottom-label">Firm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5: Marcus Williams -->
+        <div class="advisor-card" onclick="window.location.href='advisor-profile.html'">
+          <div class="card-hero" style="background:linear-gradient(160deg,#8B6FAEcc 0%,#8B6FAE 100%)">
+            <span class="card-hero-initials">MW</span>
+            <span class="card-cert-badge">ChFC</span>
+          </div>
+          <div class="card-body">
+            <div class="card-name-row">
+              <span class="card-name">Marcus Williams</span>
+              <svg class="verified-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="card-sub-row">Financial Advisor · Atlanta, GA</div>
+            <div class="card-tags">
+              <span class="tag">Life insurance</span>
+              <span class="tag">Family planning</span>
+            </div>
+            <div class="card-client-type">Works with: <span>Families, Young professionals</span></div>
+            <div class="card-signal">
+              <span class="card-signal-value">Risk: Low–Moderate</span>
+              <span class="card-signal-label">Focus: Balanced growth</span>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-bottom">
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">$25M–$50M</span>
+              <span class="card-bottom-label">AUM range</span>
+            </div>
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">Northwestern Mutual</span>
+              <span class="card-bottom-label">Firm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6: Priya Sharma -->
+        <div class="advisor-card" onclick="window.location.href='advisor-profile.html'">
+          <div class="card-hero" style="background:linear-gradient(160deg,#4A7CB5cc 0%,#4A7CB5 100%)">
+            <span class="card-hero-initials">PS</span>
+            <span class="card-cert-badge">CFA</span>
+          </div>
+          <div class="card-body">
+            <div class="card-name-row">
+              <span class="card-name">Priya Sharma</span>
+              <svg class="verified-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="card-sub-row">Managing Director · Boston, MA</div>
+            <div class="card-tags">
+              <span class="tag">ESG investing</span>
+              <span class="tag">Impact</span>
+              <span class="tag">Growth</span>
+            </div>
+            <div class="card-client-type">Works with: <span>Institutions, HNW</span></div>
+            <div class="card-signal">
+              <span class="card-signal-value">+22.9%</span>
+              <span class="card-signal-label">Top strategy · 1Y return</span>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-bottom">
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">$150M–$250M</span>
+              <span class="card-bottom-label">AUM range</span>
+            </div>
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">Goldman Sachs</span>
+              <span class="card-bottom-label">Firm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7: Robert Kim -->
+        <div class="advisor-card" onclick="window.location.href='advisor-profile.html'">
+          <div class="card-hero" style="background:linear-gradient(160deg,#7C6FAEcc 0%,#7C6FAE 100%)">
+            <span class="card-hero-initials">RK</span>
+            <span class="card-cert-badge">CFP, CLU</span>
+          </div>
+          <div class="card-body">
+            <div class="card-name-row">
+              <span class="card-name">Robert Kim</span>
+              <svg class="verified-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="card-sub-row">Financial Planner · Seattle, WA</div>
+            <div class="card-tags">
+              <span class="tag">Tech equity</span>
+              <span class="tag">Stock options</span>
+            </div>
+            <div class="card-client-type">Works with: <span>Tech professionals, RSU holders</span></div>
+            <div class="card-signal">
+              <span class="card-signal-value">+19.3%</span>
+              <span class="card-signal-label">Top strategy · 1Y return</span>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-bottom">
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">$50M–$75M</span>
+              <span class="card-bottom-label">AUM range</span>
+            </div>
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">Morgan Stanley</span>
+              <span class="card-bottom-label">Firm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8: Amanda Foster -->
+        <div class="advisor-card" onclick="window.location.href='advisor-profile.html'">
+          <div class="card-hero" style="background:linear-gradient(160deg,#B56C4Acc 0%,#B56C4A 100%)">
+            <span class="card-hero-initials">AF</span>
+            <span class="card-cert-badge">CFP</span>
+          </div>
+          <div class="card-body">
+            <div class="card-name-row">
+              <span class="card-name">Amanda Foster</span>
+              <svg class="verified-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="card-sub-row">Financial Coach · Denver, CO</div>
+            <div class="card-tags">
+              <span class="tag">Index investing</span>
+              <span class="tag">FIRE</span>
+            </div>
+            <div class="card-client-type">Works with: <span>Beginners, Early retirees</span></div>
+            <div class="card-signal">
+              <span class="card-signal-value">Risk: Low</span>
+              <span class="card-signal-label">Focus: Index ETFs</span>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-bottom">
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">$10M–$50M</span>
+              <span class="card-bottom-label">AUM range</span>
+            </div>
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">Vanguard</span>
+              <span class="card-bottom-label">Firm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9: Thomas Wright -->
+        <div class="advisor-card" onclick="window.location.href='advisor-profile.html'">
+          <div class="card-hero" style="background:linear-gradient(160deg,#4A8B7Ccc 0%,#4A8B7C 100%)">
+            <span class="card-hero-initials">TW</span>
+            <span class="card-cert-badge">CFA</span>
+          </div>
+          <div class="card-body">
+            <div class="card-name-row">
+              <span class="card-name">Thomas Wright</span>
+              <svg class="verified-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+            </div>
+            <div class="card-sub-row">Portfolio Manager · Dallas, TX</div>
+            <div class="card-tags">
+              <span class="tag">Real estate</span>
+              <span class="tag">Alternatives</span>
+              <span class="tag">Growth</span>
+            </div>
+            <div class="card-client-type">Works with: <span>HNW, Institutional</span></div>
+            <div class="card-signal">
+              <span class="card-signal-value">+27.1%</span>
+              <span class="card-signal-label">Top strategy · 1Y return</span>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-bottom">
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">$150M–$200M</span>
+              <span class="card-bottom-label">AUM range</span>
+            </div>
+            <div class="card-bottom-stat">
+              <span class="card-bottom-value">JP Morgan</span>
+              <span class="card-bottom-label">Firm</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function toggleFilter(pill) { pill.classList.toggle('active'); }
+</script>
+</body>
+</html>

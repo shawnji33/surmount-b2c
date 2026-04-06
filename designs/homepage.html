@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surmount — Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400&display=swap" rel="stylesheet">
+<script src="sidebar.js"></script>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/lightweight-charts@5/dist/lightweight-charts.standalone.production.js"></script>
+<script src="portfolio-chart.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --color-base-white:#FFFFFF;
+  --color-gray-50:#FAFAFA; --color-gray-100:#F5F5F5; --color-gray-200:#E9EAEB;
+  --color-gray-300:#D5D7DA; --color-gray-400:#A4A7AE; --color-gray-500:#717680;
+  --color-gray-600:#535862; --color-gray-700:#414651; --color-gray-900:#181D27;
+
+  --color-brand-50:#F1F6FD; --color-brand-600:#406AD0; --color-brand-700:#3757BE;
+
+  --color-warning-400:#F19246;
+  --color-success-300:#A2D3A5; --color-success-600:#3B7E3F; --color-success-700:#316434;
+  --color-error-700:#98443D;
+
+  /* chart palette */
+  --chart-line:#3B7E3F;
+  --chart-grad-top:rgba(162,211,165,0.9);
+  --chart-grad-bot:rgba(162,211,165,0);
+  --chart-baseline:rgba(65,70,81,0.32);
+
+  --color-surface-default:var(--color-base-white);
+  --color-surface-subtle:var(--color-gray-50);
+  --color-text-primary:var(--color-gray-900);
+  --color-text-secondary:var(--color-gray-700);
+  --color-text-tertiary:var(--color-gray-500);
+  --color-text-success:var(--color-success-700);
+  --color-text-error:var(--color-error-700);
+  --color-border-default:rgba(0,0,0,0.06);
+
+  --font-family-display:'Inter',sans-serif;
+  --font-family-body:'Geist',system-ui,sans-serif;
+  --font-family-serif:'Source Serif 4','Georgia',serif;
+
+  --text-xs:12px; --text-sm:14px; --text-md:16px; --text-lg:18px;
+  --text-xl:20px; --text-2xl:24px;
+  --font-weight-regular:400; --font-weight-medium:500;
+  --font-weight-semibold:600; --font-weight-bold:700;
+
+  --space-1:4px; --space-1-5:6px; --space-2:8px; --space-2-5:10px;
+  --space-3:12px; --space-4:16px; --space-5:20px; --space-6:24px;
+  --space-7:28px; --space-8:32px; --space-10:40px;
+
+  --radius-xs:4px; --radius-sm:6px; --radius-md:8px; --radius-lg:10px;
+  --radius-xl:12px; --radius-2xl:16px; --radius-full:9999px;
+
+  --shadow-xs:0px 1px 2px 0px rgba(10,13,18,0.05);
+  --shadow-card:0px 2px 12px 0px rgba(10,13,18,0.03);
+  --shadow-subtle:0px 2px 12px 0px rgba(10,13,18,0.03);
+  --color-border-container:rgba(0,0,0,0.06);
+}
+
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--font-family-body);
+  font-size:var(--text-sm);
+  color:var(--color-text-primary);
+  background-color:var(--color-surface-subtle);
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.5px;
+}
+
+/* ─── LAYOUT ──────────────────────────────────────────────────────────── */
+.dashboard-layout{display:flex;height:100vh;width:100%;overflow:hidden}
+app-sidebar{align-self:stretch;display:flex;flex-shrink:0}
+
+.main-content{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+
+/* ─── PAGE HEADER ─────────────────────────────────────────────────────── */
+.page-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--space-6) var(--space-6) var(--space-5);
+  height:76px;flex-shrink:0;
+}
+.greeting{
+  font-size:var(--text-md);font-weight:var(--font-weight-semibold);
+  color:var(--color-text-primary);flex:1;
+  letter-spacing:-0.3px;
+}
+.search-box{
+  display:flex;align-items:center;gap:var(--space-2);
+  width:320px;padding:var(--space-2) var(--space-3);
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);
+  border-radius:var(--radius-md);box-shadow:var(--shadow-card);
+  cursor:text;flex-shrink:0;
+  transition:border-color 150ms ease, box-shadow 150ms ease;
+}
+.search-box:hover{border-color:rgba(0,0,0,0.1);box-shadow:0px 2px 12px rgba(10,13,18,0.05)}
+.search-box-inner{display:flex;align-items:center;gap:var(--space-2);flex:1;min-width:0}
+.search-icon{width:20px;height:20px;flex-shrink:0;color:var(--color-text-tertiary)}
+.search-placeholder{font-size:var(--text-md);color:var(--color-text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-shortcut{
+  border:1px solid var(--color-border-default);border-radius:var(--radius-xs);
+  padding:1px var(--space-1);font-size:var(--text-xs);font-weight:var(--font-weight-medium);
+  color:var(--color-text-tertiary);white-space:nowrap;
+}
+
+/* ─── CONTENT AREA ────────────────────────────────────────────────────── */
+.content-area{
+  display:flex;gap:var(--space-10);
+  padding:var(--space-5) var(--space-6) 0;
+  flex:1;overflow:hidden;
+}
+
+/* ─── LEFT COLUMN ─────────────────────────────────────────────────────── */
+.left-column{
+  display:flex;flex-direction:column;gap:var(--space-10);
+  flex:1;min-width:0;
+  overflow-y:auto;overflow-x:hidden;
+  padding-bottom:var(--space-6);
+}
+.left-column::-webkit-scrollbar{display:none}
+.left-column{scrollbar-width:none;-ms-overflow-style:none}
+.left-section{display:flex;flex-direction:column;gap:var(--space-5)}
+
+/* Section header */
+.section-header{display:flex;align-items:center;justify-content:space-between}
+.section-title-row{display:flex;align-items:center;gap:var(--space-3)}
+.section-title{
+  font-size:var(--text-xl);font-weight:var(--font-weight-medium);
+  color:var(--color-text-primary);white-space:nowrap;
+}
+.dropdown-pill{
+  display:flex;align-items:center;gap:var(--space-1);
+  padding:var(--space-1-5) var(--space-2-5);
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);
+  border-radius:var(--radius-md);box-shadow:var(--shadow-card);
+  cursor:pointer;font-size:var(--text-sm);font-weight:var(--font-weight-medium);
+  color:var(--color-gray-700);white-space:nowrap;
+  transition:background 150ms ease, border-color 150ms ease;
+}
+.dropdown-pill:hover{background:var(--color-gray-50)}
+.dropdown-pill svg{width:16px;height:16px;color:var(--color-text-tertiary);flex-shrink:0}
+.section-actions{display:flex;align-items:center;gap:var(--space-5)}
+.action-link{
+  font-size:var(--text-sm);font-weight:var(--font-weight-medium);
+  color:var(--color-text-tertiary);cursor:pointer;white-space:nowrap;
+  transition:color 150ms ease;
+}
+.action-link:hover{color:var(--color-text-secondary)}
+.btn-secondary{
+  display:flex;align-items:center;gap:var(--space-1);
+  padding:var(--space-2) var(--space-3);
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);border-radius:var(--radius-md);
+  cursor:pointer;font-size:var(--text-sm);font-weight:var(--font-weight-medium);
+  color:var(--color-text-secondary);white-space:nowrap;
+  transition:background 150ms ease, box-shadow 150ms ease, transform 100ms ease;
+}
+.btn-secondary svg{width:16px;height:16px;flex-shrink:0}
+.btn-secondary:hover{background:var(--color-gray-50);box-shadow:var(--shadow-xs)}
+.btn-secondary:active{transform:scale(0.97)}
+
+/* ─── PORTFOLIO CARD ──────────────────────────────────────────────────── */
+.portfolio-card{
+  background:var(--color-base-white);
+  border-radius:var(--radius-xl);
+  border:1px solid var(--color-border-container);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.portfolio-card-top{
+  display:flex;flex-direction:column;gap:var(--space-5);
+  padding:var(--space-5) var(--space-5) var(--space-5);
+}
+.portfolio-value-row{display:flex;align-items:baseline;gap:2px}
+.portfolio-value{
+  font-family:var(--font-family-display);
+  font-size:28px;font-weight:400;
+  color:var(--color-text-primary);
+  letter-spacing:-0.75px;
+  font-variant-numeric:tabular-nums;
+  transition:opacity 120ms ease;
+}
+.portfolio-value-cents{font-family:var(--font-family-display);font-size:16px;font-weight:400;font-variant-numeric:tabular-nums;transition:opacity 120ms ease;}
+.chart-tabs{
+  display:flex;border-bottom:1px solid var(--color-border-default);gap:var(--space-3);
+}
+.chart-tab{
+  display:flex;align-items:center;justify-content:center;
+  height:32px;padding:0 var(--space-1);
+  font-size:14px;font-weight:var(--font-weight-medium);
+  color:var(--color-text-tertiary);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;
+  transition:color 150ms ease;
+}
+.chart-tab:hover{color:var(--color-text-secondary)}
+.chart-tab.active{color:var(--color-text-primary);border-bottom-color:var(--color-gray-900)}
+.chart-controls-row{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.chart-perf{display:flex;align-items:center;gap:var(--space-1)}
+.perf-arrow{width:20px;height:20px;flex-shrink:0}
+.perf-value{
+  font-size:var(--text-sm);font-weight:var(--font-weight-medium);
+  color:var(--color-text-success);white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+.perf-period{
+  font-size:var(--text-sm);font-weight:var(--font-weight-regular);
+  color:var(--color-gray-700);white-space:nowrap;
+}
+.time-selector{
+  display:flex;align-items:center;
+  background:var(--color-gray-100);
+  border-radius:var(--radius-2xl);
+  padding:var(--space-1);gap:var(--space-1);
+}
+.time-btn{
+  padding:var(--space-1) var(--space-2-5);border-radius:var(--radius-xl);
+  font-size:var(--text-xs);font-weight:var(--font-weight-medium);
+  color:rgba(10,13,18,0.45);cursor:pointer;white-space:nowrap;border:none;background:transparent;
+  transition:color 150ms ease, background 150ms ease;
+}
+.time-btn:hover:not(.active){color:rgba(10,13,18,0.7)}
+.time-btn.active{
+  background:var(--color-base-white);color:var(--color-text-primary);
+  box-shadow:0px 1px 3px rgba(10,13,18,0.08),0px 0px 0px 0.5px rgba(10,13,18,0.06);
+}
+
+/* Chart area */
+.portfolio-chart{width:100%;flex-shrink:0;display:block;line-height:0}
+.portfolio-chart svg{width:100%;display:block;overflow:visible}
+
+/* ─── ACTIVE STRATEGIES ───────────────────────────────────────────────── */
+.strategies-table{
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);
+  border-radius:var(--radius-xl);
+  overflow:hidden;
+}
+.table-header{display:flex;align-items:center;background:var(--color-surface-subtle);border-bottom:1px solid var(--color-border-default)}
+.th{padding:var(--space-3) var(--space-5);font-size:var(--text-xs);font-weight:var(--font-weight-medium);color:var(--color-text-tertiary);white-space:nowrap}
+.th-strategy{flex:1;min-width:0}
+.th-value{width:140px;flex-shrink:0}
+.th-return{width:120px;flex-shrink:0}
+.th-account{width:100px;flex-shrink:0}
+.table-row{
+  display:flex;align-items:center;height:64px;
+  border-bottom:1px solid var(--color-border-default);
+  cursor:pointer;transition:background 120ms ease;
+}
+.table-row:last-child{border-bottom:none}
+.table-row:hover{background:var(--color-gray-50)}
+.td{padding:var(--space-4) var(--space-5);display:flex;align-items:center}
+.td-strategy{flex:1;min-width:0;gap:var(--space-3)}
+.td-value{width:140px;flex-shrink:0}
+.td-return{width:120px;flex-shrink:0;flex-direction:column;align-items:flex-start;gap:0}
+.td-account{width:100px;flex-shrink:0}
+.strategy-icon{
+  width:32px;height:32px;border-radius:var(--radius-sm);
+  border:1px solid rgba(0,0,0,0.07);box-shadow:var(--shadow-xs);
+  flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  font-size:var(--text-xs);font-weight:var(--font-weight-semibold);color:var(--color-base-white);
+  transition:box-shadow 150ms ease, transform 150ms ease;
+}
+.strategy-icon img{width:100%;height:100%;object-fit:cover;display:block}
+.table-row:hover .strategy-icon{box-shadow:0px 2px 6px rgba(10,13,18,0.12);transform:scale(1.04)}
+.strategy-name{font-size:14px;font-weight:var(--font-weight-medium);color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.td-value-text{font-size:var(--text-sm);color:var(--color-text-primary);white-space:nowrap;font-variant-numeric:tabular-nums}
+.td-return-primary{font-size:var(--text-sm);color:var(--color-text-success);white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:var(--font-weight-medium)}
+.td-return-secondary{font-size:var(--text-xs);color:var(--color-text-tertiary);white-space:nowrap;font-variant-numeric:tabular-nums}
+.avatar-group{display:flex;align-items:center}
+.account-avatar{
+  width:24px;height:24px;border-radius:var(--radius-full);
+  border:0.5px solid rgba(0,0,0,0.08);margin-right:-8px;flex-shrink:0;
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:var(--font-weight-semibold);background:var(--color-base-white);
+}
+.account-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.account-avatar:last-child{margin-right:0}
+.account-avatar.overflow{background:var(--color-gray-100);border-color:rgba(0,0,0,0.06);color:rgba(10,13,18,0.5)}
+
+/* ─── PORTFOLIO BREAKDOWN ─────────────────────────────────────────────── */
+.pb-table{
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);
+  border-radius:var(--radius-xl);
+  overflow:hidden;
+}
+.pb-header{display:flex;align-items:center;height:40px;background:var(--color-surface-subtle);border-bottom:1px solid var(--color-border-default)}
+.pb-th{
+  flex:1;min-width:0;padding:var(--space-3) var(--space-5);
+  font-size:var(--text-xs);font-weight:var(--font-weight-medium);
+  color:var(--color-text-tertiary);white-space:nowrap;
+  display:flex;align-items:center;gap:4px;
+}
+.pb-row{
+  display:flex;align-items:center;height:60px;
+  border-bottom:1px solid var(--color-border-default);
+  cursor:pointer;transition:background 120ms ease;
+}
+.pb-row:last-child{border-bottom:none}
+.pb-row:hover{background:var(--color-gray-50)}
+.pb-td{flex:1;min-width:0;padding:var(--space-4) var(--space-5);display:flex;align-items:center}
+.ticker-logo{
+  width:32px;height:32px;border-radius:var(--radius-full);
+  border:0.75px solid rgba(0,0,0,0.08);flex-shrink:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:var(--font-weight-bold);color:var(--color-base-white);
+  transition:transform 150ms ease;
+}
+.ticker-logo img{width:100%;height:100%;object-fit:cover;display:block;}
+.pb-row:hover .ticker-logo{transform:scale(1.05)}
+.ticker-text{display:flex;flex-direction:column;gap:0}
+.ticker-symbol{font-size:var(--text-sm);font-weight:var(--font-weight-medium);color:var(--color-text-primary);line-height:20px}
+.ticker-name{font-size:var(--text-xs);color:var(--color-text-tertiary);line-height:18px}
+.pb-weight{font-size:var(--text-sm);color:var(--color-text-primary);font-variant-numeric:tabular-nums}
+.pb-price{font-size:var(--text-sm);color:var(--color-text-primary);font-variant-numeric:tabular-nums}
+.pb-value{display:flex;flex-direction:column;gap:0}
+.pb-value-primary{font-size:var(--text-sm);color:var(--color-text-primary);line-height:20px;font-variant-numeric:tabular-nums}
+.pb-value-secondary{font-size:var(--text-xs);color:var(--color-text-tertiary);line-height:18px}
+.pb-strategy{font-size:var(--text-sm);color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pb-dropdown{
+  display:flex;align-items:center;gap:var(--space-2);
+  padding:var(--space-2) var(--space-3);
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);border-radius:var(--radius-md);
+  font-size:var(--text-sm);font-weight:var(--font-weight-regular);
+  color:var(--color-text-tertiary);cursor:pointer;
+  transition:background 150ms ease;
+}
+.pb-dropdown:hover{background:var(--color-gray-50)}
+.pb-dropdown svg{width:16px;height:16px;flex-shrink:0;color:var(--color-text-tertiary)}
+.sort-arrow{width:12px;height:12px;flex-shrink:0;color:var(--color-gray-400)}
+
+/* ─── RECENT ACTIVITIES ───────────────────────────────────────────────── */
+.act-table{
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);
+  border-radius:var(--radius-xl);
+  overflow:hidden;
+}
+.act-header{display:flex;align-items:center;height:40px;background:var(--color-surface-subtle);border-bottom:1px solid var(--color-border-default)}
+.act-th-date{width:90px;flex-shrink:0;padding:var(--space-3) var(--space-5);font-size:var(--text-xs);font-weight:var(--font-weight-medium);color:var(--color-text-tertiary)}
+.act-th{flex:1;min-width:0;padding:var(--space-3) var(--space-5);font-size:var(--text-xs);font-weight:var(--font-weight-medium);color:var(--color-text-tertiary)}
+.act-th-details{width:160px;flex-shrink:0;padding:var(--space-3) var(--space-5);font-size:var(--text-xs);font-weight:var(--font-weight-medium);color:var(--color-text-tertiary)}
+.act-th-status{width:132px;flex-shrink:0;padding:var(--space-3) var(--space-5);font-size:var(--text-xs);font-weight:var(--font-weight-medium);color:var(--color-text-tertiary)}
+.act-row{
+  display:flex;align-items:center;height:54px;
+  border-bottom:1px solid var(--color-border-default);
+  cursor:pointer;transition:background 120ms ease;
+}
+.act-row:last-child{border-bottom:none}
+.act-row:hover{background:var(--color-gray-50)}
+.act-td-date{width:90px;flex-shrink:0;padding:var(--space-4) var(--space-5);font-size:var(--text-sm);color:var(--color-text-primary);font-variant-numeric:tabular-nums}
+.act-td{flex:1;min-width:0;padding:var(--space-4) var(--space-5);display:flex;align-items:center;gap:var(--space-3)}
+.act-td-details{width:160px;flex-shrink:0;padding:var(--space-3) var(--space-5);display:flex;flex-direction:column;gap:0}
+.act-td-status{width:132px;flex-shrink:0;padding:var(--space-3) var(--space-5)}
+.act-td-account{flex:1;min-width:0;padding:var(--space-4) var(--space-5);display:flex;align-items:center;gap:var(--space-3)}
+.stock-logo-sm{
+  width:24px;height:24px;border-radius:var(--radius-full);
+  border:0.5px solid rgba(0,0,0,0.08);flex-shrink:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  font-size:8px;font-weight:var(--font-weight-bold);color:var(--color-base-white);
+}
+.stock-logo-sm img{width:100%;height:100%;object-fit:cover;display:block;}
+.act-ticker{font-size:var(--text-sm);font-weight:var(--font-weight-medium);color:var(--color-text-primary)}
+.act-badge{
+  display:inline-flex;align-items:center;
+  padding:2px var(--space-2);border-radius:var(--radius-sm);
+  font-size:var(--text-xs);font-weight:var(--font-weight-medium);white-space:nowrap;
+}
+.act-badge.sell{background:#FBF5F5;border:1px solid #F3D7D5;color:var(--color-error-700)}
+.act-badge.buy{background:#EEF7EE;border:1px solid #CBE7CC;color:var(--color-success-700)}
+.act-details-primary{font-size:var(--text-sm);color:var(--color-text-secondary);font-variant-numeric:tabular-nums;line-height:20px}
+.act-details-secondary{font-size:var(--text-xs);color:var(--color-text-tertiary);font-variant-numeric:tabular-nums;line-height:18px}
+.status-badge{
+  display:inline-flex;align-items:center;
+  padding:2px var(--space-2);border-radius:var(--radius-full);
+  font-size:var(--text-xs);font-weight:var(--font-weight-medium);white-space:nowrap;
+}
+.status-badge.complete{background:#EEF7EE;border:1px solid #CBE7CC;color:var(--color-success-700)}
+.status-badge.in-progress{background:var(--color-brand-50);border:1px solid #C8DBF5;color:var(--color-brand-700)}
+.act-account-name{font-size:var(--text-sm);color:var(--color-text-secondary)}
+.act-no-avatar{font-size:var(--text-sm);font-weight:var(--font-weight-medium);color:var(--color-text-primary)}
+
+/* ─── RIGHT COLUMN ────────────────────────────────────────────────────── */
+.right-column{
+  width:400px;flex-shrink:0;display:flex;flex-direction:column;gap:var(--space-10);
+  overflow:hidden;align-self:stretch;padding-bottom:var(--space-6);
+}
+
+/* Dividend */
+.section-heading-row{display:flex;align-items:center;justify-content:space-between;height:28px}
+.section-heading{font-size:var(--text-lg);font-weight:var(--font-weight-medium);color:var(--color-text-primary);white-space:nowrap}
+.chevron-link{display:flex;align-items:center;cursor:pointer;color:var(--color-text-tertiary)}
+.chevron-link svg{width:20px;height:20px}
+.dividend-card{
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-card);
+  padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-4);
+}
+.dividend-header{display:flex;align-items:center;justify-content:space-between}
+.dividend-label{font-size:var(--text-sm);font-weight:var(--font-weight-medium);color:var(--color-text-secondary)}
+.dividend-period-select{
+  display:flex;align-items:center;gap:var(--space-2);
+  padding:var(--space-2) var(--space-3);
+  background:var(--color-base-white);border:1px solid var(--color-border-container);
+  border-radius:var(--radius-md);font-size:var(--text-xs);color:var(--color-text-primary);cursor:pointer;
+  transition:background 150ms ease, border-color 150ms ease;
+}
+.dividend-period-select:hover{background:var(--color-gray-50)}
+.dividend-period-select svg{width:16px;height:16px;color:var(--color-text-tertiary)}
+.dividend-value{font-size:var(--text-lg);font-weight:var(--font-weight-medium);color:var(--color-text-primary)}
+.dividend-bar{display:flex;height:20px;gap:2px;border-radius:var(--radius-md);overflow:hidden}
+.dividend-bar-seg{height:100%;flex-shrink:0}
+.dividend-bar-seg:first-child{border-radius:var(--radius-md) 0 0 var(--radius-md)}
+.dividend-bar-seg:last-child{border-radius:0 var(--radius-md) var(--radius-md) 0;flex:1}
+.dividend-list{display:flex;flex-direction:column;gap:var(--space-4)}
+.dividend-list-item{display:flex;align-items:center;justify-content:space-between}
+.dividend-item-left{display:flex;align-items:center;gap:var(--space-2)}
+.dividend-dot{width:16px;height:16px;border-radius:var(--radius-full);flex-shrink:0}
+.dividend-ticker{font-size:var(--text-sm);color:var(--color-text-primary)}
+.dividend-amount{font-size:var(--text-sm);color:var(--color-text-secondary)}
+
+/* Carousel */
+.carousel-header{display:flex;align-items:center;justify-content:space-between;height:28px}
+.carousel-counter{font-size:var(--text-lg);font-weight:var(--font-weight-medium);color:var(--color-text-primary)}
+.carousel-controls{display:flex;align-items:center;gap:var(--space-4)}
+.carousel-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border:1px solid var(--color-border-container);
+  border-radius:var(--radius-sm);cursor:pointer;background:var(--color-surface-default);
+  color:var(--color-text-secondary);
+  transition:background 150ms ease, transform 100ms ease;
+}
+.carousel-btn svg{width:16px;height:16px}
+.carousel-btn:hover{background:var(--color-gray-50)}
+.carousel-btn:active{transform:scale(0.93)}
+.carousel-viewport{border-radius:var(--radius-xl);overflow:hidden;height:235px}
+.carousel-slide{
+  width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:var(--space-3);
+  padding:var(--space-6);
+  background:linear-gradient(160deg,#EBF1FD 0%,#D8E7F9 100%);
+  text-align:center;
+}
+.carousel-slide-tag{
+  font-size:var(--text-xs);font-weight:var(--font-weight-semibold);
+  color:var(--color-brand-700);background:var(--color-brand-50);
+  border-radius:var(--radius-full);padding:var(--space-1) var(--space-3);
+}
+.carousel-slide-title{
+  font-family:var(--font-family-display);font-size:var(--text-xl);
+  font-weight:var(--font-weight-semibold);color:var(--color-text-primary);
+}
+.carousel-slide-body{
+  font-size:var(--text-sm);color:var(--color-text-secondary);
+  max-width:280px;line-height:20px;
+}
+.carousel-slide-cta{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:var(--space-2) var(--space-5);background:var(--color-surface-default);
+  border:1px solid rgba(0,0,0,0.09);border-radius:var(--radius-md);
+  font-size:var(--text-sm);font-weight:var(--font-weight-medium);
+  color:var(--color-text-primary);cursor:pointer;border:none;box-shadow:var(--shadow-xs);
+  transition:background 150ms ease, transform 100ms ease;
+}
+.carousel-slide-cta:hover{background:var(--color-gray-50)}
+.carousel-slide-cta:active{transform:scale(0.97)}
+
+.dividend-list-item{cursor:pointer;transition:opacity 150ms ease}
+.dividend-list-item:hover{opacity:0.75}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:0.01ms !important;animation-duration:0.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="dashboard-layout">
+
+  <app-sidebar active="home"></app-sidebar>
+
+  <main class="main-content">
+
+    <!-- Page header -->
+    <header class="page-header">
+      <span class="greeting">Good morning, Logan</span>
+      <div class="search-box">
+        <div class="search-box-inner">
+          <svg class="search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="9" r="6"/><path d="M16.5 16.5l-3.5-3.5"/>
+          </svg>
+          <span class="search-placeholder">Find an investment</span>
+        </div>
+        <span class="search-shortcut">⌘K</span>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content-area">
+
+      <!-- ── LEFT COLUMN ── -->
+      <div class="left-column">
+
+        <!-- Portfolio -->
+        <div class="left-section">
+          <div class="section-header">
+            <div class="section-title-row">
+              <span class="section-title">Portfolio</span>
+              <div class="dropdown-pill">
+                View all
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+              </div>
+            </div>
+            <div class="section-actions">
+              <span class="action-link">Edit</span>
+              <button class="btn-secondary">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+                Connect accounts
+              </button>
+            </div>
+          </div>
+          <div class="portfolio-card">
+            <div class="portfolio-card-top">
+              <div class="portfolio-value-row">
+                <span class="portfolio-value" id="home-price-whole">$234,984,486</span>
+                <span class="portfolio-value-cents" id="home-price-cents">.24</span>
+              </div>
+              <div class="chart-tabs">
+                <div class="chart-tab active">Return</div>
+                <div class="chart-tab">Allocation</div>
+                <div class="chart-tab">Income</div>
+              </div>
+              <div class="chart-controls-row">
+                <div class="chart-perf">
+                  <svg class="perf-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--color-text-success)">
+                    <path d="M5 15L15 5M15 5H8M15 5v7"/>
+                  </svg>
+                  <span class="perf-value" id="home-perf-value">$256.25 (12.45%)</span>
+                  <span class="perf-period" id="home-perf-period">this month</span>
+                </div>
+                <div class="time-selector">
+                  <button class="time-btn active">1D</button>
+                  <button class="time-btn">1W</button>
+                  <button class="time-btn">1M</button>
+                  <button class="time-btn">3M</button>
+                  <button class="time-btn">6M</button>
+                  <button class="time-btn">YTD</button>
+                  <button class="time-btn">1Y</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── CHART ── lightweight-charts v5 React component -->
+            <div class="portfolio-chart" style="height:248px">
+              <div id="chart-home" style="width:100%;height:100%"></div>
+            </div>
+            <div style="display:none"><svg viewBox="0 0 1237 248" overflow="visible">
+                <defs>
+                  <!-- Gradient: Surmount green -->
+                  <linearGradient id="chart-grad" x1="0%" x2="0%" y1="0%" y2="100%" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#A2D3A5" stop-opacity="1"/>
+                    <stop offset="100%" stop-color="#A2D3A5" stop-opacity="0"/>
+                  </linearGradient>
+                  <!-- Dot mask for stippled fill -->
+                  <pattern id="chart-dots" x="0" y="0" width="2" height="2" patternUnits="userSpaceOnUse">
+                    <circle cx="1" cy="1" r="0.5" fill="white"/>
+                  </pattern>
+                  <mask id="chart-dot-mask">
+                    <rect width="100%" height="100%" fill="url(#chart-dots)"/>
+                  </mask>
+                </defs>
+
+                <!-- Filled area with dotted mask -->
+                <path d="M6,166.76706035376336C8.82258064516129,166.76706035376336,8.82258064516129,166.76706035376336,11.64516129032258,166.76706035376336C14.46774193548387,166.76706035376336,14.46774193548387,166.76706035376336,17.29032258064516,166.76706035376336C20.11290322580645,166.76706035376336,20.11290322580645,166.76706035376336,22.93548387096774,166.76706035376336C25.758064516129032,166.76706035376336,25.758064516129032,166.76706035376336,28.580645161290324,166.76706035376336C31.403225806451616,166.76706035376336,31.403225806451616,166.76706035376336,34.225806451612904,166.76706035376336C37.04838709677419,166.76706035376336,37.04838709677419,166.76706035376336,39.87096774193548,166.76706035376336C42.69354838709677,166.76706035376336,42.69354838709677,166.76706035376336,45.516129032258064,166.76706035376336C48.33870967741936,166.76706035376336,48.33870967741936,166.76706035376336,51.16129032258065,166.76706035376336C53.983870967741936,166.76706035376336,53.983870967741936,166.76706035376336,56.806451612903224,166.76706035376336C59.62903225806451,166.76706035376336,59.62903225806451,166.76706035376336,62.45161290322581,166.76706035376336C65.2741935483871,166.76706035376336,65.2741935483871,166.79253830597898,68.09677419354838,166.79253830597898C70.91935483870967,166.79253830597898,70.91935483870967,166.8879648179138,73.74193548387096,166.8879648179138C76.56451612903226,166.8879648179138,76.56451612903226,166.65939696667357,79.38709677419354,166.65939696667357C82.20967741935483,166.65939696667357,82.20967741935483,166.99587812055307,85.03225806451613,166.99587812055307C87.85483870967742,166.99587812055307,87.85483870967742,166.77842018515594,90.67741935483872,166.77842018515594C93.5,166.77842018515594,93.5,166.74511702734392,96.3225806451613,166.74511702734392C99.14516129032258,166.74511702734392,99.14516129032258,166.47464544912404,101.96774193548386,166.47464544912404C104.79032258064515,166.47464544912404,104.79032258064515,166.32210144479416,107.61290322580645,166.32210144479416C110.43548387096774,166.32210144479416,110.43548387096774,166.66092624601262,113.25806451612902,166.66092624601262C116.08064516129032,166.66092624601262,116.08064516129032,166.90029234825508,118.90322580645162,166.90029234825508C121.7258064516129,166.90029234825508,121.7258064516129,166.93783374025642,124.54838709677419,166.93783374025642C127.37096774193549,166.93783374025642,127.37096774193549,167.12215681129678,130.19354838709677,167.12215681129678C133.01612903225805,167.12215681129678,133.01612903225805,167.0500393366672,135.83870967741933,167.0500393366672C138.6612903225806,167.0500393366672,138.6612903225806,166.6536849024339,141.48387096774192,166.6536849024339C144.30645161290323,166.6536849024339,144.30645161290323,166.55712369515447,147.1290322580645,166.55712369515447C149.9516129032258,166.55712369515447,149.9516129032258,166.39936602165383,152.77419354838707,166.39936602165383C155.59677419354836,166.39936602165383,155.59677419354836,165.98389358060766,158.41935483870967,165.98389358060766C161.24193548387098,165.98389358060766,161.24193548387098,165.71471725515485,164.06451612903226,165.71471725515485C166.88709677419354,165.71471725515485,166.88709677419354,165.95639823781204,169.70967741935485,165.95639823781204C172.53225806451616,165.95639823781204,172.53225806451616,166.18431010126807,175.35483870967744,166.18431010126807C178.17741935483872,166.18431010126807,178.17741935483872,166.49838376676237,181,166.49838376676237C183.82258064516128,166.49838376676237,183.82258064516128,166.63735441521115,186.6451612903226,166.63735441521115C189.4677419354839,166.63735441521115,189.4677419354839,166.95513396466404,192.29032258064518,166.95513396466404C195.11290322580646,166.95513396466404,195.11290322580646,167.0273987018574,197.93548387096772,167.0273987018574C200.75806451612902,167.0273987018574,200.75806451612902,166.8606339237189,203.5806451612903,166.8606339237189C206.4032258064516,166.8606339237189,206.4032258064516,167.46098712501765,209.2258064516129,167.46098712501765C212.0483870967742,167.46098712501765,212.0483870967742,167.3303547154758,214.8709677419355,167.3303547154758C217.69354838709677,167.3303547154758,217.69354838709677,167.27754586906525,220.51612903225805,167.27754586906525C223.33870967741933,167.27754586906525,223.33870967741933,167.53047244924204,226.16129032258064,167.53047244924204C228.98387096774195,167.53047244924204,228.98387096774195,167.72503135707038,231.80645161290323,167.72503135707038C234.6290322580645,167.72503135707038,234.6290322580645,167.30533999875504,237.4516129032258,167.30533999875504C240.27419354838707,167.30533999875504,240.27419354838707,167.14691345952338,243.09677419354838,167.14691345952338C245.9193548387097,167.14691345952338,245.9193548387097,166.79114859949445,248.74193548387098,166.79114859949445C251.56451612903226,166.79114859949445,251.56451612903226,166.9968251591987,254.38709677419357,166.9968251591987C257.2096774193548,166.9968251591987,257.2096774193548,166.9384574868502,260.0322580645161,166.9384574868502C262.8548387096774,166.9384574868502,262.8548387096774,167.29329587588944,265.67741935483866,167.29329587588944C268.5,167.29329587588944,268.5,167.5128695004385,271.3225806451613,167.5128695004385C274.14516129032256,167.5128695004385,274.14516129032256,167.47395771887284,276.96774193548384,167.47395771887284C279.7903225806451,167.47395771887284,279.7903225806451,167.07928107727827,282.6129032258064,167.07928107727827C285.4354838709677,167.07928107727827,285.4354838709677,167.10985461993704,288.258064516129,167.10985461993704C291.0806451612903,167.10985461993704,291.0806451612903,166.99867810117803,293.9032258064516,166.99867810117803C296.72580645161287,166.99867810117803,296.72580645161287,166.48170728894848,299.54838709677415,166.48170728894848C302.3709677419355,166.48170728894848,302.3709677419355,166.27047190330634,305.19354838709677,166.27047190330634C308.01612903225805,166.27047190330634,308.01612903225805,166.12872184188856,310.83870967741933,166.12872184188856C313.6612903225806,166.12872184188856,313.6612903225806,166.46503081113465,316.48387096774195,166.46503081113465C319.30645161290323,166.46503081113465,319.30645161290323,166.60678087255238,322.1290322580645,166.60678087255238C324.9516129032258,166.60678087255238,324.9516129032258,166.10926595110573,327.7741935483871,166.10926595110573C330.5967741935484,166.10926595110573,330.5967741935484,166.7902221285048,333.4193548387097,166.7902221285048C336.241935483871,166.7902221285048,336.241935483871,166.58083968484195,339.06451612903226,166.58083968484195C341.88709677419354,166.58083968484195,341.88709677419354,166.4196337326414,344.7096774193549,166.4196337326414C347.53225806451616,166.4196337326414,347.53225806451616,166.23897188965793,350.35483870967744,166.23897188965793C353.1774193548387,166.23897188965793,353.1774193548387,166.347368995448,356,166.347368995448C358.82258064516134,166.347368995448,358.82258064516134,166.39739842888955,361.6451612903226,166.39739842888955C364.4677419354839,166.39739842888955,364.4677419354839,166.20006010809226,367.2903225806452,166.20006010809226C370.11290322580646,166.20006010809226,370.11290322580646,166.2445307155959,372.9354838709677,166.2445307155959C375.758064516129,166.2445307155959,375.758064516129,165.94157470197752,378.58064516129036,165.94157470197752C381.4032258064516,165.94157470197752,381.4032258064516,165.97492765760524,384.22580645161287,165.97492765760524C387.04838709677415,165.97492765760524,387.04838709677415,166.11714095451782,389.87096774193543,166.11714095451782C392.6935483870967,166.11714095451782,392.6935483870967,169.89482641485088,395.51612903225805,169.89482641485088C398.33870967741933,169.89482641485088,398.33870967741933,164.3457284222905,401.1612903225806,164.3457284222905C403.98387096774195,164.3457284222905,403.98387096774195,162.2699701699604,406.80645161290323,162.2699701699604C409.6290322580645,162.2699701699604,409.6290322580645,164.81683892053192,412.4516129032258,164.81683892053192C415.2741935483871,164.81683892053192,415.2741935483871,163.58509573978077,418.09677419354836,163.58509573978077C420.91935483870964,163.58509573978077,420.91935483870964,159.84539559002374,423.741935483871,159.84539559002374C426.56451612903226,159.84539559002374,426.56451612903226,160.2391457606287,429.38709677419354,160.2391457606287C432.2096774193548,160.2391457606287,432.2096774193548,155.67118054611683,435.0322580645161,155.67118054611683C437.85483870967744,155.67118054611683,437.85483870967744,157.1720635493638,440.6774193548387,157.1720635493638C443.5,157.1720635493638,443.5,159.26079239554917,446.3225806451613,159.26079239554917C449.14516129032256,159.26079239554917,449.14516129032256,160.2646237128443,451.96774193548384,160.2646237128443C454.7903225806451,160.2646237128443,454.7903225806451,162.43951436106792,457.61290322580646,162.43951436106792C460.43548387096774,162.43951436106792,460.43548387096774,160.32206491420314,463.258064516129,160.32206491420314C466.0806451612903,160.32206491420314,466.0806451612903,161.09335201309392,468.9032258064516,161.09335201309392C471.7258064516129,161.09335201309392,471.7258064516129,160.01216036816228,474.5483870967742,160.01216036816228C477.3709677419355,160.01216036816228,477.3709677419355,160.6222415148525,480.19354838709677,160.6222415148525C483.01612903225805,160.6222415148525,483.01612903225805,164.00154444963235,485.8387096774194,164.00154444963235C488.66129032258067,164.00154444963235,488.66129032258067,165.23282439488867,491.48387096774195,165.23282439488867C494.30645161290323,165.23282439488867,494.30645161290323,162.18380836792213,497.1290322580645,162.18380836792213C499.95161290322585,162.18380836792213,499.95161290322585,160.09137363777813,502.77419354838713,160.09137363777813C505.5967741935484,160.09137363777813,505.5967741935484,163.10888965109623,508.4193548387097,163.10888965109623C511.241935483871,163.10888965109623,511.241935483871,166.30845721388232,514.0645161290322,166.30845721388232C516.8870967741935,166.30845721388232,516.8870967741935,161.33052858644652,519.7096774193549,161.33052858644652C522.5322580645161,161.33052858644652,522.5322580645161,157.6209387438534,525.3548387096773,157.6209387438534C528.1774193548387,157.6209387438534,528.1774193548387,156.2553205050966,531,156.2553205050966C533.8225806451612,156.2553205050966,533.8225806451612,155.9639453788489,536.6451612903226,155.9639453788489C539.4677419354839,155.9639453788489,539.4677419354839,156.4647029487594,542.2903225806451,156.4647029487594C545.1129032258063,156.4647029487594,545.1129032258063,158.06471834789988,547.9354838709677,158.06471834789988C550.758064516129,158.06471834789988,550.758064516129,155.07175381580765,553.5806451612904,155.07175381580765C556.4032258064516,155.07175381580765,556.4032258064516,154.12629017086107,559.2258064516128,154.12629017086107C562.0483870967741,154.12629017086107,562.0483870967741,153.7862753176563,564.8709677419355,153.7862753176563C567.6935483870968,153.7862753176563,567.6935483870968,153.88818712651877,570.516129032258,153.88818712651877C573.3387096774193,153.88818712651877,573.3387096774193,153.16600299007987,576.1612903225806,153.16600299007987C578.983870967742,153.16600299007987,578.983870967742,153.35824572043404,581.8064516129032,153.35824572043404C584.6290322580645,153.35824572043404,584.6290322580645,151.249597747971,587.4516129032259,151.249597747971C590.2741935483871,151.249597747971,590.2741935483871,153.53520167945885,593.0967741935483,153.53520167945885C595.9193548387096,153.53520167945885,595.9193548387096,150.82805344767633,598.741935483871,150.82805344767633C601.5645161290322,150.82805344767633,601.5645161290322,150.50517830778028,604.3870967741935,150.50517830778028C607.2096774193549,150.50517830778028,607.2096774193549,152.08620105163274,610.0322580645161,152.08620105163274C612.8548387096773,152.08620105163274,612.8548387096773,150.26707526343802,615.6774193548387,150.26707526343802C618.5,150.26707526343802,618.5,147.86241980977908,621.3225806451613,147.86241980977908C624.1451612903227,147.86241980977908,624.1451612903227,146.96837530475852,626.9677419354839,146.96837530475852C629.7903225806451,146.96837530475852,629.7903225806451,146.58805896350364,632.6129032258065,146.58805896350364C635.4354838709678,146.58805896350364,635.4354838709678,146.8233825948769,638.258064516129,146.8233825948769C641.0806451612902,146.8233825948769,641.0806451612902,146.9049120419669,643.9032258064516,146.9049120419669C646.7258064516129,146.9049120419669,646.7258064516129,147.1226327245367,649.5483870967741,147.1226327245367C652.3709677419355,147.1226327245367,652.3709677419355,148.10886109302825,655.1935483870968,148.10886109302825C658.016129032258,148.10886109302825,658.016129032258,148.00694928416584,660.8387096774194,148.00694928416584C663.6612903225807,148.00694928416584,663.6612903225807,146.7599193320853,666.483870967742,146.7599193320853C669.3064516129032,146.7599193320853,669.3064516129032,145.4962129021909,672.1290322580645,145.4962129021909C674.9516129032259,145.4962129021909,674.9516129032259,144.7082493254863,677.7741935483871,144.7082493254863C680.5967741935484,144.7082493254863,680.5967741935484,144.29504326409852,683.4193548387098,144.29504326409852C686.241935483871,144.29504326409852,686.241935483871,143.57656501161827,689.0645161290323,143.57656501161827C691.8870967741937,143.57656501161827,691.8870967741937,142.1956600015321,694.7096774193549,142.1956600015321C697.5322580645161,142.1956600015321,697.5322580645161,141.36554199479795,700.3548387096774,141.36554199479795C703.1774193548388,141.36554199479795,703.1774193548388,140.6396519744004,706,140.6396519744004C708.8225806451612,140.6396519744004,708.8225806451612,140.68504905289367,711.6451612903226,140.68504905289367C714.4677419354839,140.68504905289367,714.4677419354839,138.3985186504162,717.2903225806452,138.3985186504162C720.1129032258066,138.3985186504162,720.1129032258066,136.83185620690347,722.9354838709678,136.83185620690347C725.758064516129,136.83185620690347,725.758064516129,138.5268348824839,728.5806451612904,138.5268348824839C731.4032258064517,138.5268348824839,731.4032258064517,140.72812995391283,734.2258064516129,140.72812995391283C737.0483870967741,140.72812995391283,737.0483870967741,140.28805623382496,739.8709677419354,140.28805623382496C742.6935483870968,140.28805623382496,742.6935483870968,143.5770282471131,745.5161290322582,143.5770282471131C748.3387096774195,143.5770282471131,748.3387096774195,141.9746966704985,751.1612903225807,141.9746966704985C753.983870967742,141.9746966704985,753.983870967742,139.95406344205307,756.8064516129033,139.95406344205307C759.6290322580645,139.95406344205307,759.6290322580645,141.12882865694016,762.4516129032257,141.12882865694016C765.2741935483871,141.12882865694016,765.2741935483871,142.10023348959726,768.0967741935484,142.10023348959726C770.9193548387096,142.10023348959726,770.9193548387096,142.14424086160602,773.7419354838709,142.14424086160602C776.5645161290322,142.14424086160602,776.5645161290322,141.26131400846137,779.3870967741937,141.26131400846137C782.2096774193549,141.26131400846137,782.2096774193549,138.69498936710696,785.0322580645161,138.69498936710696C787.8548387096774,138.69498936710696,787.8548387096774,138.62689374936704,790.6774193548388,138.62689374936704C793.5,138.62689374936704,793.5,135.01458336068805,796.3225806451612,135.01458336068805C799.1451612903226,135.01458336068805,799.1451612903226,135.3689585142325,801.9677419354839,135.3689585142325C804.7903225806451,135.3689585142325,804.7903225806451,135.9915470192831,807.6129032258065,135.9915470192831C810.4354838709678,135.9915470192831,810.4354838709678,132.8044868148574,813.2580645161291,132.8044868148574C816.0806451612904,132.8044868148574,816.0806451612904,130.1038238800025,818.9032258064516,130.1038238800025C821.7258064516129,130.1038238800025,821.7258064516129,125.55670426275798,824.5483870967741,125.55670426275798C827.3709677419354,125.55670426275798,827.3709677419354,127.57363160724479,830.1935483870967,127.57363160724479C833.016129032258,127.57363160724479,833.016129032258,131.2494052587154,835.8387096774193,131.2494052587154C838.6612903225806,131.2494052587154,838.6612903225806,126.16678540944818,841.483870967742,126.16678540944818C844.3064516129032,126.16678540944818,844.3064516129032,126.07367507498748,847.1290322580645,126.07367507498748C849.9516129032259,126.07367507498748,849.9516129032259,129.6975663510372,852.7741935483871,129.6975663510372C855.5967741935483,129.6975663510372,855.5967741935483,125.91988089070416,858.4193548387096,125.91988089070416C861.241935483871,125.91988089070416,861.241935483871,129.1162058050264,864.0645161290322,129.1162058050264C866.8870967741934,129.1162058050264,866.8870967741934,128.4079187334324,869.7096774193548,128.4079187334324C872.5322580645161,128.4079187334324,872.5322580645161,128.58024233750888,875.3548387096774,128.58024233750888C878.1774193548388,128.58024233750888,878.1774193548388,124.4189022301131,881,124.4189022301131C883.8225806451612,124.4189022301131,883.8225806451612,128.858262155688,886.6451612903226,128.858262155688C889.4677419354839,128.858262155688,889.4677419354839,129.53732716703428,892.2903225806451,129.53732716703428C895.1129032258063,129.53732716703428,895.1129032258063,127.83067399784206,897.9354838709677,127.83067399784206C900.758064516129,127.83067399784206,900.758064516129,122.03627870238465,903.5806451612904,122.03627870238465C906.4032258064517,122.03627870238465,906.4032258064517,134.54852034580318,909.2258064516129,134.54852034580318C912.0483870967741,134.54852034580318,912.0483870967741,140.13936275522303,914.8709677419355,140.13936275522303C917.6935483870968,140.13936275522303,917.6935483870968,149.13224051121384,920.516129032258,149.13224051121384C923.3387096774193,149.13224051121384,923.3387096774193,147.05690866591928,926.1612903225806,147.05690866591928C928.983870967742,147.05690866591928,928.983870967742,145.1325480609933,931.8064516129032,145.1325480609933C934.6290322580645,145.1325480609933,934.6290322580645,146.75179841565898,937.4516129032259,146.75179841565898C940.2741935483871,146.75179841565898,940.2741935483871,151.4917642319485,943.0967741935484,151.4917642319485C945.9193548387098,151.4917642319485,945.9193548387098,164.57987689500564,948.741935483871,164.57987689500564C951.5645161290322,164.57987689500564,951.5645161290322,158.74767910102838,954.3870967741935,158.74767910102838C957.2096774193548,158.74767910102838,957.2096774193548,150.92460870811095,960.032258064516,150.92460870811095C962.8548387096773,150.92460870811095,962.8548387096773,146.15927683999672,965.6774193548388,146.15927683999672C968.5,146.15927683999672,968.5,123.93767846890788,971.3225806451613,123.93767846890788C974.1451612903227,123.93767846890788,974.1451612903227,127.55220081867103,976.9677419354839,127.55220081867103C979.7903225806451,127.55220081867103,979.7903225806451,124.8959013740888,982.6129032258063,124.8959013740888C985.4354838709677,124.8959013740888,985.4354838709677,122.45280778146164,988.258064516129,122.45280778146164C991.0806451612902,122.45280778146164,991.0806451612902,120.82751776286648,993.9032258064515,120.82751776286648C996.7258064516129,120.82751776286648,996.7258064516129,119.73479407699853,999.5483870967743,119.73479407699853C1002.3709677419355,119.73479407699853,1002.3709677419355,115.040318734865,1005.1935483870967,115.040318734865C1008.016129032258,115.040318734865,1008.016129032258,112.52542172039995,1010.8387096774194,112.52542172039995C1013.6612903225806,112.52542172039995,1013.6612903225806,112.24316110468308,1016.4838709677418,112.24316110468308C1019.3064516129032,112.24316110468308,1019.3064516129032,108.32207649935432,1022.1290322580645,108.32207649935432C1024.9516129032259,108.32207649935432,1024.9516129032259,101.53565739349929,1027.774193548387,101.53565739349929C1030.5967741935483,101.53565739349929,1030.5967741935483,90.35351319861434,1033.4193548387098,90.35351319861434C1036.2419354838712,90.35351319861434,1036.2419354838712,85.40480252622075,1039.0645161290324,85.40480252622075C1041.8870967741937,85.40480252622075,1041.8870967741937,75.48124059581069,1044.7096774193546,75.48124059581069C1047.532258064516,75.48124059581069,1047.532258064516,85.67852086177047,1050.3548387096773,85.67852086177047C1053.1774193548385,85.67852086177047,1053.1774193548385,81.04654193040302,1056,81.04654193040302C1058.8225806451615,81.04654193040302,1058.8225806451615,82.12942049647033,1061.6451612903227,82.12942049647033C1064.467741935484,82.12942049647033,1064.467741935484,67.77344772123965,1067.2903225806451,67.77344772123965C1070.1129032258063,67.77344772123965,1070.1129032258063,53.522844727262765,1072.9354838709678,53.522844727262765C1075.758064516129,53.522844727262765,1075.758064516129,49.321948672109656,1078.5806451612902,49.321948672109656C1081.4032258064517,49.321948672109656,1081.4032258064517,45.869228182771735,1084.225806451613,45.869228182771735C1087.0483870967741,45.869228182771735,1087.0483870967741,32.09090909090911,1089.8709677419354,32.09090909090911C1092.6935483870966,32.09090909090911,1092.6935483870966,48.56901573602934,1095.516129032258,48.56901573602934C1098.3387096774195,48.56901573602934,1098.3387096774195,59.67684688727696,1101.1612903225807,59.67684688727696C1103.983870967742,59.67684688727696,1103.983870967742,44.67224536315568,1106.8064516129034,44.67224536315568C1109.6290322580644,44.67224536315568,1109.6290322580644,74.06569826087683,1112.4516129032256,74.06569826087683C1115.2741935483868,74.06569826087683,1115.2741935483868,77.81378756251414,1118.0967741935483,77.81378756251414C1120.9193548387098,77.81378756251414,1120.9193548387098,137.92217361135192,1123.741935483871,137.92217361135192C1126.5645161290322,137.92217361135192,1126.5645161290322,113.19389924433126,1129.3870967741937,113.19389924433126C1132.2096774193549,113.19389924433126,1132.2096774193549,104.28373611381522,1135.032258064516,104.28373611381522C1137.8548387096776,104.28373611381522,1137.8548387096776,85.825972592885,1140.6774193548388,85.825972592885C1143.5,85.825972592885,1143.5,141.52638443896197,1146.3225806451612,141.52638443896197C1149.1451612903224,141.52638443896197,1149.1451612903224,123.39068443443907,1151.967741935484,123.39068443443907C1154.7903225806451,123.39068443443907,1154.7903225806451,136.97027618189492,1157.6129032258063,136.97027618189492C1160.4354838709678,136.97027618189492,1160.4354838709678,107.46126966441562,1163.258064516129,107.46126966441562C1166.0806451612902,107.46126966441562,1166.0806451612902,95.64887107740971,1168.9032258064517,95.64887107740971C1171.7258064516132,95.64887107740971,1171.7258064516132,116.59526154742656,1174.5483870967744,116.59526154742656C1177.3709677419356,116.59526154742656,1177.3709677419356,166.25345988740517,1180.1935483870966,166.25345988740517C1183.016129032258,166.25345988740517,1183.016129032258,221.72464285793023,1185.8387096774195,221.72464285793023C1188.6612903225807,221.72464285793023,1188.6612903225807,221.58797162781826,1191.483870967742,221.58797162781826C1194.3064516129034,221.58797162781826,1194.3064516129034,219.26668463600598,1197.1290322580646,219.26668463600598C1199.9516129032259,219.26668463600598,1199.9516129032259,204.03466927546714,1202.774193548387,204.03466927546714C1205.5967741935483,204.03466927546714,1205.5967741935483,207.93688969312487,1208.4193548387095,207.93688969312487C1211.2419354838707,207.93688969312487,1211.2419354838707,218.91248354200613,1214.0645161290322,218.91248354200613C1216.8870967741937,218.91248354200613,1216.8870967741937,226.2376761195779,1219.709677419355,226.2376761195779C1222.532258064516,226.2376761195779,1222.532258064516,229.55077800230683,1225.3548387096773,229.55077800230683C1228.1774193548385,229.55077800230683,1228.1774193548385,233.9090909090909,1231,233.9090909090909L1231,248C1228.1774193548385,248,1225.3548387096773,248,1222.532258064516,248,1219.709677419355,248,1216.8870967741937,248,1214.0645161290322,248,1211.2419354838707,248,1208.4193548387095,248,1205.5967741935483,248,1202.774193548387,248,1199.9516129032259,248,1197.1290322580646,248,1194.3064516129034,248,1191.483870967742,248,1188.6612903225807,248,1185.8387096774195,248,1183.016129032258,248,1180.1935483870966,248,1177.3709677419356,248,1174.5483870967744,248,1171.7258064516132,248,1168.9032258064517,248,1166.0806451612902,248,1163.258064516129,248,1160.4354838709678,248,1157.6129032258063,248,1154.7903225806451,248,1151.967741935484,248,1149.1451612903224,248,1146.3225806451612,248,1143.5,248,1140.6774193548388,248,1137.8548387096776,248,1135.032258064516,248,1132.2096774193549,248,1129.3870967741937,248,1126.5645161290322,248,1123.741935483871,248,1120.9193548387098,248,1118.0967741935483,248,1115.2741935483868,248,1112.4516129032256,248,1109.6290322580644,248,1106.8064516129034,248,1103.983870967742,248,1101.1612903225807,248,1098.3387096774195,248,1095.516129032258,248,1092.6935483870966,248,1089.8709677419354,248,1087.0483870967741,248,1084.225806451613,248,1081.4032258064517,248,1078.5806451612902,248,1075.758064516129,248,1072.9354838709678,248,1070.1129032258063,248,1067.2903225806451,248,1064.467741935484,248,1061.6451612903227,248,1058.8225806451615,248,1056,248,1053.1774193548385,248,1050.3548387096773,248,1047.532258064516,248,1044.7096774193546,248,1041.8870967741937,248,1039.0645161290324,248,1036.2419354838712,248,1033.4193548387098,248,1030.5967741935483,248,1027.774193548387,248,1024.9516129032259,248,1022.1290322580645,248,1019.3064516129032,248,1016.4838709677418,248,1013.6612903225806,248,1010.8387096774194,248,1008.016129032258,248,1005.1935483870967,248,1002.3709677419355,248,999.5483870967743,248,996.7258064516129,248,993.9032258064515,248,991.0806451612902,248,988.258064516129,248,985.4354838709677,248,982.6129032258063,248,979.7903225806451,248,976.9677419354839,248,974.1451612903227,248,971.3225806451613,248,968.5,248,965.6774193548388,248,962.8548387096773,248,960.032258064516,248,957.2096774193548,248,954.3870967741935,248,951.5645161290322,248,948.741935483871,248,945.9193548387098,248,943.0967741935484,248,940.2741935483871,248,937.4516129032259,248,934.6290322580645,248,931.8064516129032,248,928.983870967742,248,926.1612903225806,248,923.3387096774193,248,920.516129032258,248,917.6935483870968,248,914.8709677419355,248,912.0483870967741,248,909.2258064516129,248,906.4032258064517,248,903.5806451612904,248,900.758064516129,248,897.9354838709677,248,895.1129032258063,248,892.2903225806451,248,889.4677419354839,248,886.6451612903226,248,883.8225806451612,248,881,248,878.1774193548388,248,875.3548387096774,248,872.5322580645161,248,869.7096774193548,248,866.8870967741934,248,864.0645161290322,248,861.241935483871,248,858.4193548387096,248,855.5967741935483,248,852.7741935483871,248,849.9516129032259,248,847.1290322580645,248,844.3064516129032,248,841.483870967742,248,838.6612903225806,248,835.8387096774193,248,833.016129032258,248,830.1935483870967,248,827.3709677419354,248,824.5483870967741,248,821.7258064516129,248,818.9032258064516,248,816.0806451612904,248,813.2580645161291,248,810.4354838709678,248,807.6129032258065,248,804.7903225806451,248,801.9677419354839,248,799.1451612903226,248,796.3225806451612,248,793.5,248,790.6774193548388,248,787.8548387096774,248,785.0322580645161,248,782.2096774193549,248,779.3870967741937,248,776.5645161290322,248,773.7419354838709,248,770.9193548387096,248,768.0967741935484,248,765.2741935483871,248,762.4516129032257,248,759.6290322580645,248,756.8064516129033,248,753.983870967742,248,751.1612903225807,248,748.3387096774195,248,745.5161290322582,248,742.6935483870968,248,739.8709677419354,248,737.0483870967741,248,734.2258064516129,248,731.4032258064517,248,728.5806451612904,248,725.758064516129,248,722.9354838709678,248,720.1129032258066,248,717.2903225806452,248,714.4677419354839,248,711.6451612903226,248,708.8225806451612,248,706,248,703.1774193548388,248,700.3548387096774,248,697.5322580645161,248,694.7096774193549,248,691.8870967741937,248,689.0645161290323,248,686.241935483871,248,683.4193548387098,248,680.5967741935484,248,677.7741935483871,248,674.9516129032259,248,672.1290322580645,248,669.3064516129032,248,666.483870967742,248,663.6612903225807,248,660.8387096774194,248,658.016129032258,248,655.1935483870968,248,652.3709677419355,248,649.5483870967741,248,646.7258064516129,248,643.9032258064516,248,641.0806451612902,248,638.258064516129,248,635.4354838709678,248,632.6129032258065,248,629.7903225806451,248,626.9677419354839,248,624.1451612903227,248,621.3225806451613,248,618.5,248,615.6774193548387,248,612.8548387096773,248,610.0322580645161,248,607.2096774193549,248,604.3870967741935,248,601.5645161290322,248,598.741935483871,248,595.9193548387096,248,593.0967741935483,248,590.2741935483871,248,587.4516129032259,248,584.6290322580645,248,581.8064516129032,248,578.983870967742,248,576.1612903225806,248,573.3387096774193,248,570.516129032258,248,567.6935483870968,248,564.8709677419355,248,562.0483870967741,248,559.2258064516128,248,556.4032258064516,248,553.5806451612904,248,550.758064516129,248,547.9354838709677,248,545.1129032258063,248,542.2903225806451,248,539.4677419354839,248,536.6451612903226,248,533.8225806451612,248,531,248,528.1774193548387,248,525.3548387096773,248,522.5322580645161,248,519.7096774193549,248,516.8870967741935,248,514.0645161290322,248,511.241935483871,248,508.4193548387097,248,505.5967741935484,248,502.77419354838713,248,499.95161290322585,248,497.1290322580645,248,494.30645161290323,248,491.48387096774195,248,488.66129032258067,248,485.8387096774194,248,483.01612903225805,248,480.19354838709677,248,477.3709677419355,248,474.5483870967742,248,471.7258064516129,248,468.9032258064516,248,466.0806451612903,248,463.258064516129,248,460.43548387096774,248,457.61290322580646,248,454.7903225806451,248,451.96774193548384,248,449.14516129032256,248,446.3225806451613,248,443.5,248,440.6774193548387,248,437.85483870967744,248,435.0322580645161,248,432.2096774193548,248,429.38709677419354,248,426.56451612903226,248,423.741935483871,248,420.91935483870964,248,418.09677419354836,248,415.2741935483871,248,412.4516129032258,248,409.6290322580645,248,406.80645161290323,248,403.98387096774195,248,401.1612903225806,248,398.33870967741933,248,395.51612903225805,248,392.6935483870967,248,389.87096774193543,248,387.04838709677415,248,384.22580645161287,248,381.4032258064516,248,378.58064516129036,248,375.758064516129,248,372.9354838709677,248,370.11290322580646,248,367.2903225806452,248,364.4677419354839,248,361.6451612903226,248,358.82258064516134,248,356,248,353.1774193548387,248,350.35483870967744,248,347.53225806451616,248,344.7096774193549,248,341.88709677419354,248,339.06451612903226,248,336.241935483871,248,333.4193548387097,248,330.5967741935484,248,327.7741935483871,248,324.9516129032258,248,322.1290322580645,248,319.30645161290323,248,316.48387096774195,248,313.6612903225806,248,310.83870967741933,248,308.01612903225805,248,305.19354838709677,248,302.3709677419355,248,299.54838709677415,248,296.72580645161287,248,293.9032258064516,248,291.0806451612903,248,288.258064516129,248,285.4354838709677,248,282.6129032258064,248,279.7903225806451,248,276.96774193548384,248,274.14516129032256,248,271.3225806451613,248,268.5,248,265.67741935483866,248,262.8548387096774,248,260.0322580645161,248,257.2096774193548,248,254.38709677419357,248,251.56451612903226,248,248.74193548387098,248,245.9193548387097,248,243.09677419354838,248,240.27419354838707,248,237.4516129032258,248,234.6290322580645,248,231.80645161290323,248,228.98387096774195,248,226.16129032258064,248,223.33870967741933,248,220.51612903225805,248,217.69354838709677,248,214.8709677419355,248,212.0483870967742,248,209.2258064516129,248,206.4032258064516,248,203.5806451612903,248,200.75806451612902,248,197.93548387096772,248,195.11290322580646,248,192.29032258064518,248,189.4677419354839,248,186.6451612903226,248,183.82258064516128,248,181,248,178.17741935483872,248,175.35483870967744,248,172.53225806451616,248,169.70967741935485,248,166.88709677419354,248,164.06451612903226,248,161.24193548387098,248,158.41935483870967,248,155.59677419354836,248,152.77419354838707,248,149.9516129032258,248,147.1290322580645,248,144.30645161290323,248,141.48387096774192,248,138.6612903225806,248,135.83870967741933,248,133.01612903225805,248,130.19354838709677,248,127.37096774193549,248,124.54838709677419,248,121.7258064516129,248,118.90322580645162,248,116.08064516129032,248,113.25806451612902,248,110.43548387096774,248,107.61290322580645,248,104.79032258064515,248,101.96774193548386,248,99.14516129032258,248,96.3225806451613,248,93.5,248,90.67741935483872,248,87.85483870967742,248,85.03225806451613,248,82.20967741935483,248,79.38709677419354,248,76.56451612903226,248,73.74193548387096,248,70.91935483870967,248,68.09677419354838,248,65.2741935483871,248,62.45161290322581,248,59.62903225806451,248,56.806451612903224,248,53.983870967741936,248,51.16129032258065,248,48.33870967741936,248,45.516129032258064,248,42.69354838709677,248,39.87096774193548,248,37.04838709677419,248,34.225806451612904,248,31.403225806451616,248,28.580645161290324,248,25.758064516129032,248,22.93548387096774,248,20.11290322580645,248,17.29032258064516,248,14.46774193548387,248,11.64516129032258,248,8.82258064516129,248,6,248Z"
+                  stroke-width="0"
+                  fill="url(#chart-grad)"
+                  mask="url(#chart-dot-mask)"/>
+
+                <!-- Ghost stroke (wider, low opacity) -->
+                <path stroke="#3B7E3F" stroke-width="4" opacity="0.15"
+                  fill="transparent"
+                  d="M6,166.76706035376336C8.82258064516129,166.76706035376336,11.64516129032258,166.76706035376336,17.29032258064516,166.76706035376336C22.93548387096774,166.76706035376336,28.580645161290324,166.76706035376336,34.225806451612904,166.76706035376336C39.87096774193548,166.76706035376336,45.516129032258064,166.76706035376336,51.16129032258065,166.76706035376336C56.806451612903224,166.76706035376336,62.45161290322581,166.76706035376336,68.09677419354838,166.79253830597898C73.74193548387096,166.8879648179138,79.38709677419354,166.65939696667357,85.03225806451613,166.99587812055307C90.67741935483872,166.77842018515594,96.3225806451613,166.74511702734392,101.96774193548386,166.47464544912404C107.61290322580645,166.32210144479416,113.25806451612902,166.66092624601262,118.90322580645162,166.90029234825508C124.54838709677419,166.93783374025642,130.19354838709677,167.12215681129678,135.83870967741933,167.0500393366672C141.48387096774192,166.6536849024339,147.1290322580645,166.55712369515447,152.77419354838707,166.39936602165383C158.41935483870967,165.98389358060766,164.06451612903226,165.71471725515485,169.70967741935485,165.95639823781204C175.35483870967744,166.18431010126807,181,166.49838376676237,186.6451612903226,166.63735441521115C192.29032258064518,166.95513396466404,197.93548387096772,167.0273987018574,203.5806451612903,166.8606339237189C209.2258064516129,167.46098712501765,214.8709677419355,167.3303547154758,220.51612903225805,167.27754586906525C226.16129032258064,167.53047244924204,231.80645161290323,167.72503135707038,237.4516129032258,167.30533999875504C243.09677419354838,167.14691345952338,248.74193548387098,166.79114859949445,254.38709677419357,166.9968251591987C260.0322580645161,166.9384574868502,265.67741935483866,167.29329587588944,271.3225806451613,167.5128695004385C276.96774193548384,167.47395771887284,282.6129032258064,167.07928107727827,288.258064516129,167.10985461993704C293.9032258064516,166.99867810117803,299.54838709677415,166.48170728894848,305.19354838709677,166.27047190330634C310.83870967741933,166.12872184188856,316.48387096774195,166.46503081113465,322.1290322580645,166.60678087255238C327.7741935483871,166.10926595110573,333.4193548387097,166.7902221285048,339.06451612903226,166.58083968484195C344.7096774193549,166.4196337326414,350.35483870967744,166.23897188965793,356,166.347368995448C361.6451612903226,166.39739842888955,367.2903225806452,166.20006010809226,372.9354838709677,166.2445307155959C378.58064516129036,165.94157470197752,384.22580645161287,165.97492765760524,389.87096774193543,166.11714095451782C395.51612903225805,169.89482641485088,401.1612903225806,164.3457284222905,406.80645161290323,162.2699701699604C412.4516129032258,164.81683892053192,418.09677419354836,163.58509573978077,423.741935483871,159.84539559002374C429.38709677419354,160.2391457606287,435.0322580645161,155.67118054611683,440.6774193548387,157.1720635493638C446.3225806451613,159.26079239554917,451.96774193548384,160.2646237128443,457.61290322580646,162.43951436106792C463.258064516129,160.32206491420314,468.9032258064516,161.09335201309392,474.5483870967742,160.01216036816228C480.19354838709677,160.6222415148525,485.8387096774194,164.00154444963235,491.48387096774195,165.23282439488867C497.1290322580645,162.18380836792213,502.77419354838713,160.09137363777813,508.4193548387097,163.10888965109623C514.0645161290322,166.30845721388232,519.7096774193549,161.33052858644652,525.3548387096773,157.6209387438534C531,156.2553205050966,536.6451612903226,155.9639453788489,542.2903225806451,156.4647029487594C547.9354838709677,158.06471834789988,553.5806451612904,155.07175381580765,559.2258064516128,154.12629017086107C564.8709677419355,153.7862753176563,570.516129032258,153.88818712651877,576.1612903225806,153.16600299007987C581.8064516129032,153.35824572043404,587.4516129032259,151.249597747971,593.0967741935483,153.53520167945885C598.741935483871,150.82805344767633,604.3870967741935,150.50517830778028,610.0322580645161,152.08620105163274C615.6774193548387,150.26707526343802,621.3225806451613,147.86241980977908,626.9677419354839,146.96837530475852C632.6129032258065,146.58805896350364,638.258064516129,146.8233825948769,643.9032258064516,146.9049120419669C649.5483870967741,147.1226327245367,655.1935483870968,148.10886109302825,660.8387096774194,148.00694928416584C666.483870967742,146.7599193320853,672.1290322580645,145.4962129021909,677.7741935483871,144.7082493254863C683.4193548387098,144.29504326409852,689.0645161290323,143.57656501161827,694.7096774193549,142.1956600015321C700.3548387096774,141.36554199479795,706,140.6396519744004,711.6451612903226,140.68504905289367C717.2903225806452,138.3985186504162,722.9354838709678,136.83185620690347,728.5806451612904,138.5268348824839C734.2258064516129,140.72812995391283,739.8709677419354,140.28805623382496,745.5161290322582,143.5770282471131C751.1612903225807,141.9746966704985,756.8064516129033,139.95406344205307,762.4516129032257,141.12882865694016C768.0967741935484,142.10023348959726,773.7419354838709,142.14424086160602,779.3870967741937,141.26131400846137C785.0322580645161,138.69498936710696,790.6774193548388,138.62689374936704,796.3225806451612,135.01458336068805C801.9677419354839,135.3689585142325,807.6129032258065,135.9915470192831,813.2580645161291,132.8044868148574C818.9032258064516,130.1038238800025,824.5483870967741,125.55670426275798,830.1935483870967,127.57363160724479C835.8387096774193,131.2494052587154,841.483870967742,126.16678540944818,847.1290322580645,126.07367507498748C852.7741935483871,129.6975663510372,858.4193548387096,125.91988089070416,864.0645161290322,129.1162058050264C869.7096774193548,128.4079187334324,875.3548387096774,128.58024233750888,881,124.4189022301131C886.6451612903226,128.858262155688,892.2903225806451,129.53732716703428,897.9354838709677,127.83067399784206C903.5806451612904,122.03627870238465,909.2258064516129,134.54852034580318,914.8709677419355,140.13936275522303C920.516129032258,149.13224051121384,926.1612903225806,147.05690866591928,931.8064516129032,145.1325480609933C937.4516129032259,146.75179841565898,943.0967741935484,151.4917642319485,948.741935483871,164.57987689500564C954.3870967741935,158.74767910102838,960.032258064516,150.92460870811095,965.6774193548388,146.15927683999672C971.3225806451613,123.93767846890788,976.9677419354839,127.55220081867103,982.6129032258063,124.8959013740888C988.258064516129,122.45280778146164,993.9032258064515,120.82751776286648,999.5483870967743,119.73479407699853C1005.1935483870967,115.040318734865,1010.8387096774194,112.52542172039995,1016.4838709677418,112.24316110468308C1022.1290322580645,108.32207649935432,1027.774193548387,101.53565739349929,1033.4193548387098,90.35351319861434C1039.0645161290324,85.40480252622075,1044.7096774193546,75.48124059581069,1050.3548387096773,85.67852086177047C1056,81.04654193040302,1061.6451612903227,82.12942049647033,1067.2903225806451,67.77344772123965C1072.9354838709678,53.522844727262765,1078.5806451612902,49.321948672109656,1084.225806451613,45.869228182771735C1089.8709677419354,32.09090909090911,1095.516129032258,48.56901573602934,1101.1612903225807,59.67684688727696C1106.8064516129034,44.67224536315568,1112.4516129032256,74.06569826087683,1118.0967741935483,77.81378756251414C1123.741935483871,137.92217361135192,1129.3870967741937,113.19389924433126,1135.032258064516,104.28373611381522C1140.6774193548388,85.825972592885,1146.3225806451612,141.52638443896197,1151.967741935484,123.39068443443907C1157.6129032258063,136.97027618189492,1163.258064516129,107.46126966441562,1168.9032258064517,95.64887107740971C1174.5483870967744,116.59526154742656,1180.1935483870966,166.25345988740517,1185.8387096774195,221.72464285793023C1191.483870967742,221.58797162781826,1197.1290322580646,219.26668463600598,1202.774193548387,204.03466927546714C1208.4193548387095,207.93688969312487,1214.0645161290322,218.91248354200613,1219.709677419355,226.2376761195779C1225.3548387096773,229.55077800230683,1231,233.9090909090909"/>
+
+                <!-- Solid stroke -->
+                <path stroke="#3B7E3F" stroke-width="1.5" fill="transparent"
+                  d="M6,166.76706035376336C8.82258064516129,166.76706035376336,11.64516129032258,166.76706035376336,17.29032258064516,166.76706035376336C22.93548387096774,166.76706035376336,28.580645161290324,166.76706035376336,34.225806451612904,166.76706035376336C39.87096774193548,166.76706035376336,45.516129032258064,166.76706035376336,51.16129032258065,166.76706035376336C56.806451612903224,166.76706035376336,62.45161290322581,166.76706035376336,68.09677419354838,166.79253830597898C73.74193548387096,166.8879648179138,79.38709677419354,166.65939696667357,85.03225806451613,166.99587812055307C90.67741935483872,166.77842018515594,96.3225806451613,166.74511702734392,101.96774193548386,166.47464544912404C107.61290322580645,166.32210144479416,113.25806451612902,166.66092624601262,118.90322580645162,166.90029234825508C124.54838709677419,166.93783374025642,130.19354838709677,167.12215681129678,135.83870967741933,167.0500393366672C141.48387096774192,166.6536849024339,147.1290322580645,166.55712369515447,152.77419354838707,166.39936602165383C158.41935483870967,165.98389358060766,164.06451612903226,165.71471725515485,169.70967741935485,165.95639823781204C175.35483870967744,166.18431010126807,181,166.49838376676237,186.6451612903226,166.63735441521115C192.29032258064518,166.95513396466404,197.93548387096772,167.0273987018574,203.5806451612903,166.8606339237189C209.2258064516129,167.46098712501765,214.8709677419355,167.3303547154758,220.51612903225805,167.27754586906525C226.16129032258064,167.53047244924204,231.80645161290323,167.72503135707038,237.4516129032258,167.30533999875504C243.09677419354838,167.14691345952338,248.74193548387098,166.79114859949445,254.38709677419357,166.9968251591987C260.0322580645161,166.9384574868502,265.67741935483866,167.29329587588944,271.3225806451613,167.5128695004385C276.96774193548384,167.47395771887284,282.6129032258064,167.07928107727827,288.258064516129,167.10985461993704C293.9032258064516,166.99867810117803,299.54838709677415,166.48170728894848,305.19354838709677,166.27047190330634C310.83870967741933,166.12872184188856,316.48387096774195,166.46503081113465,322.1290322580645,166.60678087255238C327.7741935483871,166.10926595110573,333.4193548387097,166.7902221285048,339.06451612903226,166.58083968484195C344.7096774193549,166.4196337326414,350.35483870967744,166.23897188965793,356,166.347368995448C361.6451612903226,166.39739842888955,367.2903225806452,166.20006010809226,372.9354838709677,166.2445307155959C378.58064516129036,165.94157470197752,384.22580645161287,165.97492765760524,389.87096774193543,166.11714095451782C395.51612903225805,169.89482641485088,401.1612903225806,164.3457284222905,406.80645161290323,162.2699701699604C412.4516129032258,164.81683892053192,418.09677419354836,163.58509573978077,423.741935483871,159.84539559002374C429.38709677419354,160.2391457606287,435.0322580645161,155.67118054611683,440.6774193548387,157.1720635493638C446.3225806451613,159.26079239554917,451.96774193548384,160.2646237128443,457.61290322580646,162.43951436106792C463.258064516129,160.32206491420314,468.9032258064516,161.09335201309392,474.5483870967742,160.01216036816228C480.19354838709677,160.6222415148525,485.8387096774194,164.00154444963235,491.48387096774195,165.23282439488867C497.1290322580645,162.18380836792213,502.77419354838713,160.09137363777813,508.4193548387097,163.10888965109623C514.0645161290322,166.30845721388232,519.7096774193549,161.33052858644652,525.3548387096773,157.6209387438534C531,156.2553205050966,536.6451612903226,155.9639453788489,542.2903225806451,156.4647029487594C547.9354838709677,158.06471834789988,553.5806451612904,155.07175381580765,559.2258064516128,154.12629017086107C564.8709677419355,153.7862753176563,570.516129032258,153.88818712651877,576.1612903225806,153.16600299007987C581.8064516129032,153.35824572043404,587.4516129032259,151.249597747971,593.0967741935483,153.53520167945885C598.741935483871,150.82805344767633,604.3870967741935,150.50517830778028,610.0322580645161,152.08620105163274C615.6774193548387,150.26707526343802,621.3225806451613,147.86241980977908,626.9677419354839,146.96837530475852C632.6129032258065,146.58805896350364,638.258064516129,146.8233825948769,643.9032258064516,146.9049120419669C649.5483870967741,147.1226327245367,655.1935483870968,148.10886109302825,660.8387096774194,148.00694928416584C666.483870967742,146.7599193320853,672.1290322580645,145.4962129021909,677.7741935483871,144.7082493254863C683.4193548387098,144.29504326409852,689.0645161290323,143.57656501161827,694.7096774193549,142.1956600015321C700.3548387096774,141.36554199479795,706,140.6396519744004,711.6451612903226,140.68504905289367C717.2903225806452,138.3985186504162,722.9354838709678,136.83185620690347,728.5806451612904,138.5268348824839C734.2258064516129,140.72812995391283,739.8709677419354,140.28805623382496,745.5161290322582,143.5770282471131C751.1612903225807,141.9746966704985,756.8064516129033,139.95406344205307,762.4516129032257,141.12882865694016C768.0967741935484,142.10023348959726,773.7419354838709,142.14424086160602,779.3870967741937,141.26131400846137C785.0322580645161,138.69498936710696,790.6774193548388,138.62689374936704,796.3225806451612,135.01458336068805C801.9677419354839,135.3689585142325,807.6129032258065,135.9915470192831,813.2580645161291,132.8044868148574C818.9032258064516,130.1038238800025,824.5483870967741,125.55670426275798,830.1935483870967,127.57363160724479C835.8387096774193,131.2494052587154,841.483870967742,126.16678540944818,847.1290322580645,126.07367507498748C852.7741935483871,129.6975663510372,858.4193548387096,125.91988089070416,864.0645161290322,129.1162058050264C869.7096774193548,128.4079187334324,875.3548387096774,128.58024233750888,881,124.4189022301131C886.6451612903226,128.858262155688,892.2903225806451,129.53732716703428,897.9354838709677,127.83067399784206C903.5806451612904,122.03627870238465,909.2258064516129,134.54852034580318,914.8709677419355,140.13936275522303C920.516129032258,149.13224051121384,926.1612903225806,147.05690866591928,931.8064516129032,145.1325480609933C937.4516129032259,146.75179841565898,943.0967741935484,151.4917642319485,948.741935483871,164.57987689500564C954.3870967741935,158.74767910102838,960.032258064516,150.92460870811095,965.6774193548388,146.15927683999672C971.3225806451613,123.93767846890788,976.9677419354839,127.55220081867103,982.6129032258063,124.8959013740888C988.258064516129,122.45280778146164,993.9032258064515,120.82751776286648,999.5483870967743,119.73479407699853C1005.1935483870967,115.040318734865,1010.8387096774194,112.52542172039995,1016.4838709677418,112.24316110468308C1022.1290322580645,108.32207649935432,1027.774193548387,101.53565739349929,1033.4193548387098,90.35351319861434C1039.0645161290324,85.40480252622075,1044.7096774193546,75.48124059581069,1050.3548387096773,85.67852086177047C1056,81.04654193040302,1061.6451612903227,82.12942049647033,1067.2903225806451,67.77344772123965C1072.9354838709678,53.522844727262765,1078.5806451612902,49.321948672109656,1084.225806451613,45.869228182771735C1089.8709677419354,32.09090909090911,1095.516129032258,48.56901573602934,1101.1612903225807,59.67684688727696C1106.8064516129034,44.67224536315568,1112.4516129032256,74.06569826087683,1118.0967741935483,77.81378756251414C1123.741935483871,137.92217361135192,1129.3870967741937,113.19389924433126,1135.032258064516,104.28373611381522C1140.6774193548388,85.825972592885,1146.3225806451612,141.52638443896197,1151.967741935484,123.39068443443907C1157.6129032258063,136.97027618189492,1163.258064516129,107.46126966441562,1168.9032258064517,95.64887107740971C1174.5483870967744,116.59526154742656,1180.1935483870966,166.25345988740517,1185.8387096774195,221.72464285793023C1191.483870967742,221.58797162781826,1197.1290322580646,219.26668463600598,1202.774193548387,204.03466927546714C1208.4193548387095,207.93688969312487,1214.0645161290322,218.91248354200613,1219.709677419355,226.2376761195779C1225.3548387096773,229.55077800230683,1231,233.9090909090909"/>
+
+                <!-- Dashed baseline (previous close) -->
+                <line x1="4" x2="1233" y1="166.76706035376336" y2="166.76706035376336"
+                  stroke-dasharray="4 4" stroke-width="1"
+                  stroke="#A4A7AE" stroke-opacity="0.5" stroke-linecap="butt"/>
+              </svg></div>
+          </div>
+        </div>
+
+        <!-- Active Strategies -->
+        <div class="left-section">
+          <div class="section-header">
+            <span class="section-title">Active strategies</span>
+            <div class="section-actions">
+              <span class="action-link">Edit</span>
+              <button class="btn-secondary">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+                Add strategies
+              </button>
+            </div>
+          </div>
+          <div class="strategies-table">
+            <div class="table-header">
+              <div class="th th-strategy">Strategy</div>
+              <div class="th th-value">Value</div>
+              <div class="th th-return">Total return</div>
+              <div class="th th-account">Account</div>
+            </div>
+            <!-- Row 1 -->
+            <div class="table-row" onclick="location.href='strategy-detail.html'" style="cursor:pointer">
+              <div class="td td-strategy">
+                <div class="strategy-icon">
+                  <img src="assets/Surmount Strategy Covers/Quantum Computing Leaders.png" alt="Quantum Computing Leaders">
+                </div>
+                <span class="strategy-name">Quantum Computing Leaders</span>
+              </div>
+              <div class="td td-value"><span class="td-value-text">$351,242.54</span></div>
+              <div class="td td-return">
+                <span class="td-return-primary">+5.24%</span>
+                <span class="td-return-secondary">+$2,452.255</span>
+              </div>
+              <div class="td td-account">
+                <div class="avatar-group">
+                  <div class="account-avatar"><img src="assets/brokers/robinhood.png" alt="Robinhood"></div>
+                  <div class="account-avatar"><img src="assets/brokers/ibkr.png" alt="IBKR"></div>
+                  <div class="account-avatar overflow">+11</div>
+                </div>
+              </div>
+            </div>
+            <!-- Row 2 -->
+            <div class="table-row" onclick="location.href='strategy-detail.html'" style="cursor:pointer">
+              <div class="td td-strategy">
+                <div class="strategy-icon">
+                  <img src="assets/Surmount Strategy Covers/AI Innovators.png" alt="Artificial Intelligence Innovators">
+                </div>
+                <span class="strategy-name">Artificial Intelligence Innovators</span>
+              </div>
+              <div class="td td-value"><span class="td-value-text">$482,731.16</span></div>
+              <div class="td td-return">
+                <span class="td-return-primary">+7.15%</span>
+                <span class="td-return-secondary">+$3,472.892</span>
+              </div>
+              <div class="td td-account">
+                <div class="avatar-group">
+                  <div class="account-avatar"><img src="assets/brokers/coinbase.png" alt="Coinbase"></div>
+                  <div class="account-avatar"><img src="assets/brokers/schwab.png" alt="Schwab"></div>
+                  <div class="account-avatar overflow">+10</div>
+                </div>
+              </div>
+            </div>
+            <!-- Row 3 -->
+            <div class="table-row" onclick="location.href='strategy-detail.html'" style="cursor:pointer">
+              <div class="td td-strategy">
+                <div class="strategy-icon">
+                  <img src="assets/Surmount Strategy Covers/Biotech Breakthroughs.png" alt="Biotechnology Ventures">
+                </div>
+                <span class="strategy-name">Biotechnology Ventures</span>
+              </div>
+              <div class="td td-value"><span class="td-value-text">$265,478.90</span></div>
+              <div class="td td-return">
+                <span class="td-return-primary">+4.89%</span>
+                <span class="td-return-secondary">+$1,642.784</span>
+              </div>
+              <div class="td td-account">
+                <div class="avatar-group">
+                  <div class="account-avatar"><img src="assets/brokers/webull.png" alt="Webull"></div>
+                  <div class="account-avatar overflow">+5</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Portfolio Breakdown -->
+        <div class="left-section">
+          <div class="section-header">
+            <span class="section-title">Portfolio breakdown</span>
+            <button class="pb-dropdown">
+              By asset
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+            </button>
+          </div>
+          <div class="pb-table">
+            <div class="pb-header">
+              <div class="pb-th">Asset</div>
+              <div class="pb-th">
+                Weight
+                <svg class="sort-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 2v8M3 7l3 3 3-3"/></svg>
+              </div>
+              <div class="pb-th">Share price</div>
+              <div class="pb-th">Value</div>
+              <div class="pb-th">From strategy</div>
+            </div>
+
+            <!-- NVDA -->
+            <div class="pb-row">
+              <div class="pb-td" style="gap:var(--space-3)">
+                <div class="ticker-logo"><img src="assets/logos/NVDA.webp" alt="NVDA"></div>
+                <div class="ticker-text">
+                  <span class="ticker-symbol">NVDA</span>
+                  <span class="ticker-name">NVIDIA</span>
+                </div>
+              </div>
+              <div class="pb-td"><span class="pb-weight">20.00%</span></div>
+              <div class="pb-td"><span class="pb-price">$52.80</span></div>
+              <div class="pb-td">
+                <div class="pb-value">
+                  <span class="pb-value-primary">$16,900.00</span>
+                  <span class="pb-value-secondary">320 shares</span>
+                </div>
+              </div>
+              <div class="pb-td"><span class="pb-strategy">Strategy A, Strategy B</span></div>
+            </div>
+
+            <!-- AAPL -->
+            <div class="pb-row">
+              <div class="pb-td" style="gap:var(--space-3)">
+                <div class="ticker-logo"><img src="assets/logos/AAPL.webp" alt="AAPL"></div>
+                <div class="ticker-text">
+                  <span class="ticker-symbol">AAPL</span>
+                  <span class="ticker-name">Apple Inc.</span>
+                </div>
+              </div>
+              <div class="pb-td"><span class="pb-weight">18.00%</span></div>
+              <div class="pb-td"><span class="pb-price">$34.52</span></div>
+              <div class="pb-td">
+                <div class="pb-value">
+                  <span class="pb-value-primary">$10,500.00</span>
+                  <span class="pb-value-secondary">72 shares</span>
+                </div>
+              </div>
+              <div class="pb-td"><span class="pb-strategy">Strategy A</span></div>
+            </div>
+
+            <!-- AMZN -->
+            <div class="pb-row">
+              <div class="pb-td" style="gap:var(--space-3)">
+                <div class="ticker-logo"><img src="assets/logos/AMZN.webp" alt="AMZN"></div>
+                <div class="ticker-text">
+                  <span class="ticker-symbol">AMZN</span>
+                  <span class="ticker-name">Amazon.com</span>
+                </div>
+              </div>
+              <div class="pb-td"><span class="pb-weight">15.00%</span></div>
+              <div class="pb-td"><span class="pb-price">$78.93</span></div>
+              <div class="pb-td">
+                <div class="pb-value">
+                  <span class="pb-value-primary">$9,600.00</span>
+                  <span class="pb-value-secondary">3 shares</span>
+                </div>
+              </div>
+              <div class="pb-td"><span class="pb-strategy">Strategy A, Strategy B</span></div>
+            </div>
+
+            <!-- MA -->
+            <div class="pb-row">
+              <div class="pb-td" style="gap:var(--space-3)">
+                <div class="ticker-logo"><img src="assets/logos/MA.webp" alt="MA"></div>
+                <div class="ticker-text">
+                  <span class="ticker-symbol">MA</span>
+                  <span class="ticker-name">Mastercard</span>
+                </div>
+              </div>
+              <div class="pb-td"><span class="pb-weight">14.00%</span></div>
+              <div class="pb-td"><span class="pb-price">$120.37</span></div>
+              <div class="pb-td">
+                <div class="pb-value">
+                  <span class="pb-value-primary">$14,000.00</span>
+                  <span class="pb-value-secondary">5 shares</span>
+                </div>
+              </div>
+              <div class="pb-td"><span class="pb-strategy">Strategy A, Strategy B, Strategy C</span></div>
+            </div>
+
+            <!-- MSFT -->
+            <div class="pb-row">
+              <div class="pb-td" style="gap:var(--space-3)">
+                <div class="ticker-logo"><img src="assets/logos/MSFT.webp" alt="MSFT"></div>
+                <div class="ticker-text">
+                  <span class="ticker-symbol">MSFT</span>
+                  <span class="ticker-name">Microsoft Corp.</span>
+                </div>
+              </div>
+              <div class="pb-td"><span class="pb-weight">12.00%</span></div>
+              <div class="pb-td"><span class="pb-price">$45.66</span></div>
+              <div class="pb-td">
+                <div class="pb-value">
+                  <span class="pb-value-primary">$8,800.00</span>
+                  <span class="pb-value-secondary">30 shares</span>
+                </div>
+              </div>
+              <div class="pb-td"><span class="pb-strategy">Strategy B, Strategy C</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="left-section">
+          <div class="section-header">
+            <span class="section-title">Recent activities</span>
+          </div>
+          <div class="act-table">
+            <div class="act-header">
+              <div class="act-th-date">Date</div>
+              <div class="act-th">Activity</div>
+              <div class="act-th-details">Details</div>
+              <div class="act-th-status">Status</div>
+              <div class="act-th">Account</div>
+            </div>
+
+            <!-- Row 1: GOOGL Sell -->
+            <div class="act-row">
+              <div class="act-td-date">May 5</div>
+              <div class="act-td">
+                <div class="stock-logo-sm"><img src="assets/logos/GOOG.webp" alt="GOOGL"></div>
+                <span class="act-ticker">GOOGL</span>
+                <span class="act-badge sell">Sell</span>
+              </div>
+              <div class="act-td-details">
+                <span class="act-details-primary">$2,800.50</span>
+                <span class="act-details-secondary">10.00 shares</span>
+              </div>
+              <div class="act-td-status"><span class="status-badge complete">Complete</span></div>
+              <div class="act-td-account">
+                <div class="stock-logo-sm"><img src="assets/brokers/coinbase.png" alt="Coinbase"></div>
+                <span class="act-account-name">Coinbase</span>
+              </div>
+            </div>
+
+            <!-- Row 2: GOOGL Buy -->
+            <div class="act-row">
+              <div class="act-td-date">May 5</div>
+              <div class="act-td">
+                <div class="stock-logo-sm"><img src="assets/logos/GOOG.webp" alt="GOOGL"></div>
+                <span class="act-ticker">GOOGL</span>
+                <span class="act-badge buy">Buy</span>
+              </div>
+              <div class="act-td-details">
+                <span class="act-details-primary">$2,800.50</span>
+                <span class="act-details-secondary">10.00 shares</span>
+              </div>
+              <div class="act-td-status"><span class="status-badge complete">Complete</span></div>
+              <div class="act-td-account">
+                <div class="stock-logo-sm"><img src="assets/brokers/coinbase.png" alt="Coinbase"></div>
+                <span class="act-account-name">Coinbase</span>
+              </div>
+            </div>
+
+            <!-- Row 3: Deposit -->
+            <div class="act-row">
+              <div class="act-td-date">May 5</div>
+              <div class="act-td">
+                <span class="act-no-avatar">Deposit</span>
+              </div>
+              <div class="act-td-details">
+                <span class="act-details-primary">$2,800.50</span>
+              </div>
+              <div class="act-td-status"><span class="status-badge in-progress">In Progress</span></div>
+              <div class="act-td-account">
+                <div class="stock-logo-sm"><img src="assets/brokers/coinbase.png" alt="Coinbase"></div>
+                <span class="act-account-name">Coinbase</span>
+              </div>
+            </div>
+
+            <!-- Row 4: NVDA Buy -->
+            <div class="act-row">
+              <div class="act-td-date">May 4</div>
+              <div class="act-td">
+                <div class="stock-logo-sm"><img src="assets/logos/NVDA.webp" alt="NVDA"></div>
+                <span class="act-ticker">NVDA</span>
+                <span class="act-badge buy">Buy</span>
+              </div>
+              <div class="act-td-details">
+                <span class="act-details-primary">$5,280.00</span>
+                <span class="act-details-secondary">100.00 shares</span>
+              </div>
+              <div class="act-td-status"><span class="status-badge complete">Complete</span></div>
+              <div class="act-td-account">
+                <div class="stock-logo-sm"><img src="assets/brokers/schwab.png" alt="Schwab"></div>
+                <span class="act-account-name">Schwab</span>
+              </div>
+            </div>
+
+            <!-- Row 5: AAPL Buy -->
+            <div class="act-row">
+              <div class="act-td-date">May 3</div>
+              <div class="act-td">
+                <div class="stock-logo-sm"><img src="assets/logos/AAPL.webp" alt="AAPL"></div>
+                <span class="act-ticker">AAPL</span>
+                <span class="act-badge buy">Buy</span>
+              </div>
+              <div class="act-td-details">
+                <span class="act-details-primary">$2,485.44</span>
+                <span class="act-details-secondary">72.00 shares</span>
+              </div>
+              <div class="act-td-status"><span class="status-badge complete">Complete</span></div>
+              <div class="act-td-account">
+                <div class="stock-logo-sm"><img src="assets/brokers/schwab.png" alt="Schwab"></div>
+                <span class="act-account-name">Schwab</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /left-column -->
+
+      <!-- ── RIGHT COLUMN ── -->
+      <div class="right-column">
+
+        <!-- Dividend management -->
+        <div>
+          <a class="section-heading-row" style="text-decoration:none;cursor:pointer">
+            <span class="section-heading">Dividend management</span>
+            <div class="chevron-link">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 5l5 5-5 5"/></svg>
+            </div>
+          </a>
+          <div style="height:var(--space-6)"></div>
+          <div class="dividend-card">
+            <div>
+              <div class="dividend-header">
+                <span class="dividend-label">Dividend earned</span>
+                <button class="dividend-period-select">
+                  Jan 2026
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+                </button>
+              </div>
+              <div style="height:var(--space-1)"></div>
+              <div class="dividend-value">$256.25</div>
+            </div>
+            <div class="dividend-bar">
+              <div class="dividend-bar-seg" style="background:#9B8AFB;width:31%"></div>
+              <div class="dividend-bar-seg" style="background:#A2D3A5;width:23%"></div>
+              <div class="dividend-bar-seg" style="background:#8EBDEB;width:17%"></div>
+              <div class="dividend-bar-seg" style="background:#A4A7AE;width:14%"></div>
+              <div class="dividend-bar-seg" style="background:var(--color-warning-400)"></div>
+            </div>
+            <div class="dividend-list">
+              <div class="dividend-list-item">
+                <div class="dividend-item-left"><div class="dividend-dot" style="background:#9B8AFB"></div><span class="dividend-ticker">XYZ</span></div>
+                <span class="dividend-amount">$89.50 (18%)</span>
+              </div>
+              <div class="dividend-list-item">
+                <div class="dividend-item-left"><div class="dividend-dot" style="background:#A2D3A5"></div><span class="dividend-ticker">PQR</span></div>
+                <span class="dividend-amount">$95.70 (15%)</span>
+              </div>
+              <div class="dividend-list-item">
+                <div class="dividend-item-left"><div class="dividend-dot" style="background:#8EBDEB"></div><span class="dividend-ticker">GHI</span></div>
+                <span class="dividend-amount">$95.75 (22%)</span>
+              </div>
+              <div class="dividend-list-item">
+                <div class="dividend-item-left"><div class="dividend-dot" style="background:#A4A7AE"></div><span class="dividend-ticker">JKL</span></div>
+                <span class="dividend-amount">$110.25 (25%)</span>
+              </div>
+              <div class="dividend-list-item">
+                <div class="dividend-item-left"><div class="dividend-dot" style="background:var(--color-warning-400)"></div><span class="dividend-ticker">Other</span></div>
+                <span class="dividend-amount">$82.40 (20%)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carousel -->
+        <div>
+          <div class="carousel-header">
+            <span class="carousel-counter">1 of 3</span>
+            <div class="carousel-controls">
+              <button class="carousel-btn">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg>
+              </button>
+              <button class="carousel-btn">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
+              </button>
+            </div>
+          </div>
+          <div style="height:var(--space-6)"></div>
+          <div class="carousel-viewport">
+            <div class="carousel-slide" style="padding:0;background:none;">
+              <img src="assets/card-start-surmount.png" alt="Start with a Surmount account" style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /right-column -->
+
+    </div><!-- /content-area -->
+  </main>
+</div>
+
+<script>
+(function () {
+  function mountCharts() {
+    /* ── Homepage portfolio chart ── */
+    var homeEl = document.getElementById('chart-home');
+    if (homeEl && window.PortfolioChart && window.ReactDOM) {
+      var wholeEl  = document.getElementById('home-price-whole');
+      var centsEl  = document.getElementById('home-price-cents');
+      var perfEl   = document.getElementById('home-perf-value');
+      var periodEl = document.getElementById('home-perf-period');
+
+      var defWhole  = wholeEl  && wholeEl.textContent;
+      var defCents  = centsEl  && centsEl.textContent;
+      var defPerf   = perfEl   && perfEl.textContent;
+      var defPeriod = periodEl && periodEl.textContent;
+
+      var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+      function onHomeHover(data) {
+        if (!data) {
+          if (wholeEl)  wholeEl.textContent  = defWhole;
+          if (centsEl)  centsEl.textContent  = defCents;
+          if (perfEl)   { perfEl.textContent = defPerf;  perfEl.style.color = ''; }
+          if (periodEl) periodEl.textContent = defPeriod;
+          return;
+        }
+        /* split value into whole + cents */
+        var fixed  = data.value.toFixed(2);
+        var parts  = fixed.split('.');
+        var whole  = '$' + parseInt(parts[0], 10).toLocaleString('en-US');
+        var cents  = '.' + parts[1];
+        var p      = data.timeStr.split('-');
+        var label  = MONTHS[parseInt(p[1],10)-1] + ' ' + parseInt(p[2],10) + ', ' + p[0];
+        var chgAbs = Math.abs(data.change).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var pctStr = Math.abs(data.pct).toFixed(2);
+
+        if (wholeEl)  wholeEl.textContent  = whole;
+        if (centsEl)  centsEl.textContent  = cents;
+        if (perfEl) {
+          perfEl.textContent = (data.pos ? '+' : '-') + '$' + chgAbs + ' (' + (data.pos ? '+' : '-') + pctStr + '%)';
+          perfEl.style.color = data.pos ? 'var(--color-text-success)' : 'var(--color-text-error)';
+        }
+        if (periodEl) periodEl.textContent = label;
+      }
+
+      var root = ReactDOM.createRoot(homeEl);
+      root.render(React.createElement(PortfolioChart, {
+        startPrice:        118000,
+        endPrice:          138440,
+        seed:              7,
+        lineColor:         '#3B7E3F',
+        topColor:          'rgba(59,126,63,0.2)',
+        bottomColor:       'rgba(59,126,63,0)',
+        hideRangeSelector: true,
+        onHover:           onHomeHover,
+      }));
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mountCharts);
+  } else {
+    mountCharts();
+  }
+})();
+</script>
+</body>
+</html>

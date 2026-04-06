@@ -1,0 +1,2346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Robo Advisor — Surmount B2C Mobile</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+
+:root{
+  --color-base-white:#FFFFFF;
+  --color-gray-50:#FAFAFA;--color-gray-100:#F5F5F5;--color-gray-200:#E9EAEB;
+  --color-gray-300:#D5D7DA;--color-gray-400:#A4A7AE;--color-gray-500:#717680;
+  --color-gray-600:#535862;--color-gray-700:#414651;--color-gray-800:#252B37;
+  --color-gray-900:#181D27;--color-gray-950:#0A0D12;
+  --color-brand-50:#F1F6FD;--color-brand-100:#E0EAF9;--color-brand-200:#C8DBF5;
+  --color-brand-300:#8EBDEB;--color-brand-500:#5585DC;
+  --color-brand-600:#406AD0;--color-brand-700:#3757BE;--color-brand-800:#32499B;
+  --color-success-50:#EEF7EE;--color-success-700:#316434;
+  --color-error-50:#FBF5F5;--color-error-700:#98443D;
+
+  --color-surface-default:var(--color-base-white);
+  --color-surface-subtle:var(--color-gray-50);
+  --color-surface-brand-subtle:var(--color-brand-50);
+
+  --color-text-primary:var(--color-gray-900);
+  --color-text-secondary:var(--color-gray-700);
+  --color-text-tertiary:var(--color-gray-500);
+  --color-text-disabled:var(--color-gray-400);
+  --color-text-inverse:var(--color-base-white);
+  --color-text-brand:var(--color-brand-700);
+  --color-text-success:var(--color-success-700);
+
+  --color-border-default:var(--color-gray-200);
+  --color-border-subtle:var(--color-gray-100);
+  --color-border-strong:var(--color-gray-300);
+  --color-border-brand:var(--color-brand-500);
+
+  --font-display:'Inter',sans-serif;
+  --font-body:'Geist',system-ui,sans-serif;
+
+  --text-xs:12px;--text-sm:14px;--text-md:16px;
+  --text-lg:18px;--text-xl:20px;--text-2xl:24px;
+  --fw-regular:400;--fw-medium:500;--fw-semibold:600;--fw-bold:700;
+
+  --sp-1:4px;--sp-1h:6px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;
+  --sp-6:24px;--sp-8:32px;--sp-10:40px;--sp-12:48px;
+
+  --r-sm:6px;--r-md:8px;--r-lg:10px;--r-xl:12px;--r-2xl:16px;--r-full:9999px;
+
+  --spring:cubic-bezier(0.34,1.05,0.64,1);
+  --spring-bounce:cubic-bezier(0.34,1.25,0.64,1);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+
+  --shadow-card:0 2px 12px rgba(10,13,18,.03);
+  --shadow-md:0 0 0 1px rgba(10,13,18,.04),0 4px 16px rgba(10,13,18,.08);
+  --shadow-lift:0 8px 32px rgba(10,13,18,.12),0 2px 8px rgba(10,13,18,.06);
+}
+
+html,body{
+  min-height:100vh;font-family:var(--font-body);
+  color:var(--color-text-primary);
+  background:#FAFAFA;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:var(--sp-8);position:relative;overflow:hidden;
+}
+.page-label{display:none;}
+
+/* ── Phone ─────────────────────────────────────────── */
+.phone{
+  width:393px;height:852px;border-radius:50px;overflow:hidden;
+  position:relative;z-index:1;background:var(--color-surface-default);
+}
+
+/* ── Screens ───────────────────────────────────────── */
+.screen{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  background:var(--color-surface-default);
+  transform:translateX(100%);will-change:transform;
+}
+#s0{transform:translateX(0);}
+/* Quiz shell: opaque so it covers welcome during slide transition */
+#quiz-shell{background:var(--color-surface-default);}
+
+/* ── Status bar ────────────────────────────────────── */
+.status-bar{
+  height:50px;padding:14px 24px 0;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;position:relative;z-index:2;
+}
+.status-time{font-size:15px;font-weight:600;color:var(--color-text-primary);letter-spacing:-.3px;}
+
+/* ── Nav bar ───────────────────────────────────────── */
+.nav-bar{
+  height:48px;padding:0 var(--sp-3);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;position:relative;
+}
+.btn-nav{
+  width:40px;height:40px;border-radius:var(--r-lg);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--color-text-primary);
+  transition:background .1s,transform .12s var(--spring);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.btn-nav:hover{background:var(--color-surface-subtle);}
+.btn-nav:active{transform:scale(.82);}
+.step-label{font-size:var(--text-sm);font-weight:var(--fw-medium);color:var(--color-text-tertiary);letter-spacing:-.2px;}
+
+/* ── Progress pill-dots ────────────────────────────── */
+.progress-dots{display:flex;align-items:center;gap:5px;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);}
+.pdot{
+  height:5px;border-radius:var(--r-full);
+  background:var(--color-gray-300);width:20px;
+  transition:width .45s var(--spring),background .3s ease;
+}
+.pdot.done{background:var(--color-brand-600);width:20px;}
+.pdot.active{background:var(--color-brand-600);width:36px;}
+
+/* ── Quiz shell: content viewport ─────────────────── */
+.content-viewport{
+  flex:1;min-height:0;position:relative;overflow:hidden;
+}
+.q-content{
+  position:absolute;inset:0;overflow-y:auto;
+  padding:var(--sp-3) var(--sp-5) calc(var(--sp-8) + env(safe-area-inset-bottom,0px));
+  display:flex;flex-direction:column;
+  transform:translateX(100%);will-change:transform;
+}
+.q-content::-webkit-scrollbar{width:3px;}
+.q-content::-webkit-scrollbar-thumb{background:var(--color-gray-200);border-radius:2px;}
+
+/* ── Content entrance animations ──────────────────── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes scaleIn{
+  from{opacity:0;transform:scale(.85);}
+  to{opacity:1;transform:scale(1);}
+}
+
+/* Question header entrance */
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(14px);}
+  to{opacity:1;transform:translateY(0);}
+}
+/* header no longer slides — per-char spring handles all title animation */
+
+/* Per-pill stagger — pills hidden until .entered, then cascade in */
+.q-content .answer-pill{opacity:0;}
+@keyframes pillIn{
+  from{opacity:0;transform:translateY(18px);}
+  to{opacity:1;transform:none;}
+}
+.q-content.entered .answers-list .answer-pill{animation:pillIn .36s var(--spring) both;}
+.q-content.entered .answers-list .answer-pill:nth-child(1){animation-delay:.02s;}
+.q-content.entered .answers-list .answer-pill:nth-child(2){animation-delay:.06s;}
+.q-content.entered .answers-list .answer-pill:nth-child(3){animation-delay:.10s;}
+.q-content.entered .answers-list .answer-pill:nth-child(4){animation-delay:.13s;}
+.q-content.entered .answers-list .answer-pill:nth-child(5){animation-delay:.16s;}
+.q-content.entered .answers-list .answer-pill:nth-child(6){animation-delay:.19s;}
+.q-content.entered .answers-list .answer-pill:nth-child(7){animation-delay:.22s;}
+.q-content.entered .answers-list .answer-pill:nth-child(8){animation-delay:.24s;}
+.q-content.entered .answers-list .answer-pill:nth-child(9){animation-delay:.26s;}
+
+/* Legacy — for welcome/loading/results screens */
+.screen .anim-el{opacity:0;}
+.screen.entered .anim-el{animation:fadeUp .36s var(--ease-out) forwards;}
+.screen.entered .anim-el:nth-child(1){animation-delay:.03s;}
+.screen.entered .anim-el:nth-child(2){animation-delay:.09s;}
+.screen.entered .anim-el:nth-child(3){animation-delay:.15s;}
+.screen.entered .anim-el:nth-child(4){animation-delay:.21s;}
+.screen.entered .anim-el:nth-child(5){animation-delay:.27s;}
+
+/* ── Question header ───────────────────────────────── */
+.q-icon{
+  width:40px;height:40px;border-radius:var(--r-xl);
+  background:var(--color-brand-50);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:var(--sp-4);color:var(--color-brand-600);
+}
+.q-label{font-size:13px;font-weight:var(--fw-medium);color:var(--color-text-tertiary);letter-spacing:-.1px;margin-bottom:var(--sp-2);}
+.q-title{
+  font-family:var(--font-display);font-size:34px;font-weight:var(--fw-bold);
+  color:var(--color-text-primary);line-height:1.1;letter-spacing:-1px;
+  margin-bottom:var(--sp-2);text-align:center;
+}
+.q-sub{font-size:var(--text-sm);color:var(--color-text-tertiary);line-height:1.55;margin-bottom:0;text-align:center;}
+.q-header{flex-shrink:0;padding-top:var(--sp-2);margin-bottom:var(--sp-5);display:flex;flex-direction:column;align-items:center;}
+.q-spacer{display:none;}
+
+/* ── Answer pills (individual cards per answer) ──────── */
+.answers-list{
+  display:flex;flex-direction:column;gap:12px;flex-shrink:0;
+}
+.answer-pill{
+  width:100%;padding:var(--sp-4) var(--sp-5);
+  border-radius:20px;
+  background:rgba(255,254,252,0.95);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:0.5px solid rgba(10,13,18,.07);
+  box-shadow:rgba(10,13,18,.06) 0 4px 18px -4px, rgba(10,13,18,.03) 0 1px 4px;
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+  cursor:pointer;text-align:left;font-family:var(--font-body);
+  position:relative;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  will-change:transform;
+}
+.answer-pill.selected{
+  background:rgba(64,106,208,.08);
+  border-color:rgba(64,106,208,.2);
+}
+.answer-pill-text{flex:1;}
+.answer-pill-label{
+  font-size:var(--text-md);font-weight:var(--fw-medium);
+  color:var(--color-text-primary);letter-spacing:-.2px;line-height:1.35;
+}
+.answer-pill-desc{font-size:13px;color:var(--color-text-tertiary);margin-top:2px;line-height:1.4;}
+.answer-row-text{flex:1;min-width:0;}
+.answer-row-label{
+  font-size:var(--text-sm);font-weight:var(--fw-medium);
+  color:var(--color-text-primary);letter-spacing:0;line-height:20px;
+}
+.answer-row-desc{
+  font-size:var(--text-xs);font-weight:var(--fw-regular);
+  color:var(--color-text-tertiary);line-height:18px;margin-top:2px;
+}
+
+/* Check indicator */
+.answer-check{
+  width:22px;height:22px;border-radius:var(--r-full);
+  border:1.5px solid var(--color-border-strong);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:background .14s,border-color .14s,transform .28s var(--spring);
+}
+.answer-pill.selected .answer-check{
+  background:var(--color-brand-600);border-color:var(--color-brand-600);
+  transform:scale(1.1);
+}
+.answer-pill .sel-check{
+  opacity:0;transform:scale(0) rotate(-30deg);
+  transition:opacity .15s,transform .25s var(--spring);
+}
+.answer-pill.selected .sel-check{opacity:1;transform:scale(1) rotate(0);}
+
+/* Ripple */
+.answer-pill .ripple{
+  position:absolute;border-radius:50%;
+  background:rgba(64,106,208,.10);
+  transform:scale(0);pointer-events:none;
+  animation:ripple-burst .5s ease-out forwards;
+}
+@keyframes ripple-burst{
+  to{transform:scale(4);opacity:0;}
+}
+
+/* ── Bottom bar ────────────────────────────────────── */
+.bottom-bar{
+  padding:var(--sp-4) var(--sp-5) calc(var(--sp-8) + 4px + env(safe-area-inset-bottom, 0px));
+  background:transparent;flex-shrink:0;
+}
+@keyframes btnEnable{
+  0%{transform:scale(1);}30%{transform:scale(1.03);}65%{transform:scale(.97);}100%{transform:scale(1);}
+}
+.btn-primary{
+  width:100%;height:56px;border-radius:100px;
+  background:linear-gradient(180deg, var(--color-brand-600) 0%, var(--color-brand-800) 100%);
+  color:var(--color-text-inverse);
+  font-family:var(--font-body);font-size:var(--text-md);font-weight:var(--fw-semibold);
+  letter-spacing:-.3px;display:flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  position:relative;overflow:visible;
+  box-shadow:rgba(64,106,208,.30) 0 14px 20px -8px;
+  transition:transform .2s ease,box-shadow .2s ease;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.btn-primary::before{
+  content:'';position:absolute;inset:0;border-radius:100px;
+  border:1px solid rgba(255,255,255,.18);pointer-events:none;
+}
+.btn-primary:hover{transform:translateY(2px);box-shadow:rgba(64,106,208,.18) 0 8px 12px -6px;}
+.btn-primary:active{transform:translateY(3px);box-shadow:rgba(64,106,208,.12) 0 4px 8px -4px;transition-duration:.06s;}
+@keyframes btnRelease{
+  0%{transform:scale(.95);}50%{transform:scale(1.03);}80%{transform:scale(.99);}100%{transform:scale(1);}
+}
+.btn-primary.tap-release{animation:btnRelease .38s var(--spring) forwards;}
+.btn-primary.disabled{background:var(--color-gray-200);color:var(--color-text-disabled);cursor:default;pointer-events:none;box-shadow:none;}
+.btn-primary.disabled::before{display:none;}
+.btn-primary.just-enabled{animation:btnEnable .4s var(--spring);}
+/* Magic glow before transition */
+@keyframes ctaGlow{
+  0%{box-shadow:rgba(64,106,208,.30) 0 14px 20px -8px, 0 0 0 0 rgba(64,106,208,.5);}
+  100%{box-shadow:rgba(64,106,208,.10) 0 8px 12px -6px, 0 0 0 20px rgba(64,106,208,0);}
+}
+.btn-primary.glowing{animation:ctaGlow .5s ease forwards;}
+.btn-ghost{
+  width:100%;height:40px;background:none;
+  color:var(--color-text-brand);font-family:var(--font-body);
+  font-size:var(--text-sm);font-weight:var(--fw-medium);
+  margin-top:var(--sp-2);display:flex;align-items:center;justify-content:center;
+  -webkit-tap-highlight-color:transparent;transition:opacity .12s;
+}
+.btn-ghost:hover{opacity:.7;}
+
+/* ── Welcome ───────────────────────────────────────── */
+#s0{
+  background:
+    radial-gradient(ellipse 130% 50% at 105% 2%, rgba(255,251,200,0.55) 0%, transparent 100%),
+    radial-gradient(ellipse 100% 60% at -8% 92%, rgba(200,220,255,0.32) 0%, transparent 100%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(241,246,253,0.5) 0%, transparent 100%),
+    var(--color-surface-default);
+}
+#s0 .status-bar{background:transparent;}
+.welcome-area{
+  flex:1;overflow-y:auto;
+  padding:var(--sp-10) var(--sp-5) var(--sp-4);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  background:transparent;
+}
+.welcome-area>*{position:relative;z-index:1;}
+.welcome-logo-row{display:flex;align-items:center;gap:10px;margin-bottom:var(--sp-12);}
+.welcome-wordmark{font-family:var(--font-display);font-size:var(--text-md);font-weight:var(--fw-bold);color:var(--color-text-primary);letter-spacing:-.4px;}
+.welcome-badge{
+  display:inline-flex;align-items:center;gap:var(--sp-1h);
+  padding:var(--sp-1) 10px;background:var(--color-brand-50);border-radius:var(--r-full);
+  color:var(--color-text-brand);font-size:var(--text-xs);font-weight:var(--fw-semibold);
+  letter-spacing:-.1px;margin-bottom:var(--sp-5);width:fit-content;
+}
+.welcome-headline{font-family:var(--font-display);font-size:40px;font-weight:var(--fw-bold);color:var(--color-text-primary);line-height:1.05;letter-spacing:-1.2px;margin-bottom:var(--sp-4);}
+.welcome-body{font-size:var(--text-md);color:var(--color-text-secondary);line-height:1.65;margin-bottom:auto;}
+.welcome-features{display:flex;flex-direction:column;gap:var(--sp-3);margin-top:var(--sp-8);padding-top:var(--sp-8);border-top:1px solid var(--color-border-subtle);}
+.welcome-feature{display:flex;align-items:center;gap:var(--sp-3);font-size:var(--text-sm);color:var(--color-text-secondary);}
+.feat-dot{width:6px;height:6px;border-radius:var(--r-full);background:var(--color-brand-600);flex-shrink:0;}
+/* Welcome stagger */
+.welcome-area .welcome-logo-row,.welcome-area .welcome-badge,.welcome-area .welcome-headline,.welcome-area .welcome-body,.welcome-area .welcome-features{opacity:0;}
+.welcome-area.entered .welcome-logo-row{animation:fadeUp .5s var(--spring) .05s forwards;}
+.welcome-area.entered .welcome-badge{animation:fadeUp .48s var(--spring) .12s forwards;}
+.welcome-area.entered .welcome-headline{animation:fadeUp .52s var(--spring) .18s forwards;}
+.welcome-area.entered .welcome-body{animation:fadeUp .48s var(--spring) .28s forwards;}
+.welcome-area.entered .welcome-features{animation:fadeUp .48s var(--spring) .38s forwards;}
+
+/* ── ✨ LOADING — the magical moment ───────────────── */
+#s7{background:var(--color-base-white);}
+.loading-shell{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:0 var(--sp-5) var(--sp-8);
+  position:relative;overflow:hidden;
+}
+/* Ambient radial glow behind loader */
+.loading-shell::before{
+  content:'';position:absolute;
+  width:360px;height:360px;border-radius:50%;
+  background:radial-gradient(circle,var(--color-brand-50) 0%,transparent 70%);
+  top:60px;left:50%;transform:translateX(-50%);
+  pointer-events:none;z-index:0;
+}
+.loading-shell>*{position:relative;z-index:1;}
+
+/* Top progress bar */
+.loading-progress-track{
+  position:absolute;top:0;left:0;right:0;height:2px;z-index:10;
+  background:var(--color-border-subtle);
+}
+.loading-progress-fill{
+  height:100%;background:var(--color-brand-600);width:0%;
+  border-radius:0 var(--r-full) var(--r-full) 0;
+  transition:none;
+}
+@keyframes progressRun{
+  0%{width:0%;}60%{width:70%;}85%{width:88%;}100%{width:95%;}
+}
+
+/* Rings + logo centre */
+.loading-center{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  width:140px;height:140px;margin:60px auto var(--sp-6);
+}
+.pulse-ring{
+  position:absolute;border-radius:50%;
+  border:1px solid var(--color-brand-200);
+  width:80px;height:80px;
+  animation:ringExpand 3s var(--ease-out) infinite;
+  opacity:0;
+}
+.pulse-ring:nth-child(2){animation-delay:1s;}
+.pulse-ring:nth-child(3){animation-delay:2s;}
+@keyframes ringExpand{
+  0%{transform:scale(1);opacity:.7;}
+  100%{transform:scale(3.2);opacity:0;}
+}
+.loading-logo-wrap{
+  width:64px;height:64px;border-radius:20px;
+  background:var(--color-brand-50);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:2;
+  box-shadow:0 0 0 6px rgba(64,106,208,.06),0 8px 24px rgba(64,106,208,.12);
+}
+@keyframes logoBreathe{
+  0%,100%{box-shadow:0 0 0 6px rgba(64,106,208,.06),0 8px 24px rgba(64,106,208,.1);}
+  50%{box-shadow:0 0 0 10px rgba(64,106,208,.1),0 12px 32px rgba(64,106,208,.2);}
+}
+.loading-logo-wrap{animation:logoBreathe 2.4s ease-in-out infinite;}
+
+/* Text block */
+.loading-text-block{text-align:center;margin-bottom:var(--sp-8);}
+.loading-headline{
+  font-family:var(--font-display);font-size:var(--text-lg);font-weight:var(--fw-semibold);
+  color:var(--color-text-primary);letter-spacing:-.5px;
+  transition:opacity .28s ease;margin-bottom:var(--sp-1h);
+}
+.loading-sub-text{font-size:var(--text-sm);color:var(--color-text-tertiary);line-height:1.5;}
+
+/* ── Skeleton preview card ─────────────────────────── */
+.skeleton-preview{
+  width:100%;border-radius:var(--r-2xl);
+  border:1px solid var(--color-border-subtle);
+  padding:var(--sp-5);
+  background:var(--color-surface-default);
+  opacity:0;
+  animation:fadeIn .5s ease .6s forwards;
+}
+.skel{
+  border-radius:var(--r-sm);
+  background:linear-gradient(90deg,var(--color-gray-100) 25%,var(--color-gray-50) 50%,var(--color-gray-100) 75%);
+  background-size:200% 100%;
+  animation:skelShimmer 1.6s ease-in-out infinite;
+}
+@keyframes skelShimmer{
+  0%{background-position:200% 0;}
+  100%{background-position:-200% 0;}
+}
+.skel-badge{height:20px;width:80px;border-radius:var(--r-full);margin-bottom:var(--sp-3);}
+.skel-title{height:24px;width:70%;margin-bottom:var(--sp-2);}
+.skel-line{height:14px;margin-bottom:var(--sp-1h);}
+.skel-line.w60{width:60%;}
+.skel-line.w80{width:80%;}
+.skel-bar{height:8px;border-radius:var(--r-full);margin:var(--sp-5) 0 var(--sp-3);}
+.skel-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:var(--sp-5);padding-top:var(--sp-5);border-top:1px solid var(--color-border-subtle);}
+.skel-stat{padding:0 var(--sp-3);}
+.skel-stat:first-child{padding-left:0;}
+.skel-stat:last-child{padding-right:0;}
+.skel-stat:not(:last-child){border-right:1px solid var(--color-border-subtle);}
+.skel-val{height:18px;width:65%;margin-bottom:var(--sp-1h);}
+.skel-lbl{height:12px;width:80%;}
+
+/* ── ✨ RESULTS (S8) ─────────────────────────────────── */
+#s8{background:var(--color-surface-default);}
+
+.s8-nav{
+  height:44px;padding:0 var(--sp-5);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.s8-cancel{
+  font-size:var(--text-md);font-weight:var(--fw-semibold);
+  color:var(--color-text-primary);text-decoration:underline;text-underline-offset:2px;
+  background:none;border:none;cursor:pointer;padding:0;font-family:var(--font-body);
+}
+.s8-scroll{
+  flex:1;min-height:0;overflow-y:auto;
+  padding-bottom:calc(148px + env(safe-area-inset-bottom,0px));
+  opacity:0;animation:s8FadeIn .42s var(--ease-out) .1s forwards;
+}
+.s8-scroll::-webkit-scrollbar{width:3px;}
+.s8-scroll::-webkit-scrollbar-thumb{background:var(--color-gray-200);border-radius:2px;}
+@keyframes s8FadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* Chart */
+.s8-chart{padding:var(--sp-3) var(--sp-5) var(--sp-1);}
+.s8-chart-header{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-3);}
+.s8-chart-lbl{font-size:var(--text-sm);font-weight:var(--fw-medium);color:var(--color-text-tertiary);margin-bottom:2px;}
+.s8-chart-value{font-family:var(--font-display);font-size:28px;font-weight:var(--fw-bold);color:var(--color-text-primary);letter-spacing:-.8px;line-height:1.1;margin-bottom:4px;}
+.s8-chart-delta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;font-weight:var(--fw-semibold);color:var(--color-text-primary);}
+.s8-delta-up{color:var(--color-text-success);}
+.s8-chart-period-lbl{font-weight:var(--fw-regular);color:var(--color-text-tertiary);}
+.s8-backtest{
+  flex-shrink:0;padding:4px 10px;border-radius:var(--r-xl);
+  background:#EDE9FE;font-size:12px;font-weight:var(--fw-semibold);color:#4C1D95;
+  white-space:nowrap;border:none;cursor:pointer;font-family:var(--font-body);
+}
+.s8-chart-wrap{width:100%;height:130px;margin-bottom:var(--sp-3);}
+.s8-chart-wrap svg{width:100%;height:100%;overflow:visible;}
+.s8-periods{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-4);}
+.s8-prd{
+  min-width:32px;height:26px;padding:0 6px;border-radius:var(--r-xl);
+  font-size:12px;font-weight:var(--fw-medium);color:var(--color-text-tertiary);
+  display:flex;align-items:center;justify-content:center;
+  background:none;border:none;cursor:pointer;font-family:var(--font-body);
+  transition:background .12s,color .12s;
+}
+.s8-prd.on{background:var(--color-surface-subtle);color:var(--color-text-primary);font-weight:var(--fw-semibold);}
+.s8-prd:hover{background:var(--color-surface-subtle);}
+
+/* Section headers */
+.s8-sec-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--sp-2) var(--sp-5) var(--sp-2);
+}
+.s8-sec-title{font-size:var(--text-md);font-weight:var(--fw-semibold);color:var(--color-text-primary);letter-spacing:-.2px;}
+
+/* Cards */
+.s8-card{
+  margin:0 var(--sp-5) var(--sp-4);
+  border:1px solid var(--color-border-default);border-radius:var(--r-xl);
+  padding:var(--sp-5);background:var(--color-surface-default);
+}
+.s8-stat-block{display:flex;flex-direction:column;}
+.s8-stat-row{
+  display:flex;align-items:center;justify-content:space-between;
+  min-height:36px;gap:var(--sp-3);
+}
+.s8-stat-key{
+  display:flex;align-items:center;gap:var(--sp-2);
+  font-size:var(--text-md);font-weight:var(--fw-semibold);color:var(--color-text-primary);
+  flex:1;min-width:0;
+}
+.s8-stat-key.muted{font-weight:var(--fw-regular);color:var(--color-text-tertiary);}
+.s8-stat-val{font-size:var(--text-md);font-weight:var(--fw-semibold);color:var(--color-text-primary);white-space:nowrap;flex-shrink:0;}
+.s8-stat-val.dim{color:var(--color-text-tertiary);}
+.s8-info{
+  width:18px;height:18px;border-radius:50%;border:1.5px solid var(--color-border-strong);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-size:10px;font-weight:var(--fw-bold);color:var(--color-text-tertiary);
+}
+.s8-hr{height:1px;background:var(--color-border-default);margin:var(--sp-3) 0;}
+
+/* Strategy items */
+.s8-strat{
+  display:flex;align-items:center;gap:var(--sp-3);
+  min-height:56px;padding:var(--sp-3) 0;
+  border-bottom:1px solid var(--color-border-subtle);
+}
+.s8-strat:last-of-type{border-bottom:none;padding-bottom:0;}
+.s8-avatar{
+  width:36px;height:36px;border-radius:var(--r-lg);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:var(--fw-bold);color:white;
+}
+.s8-strat-name{flex:1;font-size:var(--text-md);font-weight:var(--fw-semibold);color:var(--color-text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.s8-badge{
+  padding:3px 8px;border-radius:var(--r-xl);background:var(--color-surface-subtle);
+  font-size:13px;font-weight:var(--fw-semibold);color:var(--color-text-primary);white-space:nowrap;flex-shrink:0;
+}
+.s8-chev{color:var(--color-gray-400);flex-shrink:0;}
+.s8-add-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  height:32px;padding:0 var(--sp-3);margin-top:var(--sp-3);
+  border-radius:var(--r-xl);background:var(--color-surface-subtle);
+  border:2px solid white;font-size:var(--text-md);font-weight:var(--fw-semibold);
+  color:var(--color-text-primary);cursor:pointer;font-family:var(--font-body);
+}
+
+/* Breakdown */
+.s8-bd-bar{height:16px;border-radius:var(--r-lg);overflow:hidden;display:flex;margin-bottom:var(--sp-4);}
+.s8-bd-row{
+  display:flex;align-items:center;gap:var(--sp-3);
+  min-height:56px;padding:var(--sp-3) 0;
+  border-bottom:1px solid var(--color-border-subtle);
+}
+.s8-bd-row:last-child{border-bottom:none;padding-bottom:0;}
+.s8-bd-info{flex:1;min-width:0;}
+.s8-bd-title-row{display:flex;align-items:center;gap:var(--sp-2);margin-bottom:3px;}
+.s8-bd-ttl{font-size:var(--text-md);font-weight:var(--fw-semibold);color:var(--color-text-primary);}
+.s8-cdots{display:flex;gap:3px;}
+.s8-cdot{width:10px;height:10px;border-radius:50%;}
+.s8-bd-sub{font-size:13px;color:var(--color-text-tertiary);line-height:1.4;}
+
+/* Fixed bottom CTA */
+.s8-cta{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--color-surface-default);
+  padding:var(--sp-4) var(--sp-5);
+  padding-bottom:calc(var(--sp-5) + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--color-border-subtle);
+}
+.s8-btn-use{
+  width:100%;height:52px;border-radius:var(--r-xl);
+  background:var(--color-brand-600);color:var(--color-text-inverse);
+  font-family:var(--font-body);font-size:var(--text-md);font-weight:var(--fw-semibold);
+  letter-spacing:-.2px;display:flex;align-items:center;justify-content:center;
+  border:none;cursor:pointer;margin-bottom:var(--sp-2);
+  transition:opacity .12s;
+}
+.s8-btn-use:hover{opacity:.9;}
+.s8-btn-skip{
+  width:100%;height:36px;background:none;border:none;cursor:pointer;
+  font-family:var(--font-body);font-size:var(--text-md);font-weight:var(--fw-semibold);
+  color:var(--color-text-primary);text-decoration:underline;text-underline-offset:2px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── S9 — Invest in your portfolio ──────────────────── */
+#s9{background:var(--color-surface-default);transform:translateY(100%);}
+.s9-header{
+  flex-shrink:0;background:var(--color-surface-default);
+  padding:0 var(--sp-5);
+}
+.s9-nav{
+  height:44px;display:flex;align-items:center;justify-content:space-between;
+}
+.s9-back{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  background:none;border:none;cursor:pointer;padding:0;color:var(--color-text-primary);
+  -webkit-tap-highlight-color:transparent;
+}
+.s9-cancel-btn{
+  font-family:var(--font-body);font-size:var(--text-md);font-weight:var(--fw-semibold);
+  color:var(--color-text-primary);text-decoration:underline;text-underline-offset:2px;
+  background:none;border:none;cursor:pointer;padding:0;
+}
+.s9-title-block{padding:var(--sp-2) 0 var(--sp-6);}
+.s9-title{
+  font-family:var(--font-display);font-size:24px;font-weight:700;
+  color:var(--color-text-primary);line-height:30px;letter-spacing:-.4px;margin:0;
+}
+.s9-subtitle{
+  font-family:var(--font-body);font-size:var(--text-md);color:var(--color-text-tertiary);
+  line-height:1.55;margin:var(--sp-1) 0 0;
+}
+.s9-scroll{
+  flex:1;min-height:0;overflow-y:auto;
+  padding:0 var(--sp-5) calc(148px + env(safe-area-inset-bottom,0px));
+}
+/* Portfolio card row */
+.s9-port-row{
+  display:flex;align-items:center;gap:var(--sp-3);
+  padding:var(--sp-2) 0;margin-bottom:var(--sp-3);
+}
+.s9-port-icon{
+  width:40px;height:40px;border-radius:var(--r-xl);flex-shrink:0;
+  background:var(--color-surface-subtle);display:flex;align-items:center;justify-content:center;
+}
+.s9-port-icon svg{color:var(--color-text-tertiary);}
+.s9-port-info{flex:1;min-width:0;}
+.s9-port-name{
+  font-size:var(--text-md);font-weight:var(--fw-semibold);color:var(--color-text-primary);
+  line-height:22px;
+}
+.s9-port-sub{
+  font-size:var(--text-sm);color:var(--color-text-tertiary);line-height:20px;
+}
+.s9-port-alloc{
+  font-size:var(--text-md);font-weight:var(--fw-semibold);color:var(--color-text-primary);
+  flex-shrink:0;
+}
+.s9-edit-chip{
+  width:36px;height:36px;border-radius:var(--r-xl);background:var(--color-surface-subtle);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  border:none;cursor:pointer;color:var(--color-text-tertiary);
+  -webkit-tap-highlight-color:transparent;
+}
+/* Stat chips */
+.s9-stats{display:flex;gap:var(--sp-2);margin-bottom:var(--sp-5);}
+.s9-stat{
+  flex:1;background:var(--color-surface-subtle);border-radius:var(--r-xl);
+  padding:var(--sp-3) var(--sp-3);
+}
+.s9-stat-label{font-size:13px;font-weight:var(--fw-semibold);color:var(--color-text-primary);line-height:18px;}
+.s9-stat-val{font-size:13px;color:var(--color-text-tertiary);line-height:18px;margin-top:2px;}
+/* Strategies section */
+.s9-section-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--sp-4) 0;cursor:pointer;
+}
+.s9-section-title{font-size:var(--text-md);font-weight:var(--fw-semibold);color:var(--color-text-primary);}
+.s9-chevron{color:var(--color-text-tertiary);}
+/* Strategies card */
+.s9-strat-card{
+  border:1px solid var(--color-border-default);border-radius:var(--r-xl);
+  padding:var(--sp-4);
+}
+/* Segmented control */
+.s9-seg{
+  display:flex;align-items:center;background:var(--color-surface-subtle);
+  border-radius:10px;padding:4px;gap:2px;margin-bottom:var(--sp-4);
+}
+.s9-seg-btn{
+  flex:1;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-body);font-size:var(--text-sm);font-weight:var(--fw-semibold);
+  border:none;cursor:pointer;background:transparent;color:var(--color-text-tertiary);
+  transition:background .15s,color .15s,box-shadow .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.s9-seg-btn.on{
+  background:var(--color-surface-default);color:var(--color-text-primary);
+  box-shadow:0 1px 2px rgba(10,13,18,.08),0 0 0 0.5px var(--color-border-default);
+}
+/* Allocation bar */
+.s9-alloc-bar{
+  height:14px;border-radius:7px;overflow:hidden;display:flex;margin-bottom:var(--sp-4);
+  background:var(--color-border-default);
+}
+.s9-alloc-bar-seg{height:100%;}
+/* Asset rows */
+.s9-asset-row{
+  display:flex;align-items:flex-start;gap:var(--sp-3);padding:var(--sp-3) 0;
+}
+.s9-asset-row+.s9-asset-row{border-top:1px solid var(--color-border-default);}
+.s9-asset-dot-wrap{display:flex;align-items:center;gap:6px;flex-shrink:0;padding-top:3px;}
+.s9-asset-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.s9-asset-info{flex:1;min-width:0;}
+.s9-asset-name{font-size:var(--text-md);font-weight:var(--fw-semibold);color:var(--color-text-primary);line-height:22px;}
+.s9-asset-desc{font-size:var(--text-sm);color:var(--color-text-tertiary);line-height:20px;margin-top:2px;}
+.s9-asset-pct{font-size:var(--text-md);font-weight:var(--fw-semibold);color:var(--color-text-primary);flex-shrink:0;padding-top:3px;}
+/* Bottom CTA */
+.s9-cta{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--color-surface-default);
+  padding:var(--sp-4) var(--sp-5);
+  padding-bottom:calc(var(--sp-5) + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--color-border-subtle);
+}
+.s9-btn-invest{
+  width:100%;height:52px;border-radius:var(--r-xl);
+  background:var(--color-brand-600);color:var(--color-text-inverse);
+  font-family:var(--font-body);font-size:var(--text-md);font-weight:var(--fw-semibold);
+  letter-spacing:-.2px;display:flex;align-items:center;justify-content:center;
+  border:none;cursor:pointer;margin-bottom:var(--sp-2);transition:opacity .12s;
+}
+.s9-btn-invest:hover{opacity:.9;}
+.s9-btn-later{
+  width:100%;height:36px;background:none;border:none;cursor:pointer;
+  font-family:var(--font-body);font-size:var(--text-md);font-weight:var(--fw-semibold);
+  color:var(--color-text-primary);text-decoration:underline;text-underline-offset:2px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── S10 — Order confirmation ────────────────────────── */
+#s10{
+  background:linear-gradient(160deg,#f5f7fb 0%,#eef1f8 55%,#e8ecf5 100%);
+  transform:translateX(100%);
+}
+.s10-nav{
+  height:44px;display:flex;align-items:center;padding:0 var(--sp-5);flex-shrink:0;
+}
+.s10-close{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  background:none;border:none;cursor:pointer;color:var(--color-text-primary);padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.s10-scroll{
+  flex:1;min-height:0;overflow-y:auto;
+  padding:var(--sp-2) var(--sp-5) calc(var(--sp-5) + env(safe-area-inset-bottom,0px));
+  display:flex;flex-direction:column;gap:var(--sp-4);
+}
+.s10-card{
+  background:var(--color-surface-default);
+  border:1px solid var(--color-border-default);
+  border-radius:var(--r-xl);padding:var(--sp-5);
+  box-shadow:var(--shadow-card);
+}
+/* Amount block */
+.s10-amount{
+  font-family:var(--font-display);font-size:30px;font-weight:700;
+  color:var(--color-text-primary);line-height:38px;letter-spacing:-.6px;
+  text-align:center;margin-bottom:var(--sp-2);
+}
+.s10-acct{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  margin-bottom:var(--sp-4);
+}
+.s10-acct-icon{
+  width:20px;height:20px;border-radius:var(--r-full);
+  background:var(--color-brand-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.s10-acct-name{
+  font-size:var(--text-sm);color:var(--color-text-primary);font-weight:var(--fw-regular);line-height:20px;
+}
+.s10-alert{
+  background:var(--color-surface-subtle);border:1px solid var(--color-border-default);
+  border-radius:6px;padding:var(--sp-2) var(--sp-3);
+  font-size:var(--text-xs);color:var(--color-text-tertiary);font-weight:var(--fw-medium);
+  text-align:center;line-height:18px;margin-bottom:var(--sp-4);
+}
+.s10-divider{border-top:1px solid var(--color-border-default);margin-bottom:var(--sp-4);}
+/* 3-col meta row */
+.s10-meta{display:flex;align-items:stretch;gap:0;}
+.s10-meta-col{
+  flex:1;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;
+}
+.s10-meta-col+.s10-meta-col{border-left:1px solid var(--color-border-default);}
+.s10-meta-label{font-size:var(--text-xs);font-weight:var(--fw-medium);color:var(--color-text-tertiary);line-height:18px;}
+.s10-meta-val{font-size:var(--text-sm);font-weight:var(--fw-regular);color:var(--color-text-primary);line-height:20px;}
+/* Strategy rows */
+.s10-row{
+  display:flex;align-items:center;justify-content:space-between;
+  min-height:36px;padding:var(--sp-1) 0;
+}
+.s10-row+.s10-row{margin-top:0;}
+.s10-row-name{font-size:var(--text-sm);color:var(--color-text-tertiary);font-weight:var(--fw-regular);line-height:20px;}
+.s10-row-amt{font-size:var(--text-sm);font-weight:var(--fw-medium);color:var(--color-text-primary);line-height:20px;}
+/* ── Drag-to-confirm ────────────────────────────────── */
+.dtc-track{
+  position:relative;height:64px;
+  background:rgba(64,106,208,0.10);
+  border:1.1px solid rgba(64,106,208,0.18);
+  border-radius:100px;
+  user-select:none;-webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;touch-action:none;
+  overflow:visible;
+  /* clip fill without clipping handle shadow */
+}
+.dtc-fill{
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(64,106,208,0.18) 0%,rgba(64,106,208,0.28) 100%);
+  transform-origin:left center;transform:scaleX(0);
+  border-radius:100px;pointer-events:none;
+  will-change:transform;
+  /* clip to track shape without overflow:hidden on parent */
+  clip-path:inset(0 round 100px);
+}
+.dtc-label{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:var(--text-sm);font-weight:var(--fw-medium);
+  letter-spacing:0;pointer-events:none;will-change:opacity;
+  /* Shimmer on text only — light sweep through dark text, no color */
+  background:linear-gradient(
+    90deg,
+    #181D27 20%,
+    #8B96A8 46%,
+    #C8CDD6 50%,
+    #8B96A8 54%,
+    #181D27 80%
+  );
+  background-size:300% 100%;
+  background-position:100% center;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:dtc-text-shimmer 2.8s ease-in-out infinite;
+  animation-delay:0.8s;
+}
+@keyframes dtc-text-shimmer{
+  0%,30%  { background-position:100% center; }
+  65%,100%{ background-position:-80% center; }
+}
+.dtc-track.is-dragging .dtc-label{
+  animation:none;
+  background-position:100% center;
+}
+.dtc-handle{
+  position:absolute;left:4px;top:4px;width:56px;height:56px;
+  border-radius:50%;overflow:hidden;
+  box-shadow:0 3px 16px rgba(36,63,160,0.40),0 1px 4px rgba(0,0,0,0.15);
+  cursor:grab;touch-action:none;will-change:transform;
+  transition:box-shadow 0.15s ease;
+}
+.dtc-handle:active{cursor:grabbing;box-shadow:0 6px 24px rgba(36,63,160,0.50),0 2px 8px rgba(0,0,0,0.18);}
+/* ── Cards wrapper — merge on success ───────────────── */
+.s10-cards-wrapper{
+  display:flex;flex-direction:column;gap:var(--sp-4);
+  border-radius:var(--r-xl);
+  border:1px solid transparent;background:transparent;
+  transition:gap 0.38s cubic-bezier(0.25,0,0,1),
+             background 0.28s ease,border-color 0.28s ease,box-shadow 0.28s ease;
+}
+.s10-cards-wrapper.merging{
+  gap:0;
+  background:var(--color-surface-default);
+  border-color:var(--color-border-default);
+  box-shadow:var(--shadow-card);
+  overflow:visible;
+}
+/* Success content inside merged wrapper — display:none so it takes zero layout space initially */
+.s10-merged-success{
+  display:none;
+  flex-direction:column;align-items:center;
+  gap:var(--sp-4);padding:var(--sp-5);
+  opacity:0;transform:translateY(8px);pointer-events:none;
+  transition:opacity 0.4s ease,transform 0.4s cubic-bezier(0.25,0,0,1);
+}
+/* JS sets display:flex first, then adds .visible on next frame to trigger transition */
+.s10-merged-success.visible{opacity:1;transform:translateY(0);pointer-events:auto;}
+/* Green check icon */
+.s10-check-icon{
+  width:60px;height:60px;border-radius:50%;
+  border:2px solid #059669;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transform:scale(0.6);opacity:0;
+  transition:transform 0.5s cubic-bezier(0.34,1.25,0.64,1),opacity 0.3s ease;
+}
+.s10-merged-success.visible .s10-check-icon{transform:scale(1);opacity:1;}
+.s10-check-path{stroke-dasharray:30;stroke-dashoffset:30;
+  transition:stroke-dashoffset 0.38s 0.22s cubic-bezier(0.25,0,0,1);}
+.s10-merged-success.visible .s10-check-path{stroke-dashoffset:0;}
+.s10-merged-title{
+  font-family:var(--font-display);font-size:20px;font-weight:500;
+  color:#001D3D;line-height:26px;text-align:center;
+  transform:translateY(8px);opacity:0;
+  transition:transform 0.42s 0.1s cubic-bezier(0.25,0,0,1),opacity 0.32s 0.1s ease;
+}
+.s10-merged-success.visible .s10-merged-title{transform:translateY(0);opacity:1;}
+.s10-merged-sub{
+  font-size:16px;color:rgba(10,13,18,0.5);line-height:22px;text-align:center;
+  transform:translateY(8px);opacity:0;
+  transition:transform 0.42s 0.18s cubic-bezier(0.25,0,0,1),opacity 0.32s 0.18s ease;
+}
+.s10-merged-success.visible .s10-merged-sub{transform:translateY(0);opacity:1;}
+.s10-merged-sub span{color:rgba(10,13,18,0.9);}
+/* ── DTC loading state ──────────────────────────────── */
+.dtc-track{transition:opacity 0.3s ease, height 0.35s cubic-bezier(0.25,0,0,1), margin 0.35s ease;}
+.dtc-track.loading .dtc-fill{opacity:0;transition:opacity 0.35s ease;}
+.dtc-track.loading .dtc-label{
+  animation:none !important;
+  background:none !important;
+  -webkit-background-clip:initial !important;
+  background-clip:initial !important;
+  -webkit-text-fill-color:var(--color-text-tertiary) !important;
+  color:var(--color-text-tertiary);
+  opacity:1 !important;
+  transition:opacity 0.3s ease;
+}
+.dtc-logo{display:block;width:56px;height:56px;border-radius:50%;}
+.dtc-track.loading .dtc-logo{animation:dtc-logo-spin 1s linear infinite;}
+@keyframes dtc-logo-spin{to{transform:rotate(360deg);}}
+/* ── Continue button — same pill shape as DTC ────────── */
+.s10-continue-btn{
+  width:100%;height:64px;
+  background:var(--color-brand-600);color:#fff;
+  border:none;border-radius:100px;
+  font-family:var(--font-body);font-size:var(--text-sm);font-weight:var(--fw-medium);
+  letter-spacing:0;cursor:pointer;
+  /* use max-height so opacity transition isn't killed by display:none */
+  max-height:0;overflow:hidden;opacity:0;
+  transition:max-height 0.4s cubic-bezier(0.25,0,0,1), opacity 0.4s ease, background 0.15s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.s10-continue-btn.visible{max-height:80px;opacity:1;overflow:visible;}
+.s10-continue-btn:active{background:var(--color-brand-700);}
+/* Success state — vertically center remaining content */
+.s10-scroll.s10-success-state{
+  justify-content:center;
+  overflow-y:hidden;
+}
+/* Home indicator */
+.s10-home{height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding-bottom:8px;}
+.s10-home-bar{width:134px;height:5px;background:var(--color-text-primary);border-radius:3px;opacity:.18;}
+
+/* ── Background floating ingredients — hidden ──────── */
+.bg-layer{display:none;}
+.bg-ingredient{
+  position:absolute;
+  color:var(--color-brand-600);
+  opacity:var(--op,0.08);
+  animation:floatDrift var(--dur,12s) ease-in-out infinite alternate;
+  animation-delay:var(--delay,0s);
+  will-change:transform;
+  transition:opacity 0.6s ease;
+}
+@keyframes floatDrift{
+  0%{transform:translateY(0) rotate(var(--r0,0deg)) scale(1);}
+  100%{transform:translateY(-28px) rotate(var(--r1,4deg)) scale(1.08);}
+}
+/* Ingredient pulse on question change */
+.bg-layer.pulse .bg-ingredient{
+  animation-play-state:running;
+  opacity:calc(var(--op,0.08) * 1.6);
+  transition:opacity 0.15s ease;
+}
+
+#shell-step{display:none;}
+#quiz-shell .bottom-bar{display:none;}
+
+/* Outgoing screen during transition — transform-only, no opacity (keeps GPU path clean) */
+.screen.leaving{}
+
+/* Vignette — hidden */
+.vignette{display:none;}
+
+/* ── Interstitial: comparison bars ────────────────── */
+.inter-card{
+  background:rgba(255,254,252,0.94);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-radius:28px;overflow:hidden;flex-shrink:0;
+  border:0.5px solid rgba(10,13,18,.06);
+  box-shadow:rgba(10,13,18,.11) 0 20px 40px -12px,rgba(10,13,18,.04) 0 4px 12px;
+  padding:var(--sp-6) var(--sp-5) var(--sp-5);
+}
+.bar-compare{
+  display:flex;align-items:flex-end;justify-content:center;
+  gap:var(--sp-10);margin-bottom:var(--sp-4);
+}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);width:72px;}
+.bar-fill-wrap{width:100%;height:150px;display:flex;align-items:flex-end;}
+.bar-fill{
+  width:100%;border-radius:14px 14px 6px 6px;
+  transform-origin:bottom;transform:scaleY(0);
+}
+.bar-fill.saving{
+  height:50px;background:var(--color-gray-300);
+  transition:transform 0.7s var(--spring) 0.2s;
+}
+.bar-fill.investing{
+  height:150px;
+  background:linear-gradient(180deg,var(--color-brand-500) 0%,var(--color-brand-700) 100%);
+  transition:transform 0.9s var(--spring) 0.45s;
+}
+.q-content.entered .bar-fill{transform:scaleY(1);}
+.bar-value{
+  font-family:var(--font-display);font-size:var(--text-lg);
+  font-weight:var(--fw-bold);letter-spacing:-.5px;
+  color:var(--color-text-primary);
+}
+.bar-value.hi{color:var(--color-brand-600);}
+.bar-lbl{font-size:var(--text-sm);color:var(--color-text-tertiary);}
+.inter-insight{
+  padding:var(--sp-3) var(--sp-4);
+  background:var(--color-brand-50);border-radius:14px;
+  font-size:13px;color:var(--color-text-brand);
+  line-height:1.55;text-align:center;
+  margin-top:var(--sp-2);
+}
+
+@media (prefers-reduced-motion:reduce){
+  .bg-ingredient{animation:none!important;}
+  *,.screen,.anim-el,.answer-pill,.answers-list,.welcome-area .welcome-logo-row,
+  .welcome-area .welcome-badge,.welcome-area .welcome-headline,
+  .welcome-area .welcome-body,.welcome-area .welcome-features,
+  .pulse-ring,.loading-logo-wrap,.skel,.s8-scroll{
+    animation:none!important;transition:none!important;opacity:1!important;
+    transform:none!important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Floating background ingredients -->
+<div class="bg-layer" aria-hidden="true">
+
+  <!-- Mini line chart – top left -->
+  <div class="bg-ingredient" style="--dur:14s;--delay:0s;--r0:-3deg;--r1:3deg;--op:0.06;top:6vh;left:3vw">
+    <svg width="30" height="20" viewBox="0 0 30 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="2,16 8,11 14,6 20,9 28,3"/>
+    </svg>
+  </div>
+
+  <!-- % symbol – top right -->
+  <div class="bg-ingredient" style="--dur:11s;--delay:-4s;--r0:2deg;--r1:-4deg;--op:0.055;top:4vh;right:5vw">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+      <circle cx="4.5" cy="4.5" r="2.5"/>
+      <line x1="14" y1="4" x2="4" y2="14"/>
+      <circle cx="13.5" cy="13.5" r="2.5"/>
+    </svg>
+  </div>
+
+  <!-- Candlestick – right side mid-upper -->
+  <div class="bg-ingredient" style="--dur:13s;--delay:-6s;--r0:1deg;--r1:-3deg;--op:0.058;top:24vh;right:4vw">
+    <svg width="14" height="28" viewBox="0 0 14 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <line x1="7" y1="2" x2="7" y2="6"/>
+      <rect x="3" y="6" width="8" height="14" rx="1.5" fill="currentColor" opacity=".18"/>
+      <rect x="3" y="6" width="8" height="14" rx="1.5"/>
+      <line x1="7" y1="20" x2="7" y2="26"/>
+    </svg>
+  </div>
+
+  <!-- Bar chart – left mid -->
+  <div class="bg-ingredient" style="--dur:16s;--delay:-2s;--r0:-2deg;--r1:2deg;--op:0.055;top:38vh;left:2.5vw">
+    <svg width="26" height="22" viewBox="0 0 26 22" fill="currentColor" stroke="none">
+      <rect x="1" y="13" width="6" height="8" rx="1.5" opacity=".9"/>
+      <rect x="10" y="8" width="6" height="13" rx="1.5" opacity=".9"/>
+      <rect x="19" y="3" width="6" height="18" rx="1.5" opacity=".9"/>
+    </svg>
+  </div>
+
+  <!-- Donut arc – right mid -->
+  <div class="bg-ingredient" style="--dur:18s;--delay:-9s;--r0:4deg;--r1:-4deg;--op:0.06;top:48vh;right:3vw">
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <path d="M13 3 A10 10 0 1 1 3.5 18"/>
+    </svg>
+  </div>
+
+  <!-- Trend arrow up – left lower -->
+  <div class="bg-ingredient" style="--dur:12s;--delay:-5s;--r0:-3deg;--r1:3deg;--op:0.055;top:65vh;left:3vw">
+    <svg width="24" height="20" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="2,17 8,10 13,13 20,5"/>
+      <polyline points="15,5 20,5 20,10"/>
+    </svg>
+  </div>
+
+  <!-- Dollar sign – bottom right -->
+  <div class="bg-ingredient" style="--dur:10s;--delay:-3s;--r0:0deg;--r1:-3deg;--op:0.05;top:72vh;right:5vw">
+    <svg width="13" height="22" viewBox="0 0 13 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+      <path d="M10.5 6C10.5 4.3 8.8 3 6.5 3S2.5 4.3 2.5 6s2 2.6 4 3.2 4 1.7 4 3.3S8.8 15 6.5 15 2.5 13.7 2.5 12"/>
+      <line x1="6.5" y1="1" x2="6.5" y2="3"/>
+      <line x1="6.5" y1="15" x2="6.5" y2="17"/>
+    </svg>
+  </div>
+
+  <!-- Wavy price line – bottom left -->
+  <div class="bg-ingredient" style="--dur:15s;--delay:-7s;--r0:1deg;--r1:-2deg;--op:0.05;top:83vh;left:4vw">
+    <svg width="32" height="16" viewBox="0 0 32 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <path d="M2 12 C6 12 6 4 10 4 S14 10 18 10 22 5 26 5 30 9 30 9"/>
+    </svg>
+  </div>
+
+  <!-- Small sparkle – upper center-right area -->
+  <div class="bg-ingredient" style="--dur:9s;--delay:-1s;--r0:-5deg;--r1:5deg;--op:0.045;top:12vh;right:14vw">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M8 1 L8.6 6.4 L14 8 L8.6 9.6 L8 15 L7.4 9.6 L2 8 L7.4 6.4 Z" opacity=".9"/>
+    </svg>
+  </div>
+
+  <!-- Second candlestick – bottom center-left -->
+  <div class="bg-ingredient" style="--dur:17s;--delay:-8s;--r0:2deg;--r1:-2deg;--op:0.045;top:88vh;right:8vw">
+    <svg width="12" height="22" viewBox="0 0 12 22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+      <line x1="6" y1="2" x2="6" y2="5"/>
+      <rect x="2.5" y="5" width="7" height="10" rx="1.5" fill="currentColor" opacity=".15"/>
+      <rect x="2.5" y="5" width="7" height="10" rx="1.5"/>
+      <line x1="6" y1="15" x2="6" y2="20"/>
+    </svg>
+  </div>
+
+</div><!-- /bg-layer -->
+
+<div class="vignette" aria-hidden="true"></div>
+
+<div class="page-label">Robo Advisor · Mobile Flow · Surmount B2C</div>
+
+<div class="phone">
+
+<template id="status-tpl">
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <svg width="67" height="12" viewBox="0 0 67 12" fill="none" style="color:var(--color-text-primary)">
+      <rect x="0" y="7" width="3" height="5" rx=".8" fill="currentColor"/>
+      <rect x="4.5" y="4.5" width="3" height="7.5" rx=".8" fill="currentColor"/>
+      <rect x="9" y="2" width="3" height="10" rx=".8" fill="currentColor"/>
+      <rect x="13.5" y="0" width="3" height="12" rx=".8" fill="currentColor" opacity=".3"/>
+      <circle cx="28" cy="10" r="1.5" fill="currentColor"/>
+      <path d="M24.8 7.2q3.2-3.2 6.4 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+      <path d="M22 4.5q5.5-5.5 11 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".4"/>
+      <rect x="41" y=".5" width="21" height="11" rx="3.5" stroke="currentColor" stroke-opacity=".35"/>
+      <rect x="42.5" y="2" width="15" height="8" rx="2" fill="currentColor"/>
+      <path d="M63 4v4a2 2 0 000-4z" fill="currentColor" opacity=".4"/>
+    </svg>
+  </div>
+</template>
+
+<!-- S0 WELCOME -->
+<div class="screen" id="s0">
+  <div class="welcome-area" id="welcome-area">
+    <div class="welcome-logo-row">
+      <svg width="32" height="32" viewBox="0 0 38 38" fill="none"><path d="M3 14.8C3 10.3 3 8.08 3.87 6.37 4.64 4.86 5.86 3.64 7.37 2.87 9.08 2 11.32 2 15.8 2h6.4c4.48 0 6.72 0 8.43.87 1.51.77 2.73 1.99 3.5 3.5C35 8.08 35 10.32 35 14.8v6.4c0 4.48 0 6.72-.87 8.43a9.88 9.88 0 01-3.5 3.5C28.92 34 26.68 34 22.2 34h-6.4c-4.48 0-6.72 0-8.43-.87a9.88 9.88 0 01-3.5-3.5C3 27.92 3 25.68 3 21.2v-6.4z" fill="url(#wg0)"/><path d="M19 13.14a8.7 8.7 0 00-1.76 1.6l-1.19 1.13c-.54-.28-1.14-.42-1.74-.42-1 0-1.94.34-2.66 1.03A3.54 3.54 0 009 19c0-1.6.65-3.11 1.85-4.24 2.22-2.11 5.69-2.32 8.15-.62z" fill="url(#wg1)"/><path d="M23.37 18.81l-2.42 2.3-1.19 1.13c-.24.23-.5.43-.77.62-1.1.76-2.4 1.14-3.69 1.14-1.61 0-3.23-.59-4.46-1.76A5.52 5.52 0 019 18h2.6c0 .94.38 1.83 1.08 2.49 1.23 1.17 3.13 1.35 4.56.52.24-.14.47-.31.68-.52l1.31-1.24 2.3-2.19c.51-.49 1.33-.49 1.84 0 .51.49.51 1.27 0 1.75z" fill="url(#wg2)"/><path d="M29 18h-2.6c0-.94-.38-1.83-1.08-2.5-.72-.68-1.67-1.02-2.62-1.02-.67 0-1.34.17-1.93.52-.24.14-.47.31-.68.52l-1.31 1.24-2.3 2.18a1.29 1.29 0 01-1.84 0 1.28 1.28 0 010-1.75l2.42-2.3 1.19-1.13c.24-.23.5-.43.77-.62 2.46-1.7 5.94-1.5 8.15.62A7.49 7.49 0 0129 18z" fill="url(#wg3)"/><path d="M29 18c0 1.6-.65 3.11-1.85 4.24-1.23 1.17-2.84 1.76-4.46 1.76-1.3 0-2.6-.38-3.67-1.14.27-.18.53-.39.77-.62l1.19-1.13c.54.28 1.14.42 1.74.42.95 0 1.9-.34 2.62-1.02.7-.67 1.08-1.55 1.08-2.5H29z" fill="url(#wg4)"/><defs><linearGradient id="wg0" x1="3" y1="2" x2="35" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#F5F7FA"/><stop offset="1" stop-color="#C3CFE2"/></linearGradient><linearGradient id="wg1" x1="9" y1="15" x2="19" y2="15.1" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#1047D2"/></linearGradient><linearGradient id="wg2" x1="9" y1="20.3" x2="23.7" y2="20.5" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#54E3DF"/></linearGradient><linearGradient id="wg3" x1="14.2" y1="15.6" x2="29" y2="15.8" gradientUnits="userSpaceOnUse"><stop stop-color="#54E3DF"/><stop offset="1" stop-color="#34A6ED"/></linearGradient><linearGradient id="wg4" x1="19" y1="21" x2="29" y2="21.1" gradientUnits="userSpaceOnUse"><stop stop-color="#1047D2"/><stop offset="1" stop-color="#34A6ED"/></linearGradient></defs></svg>
+      <span class="welcome-wordmark">Surmount</span>
+    </div>
+    <h1 class="welcome-headline">Find your perfect<br>portfolio.</h1>
+    <p class="welcome-body">Answer 6 short questions and we'll build the right investment strategy for you — no jargon, no guesswork.</p>
+    <div class="welcome-features">
+      <div class="welcome-feature"><div class="feat-dot"></div><span>Personalized to your goals &amp; timeline</span></div>
+      <div class="welcome-feature"><div class="feat-dot"></div><span>Built by professional fund managers</span></div>
+      <div class="welcome-feature"><div class="feat-dot"></div><span>Start investing in under 2 minutes</span></div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn-primary" onclick="goTo(1)">
+      Get Started
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- Quiz shell — persistent chrome, only content swaps -->
+<div class="screen" id="quiz-shell">
+  <div class="nav-bar">
+    <button class="btn-nav" id="shell-back" onclick="shellBack()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="progress-dots" id="shell-dots"></div>
+    <div style="width:40px;flex-shrink:0;"></div>
+  </div>
+
+  <div class="content-viewport">
+
+    <!-- Q1: Have you invested before? (single-select) -->
+    <div class="q-content" id="qc-1">
+      <div class="q-header">
+        <h2 class="q-title">Have you invested<br>before?</h2>
+        <p class="q-sub">There's no wrong answer here.</p>
+      </div>
+      <div class="answers-list" id="answers-1">
+        <button class="answer-pill" onclick="tap(this);selectAnswer(1,0)"><div class="answer-row-text"><div class="answer-row-label">Yes, I have</div><div class="answer-row-desc">I've bought stocks, ETFs, or funds before</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(1,1)"><div class="answer-row-text"><div class="answer-row-label">No, not yet</div><div class="answer-row-desc">I'm just getting started</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+      </div>
+    </div>
+
+    <!-- Q2: Future goals (multi-select) -->
+    <div class="q-content" id="qc-2">
+      <div class="q-header">
+        <h2 class="q-title">What are your<br>future goals?</h2>
+        <p class="q-sub">Select all that apply.</p>
+      </div>
+      <div class="answers-list" id="answers-2">
+        <button class="answer-pill" onclick="tap(this);selectAnswer(2,0)"><div class="answer-row-text"><div class="answer-row-label">Buy a house</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(2,1)"><div class="answer-row-text"><div class="answer-row-label">Work less</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(2,2)"><div class="answer-row-text"><div class="answer-row-label">Retire early</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(2,3)"><div class="answer-row-text"><div class="answer-row-label">Be financially independent</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(2,4)"><div class="answer-row-text"><div class="answer-row-label">Pay for school</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(2,5)"><div class="answer-row-text"><div class="answer-row-label">I don't know yet</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+      </div>
+    </div>
+
+    <!-- Q3: How can we help (multi-select) -->
+    <div class="q-content" id="qc-3">
+      <div class="q-header">
+        <h2 class="q-title">How can we help<br>achieve your goals?</h2>
+        <p class="q-sub">Select all that apply.</p>
+      </div>
+      <div class="answers-list" id="answers-3">
+        <button class="answer-pill" onclick="tap(this);selectAnswer(3,0)"><div class="answer-row-text"><div class="answer-row-label">Invest for me</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(3,1)"><div class="answer-row-text"><div class="answer-row-label">Teach me about investing</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(3,2)"><div class="answer-row-text"><div class="answer-row-label">Let me invest on my own</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(3,3)"><div class="answer-row-text"><div class="answer-row-label">Personalize my investing insights</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(3,4)"><div class="answer-row-text"><div class="answer-row-label">I don't know yet</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+      </div>
+    </div>
+
+    <!-- Q4: Currently investing or saving? (single-select) -->
+    <div class="q-content" id="qc-4">
+      <div class="q-header">
+        <h2 class="q-title">Are you currently<br>investing or saving?</h2>
+        <p class="q-sub">Be honest — there's no wrong answer.</p>
+      </div>
+      <div class="answers-list" id="answers-4">
+        <button class="answer-pill" onclick="tap(this);selectAnswer(4,0)"><div class="answer-row-text"><div class="answer-row-label">Haven't started yet</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(4,1)"><div class="answer-row-text"><div class="answer-row-label">I'm saving</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(4,2)"><div class="answer-row-text"><div class="answer-row-label">I'm investing</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(4,3)"><div class="answer-row-text"><div class="answer-row-label">I'm saving and investing</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+      </div>
+    </div>
+
+    <!-- Interstitial: make 6x more by investing -->
+    <div class="q-content" id="qc-5">
+      <div class="q-header">
+        <h2 class="q-title">Make 6× more<br>by investing</h2>
+        <p class="q-sub">Saving keeps up with inflation. Investing builds real wealth.</p>
+      </div>
+      <div class="bar-compare">
+        <div class="bar-col">
+          <div class="bar-fill-wrap"><div class="bar-fill saving"></div></div>
+          <div class="bar-value">$200k</div>
+          <div class="bar-lbl">Saving</div>
+        </div>
+        <div class="bar-col">
+          <div class="bar-fill-wrap"><div class="bar-fill investing"></div></div>
+          <div class="bar-value hi">$1M+</div>
+          <div class="bar-lbl">Investing</div>
+        </div>
+      </div>
+      <div class="inter-insight">Over 30 years, $500/month saved returns ~$200k. Invested in a diversified portfolio, the same amount could reach $1M+.</div>
+    </div>
+
+    <!-- Q6: Annual income (single-select) -->
+    <div class="q-content" id="qc-6">
+      <div class="q-header">
+        <h2 class="q-title">How much do you<br>make annually?</h2>
+        <p class="q-sub">Helps us find the right strategy for you.</p>
+      </div>
+      <div class="answers-list" id="answers-6">
+        <button class="answer-pill" onclick="tap(this);selectAnswer(6,0)"><div class="answer-row-text"><div class="answer-row-label">Less than $50,000</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(6,1)"><div class="answer-row-text"><div class="answer-row-label">$50,000 – $60,000</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(6,2)"><div class="answer-row-text"><div class="answer-row-label">$60,000 – $70,000</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(6,3)"><div class="answer-row-text"><div class="answer-row-label">$70,000 – $80,000</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(6,4)"><div class="answer-row-text"><div class="answer-row-label">$80,000 – $90,000</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(6,5)"><div class="answer-row-text"><div class="answer-row-label">$90,000 – $100,000</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(6,6)"><div class="answer-row-text"><div class="answer-row-label">$100,000 – $150,000</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(6,7)"><div class="answer-row-text"><div class="answer-row-label">$150,000 – $200,000</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(6,8)"><div class="answer-row-text"><div class="answer-row-label">$200,000+</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+      </div>
+    </div>
+
+    <!-- Q7: Investment horizon (single-select) -->
+    <div class="q-content" id="qc-7">
+      <div class="q-header">
+        <h2 class="q-title">How long do you<br>plan to invest?</h2>
+        <p class="q-sub">Longer horizons open up more growth strategies.</p>
+      </div>
+      <div class="answers-list" id="answers-7">
+        <button class="answer-pill" onclick="tap(this);selectAnswer(7,0)"><div class="answer-row-text"><div class="answer-row-label">Fewer than 5 years</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(7,1)"><div class="answer-row-text"><div class="answer-row-label">5–10 years</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(7,2)"><div class="answer-row-text"><div class="answer-row-label">10–20 years</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(7,3)"><div class="answer-row-text"><div class="answer-row-label">20+ years</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(7,4)"><div class="answer-row-text"><div class="answer-row-label">I don't know yet</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+      </div>
+    </div>
+
+    <!-- Q8: Risk tolerance (single-select, last) -->
+    <div class="q-content" id="qc-8">
+      <div class="q-header">
+        <h2 class="q-title">Are you a risk taker<br>with money?</h2>
+        <p class="q-sub">Choose the one that feels most like you.</p>
+      </div>
+      <div class="answers-list" id="answers-8">
+        <button class="answer-pill" onclick="tap(this);selectAnswer(8,0)"><div class="answer-row-text"><div class="answer-row-label">Definitely</div><div class="answer-row-desc">I seek high risk, high reward</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(8,1)"><div class="answer-row-text"><div class="answer-row-label">Yes, but nothing too crazy</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(8,2)"><div class="answer-row-text"><div class="answer-row-label">Some risk is okay</div><div class="answer-row-desc">But not too much</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+        <button class="answer-pill" onclick="tap(this);selectAnswer(8,3)"><div class="answer-row-text"><div class="answer-row-label">No, too much risk scares me</div></div><div class="answer-check"><svg class="sel-check" width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+      </div>
+    </div>
+
+  </div><!-- /content-viewport -->
+
+  <div class="bottom-bar" id="quiz-bottom-bar" style="display:none;">
+    <button class="btn-primary" id="shell-btn" onclick="shellContinue()">Continue</button>
+  </div>
+</div><!-- /quiz-shell -->
+
+<!-- S7 LOADING — the magical moment -->
+<div class="screen" id="s7">
+  <div class="loading-shell">
+    <div class="loading-progress-track">
+      <div class="loading-progress-fill" id="loading-progress"></div>
+    </div>
+
+    <!-- Pulse rings + logo -->
+    <div class="loading-center">
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="loading-logo-wrap">
+        <svg width="36" height="36" viewBox="0 0 38 38" fill="none"><path d="M3 14.8C3 10.3 3 8.08 3.87 6.37 4.64 4.86 5.86 3.64 7.37 2.87 9.08 2 11.32 2 15.8 2h6.4c4.48 0 6.72 0 8.43.87 1.51.77 2.73 1.99 3.5 3.5C35 8.08 35 10.32 35 14.8v6.4c0 4.48 0 6.72-.87 8.43a9.88 9.88 0 01-3.5 3.5C28.92 34 26.68 34 22.2 34h-6.4c-4.48 0-6.72 0-8.43-.87a9.88 9.88 0 01-3.5-3.5C3 27.92 3 25.68 3 21.2v-6.4z" fill="url(#lg0)"/><path d="M19 13.14a8.7 8.7 0 00-1.76 1.6l-1.19 1.13c-.54-.28-1.14-.42-1.74-.42-1 0-1.94.34-2.66 1.03A3.54 3.54 0 009 19c0-1.6.65-3.11 1.85-4.24 2.22-2.11 5.69-2.32 8.15-.62z" fill="url(#lg1)"/><path d="M23.37 18.81l-2.42 2.3-1.19 1.13c-.24.23-.5.43-.77.62-1.1.76-2.4 1.14-3.69 1.14-1.61 0-3.23-.59-4.46-1.76A5.52 5.52 0 019 18h2.6c0 .94.38 1.83 1.08 2.49 1.23 1.17 3.13 1.35 4.56.52.24-.14.47-.31.68-.52l1.31-1.24 2.3-2.19c.51-.49 1.33-.49 1.84 0 .51.49.51 1.27 0 1.75z" fill="url(#lg2)"/><path d="M29 18h-2.6c0-.94-.38-1.83-1.08-2.5-.72-.68-1.67-1.02-2.62-1.02-.67 0-1.34.17-1.93.52-.24.14-.47.31-.68.52l-1.31 1.24-2.3 2.18a1.29 1.29 0 01-1.84 0 1.28 1.28 0 010-1.75l2.42-2.3 1.19-1.13c.24-.23.5-.43.77-.62 2.46-1.7 5.94-1.5 8.15.62A7.49 7.49 0 0129 18z" fill="url(#lg3)"/><path d="M29 18c0 1.6-.65 3.11-1.85 4.24-1.23 1.17-2.84 1.76-4.46 1.76-1.3 0-2.6-.38-3.67-1.14.27-.18.53-.39.77-.62l1.19-1.13c.54.28 1.14.42 1.74.42.95 0 1.9-.34 2.62-1.02.7-.67 1.08-1.55 1.08-2.5H29z" fill="url(#lg4)"/><defs><linearGradient id="lg0" x1="3" y1="2" x2="35" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#F5F7FA"/><stop offset="1" stop-color="#C3CFE2"/></linearGradient><linearGradient id="lg1" x1="9" y1="15" x2="19" y2="15.1" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#1047D2"/></linearGradient><linearGradient id="lg2" x1="9" y1="20.3" x2="23.7" y2="20.5" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#54E3DF"/></linearGradient><linearGradient id="lg3" x1="14.2" y1="15.6" x2="29" y2="15.8" gradientUnits="userSpaceOnUse"><stop stop-color="#54E3DF"/><stop offset="1" stop-color="#34A6ED"/></linearGradient><linearGradient id="lg4" x1="19" y1="21" x2="29" y2="21.1" gradientUnits="userSpaceOnUse"><stop stop-color="#1047D2"/><stop offset="1" stop-color="#34A6ED"/></linearGradient></defs></svg>
+      </div>
+    </div>
+
+    <div class="loading-text-block">
+      <p class="loading-headline" id="loading-text">Analyzing your answers…</p>
+      <p class="loading-sub-text">Building a strategy made for you</p>
+    </div>
+
+    <!-- Skeleton preview of result card -->
+    <div class="skeleton-preview">
+      <div class="skel skel-badge"></div>
+      <div class="skel skel-title"></div>
+      <div class="skel skel-line w80"></div>
+      <div class="skel skel-line w60"></div>
+      <div class="skel skel-bar"></div>
+      <div class="skel-stats">
+        <div class="skel-stat"><div class="skel skel-val"></div><div class="skel skel-lbl"></div></div>
+        <div class="skel-stat"><div class="skel skel-val"></div><div class="skel skel-lbl"></div></div>
+        <div class="skel-stat"><div class="skel skel-val"></div><div class="skel skel-lbl"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S8 RESULTS — Portfolio Detail -->
+<div class="screen" id="s8">
+  <!-- status bar injected by JS -->
+  <div class="s8-nav">
+    <button class="btn-nav" onclick="goTo(0)">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="s8-cancel" onclick="goTo(0)">Cancel</button>
+  </div>
+
+  <div class="s8-scroll">
+
+    <!-- ─ Chart ─ -->
+    <div class="s8-chart">
+      <div class="s8-chart-header">
+        <div>
+          <div class="s8-chart-lbl">Hypothetical Return</div>
+          <div class="s8-chart-value">$142,103.92</div>
+          <div class="s8-chart-delta">
+            <span class="s8-delta-up">+$1,875.60</span>
+            <span>↑ 52%</span>
+            <span class="s8-chart-period-lbl">1 month</span>
+          </div>
+        </div>
+        <button class="s8-backtest">Run backtest</button>
+      </div>
+      <div class="s8-chart-wrap">
+        <svg viewBox="0 0 353 130" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#406AD0" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#406AD0" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0 112 C18 108,35 105,55 101 C75 97,82 113,102 104 C122 95,132 88,152 80 C172 72,178 90,196 78 C214 66,224 62,240 54 C256 46,262 62,276 52 C290 42,302 36,320 28 C336 22,345 18,353 14 L353 130 L0 130Z" fill="url(#cg)"/>
+          <path d="M0 112 C18 108,35 105,55 101 C75 97,82 113,102 104 C122 95,132 88,152 80 C172 72,178 90,196 78 C214 66,224 62,240 54 C256 46,262 62,276 52 C290 42,302 36,320 28 C336 22,345 18,353 14" stroke="#406AD0" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="353" cy="14" r="5" fill="#181D27"/>
+          <circle cx="353" cy="14" r="10" fill="#181D27" fill-opacity="0.08"/>
+        </svg>
+      </div>
+      <div class="s8-periods">
+        <button class="s8-prd on">1M</button>
+        <button class="s8-prd">3M</button>
+        <button class="s8-prd">YTD</button>
+        <button class="s8-prd">1Y</button>
+        <button class="s8-prd">ALL</button>
+        <button class="s8-prd">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2.5" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v3M11 1v3M2 6.5h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ─ Key statistics ─ -->
+    <div class="s8-sec-hdr"><span class="s8-sec-title">Key statistics</span></div>
+    <div class="s8-card">
+      <div class="s8-stat-block">
+        <div class="s8-stat-row">
+          <div class="s8-stat-key">Returns <span class="s8-info">i</span></div>
+          <div class="s8-stat-val">1.18x</div>
+        </div>
+        <div class="s8-stat-row">
+          <div class="s8-stat-key muted">Total</div>
+          <div class="s8-stat-val dim">284.20%</div>
+        </div>
+        <div class="s8-stat-row">
+          <div class="s8-stat-key muted">CAGR</div>
+          <div class="s8-stat-val dim">14.50%</div>
+        </div>
+        <div class="s8-stat-row">
+          <div class="s8-stat-key muted">Average annual return</div>
+          <div class="s8-stat-val dim">14.70</div>
+        </div>
+      </div>
+      <div class="s8-hr"></div>
+      <div class="s8-stat-block">
+        <div class="s8-stat-row">
+          <div class="s8-stat-key">Stability <span class="s8-info">i</span></div>
+          <div class="s8-stat-val">1.26x</div>
+        </div>
+        <div class="s8-stat-row">
+          <div class="s8-stat-key muted">Max drawn</div>
+          <div class="s8-stat-val">-20.30%</div>
+        </div>
+        <div class="s8-stat-row">
+          <div class="s8-stat-key muted">Avg. drawdown</div>
+          <div class="s8-stat-val">-5.80%</div>
+        </div>
+        <div class="s8-stat-row">
+          <div class="s8-stat-key muted">Avg. drawdown duration</div>
+          <div class="s8-stat-val">98.7 days</div>
+        </div>
+      </div>
+      <div class="s8-hr"></div>
+      <div class="s8-stat-block">
+        <div class="s8-stat-row">
+          <div class="s8-stat-key">Diversification <span class="s8-info">i</span></div>
+          <div class="s8-stat-val">0.65x</div>
+        </div>
+        <div class="s8-stat-row">
+          <div class="s8-stat-key muted"># of assets</div>
+          <div class="s8-stat-val">20</div>
+        </div>
+        <div class="s8-stat-row">
+          <div class="s8-stat-key muted"># of sectors</div>
+          <div class="s8-stat-val">10</div>
+        </div>
+        <div class="s8-stat-row">
+          <div class="s8-stat-key muted">Highest concentration</div>
+          <div class="s8-stat-val">5.74% AAPL</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─ Invested strategies ─ -->
+    <div class="s8-sec-hdr">
+      <span class="s8-sec-title">Invested strategies</span>
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="color:var(--color-text-tertiary)"><rect x="1" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg>
+    </div>
+    <div class="s8-card">
+      <div class="s8-strat">
+        <div class="s8-avatar" style="background:linear-gradient(135deg,#7C3AED,#3B82F6);">Q</div>
+        <div class="s8-strat-name">Quantum Computing Leaders</div>
+        <div class="s8-badge">34%</div>
+        <svg class="s8-chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="s8-strat">
+        <div class="s8-avatar" style="background:linear-gradient(135deg,#2563EB,#06B6D4);">A</div>
+        <div class="s8-strat-name">Artificial Intelligence Innovators</div>
+        <div class="s8-badge">34%</div>
+        <svg class="s8-chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="s8-strat">
+        <div class="s8-avatar" style="background:linear-gradient(135deg,#059669,#34D399);">B</div>
+        <div class="s8-strat-name">Biotechnology</div>
+        <div class="s8-badge">34%</div>
+        <svg class="s8-chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="s8-strat">
+        <div class="s8-avatar" style="background:linear-gradient(135deg,#D97706,#10B981);">R</div>
+        <div class="s8-strat-name">Renewable Energy Projects</div>
+        <div class="s8-badge">34%</div>
+        <svg class="s8-chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <button class="s8-add-chip">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Add a strategy
+      </button>
+    </div>
+
+    <!-- ─ Breakdown ─ -->
+    <div class="s8-sec-hdr">
+      <span class="s8-sec-title">Breakdown</span>
+      <svg class="s8-chev" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 4.5l4.5 4.5L7 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="s8-card">
+      <div class="s8-bd-bar">
+        <div style="width:10%;background:#059669;"></div>
+        <div style="width:11%;background:#60A5FA;"></div>
+        <div style="width:26%;background:#2563EB;"></div>
+        <div style="width:25%;background:#1D4ED8;"></div>
+        <div style="flex:1;background:#1E3A8A;"></div>
+      </div>
+      <div class="s8-bd-row">
+        <div class="s8-bd-info">
+          <div class="s8-bd-title-row">
+            <span class="s8-bd-ttl">Equities</span>
+            <div class="s8-cdots">
+              <div class="s8-cdot" style="background:#059669;"></div>
+              <div class="s8-cdot" style="background:#60A5FA;"></div>
+              <div class="s8-cdot" style="background:#2563EB;"></div>
+              <div class="s8-cdot" style="background:#1D4ED8;"></div>
+              <div class="s8-cdot" style="background:#1E3A8A;"></div>
+            </div>
+          </div>
+          <div class="s8-bd-sub">US equities, International equities, Emerging market factor equities, Global factor equities</div>
+        </div>
+        <div class="s8-badge" style="align-self:flex-start;margin-top:var(--sp-3);">85%</div>
+      </div>
+      <div class="s8-hr" style="margin:0;"></div>
+      <div class="s8-bd-row">
+        <div class="s8-bd-info">
+          <div class="s8-bd-ttl">Cash (USD)</div>
+        </div>
+        <div class="s8-badge">15%</div>
+      </div>
+    </div>
+
+  </div><!-- /s8-scroll -->
+
+  <!-- Fixed bottom CTAs -->
+  <div class="s8-cta">
+    <button class="s8-btn-use" onclick="goToConfirm()">Invest now</button>
+    <button class="s8-btn-skip" onclick="goTo(0)">Continue without this portfolio</button>
+  </div>
+</div>
+
+<!-- ── S10: Order confirmation ─────────────────────────── -->
+<div class="screen" id="s10">
+  <div class="s10-nav">
+    <button class="s10-close" onclick="goBackFromS10()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <div class="s10-scroll">
+    <!-- Cards wrapper — both cards merge into one on success -->
+    <div class="s10-cards-wrapper" id="s10-cards-wrapper">
+      <!-- Card 1: Amount / meta -->
+      <div class="s10-card" id="s10-card-1">
+        <div class="s10-amount">$1,000.28</div>
+        <div class="s10-acct">
+          <div class="s10-acct-icon">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" fill="white"/></svg>
+          </div>
+          <span class="s10-acct-name">CU Brokerage Account</span>
+        </div>
+        <div class="s10-alert">Market orders are filled instantly</div>
+        <div class="s10-divider"></div>
+        <div class="s10-meta">
+          <div class="s10-meta-col">
+            <span class="s10-meta-label">Date</span>
+            <span class="s10-meta-val">03/18/2026</span>
+          </div>
+          <div class="s10-meta-col">
+            <span class="s10-meta-label">Frequency</span>
+            <span class="s10-meta-val">Once</span>
+          </div>
+          <div class="s10-meta-col">
+            <span class="s10-meta-label">Service fee</span>
+            <span class="s10-meta-val">$0.28</span>
+          </div>
+        </div>
+      </div>
+      <!-- Card 2: Strategy breakdown -->
+      <div class="s10-card" id="s10-card-2" style="display:flex;flex-direction:column;gap:var(--sp-4);">
+        <div class="s10-row"><span class="s10-row-name">Sustainable Future</span><span class="s10-row-amt">$325.52</span></div>
+        <div class="s10-row"><span class="s10-row-name">Green Energy Innovations</span><span class="s10-row-amt">$289.75</span></div>
+        <div class="s10-row"><span class="s10-row-name">Quantum Computing Leaders</span><span class="s10-row-amt">$125.30</span></div>
+        <div class="s10-row"><span class="s10-row-name">AAPL GOOG Arb</span><span class="s10-row-amt">$89.99</span></div>
+      </div>
+      <!-- Success content — fades in after cards collapse -->
+      <div class="s10-merged-success" id="s10-merged-success">
+        <div class="s10-check-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path class="s10-check-path" d="M6 14.5L11.5 20L22 9" stroke="#059669" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="s10-merged-title">Order submitted</div>
+        <div class="s10-merged-sub">
+          Funds should be available immediately.<br>
+          Confirmation # <span>[888772]</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drag-to-confirm track -->
+    <div class="dtc-track" id="dtc-track">
+      <div class="dtc-fill" id="dtc-fill"></div>
+      <div class="dtc-label" id="dtc-label">Drag to confirm</div>
+      <div class="dtc-handle" id="dtc-handle">
+        <img class="dtc-logo" src="bcu-logo.png" alt="" style="object-fit:cover;pointer-events:none;"/>
+      </div>
+    </div>
+    <!-- Continue button — same pill dimensions, appears after success -->
+    <button class="s10-continue-btn" id="s10-continue-btn" onclick="goTo(0)">Continue</button>
+  </div>
+
+  <div class="s10-home"><div class="s10-home-bar"></div></div>
+</div>
+
+</div><!-- /phone -->
+
+<script>
+// ── State ────────────────────────────────────────────
+let current    = 0;      // 0=welcome, 'quiz'=shell, 7=loading, 8=results
+let quizStep   = 1;      // 1–8 (including interstitial at step 5)
+let selections = {};     // must be let — reset in goTo(0)
+let textTimer  = null;
+
+const MULTI_STEPS      = new Set([2, 3]); // multi-select question steps
+const INTERSTITIAL     = 5;               // interstitial panel (no dot advance)
+const TOTAL_STEPS      = 8;               // qc-1 … qc-8
+const TOTAL_DOTS       = 7;               // 7 real questions (interstitial excluded)
+
+const PORTFOLIOS = {
+  conservative:{
+    badge:'Conservative',name:'Capital Preservation',
+    desc:'Protects your savings with steady, low-risk returns.',
+    icon:'<path d="M10 3L4 7v4c0 3 2.7 5.4 6 6 3.3-.6 6-3 6-6V7l-6-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/>',
+    equities:20,bonds:65,cash:15,ret:'+3–5%/yr',risk:'Low',horizon:'< 3 years'
+  },
+  balanced:{
+    badge:'Balanced',name:'Balanced Growth',
+    desc:'A blend of stability and growth suited for medium-term goals.',
+    icon:'<circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 6v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+    equities:50,bonds:40,cash:10,ret:'+5–8%/yr',risk:'Medium',horizon:'3–7 years'
+  },
+  growth:{
+    badge:'Growth',name:'Growth Portfolio',
+    desc:'Long-term wealth building with manageable volatility.',
+    icon:'<path d="M3 14l4-5 3 2 3-4 4 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 6l3 0 0 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+    equities:70,bonds:20,cash:10,ret:'+8–12%/yr',risk:'Med–High',horizon:'7–15 years'
+  },
+  aggressive:{
+    badge:'Aggressive',name:'High-Growth Portfolio',
+    desc:'Maximum growth potential for investors comfortable with volatility.',
+    icon:'<path d="M10 3v8M10 3l-3 4M10 3l3 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 14s1-3 5-3 5 3 5 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+    equities:90,bonds:8,cash:2,ret:'+10–15%/yr',risk:'High',horizon:'15+ years'
+  }
+};
+
+const LOADING_MSGS = [
+  'Analyzing your answers…',
+  'Calculating your risk profile…',
+  'Calibrating for your timeline…',
+  'Finding your best match…'
+];
+
+// ── Boot ─────────────────────────────────────────────
+// Status bar injection
+document.querySelectorAll('.screen').forEach(s => {
+  if (s.querySelector('.status-bar')) return;
+  const tpl = document.getElementById('status-tpl').content.cloneNode(true);
+  s.insertBefore(tpl, s.firstChild);
+});
+
+// Progress dots — build once, then update classes in place
+function buildDots(id, step) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  // Build on first call (no children yet)
+  if (el.children.length === 0) {
+    for (let i = 0; i < TOTAL_DOTS; i++) {
+      const d = document.createElement('div');
+      d.className = 'pdot';
+      el.appendChild(d);
+    }
+  }
+  // Update classes in place
+  Array.from(el.children).forEach((d, i) => {
+    const idx = i + 1;
+    d.className = 'pdot' + (idx < step ? ' done' : idx === step ? ' active' : '');
+  });
+}
+buildDots('shell-dots', 1);
+updateShellBtn(1);
+
+// Set initial Q1 content visible (no transform)
+document.getElementById('qc-1').style.transform = 'translateX(0)';
+document.getElementById('qc-1').style.opacity   = '1';
+
+// Welcome entrance
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    document.getElementById('s0').classList.add('entered');
+    document.getElementById('welcome-area').classList.add('entered');
+  }, 80);
+});
+
+// ── Screen-level slide helper ─────────────────────────
+// iOS-style: sharp deceleration — motion feels instant, landing feels soft
+const EASE     = '0.30s cubic-bezier(0.25, 0, 0, 1)';
+const EASE_DUR = 300;
+
+function slideScreen(toEl, fromEl, dir) {
+  toEl.style.transition = 'none';
+  toEl.style.transform  = `translateX(${dir * 100}%)`;
+  toEl.getBoundingClientRect();
+  fromEl.style.transition = `transform ${EASE}`;
+  toEl.style.transition   = `transform ${EASE}`;
+  fromEl.style.transform  = `translateX(${-dir * 22}%)`;  // subtle parallax, not full push
+  toEl.style.transform    = 'translateX(0)';
+  setTimeout(() => {
+    fromEl.style.transition = 'none';
+    fromEl.style.transform  = `translateX(${dir > 0 ? '-100%' : '100%'})`;
+  }, EASE_DUR + 20);
+}
+
+// ── Top-level navigation ──────────────────────────────
+function goTo(n) {
+  // Welcome → Quiz shell
+  if (n === 1 && current === 0) {
+    const shell = document.getElementById('quiz-shell');
+    slideScreen(shell, document.getElementById('s0'), 1);
+    current = 'quiz'; quizStep = 1;
+    setTimeout(() => {
+      const qc = document.getElementById('qc-1');
+      qc.classList.remove('entered'); void qc.offsetWidth;
+      qc.classList.add('entered');
+    }, 150);
+    return;
+  }
+
+  // → Loading
+  if (n === 7) {
+    advancing = false;
+    const fromEl = current === 'quiz' ? document.getElementById('quiz-shell') : document.getElementById(`s${current}`);
+    const toEl   = document.getElementById('s7');
+    slideScreen(toEl, fromEl, 1);
+    current = 7;
+    if (textTimer) { clearInterval(textTimer); textTimer = null; } // clear any previous timer
+    setTimeout(() => startLoading(), 180);
+    setTimeout(() => { renderResult(); goToResults(); }, 3000);
+    return;
+  }
+
+  // → Welcome (from anywhere)
+  if (n === 0) {
+    const fromEl = current === 'quiz' ? document.getElementById('quiz-shell') : document.getElementById(`s${current}`);
+    const toEl   = document.getElementById('s0');
+    toEl.style.transition = 'none';
+    toEl.style.transform  = 'translateX(-100%)';
+    toEl.getBoundingClientRect();
+    fromEl.style.transition = `transform ${EASE}`;
+    toEl.style.transition   = `transform ${EASE}`;
+    fromEl.style.transform  = 'translateX(100%)';
+    toEl.style.transform    = 'translateX(0)';
+    current = 0;
+    setTimeout(() => {
+      fromEl.style.transition = 'none';
+      fromEl.style.transform  = 'translateX(100%)';
+      // Reset quiz for next run
+      quizStep = 1;
+      selections = {};
+      advancing = false;
+      buildDots('shell-dots', 1);
+      updateShellBtn(1);
+      for (let i = 1; i <= TOTAL_STEPS; i++) {
+        const qc = document.getElementById(`qc-${i}`);
+        if (!qc) continue;
+        qc.style.transition = 'none';
+        qc.style.transform  = i === 1 ? 'translateX(0)' : 'translateX(100%)';
+        qc.style.opacity    = '1';
+        qc.classList.remove('entered');
+        // Reset header + restore original title HTML (strips animation spans)
+        const hdr   = qc.querySelector('.q-header');
+        if (hdr) hdr.style.cssText = '';
+        const title = qc.querySelector('.q-title');
+        if (title && _titleOriginals.has(title)) title.innerHTML = _titleOriginals.get(title);
+        // Clear selected state, inline transition styles, re-enable pointer events
+        qc.querySelectorAll('.answer-pill').forEach(r => {
+          r.classList.remove('selected');
+          r.style.cssText = '';
+        });
+      }
+    }, EASE_DUR + 20);
+    setTimeout(() => {
+      const wa = document.getElementById('welcome-area');
+      wa.classList.remove('entered'); void wa.offsetWidth; wa.classList.add('entered');
+    }, 220);
+    return;
+  }
+}
+
+// ── Internal quiz content swap ────────────────────────
+// Per-step tint colours (cross-faded via body::after overlay)
+// Warm cream at step 1 → cooler blue-lavender by step 6
+const Q_TINTS = [
+  null,                          // 0 unused
+  null,                          // 1 — base, no tint
+  'rgba(212,228,255,0.12)',      // 2
+  'rgba(200,222,255,0.18)',      // 3
+  'rgba(188,214,255,0.22)',      // 4
+  'rgba(188,214,255,0.22)',      // 5 interstitial — same as 4
+  'rgba(178,208,255,0.26)',      // 6
+  'rgba(168,200,255,0.30)',      // 7
+  'rgba(158,192,255,0.34)',      // 8
+];
+
+function setQuizBackground(step) {
+  const style = document.createElement('style');
+  const tint  = Q_TINTS[step] ?? null;
+  // Fade out previous tint then swap
+  document.body.style.setProperty('--quiz-tint', tint ?? 'transparent');
+  // Use a transient <style> to update body::after background
+  const id = 'quiz-tint-style';
+  let el = document.getElementById(id);
+  if (!el) { el = document.createElement('style'); el.id = id; document.head.appendChild(el); }
+  el.textContent = tint
+    ? `body::after{background:radial-gradient(ellipse 80% 80% at 50% 100%, ${tint} 0%, transparent 100%);opacity:1;}`
+    : `body::after{opacity:0;}`;
+}
+
+function goToQuestion(n) {
+  if (n === quizStep) return;
+  advancing = false;
+  const dir    = n > quizStep ? 1 : -1;
+  const fromQc = document.getElementById(`qc-${quizStep}`);
+  const toQc   = document.getElementById(`qc-${n}`);
+
+  // Pulse ingredients briefly
+  const bgLayer = document.querySelector('.bg-layer');
+  bgLayer.classList.add('pulse');
+  setTimeout(() => bgLayer.classList.remove('pulse'), 260);
+  setQuizBackground(n);
+  quizStep = n;
+  updateShellChrome(n);
+
+  const EASE_OUT = 'cubic-bezier(0.36,0,0.66,0)';
+  const OUT_DUR  = 180;  // how long outgoing content animates out
+  const SWAP     = 130;  // when panels swap (before out fully finishes — avoids empty gap)
+
+  // Cancel any in-progress char animations from previous question
+  _charAnimTimers.forEach(clearTimeout);
+  _charAnimTimers = [];
+
+  // ── Outgoing header: drift up + fade ──────────────────
+  const fromHeader = fromQc.querySelector('.q-header');
+  if (fromHeader) {
+    fromHeader.style.transition = `transform ${OUT_DUR}ms ${EASE_OUT}, opacity ${OUT_DUR}ms ease-in`;
+    fromHeader.style.transform  = 'translateY(-10px)';
+    fromHeader.style.opacity    = '0';
+  }
+
+  // ── Outgoing pills: quick cascade up + fade ───────────
+  const fromPills = fromQc.querySelectorAll('.answer-pill');
+  fromPills.forEach((pill, i) => {
+    const d = `${i * 16}ms`;
+    pill.style.transition = `transform ${OUT_DUR}ms ${d} ${EASE_OUT}, opacity ${Math.round(OUT_DUR * 0.85)}ms ${d} ease-in`;
+    pill.style.transform  = 'translateY(-14px)';
+    pill.style.opacity    = '0';
+    pill.style.pointerEvents = 'none';
+  });
+
+  // ── Swap panels at SWAP ms (outgoing still fading — hides the cut) ──
+  setTimeout(() => {
+    // Park outgoing instantly off-screen
+    fromQc.style.transition = 'none';
+    fromQc.style.transform  = `translateX(${dir > 0 ? '-100%' : '100%'})`;
+    // Reset outgoing content for future reuse
+    fromQc.classList.remove('entered');
+    if (fromHeader) { fromHeader.style.cssText = ''; }
+    fromPills.forEach(p => { p.style.cssText = ''; });
+    // Restore original title HTML (strips any leftover animation spans)
+    const fromTitle = fromQc.querySelector('.q-title');
+    if (fromTitle && _titleOriginals.has(fromTitle)) fromTitle.innerHTML = _titleOriginals.get(fromTitle);
+
+    // Snap incoming panel into view (no transition — content will animate instead)
+    toQc.classList.remove('entered');
+    toQc.style.transition = 'none';
+    toQc.style.transform  = 'translateX(0)';
+    toQc.style.opacity    = '1';
+    if (toQc.scrollTop) toQc.scrollTop = 0;
+    // Hide title immediately so it never flashes plain text before animateTitle wraps it
+    const incomingTitle = toQc.querySelector('.q-title');
+    if (incomingTitle) incomingTitle.style.opacity = '0';
+    toQc.getBoundingClientRect(); // force reflow — commits the opacity:0 before next paint
+
+    // Trigger incoming content animations (header slideUp + pills pillIn)
+    // Double-rAF ensures the browser has committed the above before animating
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      toQc.classList.add('entered');
+      toQc.querySelectorAll('.answer-pill').forEach(r => { r.style.pointerEvents = ''; });
+      // Scramble the question title as it slides in
+      const title = toQc.querySelector('.q-title');
+      if (title) animateTitle(title);
+    }));
+  }, SWAP);
+}
+
+// ── Shell chrome helpers ──────────────────────────────
+function stepToDot(step) {
+  if (step <= 4) return step;
+  if (step === INTERSTITIAL) return 4; // interstitial keeps dot 4
+  return step - 1;                     // 6→5, 7→6, 8→7
+}
+
+function updateShellChrome(step) {
+  buildDots('shell-dots', stepToDot(step));
+  updateShellBtn(step);
+}
+
+function updateShellBtn(step) {
+  const bar = document.getElementById('quiz-bottom-bar');
+  if (!bar) return;
+  const needsBtn = MULTI_STEPS.has(step) || step === INTERSTITIAL;
+  bar.style.display = needsBtn ? 'block' : 'none';
+  if (!needsBtn) return;
+  const btn = document.getElementById('shell-btn');
+  if (!btn) return;
+  if (step === INTERSTITIAL) {
+    btn.classList.remove('disabled');
+  } else {
+    const hasSel = Array.isArray(selections[step]) && selections[step].length > 0;
+    btn.classList.toggle('disabled', !hasSel);
+  }
+}
+
+function shellBack() {
+  advancing = false;
+  if (quizStep === 1) { goTo(0); }
+  else { goToQuestion(quizStep - 1); }
+}
+
+function shellContinue() {
+  if (MULTI_STEPS.has(quizStep)) {
+    if (!Array.isArray(selections[quizStep]) || selections[quizStep].length === 0) return;
+  }
+  if (quizStep === TOTAL_STEPS) { triggerMagic(); }
+  else { goToQuestion(quizStep + 1); }
+}
+
+// ── Press / release scale effect ─────────────────────
+let pressingPill = null;
+
+document.addEventListener('pointerdown', e => {
+  const pill = e.target.closest('.answer-pill');
+  if (!pill || pill.style.pointerEvents === 'none') return;
+  pressingPill = pill;
+  pill.style.transition = 'transform 0.07s cubic-bezier(0.4,0,1,1), box-shadow 0.07s ease';
+  pill.style.transform  = 'scale(0.95)';
+  pill.style.boxShadow  = 'rgba(10,13,18,.03) 0 2px 6px -2px';
+}, {passive:true});
+
+function releasePill() {
+  if (!pressingPill) return;
+  const p = pressingPill; pressingPill = null;
+  p.style.transition = 'transform 0.38s cubic-bezier(0.34,1.25,0.64,1), box-shadow 0.25s ease';
+  p.style.transform  = 'scale(1)';
+  p.style.boxShadow  = '';
+  setTimeout(() => { if (p.style.transform === 'scale(1)') { p.style.transition = ''; p.style.transform = ''; } }, 400);
+}
+
+document.addEventListener('pointerup',     releasePill, {passive:true});
+document.addEventListener('pointercancel', releasePill, {passive:true});
+
+// ── Interactions ──────────────────────────────────────
+function tap(btn) {
+  const r  = document.createElement('span');
+  r.className = 'ripple';
+  const sz = Math.max(btn.offsetWidth, btn.offsetHeight) * 1.5;
+  r.style.cssText = `width:${sz}px;height:${sz}px;top:50%;left:50%;margin:-${sz/2}px 0 0 -${sz/2}px;`;
+  btn.appendChild(r);
+  setTimeout(() => r.remove(), 500);
+}
+
+let advancing = false;
+
+function selectAnswer(step, idx) {
+  // ── Multi-select: toggle, no auto-advance ─────────
+  if (MULTI_STEPS.has(step)) {
+    if (!Array.isArray(selections[step])) selections[step] = [];
+    const rows = document.querySelectorAll(`#answers-${step} .answer-pill`);
+    const row  = rows[idx];
+    const was  = row.classList.contains('selected');
+    row.classList.toggle('selected', !was);
+    if (was) {
+      selections[step] = selections[step].filter(i => i !== idx);
+    } else {
+      selections[step].push(idx);
+      if (navigator.vibrate) navigator.vibrate(5);
+    }
+    updateShellBtn(step);
+    return;
+  }
+
+  // ── Single-select: auto-advance ───────────────────
+  if (advancing) return;
+  advancing = true;
+  selections[step] = idx;
+  if (navigator.vibrate) navigator.vibrate(8);
+
+  document.querySelectorAll(`#answers-${step} .answer-pill`).forEach((c, i) => {
+    c.classList.toggle('selected', i === idx);
+    c.style.pointerEvents = 'none';
+  });
+
+  releasePill(); // ensure spring-back before we transition
+  const isLast = step === TOTAL_STEPS;
+  const delay  = isLast ? 440 : 320;
+  setTimeout(() => {
+    if (isLast) { triggerMagic(); }
+    else { goToQuestion(step + 1); }
+  }, delay);
+}
+
+function triggerMagic() {
+  if (navigator.vibrate) navigator.vibrate([6, 30, 12]);
+  const btn = document.getElementById('shell-btn');
+  if (btn) {
+    btn.classList.add('tap-release');
+    setTimeout(() => { btn.classList.remove('tap-release'); btn.classList.add('glowing'); }, 200);
+    setTimeout(() => { btn.classList.remove('glowing'); goTo(7); }, 620);
+  } else {
+    setTimeout(() => goTo(7), 300);
+  }
+}
+
+// ── Loading ───────────────────────────────────────────
+let msgIdx = 0;
+function startLoading() {
+  const bar = document.getElementById('loading-progress');
+  bar.style.transition = 'none'; bar.style.width = '0%';
+  bar.getBoundingClientRect();
+  bar.style.transition = 'width 2.8s cubic-bezier(0.1,0,0.35,1)';
+  bar.style.width = '96%';
+
+  msgIdx = 0;
+  const el = document.getElementById('loading-text');
+  el.style.opacity = '1'; el.textContent = LOADING_MSGS[0];
+
+  textTimer = setInterval(() => {
+    const t = document.getElementById('loading-text');
+    if (!t) return;
+    t.style.opacity = '0';
+    setTimeout(() => {
+      msgIdx = (msgIdx + 1) % LOADING_MSGS.length;
+      t.textContent = LOADING_MSGS[msgIdx]; t.style.opacity = '1';
+    }, 300);
+  }, 750);
+}
+
+// ── Results ───────────────────────────────────────────
+function goToResults() {
+  const fromEl = document.getElementById('s7');
+  const toEl   = document.getElementById('s8');
+  toEl.style.transition = 'none'; toEl.style.transform = 'translateY(100%)';
+  toEl.getBoundingClientRect();
+  // Transform-only on both — single compositor pass, no jank
+  fromEl.style.transition = 'transform 0.38s cubic-bezier(0.36,0,0.66,0)';
+  fromEl.style.transform  = 'translateY(-6%)';
+  toEl.style.transition   = 'transform 0.44s cubic-bezier(0.25,0,0,1)';
+  toEl.style.transform    = 'translateY(0)';
+  current = 8;
+  setTimeout(() => {
+    fromEl.style.transition = 'none';
+    fromEl.style.transform  = 'translateX(-100%)';
+  }, 460);
+}
+
+function calcPortfolio() {
+  const r = [0,1,2,3][selections[3] ?? 1];
+  const t = [0,1,2,3,4][selections[2] ?? 2];
+  const s = r + t;
+  if (s <= 1) return 'conservative';
+  if (s <= 3) return 'balanced';
+  if (s <= 5) return 'growth';
+  return 'aggressive';
+}
+
+function goToConfirm() {
+  const fromEl = document.getElementById('s8');
+  const toEl   = document.getElementById('s10');
+  toEl.style.transition = 'none'; toEl.style.transform = 'translateX(100%)';
+  toEl.getBoundingClientRect();
+  fromEl.style.transition = 'transform 0.30s cubic-bezier(0.36,0,0.66,0)';
+  fromEl.style.transform  = 'translateX(-22%)';
+  toEl.style.transition   = 'transform 0.38s cubic-bezier(0.25,0,0,1)';
+  toEl.style.transform    = 'translateX(0)';
+  current = 10;
+  setTimeout(() => {
+    fromEl.style.transition = 'none';
+    fromEl.style.transform  = 'translateX(-100%)';
+  }, 420);
+}
+
+function goBackFromS10() {
+  const fromEl = document.getElementById('s10');
+  const toEl   = document.getElementById('s8');
+  toEl.style.transition = 'none'; toEl.style.transform = 'translateX(-100%)';
+  toEl.getBoundingClientRect();
+  fromEl.style.transition = 'transform 0.30s cubic-bezier(0.36,0,0.66,0)';
+  fromEl.style.transform  = 'translateX(100%)';
+  toEl.style.transition   = 'transform 0.38s cubic-bezier(0.25,0,0,1)';
+  toEl.style.transform    = 'translateX(0)';
+  current = 8;
+  setTimeout(() => {
+    fromEl.style.transition = 'none';
+    fromEl.style.transform  = 'translateX(100%)';
+  }, 420);
+}
+
+// ── Drag-to-confirm (in-place loading + card merge) ────
+(function() {
+  const track       = document.getElementById('dtc-track');
+  const handle      = document.getElementById('dtc-handle');
+  const logo        = handle.querySelector('.dtc-logo');
+  const fill        = document.getElementById('dtc-fill');
+  const label       = document.getElementById('dtc-label');
+  const wrapper     = document.getElementById('s10-cards-wrapper');
+  const card1       = document.getElementById('s10-card-1');
+  const card2       = document.getElementById('s10-card-2');
+  const mergedSuc   = document.getElementById('s10-merged-success');
+  const continueBtn = document.getElementById('s10-continue-btn');
+  const scroll      = document.querySelector('#s10 .s10-scroll');
+
+  let dragging   = false;
+  let startClientX = 0;
+  let currentX   = 0;
+  let currentRot = 0;
+
+  function maxX() { return track.offsetWidth - handle.offsetWidth - 8; }
+  function cX(e)  { return e.touches ? e.touches[0].clientX : e.clientX; }
+  function rotDeg(x){ const m = maxX(); return m > 0 ? (x/m)*360 : 0; }
+
+  function snap(toEnd) {
+    const max = maxX();
+    track.classList.remove('is-dragging');
+
+    if (!toEnd) {
+      // Spring back
+      handle.style.transition = 'transform 0.52s cubic-bezier(0.34,1.2,0.64,1)';
+      fill.style.transition   = 'transform 0.52s cubic-bezier(0.34,1.2,0.64,1)';
+      label.style.transition  = 'opacity 0.3s ease';
+      handle.style.transform  = 'translateX(0) rotate(0deg)';
+      fill.style.transform    = 'scaleX(0)';
+      label.style.opacity     = '1';
+      currentX = 0; currentRot = 0;
+      return;
+    }
+
+    // ── Snap to end ──
+    handle.style.transition = 'transform 0.28s cubic-bezier(0.25,0,0,1)';
+    fill.style.transition   = 'transform 0.28s cubic-bezier(0.25,0,0,1)';
+    label.style.transition  = 'opacity 0.15s ease';
+    handle.style.transform  = `translateX(${max}px) rotate(360deg)`;
+    fill.style.transform    = 'scaleX(1)';
+    label.style.opacity     = '0';
+    currentX = max; currentRot = 360;
+
+    // ── Phase 1: center handle + spin logo + label → "Confirming transfer" ──
+    setTimeout(() => {
+      const centerX = Math.round((track.offsetWidth / 2) - (handle.offsetWidth / 2) - 4);
+      handle.style.transition = 'transform 0.45s cubic-bezier(0.25,0,0,1)';
+      handle.style.transform  = `translateX(${centerX}px) rotate(0deg)`;
+      track.classList.add('loading');
+      label.textContent = 'Confirming transfer…';
+    }, 320);
+
+    // ── Phase 2 (t=2.8s): gap collapses → unified card appearance ──
+    setTimeout(() => {
+      wrapper.classList.add('merging');
+
+      // Lock card heights before collapse
+      card1.style.height   = card1.offsetHeight + 'px';
+      card2.style.height   = card2.offsetHeight + 'px';
+      card1.style.overflow = 'hidden';
+      card2.style.overflow = 'hidden';
+
+      // ── Phase 3 (t+380ms): cards collapse, DTC track shrinks away ──
+      setTimeout(() => {
+        const cardTrans = 'height 0.38s ease, opacity 0.26s ease, padding 0.38s ease';
+        card1.style.transition = cardTrans;
+        card2.style.transition = cardTrans;
+        card1.style.height  = '0'; card1.style.opacity = '0'; card1.style.padding = '0';
+        card2.style.height  = '0'; card2.style.opacity = '0'; card2.style.padding = '0';
+
+        // fade + collapse track so it vacates its flex space
+        track.style.opacity      = '0';
+        track.style.height       = '0';
+        track.style.marginTop    = '0';
+        track.style.pointerEvents = 'none';
+
+        // ── Phase 4 (t+420ms): center screen + success content + Continue ──
+        setTimeout(() => {
+          scroll.classList.add('s10-success-state');
+          // display:flex first so element enters layout, then transition on next frame
+          mergedSuc.style.display = 'flex';
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            mergedSuc.classList.add('visible');
+          }));
+          continueBtn.classList.add('visible');
+        }, 420);
+      }, 380);
+    }, 2800);
+  }
+
+  function onStart(e) {
+    dragging = true;
+    track.classList.add('is-dragging');
+    startClientX = cX(e) - currentX;
+    handle.style.transition = 'none';
+    fill.style.transition   = 'none';
+    label.style.transition  = 'none';
+  }
+
+  function onMove(e) {
+    if (!dragging) return;
+    if (e.cancelable) e.preventDefault();
+    const raw = cX(e) - startClientX;
+    const max = maxX();
+    currentX   = Math.max(0, Math.min(raw, max));
+    currentRot = rotDeg(currentX);
+    const p    = max > 0 ? currentX / max : 0;
+    handle.style.transform = `translateX(${currentX}px) rotate(${currentRot}deg)`;
+    fill.style.transform   = `scaleX(${p})`;
+    label.style.opacity    = Math.max(0, 1 - p * 2.2);
+  }
+
+  function onEnd() {
+    if (!dragging) return;
+    dragging = false;
+    snap(currentX / maxX() >= 0.82);
+  }
+
+  handle.addEventListener('mousedown',  onStart);
+  handle.addEventListener('touchstart', onStart, { passive: true });
+  window.addEventListener('mousemove',  onMove);
+  window.addEventListener('touchmove',  onMove, { passive: false });
+  window.addEventListener('mouseup',    onEnd);
+  window.addEventListener('touchend',   onEnd);
+
+  // Full reset when re-entering s10
+  const _origGoToConfirm = window.goToConfirm;
+  window.goToConfirm = function() {
+    _origGoToConfirm();
+    setTimeout(() => {
+      // Reset drag
+      currentX = 0; currentRot = 0;
+      track.classList.remove('is-dragging', 'loading');
+      track.style.opacity = ''; track.style.height = ''; track.style.marginTop = ''; track.style.pointerEvents = '';
+      handle.style.transition = 'none';
+      fill.style.transition   = 'none';
+      label.style.transition  = 'none';
+      handle.style.transform  = 'translateX(0) rotate(0deg)';
+      fill.style.transform    = 'scaleX(0)';
+      label.style.opacity     = '1';
+      label.textContent       = 'Drag to confirm';
+      // Reset merge + success state
+      scroll.classList.remove('s10-success-state');
+      wrapper.classList.remove('merging');
+      card1.style.cssText = ''; card2.style.cssText = '';
+      mergedSuc.classList.remove('visible');
+      mergedSuc.style.display = '';
+      continueBtn.classList.remove('visible');
+    }, 420);
+  };
+})();
+
+// ── Per-character spring-bounce entrance ─────────────
+// Each letter pops in from below with spring overshoot, left-to-right stagger
+const _titleOriginals = new WeakMap(); // stores original innerHTML per element
+let _charAnimTimers = [];
+
+function animateTitle(el) {
+  // Cancel any in-progress char animations
+  _charAnimTimers.forEach(clearTimeout);
+  _charAnimTimers = [];
+
+  // Cache the original clean HTML on first visit (before we inject spans)
+  if (!_titleOriginals.has(el)) _titleOriginals.set(el, el.innerHTML);
+  const origHTML = _titleOriginals.get(el);
+
+  // Split at <br> to preserve line breaks, then process char-by-char per line
+  const lines = origHTML.split(/<br\s*\/?>/i);
+  let ci = 0; // global char index (spaces included — keeps visual timing honest)
+
+  const builtLines = lines.map(line =>
+    [...line].map(ch => {
+      if (ch === ' ') {
+        ci++; // advance timing slot but don't wrap — space appears instantly
+        return ' ';
+      }
+      const i = ci++;
+      // Start: below + invisible + slightly scaled down for that "pop" feel
+      return `<span data-ci="${i}" style="display:inline-block;opacity:0;transform:translateY(16px) scale(0.75)">${ch}</span>`;
+    }).join('')
+  );
+
+  el.innerHTML = builtLines.join('<br>');
+  el.style.opacity = '1'; // chars are opacity:0 via spans — container must be visible
+
+  const STAGGER    = 4;   // ms between each character
+  const SPRING_DUR = 180; // ms for the spring animation itself
+  const INITIAL_DELAY = 500; // ms before the first character fires
+
+  el.querySelectorAll('[data-ci]').forEach(span => {
+    const delay = INITIAL_DELAY + parseInt(span.dataset.ci) * STAGGER;
+    const id = setTimeout(() => {
+      span.style.transition = `transform ${SPRING_DUR}ms cubic-bezier(0.34,1.2,0.64,1), opacity ${SPRING_DUR}ms ease`;
+      span.style.transform  = 'translateY(0) scale(1)';
+      span.style.opacity    = '1';
+    }, delay);
+    _charAnimTimers.push(id);
+  });
+}
+
+function s9SegClick(btn) {
+  document.querySelectorAll('.s9-seg-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function renderResult() {
+  if (textTimer) { clearInterval(textTimer); textTimer = null; }
+  // Reset scroll position for s8
+  const scroll = document.querySelector('.s8-scroll');
+  if (scroll) scroll.scrollTop = 0;
+  // Wire up period tab interactions
+  document.querySelectorAll('.s8-prd').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.s8-prd').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+    });
+  });
+  goToResults();
+}
+</script>
+</body>
+</html>
