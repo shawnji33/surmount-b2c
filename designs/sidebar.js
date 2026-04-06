@@ -32,7 +32,7 @@ const NAV_ITEMS = [
   {
     key: 'home',
     label: 'Home',
-    href: '/homepage.html',
+    href: '../home/homepage.html',
     icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8.65487 1.84268C8.42065 1.66051 8.30354 1.56943 8.17423 1.53442C8.06013 1.50352 7.93987 1.50352 7.82577 1.53442C7.69646 1.56943 7.57935 1.66051 7.34513 1.84268L2.82359 5.35943C2.52135 5.59451 2.37022 5.71205 2.26135 5.85925C2.16491 5.98964 2.09307 6.13654 2.04935 6.29272C2 6.46903 2 6.66048 2 7.04338V11.8667C2 12.6134 2 12.9868 2.14532 13.272C2.27316 13.5229 2.47713 13.7268 2.72801 13.8547C3.01323 14 3.3866 14 4.13333 14H5.46667C5.65335 14 5.74669 14 5.818 13.9637C5.88072 13.9317 5.93171 13.8807 5.96367 13.818C6 13.7467 6 13.6534 6 13.4667V9.06667C6 8.6933 6 8.50662 6.07266 8.36401C6.13658 8.23857 6.23857 8.13658 6.36401 8.07267C6.50661 8 6.6933 8 7.06667 8H8.93333C9.3067 8 9.49339 8 9.63599 8.07267C9.76144 8.13658 9.86342 8.23857 9.92734 8.36401C10 8.50662 10 8.6933 10 9.06667V13.4667C10 13.6534 10 13.7467 10.0363 13.818C10.0683 13.8807 10.1193 13.9317 10.182 13.9637C10.2533 14 10.3466 14 10.5333 14H11.8667C12.6134 14 12.9868 14 13.272 13.8547C13.5229 13.7268 13.7268 13.5229 13.8547 13.272C14 12.9868 14 12.6134 14 11.8667V7.04338C14 6.66048 14 6.46903 13.9506 6.29272C13.9069 6.13654 13.8351 5.98964 13.7386 5.85925C13.6298 5.71205 13.4787 5.59451 13.1764 5.35943L8.65487 1.84268Z" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>`
   },
   {
@@ -44,13 +44,13 @@ const NAV_ITEMS = [
   {
     key: 'builder',
     label: 'Strategy Builder',
-    href: '/create.html',
+    href: '../create/create.html',
     icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><g clip-path="url(#sb_nav_clip)"><path d="M8.66666 9.33333L6.66666 7.33333M10.0069 2.33333V1.33333M12.6331 3.37377L13.3402 2.66666M12.6331 8.66666L13.3402 9.37377M7.34023 3.37377L6.63313 2.66666M13.6736 5.99999H14.6736M4.08758 13.9124L10.2458 7.75424C10.5098 7.49023 10.6418 7.35822 10.6912 7.20601C10.7347 7.07211 10.7347 6.92788 10.6912 6.79398C10.6418 6.64176 10.5098 6.50976 10.2458 6.24575L9.75425 5.75424C9.49023 5.49023 9.35823 5.35823 9.20601 5.30877C9.07211 5.26526 8.92788 5.26526 8.79399 5.30877C8.64177 5.35823 8.50976 5.49023 8.24575 5.75424L2.08758 11.9124C1.82357 12.1764 1.69156 12.3084 1.6421 12.4606C1.5986 12.5945 1.5986 12.7388 1.6421 12.8727C1.69156 13.0249 1.82357 13.1569 2.08758 13.4209L2.57908 13.9124C2.8431 14.1764 2.9751 14.3084 3.12732 14.3579C3.26122 14.4014 3.40545 14.4014 3.53934 14.3579C3.69156 14.3084 3.82357 14.1764 4.08758 13.9124Z" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="sb_nav_clip"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>`
   },
   {
     key: 'advisors',
     label: 'Find an Advisor',
-    href: '/find-advisor.html',
+    href: '../advisor/find-advisor.html',
     icon: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><path d="M1 14c0-2.761 2.239-5 5-5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/><path d="M11 9l1.5 1.5L15 8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.25"/></svg>`
   }
 ];
@@ -86,7 +86,7 @@ class AppSidebar extends HTMLElement {
     this.innerHTML = `
       <nav class="app-sidebar">
         <div class="app-sidebar-top">
-          <div class="app-sidebar-logo" onclick="sidebarNavigate('/homepage.html')">${SIDEBAR_LOGO}</div>
+          <div class="app-sidebar-logo" onclick="sidebarNavigate('../home/homepage.html')">${SIDEBAR_LOGO}</div>
           <div class="app-sidebar-nav">${navItems}</div>
         </div>
         <div class="sidebar-avatar">
