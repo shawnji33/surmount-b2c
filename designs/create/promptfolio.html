@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Promptfolio — Surmount</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="sidebar.js"></script>
+<script src="../sidebar.js"></script>
 <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1884,7 +1884,7 @@ html,body{height:100%;overflow:hidden;background:var(--color-surface-subtle);fon
       <div class="ai-heading-row">
         <div class="ai-title-line">
           <div class="ai-badge">
-            <img src="assets/Badge.svg" alt="Surmount AI" style="height:26px;width:auto;display:block;">
+            <img src="../assets/Badge.svg" alt="Surmount AI" style="height:26px;width:auto;display:block;">
           </div>
           <h1 class="ai-title" id="ai-title"><span id="splash-text"></span><span class="splash-cursor" id="splash-cursor"></span></h1>
         </div>
@@ -1996,7 +1996,7 @@ html,body{height:100%;overflow:hidden;background:var(--color-surface-subtle);fon
     <div class="res-left">
       <!-- Header -->
       <div class="res-chat-header">
-        <img src="assets/Badge.svg" alt="Surmount AI" style="height:26px;display:block;flex-shrink:0;">
+        <img src="../assets/Badge.svg" alt="Surmount AI" style="height:26px;display:block;flex-shrink:0;">
       </div>
       <!-- Messages -->
       <div class="chat-messages" id="chat-messages"></div>
@@ -2258,7 +2258,7 @@ html,body{height:100%;overflow:hidden;background:var(--color-surface-subtle);fon
         <div class="pay-with-row">
           <button class="broker-select">
             <div class="broker-avatar">
-              <img src="assets/brokers/robinhood.png" alt="Robinhood"/>
+              <img src="../assets/brokers/robinhood.png" alt="Robinhood"/>
             </div>
             <span class="broker-name-text">Robinhood</span>
             <span class="broker-chevron"><svg viewBox="0 0 16 16"><polyline points="4 6 8 10 12 6"/></svg></span>
@@ -2284,7 +2284,7 @@ html,body{height:100%;overflow:hidden;background:var(--color-surface-subtle);fon
           <div class="review-meta-col">
             <span class="review-meta-label">Account</span>
             <div class="review-meta-value">
-              <img class="review-broker-logo" src="assets/brokers/robinhood.png" alt="Robinhood"/>
+              <img class="review-broker-logo" src="../assets/brokers/robinhood.png" alt="Robinhood"/>
               <span>Robinhood</span>
             </div>
           </div>
@@ -2728,7 +2728,7 @@ const STREAM_TEXT = `I'll build a portfolio focused on companies at the forefron
     const segs = Array.from({length:8},(_,i)=>`<div class="res-rel-seg${i<filled?' filled':''}"></div>`).join('');
     tr.innerHTML = `
       <td><div class="res-ticker-cell">
-        <div class="res-logo"><img src="assets/logos/${d.tick}.webp" alt="${d.tick}"></div>
+        <div class="res-logo"><img src="../assets/logos/${d.tick}.webp" alt="${d.tick}"></div>
         <div><span class="res-ticker">${d.tick}</span><span class="res-co">${d.co}</span></div>
       </div></td>
       <td><span class="res-cap">${d.cap}</span></td>
@@ -2771,7 +2771,7 @@ function chatAppendMsg(html, side){
   return wrap;
 }
 function chatShowTyping(){
-  const el = chatAppendMsg('<div class="chat-typing"><video src="assets/loader_grey.mp4" autoplay loop muted playsinline></video></div>','ai');
+  const el = chatAppendMsg('<div class="chat-typing"><video src="../assets/loader_grey.mp4" autoplay loop muted playsinline></video></div>','ai');
   return el;
 }
 function chatReplaceTyping(typingEl, text){
