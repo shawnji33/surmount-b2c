@@ -201,7 +201,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font-family-body);color:
       </button>
     </div>
     <div class="modal-cards">
-      <div class="builder-card selected" data-href="no-code-builder-v4.html" onclick="selectBuilder(this,'ETF Builder','Our simplest and most intuitive builder for creating basic strategies & portfolios with just a few clicks.')">
+      <div class="builder-card selected" data-href="no-code-builder.html" onclick="selectBuilder(this,'ETF Builder','Our simplest and most intuitive builder for creating basic strategies & portfolios with just a few clicks.')">
         <div class="builder-card-radio"></div>
         <div class="builder-card-icon">
           <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -212,7 +212,7 @@ html,body{height:100%;overflow:hidden;font-family:var(--font-family-body);color:
         </div>
         <div class="builder-card-desc">Select and weight ETFs visually. No programming required.</div>
       </div>
-      <div class="builder-card" data-href="no-code-builder.html" onclick="selectBuilder(this,'No-Code Builder','Build rule-based strategies without writing a single line of code.')">
+      <div class="builder-card" data-href="etf-builder.html" onclick="selectBuilder(this,'No-Code Builder','Build rule-based strategies without writing a single line of code.')">
         <div class="builder-card-radio"></div>
         <div class="builder-card-icon">
           <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2v-4M9 21H5a2 2 0 01-2-2v-4m0 0h18"/></svg>
@@ -719,7 +719,7 @@ function selectBuilder(card, name, desc) {
 
 function goToBuilder() {
   const selected = document.querySelector('.builder-card.selected');
-  const href = selected ? (selected.dataset.href || 'no-code-builder-v4.html') : 'no-code-builder-v4.html';
+  const href = selected ? (selected.dataset.href || 'no-code-builder.html') : 'no-code-builder.html';
   window.location.href = href;
 }
 
