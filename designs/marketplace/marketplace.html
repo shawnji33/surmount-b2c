@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surmount — Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="../sidebar.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --color-brand-600:#406AD0;
+  --color-brand-50:#EEF3FC;
+  --color-text-primary:#181D27;
+  --color-text-secondary:#414651;
+  --color-text-tertiary:#717680;
+  --color-border-default:#E9EAEB;
+  --color-border-strong:#D5D7DA;
+  --color-surface:#FFFFFF;
+  --color-surface-subtle:#FAFAFA;
+  --color-success-text:#316434;
+  --color-success-bg:#DCFCE7;
+  --color-success-dot:#16A34A;
+  --font-display:'Inter',sans-serif;
+  --font-body:'Geist',system-ui,sans-serif;
+  --radius-sm:6px;
+  --radius-md:8px;
+  --radius-lg:12px;
+  --radius-full:9999px;
+  --shadow-card:0 1px 3px rgba(10,13,18,0.06),0 1px 2px rgba(10,13,18,0.04);
+  --shadow-sm:0 1px 2px rgba(10,13,18,0.05);
+}
+
+html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--font-body);color:var(--color-text-primary);}
+
+/* ── Shell ── */
+.shell{display:flex;height:100vh;overflow:hidden;}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── Page header ── */
+.page-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 24px;
+  border-bottom:1px solid var(--color-border-default);
+  background:var(--color-surface);
+  flex-shrink:0;
+  gap:16px;
+}
+.page-title{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--color-text-primary);letter-spacing:-0.3px;}
+
+.search-bar{
+  display:flex;align-items:center;gap:8px;
+  border:1px solid var(--color-border-default);
+  border-radius:var(--radius-md);
+  padding:7px 12px;
+  background:var(--color-surface);
+  width:260px;
+  transition:border-color .12s;
+  cursor:text;
+}
+.search-bar:focus-within{border-color:var(--color-brand-600);}
+.search-bar svg{flex-shrink:0;color:var(--color-text-tertiary);}
+.search-bar input{
+  border:none;outline:none;background:transparent;
+  font-family:var(--font-body);font-size:14px;color:var(--color-text-primary);
+  flex:1;min-width:0;
+}
+.search-bar input::placeholder{color:var(--color-text-tertiary);}
+.search-kbd{
+  font-family:var(--font-body);font-size:11px;font-weight:500;
+  color:var(--color-text-tertiary);
+  background:var(--color-surface-subtle);
+  border:1px solid var(--color-border-default);
+  border-radius:4px;padding:1px 5px;white-space:nowrap;flex-shrink:0;
+}
+
+/* ── Tabs ── */
+.tabs{
+  display:flex;border-bottom:1px solid var(--color-border-default);
+  background:var(--color-surface);padding:0 24px;flex-shrink:0;
+}
+.tab-btn{
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:var(--color-text-tertiary);
+  padding:12px 16px;border:none;background:transparent;cursor:pointer;
+  position:relative;transition:color .12s;letter-spacing:-0.1px;
+}
+.tab-btn::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;
+  background:var(--color-brand-600);border-radius:2px 2px 0 0;
+  opacity:0;transition:opacity .12s;
+}
+.tab-btn.active{color:var(--color-text-primary);}
+.tab-btn.active::after{opacity:1;}
+.tab-btn:hover{color:var(--color-text-primary);}
+
+/* ── Scrollable content ── */
+.content{flex:1;overflow-y:auto;padding:24px;}
+.content::-webkit-scrollbar{width:6px;}
+.content::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb{background:var(--color-border-strong);border-radius:3px;}
+
+/* ── Featured categories ── */
+.section-title{font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--color-text-primary);margin-bottom:12px;letter-spacing:-0.2px;}
+
+.categories-scroll{
+  display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.categories-scroll::-webkit-scrollbar{display:none;}
+
+.category-card{
+  flex-shrink:0;width:128px;height:80px;border-radius:var(--radius-md);
+  position:relative;overflow:hidden;cursor:pointer;
+  transition:transform .15s,box-shadow .15s;
+}
+.category-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+.category-card-bg{position:absolute;inset:0;background-size:cover;background-position:center;}
+.category-card-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,0.35) 0%,rgba(0,0,0,0.1) 100%);}
+.category-card-label{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:13px;font-weight:600;
+  color:#fff;text-align:center;padding:8px;line-height:1.3;letter-spacing:-0.2px;
+  text-shadow:0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Category gradient backgrounds */
+.cat-popular{background:linear-gradient(135deg,#c2410c 0%,#ea580c 40%,#f59e0b 100%);}
+.cat-gainers{background:linear-gradient(135deg,#15803d 0%,#16a34a 40%,#4ade80 100%);}
+.cat-crypto{background:linear-gradient(135deg,#1d4ed8 0%,#7c3aed 60%,#a855f7 100%);}
+.cat-longterm{background:linear-gradient(135deg,#92400e 0%,#b45309 50%,#d97706 100%);}
+.cat-equity{background:linear-gradient(135deg,#166534 0%,#15803d 50%,#86efac 100%);}
+.cat-quantum{background:linear-gradient(135deg,#0e7490 0%,#0369a1 50%,#38bdf8 100%);}
+.cat-copy{background:linear-gradient(135deg,#6d28d9 0%,#7c3aed 50%,#c084fc 100%);}
+.cat-ai{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4f46e5 100%);}
+.cat-swing{background:linear-gradient(135deg,#92400e 0%,#d97706 50%,#fbbf24 100%);}
+
+/* ── Filter bar ── */
+.filter-bar{
+  display:flex;align-items:center;gap:10px;
+  margin:20px 0 16px;
+}
+.filter-search{
+  display:flex;align-items:center;gap:8px;
+  border:1px solid var(--color-border-default);
+  border-radius:var(--radius-md);padding:7px 12px;
+  background:var(--color-surface);flex:1;max-width:280px;
+  transition:border-color .12s;
+}
+.filter-search:focus-within{border-color:var(--color-brand-600);}
+.filter-search svg{flex-shrink:0;color:var(--color-text-tertiary);}
+.filter-search input{
+  border:none;outline:none;background:transparent;
+  font-family:var(--font-body);font-size:13px;color:var(--color-text-primary);flex:1;
+}
+.filter-search input::placeholder{color:var(--color-text-tertiary);}
+
+.filter-controls{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.filter-select{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid var(--color-border-default);border-radius:var(--radius-md);
+  padding:7px 10px;background:var(--color-surface);cursor:pointer;
+  font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--color-text-secondary);
+  transition:border-color .12s;white-space:nowrap;
+}
+.filter-select:hover{border-color:var(--color-border-strong);}
+.filter-select svg{flex-shrink:0;color:var(--color-text-tertiary);}
+
+.filter-btn{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid var(--color-border-default);border-radius:var(--radius-md);
+  padding:7px 12px;background:var(--color-surface);cursor:pointer;
+  font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--color-text-secondary);
+  transition:border-color .12s, background .12s;
+}
+.filter-btn:hover{border-color:var(--color-border-strong);background:var(--color-surface-subtle);}
+
+/* ── Strategy grid ── */
+.strategy-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+}
+@media(max-width:900px){.strategy-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ── Strategy card ── */
+.strategy-card{
+  background:var(--color-surface);
+  border:1px solid var(--color-border-default);
+  border-radius:var(--radius-md);
+  overflow:hidden;cursor:pointer;
+  transition:box-shadow .15s,transform .15s,border-color .15s;
+  box-shadow:var(--shadow-card);
+  text-decoration:none;color:inherit;display:block;
+}
+.strategy-card:hover{
+  box-shadow:0 8px 24px rgba(10,13,18,0.1);
+  transform:translateY(-2px);
+  border-color:var(--color-border-strong);
+}
+
+.strategy-cover{
+  position:relative;height:132px;overflow:hidden;
+}
+.strategy-cover img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .3s;
+}
+.strategy-card:hover .strategy-cover img{transform:scale(1.03);}
+.strategy-cover-gradient{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(20,14,0,0) 30%,rgba(20,14,0,0.55) 100%);
+}
+.strategy-cover-name{
+  position:absolute;bottom:12px;left:14px;right:14px;
+  font-family:var(--font-display);font-size:14px;font-weight:600;
+  color:#fff;line-height:1.3;letter-spacing:-0.2px;
+  text-shadow:0 1px 4px rgba(0,0,0,0.5);
+}
+
+.strategy-info{
+  padding:14px 14px 16px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.strategy-row{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.strategy-row-label{
+  font-family:var(--font-body);font-size:13px;color:var(--color-text-tertiary);font-weight:400;
+}
+.strategy-row-value{
+  font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--color-text-primary);
+}
+.strategy-row-value.positive{color:var(--color-success-text);}
+
+.holdings-avatars{
+  display:flex;align-items:center;flex-direction:row-reverse;
+}
+.holding-av{
+  width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--color-surface);
+  background:var(--color-surface-subtle);
+  overflow:hidden;margin-left:-5px;flex-shrink:0;
+  box-shadow:0 0 0 0.5px rgba(0,0,0,0.08);
+}
+.holding-av:last-child{margin-left:0;}
+.holding-av img{width:100%;height:100%;object-fit:contain;display:block;}
+
+.risk-badge{
+  display:flex;align-items:center;gap:5px;
+}
+.risk-dot{width:7px;height:7px;border-radius:50%;background:var(--color-success-dot);flex-shrink:0;}
+.risk-dot.medium{background:#ca8a04;}
+.risk-dot.high{background:#dc2626;}
+
+/* ── Empty tab ── */
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.managers-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:80px 24px;gap:12px;text-align:center;
+}
+.managers-empty-title{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--color-text-primary);}
+.managers-empty-sub{font-size:14px;color:var(--color-text-tertiary);max-width:320px;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <app-sidebar active="marketplace"></app-sidebar>
+
+  <div class="main">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <span class="page-title">Market</span>
+      <div class="search-bar">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+          <path d="M14 14L10.0667 10.0667M11.3333 6.66667C11.3333 9.244 9.244 11.3333 6.66667 11.3333C4.08934 11.3333 2 9.244 2 6.66667C2 4.08934 4.08934 2 6.66667 2C9.244 2 11.3333 4.08934 11.3333 6.66667Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <input type="text" placeholder="Find an investment" id="header-search">
+        <span class="search-kbd">⌘K</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('strategies', this)">Strategies</button>
+      <button class="tab-btn" onclick="switchTab('managers', this)">Managers</button>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="content">
+
+      <!-- Strategies tab -->
+      <div class="tab-panel active" id="tab-strategies">
+
+        <!-- Featured categories -->
+        <div class="section-title">Featured categories</div>
+        <div class="categories-scroll">
+          <div class="category-card" onclick="filterCategory('Most Popular')">
+            <div class="category-card-bg cat-popular"></div>
+            <div class="category-card-overlay"></div>
+            <div class="category-card-label">Most Popular</div>
+          </div>
+          <div class="category-card" onclick="filterCategory('Top Gainers')">
+            <div class="category-card-bg cat-gainers"></div>
+            <div class="category-card-overlay"></div>
+            <div class="category-card-label">Top Gainers (2024)</div>
+          </div>
+          <div class="category-card" onclick="filterCategory('Crypto')">
+            <div class="category-card-bg cat-crypto"></div>
+            <div class="category-card-overlay"></div>
+            <div class="category-card-label">Crypto</div>
+          </div>
+          <div class="category-card" onclick="filterCategory('Long-term')">
+            <div class="category-card-bg cat-longterm"></div>
+            <div class="category-card-overlay"></div>
+            <div class="category-card-label">Long-term</div>
+          </div>
+          <div class="category-card" onclick="filterCategory('Equity')">
+            <div class="category-card-bg cat-equity"></div>
+            <div class="category-card-overlay"></div>
+            <div class="category-card-label">Equity Focused</div>
+          </div>
+          <div class="category-card" onclick="filterCategory('Quantum')">
+            <div class="category-card-bg cat-quantum"></div>
+            <div class="category-card-overlay"></div>
+            <div class="category-card-label">Quantum</div>
+          </div>
+          <div class="category-card" onclick="filterCategory('Copy Trading')">
+            <div class="category-card-bg cat-copy"></div>
+            <div class="category-card-overlay"></div>
+            <div class="category-card-label">Copy Trading</div>
+          </div>
+          <div class="category-card" onclick="filterCategory('AI')">
+            <div class="category-card-bg cat-ai"></div>
+            <div class="category-card-overlay"></div>
+            <div class="category-card-label">AI</div>
+          </div>
+          <div class="category-card" onclick="filterCategory('Swing Trading')">
+            <div class="category-card-bg cat-swing"></div>
+            <div class="category-card-overlay"></div>
+            <div class="category-card-label">Swing Trading</div>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <div class="filter-search">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path d="M14 14L10.0667 10.0667M11.3333 6.66667C11.3333 9.244 9.244 11.3333 6.66667 11.3333C4.08934 11.3333 2 9.244 2 6.66667C2 4.08934 4.08934 2 6.66667 2C9.244 2 11.3333 4.08934 11.3333 6.66667Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <input type="text" placeholder="Search a strategy" id="grid-search" oninput="filterStrategies()">
+          </div>
+          <div class="filter-controls">
+            <div class="filter-select">
+              Category
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="filter-select">
+              Sort by
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="filter-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              Filter
+            </div>
+          </div>
+        </div>
+
+        <!-- Strategy grid -->
+        <div class="strategy-grid" id="strategy-grid">
+          <!-- Cards injected by JS -->
+        </div>
+
+      </div>
+
+      <!-- Managers tab -->
+      <div class="tab-panel" id="tab-managers">
+        <div class="managers-empty">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="14" r="7" stroke="#D5D7DA" stroke-width="2"/><path d="M6 36c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="#D5D7DA" stroke-width="2" stroke-linecap="round"/></svg>
+          <div class="managers-empty-title">Managers coming soon</div>
+          <div class="managers-empty-sub">Browse and follow professional portfolio managers. Check back soon.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const STRATEGIES = [
+  { name: "Quantum Computing Leaders",     cover: "../assets/strategy-covers/Quantum Computing Leaders.png",    return: "+13.25%", risk: "Low" },
+  { name: "AI Innovators",                 cover: "../assets/strategy-covers/AI Innovators.png",                return: "+18.40%", risk: "Low" },
+  { name: "Biotech Breakthroughs",         cover: "../assets/strategy-covers/Biotech Breakthroughs.png",        return: "+9.80%",  risk: "Medium" },
+  { name: "Deep Tech",                     cover: "../assets/strategy-covers/Deep Tech.png",                    return: "+21.15%", risk: "Low" },
+  { name: "Green Investing",               cover: "../assets/strategy-covers/Green Investing.png",              return: "+7.60%",  risk: "Low" },
+  { name: "Next-Gen Data Infrastructure",  cover: "../assets/strategy-covers/Next-Gen Data Infrastructure.png", return: "+14.90%", risk: "Medium" },
+  { name: "Aerospace and Defense",         cover: "../assets/strategy-covers/Aerospace and Defense.png",        return: "+11.30%", risk: "Medium" },
+  { name: "Bitcoin Momentum Follower",     cover: "../assets/strategy-covers/Bitcoin Momentum Follower.png",    return: "+42.10%", risk: "High" },
+  { name: "Sustainable Future",            cover: "../assets/strategy-covers/Sustainable Future.png",           return: "+8.75%",  risk: "Low" },
+  { name: "Robotics & Automation",         cover: "../assets/strategy-covers/Robotics & Automation Advancements.png", return: "+16.50%", risk: "Low" },
+  { name: "FinTech Startups",              cover: "../assets/strategy-covers/Creative Disruption.png",          return: "+19.20%", risk: "High" },
+  { name: "Recession Resistant",           cover: "../assets/strategy-covers/Recession Resistant.png",          return: "+5.40%",  risk: "Low" },
+  { name: "T. Rowe Dividend Growth",       cover: "../assets/strategy-covers/T Rowe Dividend Growth Tracker.png", return: "+10.90%", risk: "Low" },
+  { name: "Monte Balanced Equities",       cover: "../assets/strategy-covers/Monte Balanced Equities.webp",     return: "+12.30%", risk: "Low" },
+  { name: "ETH Momentum Follower",         cover: "../assets/strategy-covers/ETH Momentum Follower.png",        return: "+38.70%", risk: "High" },
+];
+
+const HOLDINGS = [
+  "../assets/logos/NVDA.webp",
+  "../assets/logos/AAPL.webp",
+  "../assets/logos/MSFT.webp",
+  "../assets/logos/GOOG.webp",
+  "../assets/logos/AMZN.webp",
+  "../assets/logos/META.webp",
+  "../assets/logos/TSLA.webp",
+];
+
+function holdingsHTML(offset = 0) {
+  const picks = [0,1,2,3].map(i => HOLDINGS[(i + offset) % HOLDINGS.length]);
+  return `<div class="holdings-avatars">` +
+    picks.reverse().map(src => `<div class="holding-av"><img src="${src}" alt=""></div>`).join('') +
+    `</div>`;
+}
+
+function riskDotClass(risk) {
+  if (risk === 'Medium') return 'risk-dot medium';
+  if (risk === 'High') return 'risk-dot high';
+  return 'risk-dot';
+}
+
+function renderCards(list) {
+  const grid = document.getElementById('strategy-grid');
+  if (!list.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--color-text-tertiary);font-size:14px;">No strategies match your search.</div>`;
+    return;
+  }
+  grid.innerHTML = list.map((s, i) => `
+    <a class="strategy-card" href="../home/strategy-detail.html">
+      <div class="strategy-cover">
+        <img src="${s.cover}" alt="${s.name}" loading="lazy">
+        <div class="strategy-cover-gradient"></div>
+        <div class="strategy-cover-name">${s.name}</div>
+      </div>
+      <div class="strategy-info">
+        <div class="strategy-row">
+          <span class="strategy-row-label">Top holdings</span>
+          ${holdingsHTML(i)}
+        </div>
+        <div class="strategy-row">
+          <span class="strategy-row-label">1-Year Return</span>
+          <span class="strategy-row-value positive">${s.return}</span>
+        </div>
+        <div class="strategy-row">
+          <span class="strategy-row-label">Risk</span>
+          <div class="risk-badge">
+            <span class="${riskDotClass(s.risk)}"></span>
+            <span class="strategy-row-value">${s.risk}</span>
+          </div>
+        </div>
+      </div>
+    </a>`).join('');
+}
+
+function filterStrategies() {
+  const q = document.getElementById('grid-search').value.toLowerCase();
+  renderCards(q ? STRATEGIES.filter(s => s.name.toLowerCase().includes(q)) : STRATEGIES);
+}
+
+function filterCategory(cat) {
+  document.getElementById('grid-search').value = cat;
+  filterStrategies();
+  document.getElementById('grid-search').value = '';
+  // Just visual feedback — scroll to grid
+  document.getElementById('strategy-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ⌘K focuses search
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('header-search').focus();
+  }
+});
+
+// Initial render
+renderCards(STRATEGIES);
+</script>
+</body>
+</html>
