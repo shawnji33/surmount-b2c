@@ -786,6 +786,14 @@ function filterCategory(cat) {
   document.getElementById('strategy-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// Wire manager cards to profile page
+document.querySelectorAll('.manager-card').forEach((card, i) => {
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', () => {
+    window.location.href = `manager-profile.html?id=${i + 1}`;
+  });
+});
+
 function switchTab(id, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));

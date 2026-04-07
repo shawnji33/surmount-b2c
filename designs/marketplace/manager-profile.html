@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manager Profile — Surmount</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="../sidebar.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --color-brand-600:#406AD0;
+  --color-brand-700:#3757BE;
+  --color-brand-50:#EEF3FC;
+  --color-text-primary:#181D27;
+  --color-text-secondary:#414651;
+  --color-text-tertiary:#717680;
+  --color-border-default:#E9EAEB;
+  --color-border-strong:#D5D7DA;
+  --color-surface:#FFFFFF;
+  --color-surface-subtle:#FAFAFA;
+  --color-success-text:#316434;
+  --color-success-dot:#16A34A;
+  --font-display:'Inter',sans-serif;
+  --font-body:'Geist',system-ui,sans-serif;
+  --radius-sm:6px;
+  --radius-md:8px;
+  --radius-lg:12px;
+  --radius-full:9999px;
+}
+
+html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--font-body);color:var(--color-text-primary);-webkit-font-smoothing:antialiased;letter-spacing:-0.5px;}
+
+/* ── Shell ── */
+.shell{display:flex;height:100vh;overflow:hidden;}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── Page header ── */
+.page-header{
+  padding:24px 24px 16px;
+  background:var(--color-surface-subtle);
+  flex-shrink:0;
+}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 12px 10px 0;
+  text-decoration:none;cursor:pointer;
+  border-radius:var(--radius-md);
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:rgba(10,13,18,0.7);
+  transition:color 200ms ease, padding-left 200ms ease, background 200ms ease;
+}
+.back-btn:hover{color:rgba(10,13,18,0.9);padding-left:12px;background:#F5F5F5;}
+.back-btn:active{transform:scale(0.97);}
+.back-chevron{
+  width:0;height:18px;flex-shrink:0;overflow:hidden;
+  opacity:0;color:rgba(10,13,18,0.6);
+  transition:width 200ms ease, opacity 200ms ease;
+}
+.back-btn:hover .back-chevron{width:18px;opacity:1;}
+.header-avatar{
+  width:20px;height:20px;border-radius:50%;
+  border:0.5px solid rgba(0,0,0,0.06);
+  overflow:hidden;flex-shrink:0;
+}
+.header-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.header-avatar-initials{
+  width:100%;height:100%;border-radius:50%;
+  background:var(--color-border-strong);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:600;color:var(--color-text-tertiary);
+}
+.header-name{
+  font-size:14px;font-weight:500;
+  color:inherit;
+  padding:0 2px;
+}
+
+/* ── Scrollable content ── */
+.content{flex:1;overflow-y:auto;padding:24px;}
+.content::-webkit-scrollbar{width:6px;}
+.content::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb{background:var(--color-border-strong);border-radius:3px;}
+
+/* ── Profile section ── */
+.profile-section{
+  display:flex;gap:40px;align-items:flex-start;
+  margin-bottom:32px;
+}
+
+/* ── Profile card (left) ── */
+.profile-card{
+  flex-shrink:0;
+  background:var(--color-surface);
+  border:1px solid var(--color-border-default);
+  border-radius:20px;
+  padding:32px 64px;
+  box-shadow:0px 2px 12px 0px rgba(10,13,18,0.03);
+  display:flex;flex-direction:row;
+  align-items:center;gap:48px;
+  align-self:stretch;
+  overflow:hidden;
+}
+/* avatar + name column */
+.profile-avatar-col{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.profile-avatar-wrap{
+  position:relative;width:72px;height:72px;flex-shrink:0;
+}
+.profile-avatar-ring{
+  position:absolute;inset:0;border-radius:50%;
+  border:1px solid rgba(0,0,0,0.07);
+  background:var(--color-surface);
+  display:flex;align-items:center;justify-content:center;
+  padding:3px;
+}
+.profile-avatar-inner{
+  width:100%;height:100%;border-radius:50%;
+  border:1px solid rgba(0,0,0,0.08);
+  overflow:hidden;flex:1;
+}
+.profile-avatar-inner img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;}
+.profile-avatar-initials{
+  width:100%;height:100%;border-radius:50%;
+  background:var(--color-border-strong);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:600;color:var(--color-text-tertiary);
+}
+.profile-name{font-size:18px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;}
+/* stats column */
+.profile-stats{display:flex;flex-direction:column;gap:10px;}
+.profile-stat{display:flex;flex-direction:column;gap:2px;}
+.profile-stat-val{font-size:16px;font-weight:500;color:rgba(10,13,18,0.9);}
+.profile-stat-label{font-size:14px;color:rgba(10,13,18,0.6);}
+.profile-divider{height:1px;background:var(--color-border-default);width:100%;}
+
+/* ── Bio panel (right) ── */
+.bio-panel{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;gap:24px;
+  justify-content:center;
+}
+.bio-about-block{display:flex;flex-direction:column;gap:4px;}
+.bio-section-title{font-size:20px;font-weight:500;color:rgba(10,13,18,0.9);white-space:nowrap;}
+.bio-text{font-size:16px;color:rgba(10,13,18,0.7);line-height:1.5;}
+.socials-block{display:flex;flex-direction:column;gap:12px;}
+.socials-label{font-size:14px;font-weight:500;color:#414651;white-space:nowrap;}
+.socials-row{display:flex;align-items:flex-start;gap:16px;}
+.social-icon{
+  width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--color-text-secondary);
+  cursor:pointer;transition:opacity .12s;
+  text-decoration:none;flex-shrink:0;
+}
+.social-icon:hover{opacity:0.65;}
+.social-icon svg{width:24px;height:24px;}
+
+/* ── Strategy section ── */
+.section-header{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:16px;
+}
+.section-title{font-size:14px;font-weight:600;color:var(--color-text-primary);}
+.section-count{
+  background:var(--color-surface);
+  border:1px solid var(--color-border-default);
+  border-radius:var(--radius-full);
+  padding:1px 8px;
+  font-size:12px;font-weight:500;
+  color:var(--color-text-tertiary);
+}
+
+/* ── Strategy grid ── */
+.strategy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+
+/* ── Strategy card ── */
+.strategy-card{
+  background:var(--color-surface);
+  border:1px solid var(--color-border-default);
+  border-radius:var(--radius-md);
+  overflow:hidden;cursor:pointer;
+  transition:border-color .15s,background .15s;
+  text-decoration:none;color:inherit;display:block;
+}
+.strategy-card:hover{border-color:var(--color-border-strong);background:var(--color-surface-subtle);}
+.strategy-cover{position:relative;height:132px;overflow:hidden;}
+.strategy-cover img{width:100%;height:100%;object-fit:cover;display:block;}
+.strategy-cover-gradient{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(20,14,0,0) 30%,rgba(20,14,0,0.55) 100%);
+}
+.strategy-cover-name{
+  position:absolute;bottom:12px;left:14px;right:14px;
+  font-family:var(--font-display);font-size:14px;font-weight:600;
+  color:#fff;line-height:1.3;letter-spacing:-0.2px;
+  text-shadow:0 1px 4px rgba(0,0,0,0.5);
+}
+.strategy-info{padding:14px 14px 16px;display:flex;flex-direction:column;gap:10px;}
+.strategy-row{display:flex;align-items:center;justify-content:space-between;}
+.strategy-row-label{font-size:13px;color:var(--color-text-tertiary);}
+.strategy-row-value{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.strategy-row-value.positive{color:var(--color-success-text);}
+.holdings-avatars{display:flex;align-items:center;flex-direction:row-reverse;}
+.holding-av{
+  width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--color-surface);
+  background:var(--color-surface-subtle);
+  overflow:hidden;margin-left:-5px;flex-shrink:0;
+  box-shadow:0 0 0 0.5px rgba(0,0,0,0.08);
+}
+.holding-av:last-child{margin-left:0;}
+.holding-av img{width:100%;height:100%;object-fit:contain;display:block;}
+.risk-badge{display:flex;align-items:center;gap:5px;}
+.risk-dot{width:7px;height:7px;border-radius:50%;background:var(--color-success-dot);flex-shrink:0;}
+.risk-dot.medium{background:#ca8a04;}
+.risk-dot.high{background:#dc2626;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <app-sidebar active="marketplace"></app-sidebar>
+
+  <div class="main">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <a class="back-btn" href="marketplace.html">
+        <svg class="back-chevron" fill="none" stroke="currentColor" viewBox="0 0 18 18" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11 13.5L6.5 9 11 4.5"/></svg>
+        <div class="header-avatar" id="header-avatar-el"></div>
+        <div class="header-name" id="header-name-el"></div>
+      </a>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="content">
+
+      <!-- Profile section -->
+      <div class="profile-section">
+
+        <!-- Left: profile card -->
+        <div class="profile-card">
+          <!-- Avatar + name -->
+          <div class="profile-avatar-col">
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar-ring">
+                <div class="profile-avatar-inner" id="profile-avatar-el"></div>
+              </div>
+            </div>
+            <div class="profile-name" id="profile-name-el"></div>
+          </div>
+          <!-- Stats -->
+          <div class="profile-stats">
+            <div class="profile-stat">
+              <div class="profile-stat-val" id="stat-strategies"></div>
+              <div class="profile-stat-label">Active strategies</div>
+            </div>
+            <div class="profile-divider"></div>
+            <div class="profile-stat">
+              <div class="profile-stat-val" id="stat-experience"></div>
+              <div class="profile-stat-label">Experience</div>
+            </div>
+            <div class="profile-divider"></div>
+            <div class="profile-stat">
+              <div class="profile-stat-val" id="stat-aum"></div>
+              <div class="profile-stat-label">Total AUM</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: bio + socials (no card, just content) -->
+        <div class="bio-panel">
+          <div class="bio-about-block">
+            <div class="bio-section-title" id="about-title"></div>
+            <div class="bio-text" id="bio-text-el"></div>
+          </div>
+          <div class="socials-block">
+            <div class="socials-label">Socials</div>
+            <div class="socials-row">
+              <!-- Globe -->
+              <a class="social-icon" href="#" title="Website">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><path d="M12 2C12 2 8.5 6.5 8.5 12s3.5 10 3.5 10M12 2c0 0 3.5 4.5 3.5 10S12 22 12 22M2 12h20"/>
+                </svg>
+              </a>
+              <!-- Email -->
+              <a class="social-icon" href="#" title="Email">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 8l10 6 10-6"/>
+                </svg>
+              </a>
+              <!-- X / Twitter -->
+              <a class="social-icon" href="#" title="X" style="color:#000;">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
+              <!-- LinkedIn -->
+              <a class="social-icon" href="#" title="LinkedIn" style="color:#0A66C2;">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6.94 5a2 2 0 1 1-4-.002 2 2 0 0 1 4 .002zM7 8.48H3V21h4V8.48zm6.32 0H9.34V21h3.94v-6.57c0-3.66 4.77-4 4.77 0V21H22v-7.93c0-6.17-7.06-5.94-8.72-2.91l.04-1.68z"/>
+                </svg>
+              </a>
+              <!-- Instagram -->
+              <a class="social-icon" href="#" title="Instagram">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <defs>
+                    <linearGradient id="ig-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#f09433"/>
+                      <stop offset="25%" stop-color="#e6683c"/>
+                      <stop offset="50%" stop-color="#dc2743"/>
+                      <stop offset="75%" stop-color="#cc2366"/>
+                      <stop offset="100%" stop-color="#bc1888"/>
+                    </linearGradient>
+                  </defs>
+                  <rect x="2" y="2" width="20" height="20" rx="5" stroke="url(#ig-grad)" fill="none" stroke-width="1.5"/>
+                  <circle cx="12" cy="12" r="5" stroke="url(#ig-grad)" fill="none" stroke-width="1.5"/>
+                  <circle cx="17.5" cy="6.5" r="1" fill="url(#ig-grad)" stroke="none"/>
+                </svg>
+              </a>
+              <!-- TikTok -->
+              <a class="social-icon" href="#" title="TikTok" style="color:#000;">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strategy section -->
+      <div class="section-header">
+        <div class="section-title" id="strategies-title"></div>
+        <div class="section-count" id="strategies-count"></div>
+      </div>
+      <div class="strategy-grid" id="strategy-grid"></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const MANAGERS = [
+  {
+    id: 1,
+    name: 'Logan Weaver',
+    avatar: '../assets/manager-avatars/manager-1.jpg',
+    initials: 'LW',
+    about: 'As a dedicated finance manager, I take pride in developing tailored investment strategies that are specifically designed to align with the unique financial goals and aspirations of each of my clients. By thoroughly understanding their individual circumstances and objectives, I ensure that my strategies not only aim for growth but also provide a sense of security and peace of mind.',
+    strategyCount: 12,
+    experience: '10 Years',
+    aum: '$224,435.62',
+    strategyOffset: 0,
+  },
+  {
+    id: 2,
+    name: 'Alex Chen',
+    avatar: '../assets/manager-avatars/manager-2.jpg',
+    initials: 'AC',
+    about: 'Focused on maximizing returns through innovative investment strategies, I specialize in identifying high-growth opportunities in emerging markets and technology sectors. My disciplined approach balances ambition with risk management to deliver consistent results.',
+    strategyCount: 18,
+    experience: '8 Years',
+    aum: '$318,900.00',
+    strategyOffset: 3,
+  },
+  {
+    id: 3,
+    name: 'Sarah Kim',
+    avatar: '../assets/manager-avatars/manager-3.jpg',
+    initials: 'SK',
+    about: 'Expert in assessing and mitigating financial risks to protect assets, I bring a rigorous analytical framework to every portfolio. My strategies are designed to preserve capital during downturns while capturing upside in favorable markets.',
+    strategyCount: 24,
+    experience: '12 Years',
+    aum: '$531,750.00',
+    strategyOffset: 6,
+  },
+  {
+    id: 4,
+    name: 'James Park',
+    avatar: '../assets/manager-avatars/manager-4.jpg',
+    initials: 'JP',
+    about: 'Dedicated to building strong relationships and ensuring client satisfaction, I take a holistic approach to financial management. I believe that understanding each client\'s unique story is the foundation of any successful investment strategy.',
+    strategyCount: 11,
+    experience: '6 Years',
+    aum: '$114,320.80',
+    strategyOffset: 1,
+  },
+  {
+    id: 5,
+    name: 'Maria Lopez',
+    avatar: '../assets/manager-avatars/manager-5.jpg',
+    initials: 'ML',
+    about: 'Advising clients on investment opportunities and portfolio diversification, I specialize in building resilient, multi-asset portfolios. With a focus on long-term wealth creation, I combine fundamental analysis with global macro insights.',
+    strategyCount: 37,
+    experience: '15 Years',
+    aum: '$842,100.00',
+    strategyOffset: 4,
+  },
+  {
+    id: 6,
+    name: 'David Liu',
+    avatar: '../assets/manager-avatars/manager-6.jpg',
+    initials: 'DL',
+    about: 'I help clients create tailored financial plans to meet their goals at every stage of life. From wealth accumulation to retirement planning, my strategies are designed to evolve with your circumstances and keep you on track.',
+    strategyCount: 20,
+    experience: '9 Years',
+    aum: '$222,580.40',
+    strategyOffset: 2,
+  },
+  {
+    id: 7,
+    name: 'Emma Taylor',
+    avatar: '../assets/manager-avatars/manager-7.jpg',
+    initials: 'ET',
+    about: 'Specializing in tax planning strategies to minimize liabilities, I help clients optimize their investment structures for maximum after-tax returns. My deep expertise in tax law enables sophisticated strategies that most advisors overlook.',
+    strategyCount: 16,
+    experience: '11 Years',
+    aum: '$219,440.20',
+    strategyOffset: 5,
+  },
+  {
+    id: 8,
+    name: 'Ryan Mitchell',
+    avatar: null,
+    initials: 'RM',
+    about: 'I ensure adherence to regulatory requirements and internal policies, bringing a compliance-first perspective to portfolio management. My strategies are built to meet the highest standards of fiduciary duty while delivering competitive returns.',
+    strategyCount: 9,
+    experience: '7 Years',
+    aum: '$111,200.00',
+    strategyOffset: 7,
+  },
+  {
+    id: 9,
+    name: 'Nina Patel',
+    avatar: null,
+    initials: 'NP',
+    about: 'Analyzing market trends to guide investment strategies and decisions, I combine quantitative research with deep sector expertise. My data-driven approach identifies opportunities before they become consensus, giving clients a meaningful edge.',
+    strategyCount: 29,
+    experience: '13 Years',
+    aum: '$528,670.90',
+    strategyOffset: 8,
+  },
+];
+
+const STRATEGIES = [
+  { name: 'Quantum Computing Leaders',      cover: '../assets/strategy-covers/Quantum Computing Leaders.png',       return: '+13.25%', risk: 'Low' },
+  { name: 'AI Innovators',                  cover: '../assets/strategy-covers/AI Innovators.png',                   return: '+18.40%', risk: 'Low' },
+  { name: 'Biotech Breakthroughs',          cover: '../assets/strategy-covers/Biotech Breakthroughs.png',           return: '+9.80%',  risk: 'Medium' },
+  { name: 'Deep Tech',                      cover: '../assets/strategy-covers/Deep Tech.png',                       return: '+21.15%', risk: 'Low' },
+  { name: 'Green Investing',                cover: '../assets/strategy-covers/Green Investing.png',                 return: '+7.60%',  risk: 'Low' },
+  { name: 'Next-Gen Data Infrastructure',   cover: '../assets/strategy-covers/Next-Gen Data Infrastructure.png',    return: '+14.90%', risk: 'Medium' },
+  { name: 'Aerospace and Defense',          cover: '../assets/strategy-covers/Aerospace and Defense.png',           return: '+11.30%', risk: 'Medium' },
+  { name: 'Bitcoin Momentum Follower',      cover: '../assets/strategy-covers/Bitcoin Momentum Follower.png',       return: '+42.10%', risk: 'High' },
+  { name: 'Sustainable Future',             cover: '../assets/strategy-covers/Sustainable Future.png',              return: '+8.75%',  risk: 'Low' },
+  { name: 'Robotics & Automation',          cover: '../assets/strategy-covers/Robotics & Automation Advancements.png', return: '+16.50%', risk: 'Low' },
+  { name: 'FinTech Startups',               cover: '../assets/strategy-covers/Creative Disruption.png',             return: '+19.20%', risk: 'High' },
+  { name: 'Recession Resistant',            cover: '../assets/strategy-covers/Recession Resistant.png',             return: '+5.40%',  risk: 'Low' },
+];
+
+const HOLDINGS = [
+  '../assets/logos/NVDA.webp',
+  '../assets/logos/AAPL.webp',
+  '../assets/logos/MSFT.webp',
+  '../assets/logos/GOOG.webp',
+  '../assets/logos/AMZN.webp',
+  '../assets/logos/META.webp',
+  '../assets/logos/TSLA.webp',
+];
+
+function holdingsHTML(offset) {
+  const picks = [0,1,2,3].map(i => HOLDINGS[(i + offset) % HOLDINGS.length]);
+  return picks.reverse().map(src => `<div class="holding-av"><img src="${src}" alt=""></div>`).join('');
+}
+
+function riskDotClass(risk) {
+  if (risk === 'Medium') return 'risk-dot medium';
+  if (risk === 'High') return 'risk-dot high';
+  return 'risk-dot';
+}
+
+function avatarHTML(manager, size) {
+  if (manager.avatar) {
+    return `<img src="${manager.avatar}" alt="${manager.name}">`;
+  }
+  return `<div class="profile-avatar-initials" style="font-size:${size === 'sm' ? 11 : 16}px">${manager.initials}</div>`;
+}
+
+// Read ?id= from URL
+const params = new URLSearchParams(location.search);
+const id = parseInt(params.get('id')) || 1;
+const m = MANAGERS.find(x => x.id === id) || MANAGERS[0];
+
+// Header
+document.getElementById('header-name-el').textContent = m.name;
+const headerAvEl = document.getElementById('header-avatar-el');
+if (m.avatar) {
+  headerAvEl.innerHTML = `<img src="${m.avatar}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+} else {
+  headerAvEl.innerHTML = `<div class="header-avatar-initials">${m.initials}</div>`;
+}
+
+// Profile card
+const profileAvEl = document.getElementById('profile-avatar-el');
+if (m.avatar) {
+  profileAvEl.innerHTML = `<img src="${m.avatar}" alt="${m.name}">`;
+} else {
+  profileAvEl.innerHTML = `<div class="profile-avatar-initials">${m.initials}</div>`;
+}
+document.getElementById('profile-name-el').textContent = m.name;
+document.getElementById('stat-strategies').textContent = m.strategyCount;
+document.getElementById('stat-experience').textContent = m.experience;
+document.getElementById('stat-aum').textContent = m.aum;
+
+// Bio
+document.getElementById('about-title').textContent = `About ${m.name}`;
+document.getElementById('bio-text-el').textContent = m.about;
+
+// Strategy section header
+document.getElementById('strategies-title').textContent = `${m.name}'s strategies`;
+document.getElementById('strategies-count').textContent = m.strategyCount;
+
+// Strategy grid — show up to strategyCount cards, cycling through the STRATEGIES array
+const grid = document.getElementById('strategy-grid');
+const count = Math.min(m.strategyCount, STRATEGIES.length);
+const cards = Array.from({length: count}, (_, i) => STRATEGIES[(i + m.strategyOffset) % STRATEGIES.length]);
+grid.innerHTML = cards.map((s, i) => `
+  <div class="strategy-card">
+    <div class="strategy-cover">
+      <img src="${s.cover}" alt="${s.name}" onerror="this.style.background='#1a1a2e';this.style.display='none'">
+      <div class="strategy-cover-gradient"></div>
+      <div class="strategy-cover-name">${s.name}</div>
+    </div>
+    <div class="strategy-info">
+      <div class="strategy-row">
+        <span class="strategy-row-label">Top holdings</span>
+        <div class="holdings-avatars">${holdingsHTML(i + m.strategyOffset)}</div>
+      </div>
+      <div class="strategy-row">
+        <span class="strategy-row-label">1-Year Return</span>
+        <span class="strategy-row-value positive">${s.return}</span>
+      </div>
+      <div class="strategy-row">
+        <span class="strategy-row-label">Risk</span>
+        <div class="risk-badge"><span class="${riskDotClass(s.risk)}"></span><span class="strategy-row-value">${s.risk}</span></div>
+      </div>
+    </div>
+  </div>
+`).join('');
+
+document.title = `${m.name} — Surmount`;
+</script>
+</body>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dividend Management — Surmount</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="../sidebar.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --color-brand-600:#406AD0;--color-brand-700:#3757BE;
+  --color-brand-50:#EEF3FC;--color-brand-100:#E0EAF9;--color-brand-200:#C8DBF5;
+  --color-text-primary:#181D27;--color-text-secondary:#414651;--color-text-tertiary:#717680;
+  --color-border-default:#E9EAEB;--color-border-strong:#D5D7DA;
+  --color-surface:#FFFFFF;--color-surface-subtle:#FAFAFA;
+  --color-success-text:#316434;--color-success-bg:#DCFCE7;--color-success-dot:#16A34A;
+  --color-error-text:#98443D;
+  --font-display:'Inter',sans-serif;--font-body:'Geist',system-ui,sans-serif;
+  --radius-sm:6px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-full:9999px;
+  --shadow-card:0px 2px 12px 0px rgba(10,13,18,0.03);
+}
+html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--font-body);color:var(--color-text-primary);-webkit-font-smoothing:antialiased;letter-spacing:-0.5px;}
+
+/* ── Shell ── */
+.shell{display:flex;height:100vh;overflow:hidden;}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── Page header ── */
+.page-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:24px 24px 16px;
+  background:var(--color-surface-subtle);
+  flex-shrink:0;
+}
+.page-header-title{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 12px 10px 0;
+  font-size:14px;font-weight:500;color:rgba(10,13,18,0.7);
+  text-decoration:none;border-radius:var(--radius-md);cursor:pointer;
+  transition:color 200ms ease, padding-left 200ms ease, background 200ms ease;
+}
+.page-header-title:hover{color:rgba(10,13,18,0.9);padding-left:12px;background:#F5F5F5;}
+.page-header-title:active{transform:scale(0.97);}
+.page-header-chevron{
+  width:0;height:18px;flex-shrink:0;overflow:hidden;
+  opacity:0;color:rgba(10,13,18,0.6);
+  transition:width 200ms ease, opacity 200ms ease;
+}
+.page-header-title:hover .page-header-chevron{width:18px;opacity:1;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.dividend-rule-pill{
+  display:flex;align-items:center;gap:6px;
+  background:var(--color-surface);
+  border:1px solid rgba(0,0,0,0.09);
+  border-radius:var(--radius-full);
+  padding:9px 12px;
+  box-shadow:var(--shadow-card);
+  cursor:pointer;text-decoration:none;transition:border-color .12s;
+}
+.dividend-rule-pill:hover{border-color:rgba(0,0,0,0.14);}
+.dividend-rule-label{font-size:14px;font-weight:500;color:rgba(10,13,18,0.7);white-space:nowrap;}
+.rule-chip{
+  background:#FEF7EE;border:1px solid #F9D7AF;
+  border-radius:var(--radius-full);
+  padding:2px 8px;font-size:12px;font-weight:500;color:#B84416;
+  white-space:nowrap;
+}
+.settings-btn{
+  width:32px;height:32px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--color-text-tertiary);
+  transition:color .12s,background .12s;
+  background:transparent;border:none;
+}
+.settings-btn:hover{background:var(--color-border-default);color:var(--color-text-primary);}
+
+/* ── Scrollable content ── */
+.content{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:40px;}
+.content::-webkit-scrollbar{width:6px;}
+.content::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb{background:var(--color-border-strong);border-radius:3px;}
+
+/* ── Metric cards row ── */
+.metric-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.metric-card{
+  background:var(--color-surface);
+  border:1px solid var(--color-border-default);
+  border-radius:var(--radius-lg);
+  padding:20px;
+  box-shadow:var(--shadow-card);
+  display:flex;flex-direction:column;gap:8px;
+}
+.metric-card.brand{
+  background:linear-gradient(135deg,#EEF3FC 0%,#dce8f8 100%);
+  border-color:var(--color-brand-200);
+}
+.metric-label{font-size:12px;color:var(--color-text-tertiary);font-weight:400;}
+.metric-value-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.metric-value{font-size:28px;font-weight:600;color:var(--color-text-primary);letter-spacing:-0.6px;font-family:var(--font-display);}
+.metric-badge{
+  background:var(--color-brand-50);border:1px solid var(--color-brand-200);
+  border-radius:var(--radius-full);
+  padding:2px 8px;font-size:11px;font-weight:500;color:var(--color-brand-700);
+}
+.metric-sub{font-size:12px;color:var(--color-text-tertiary);}
+.metric-sub.positive{color:var(--color-success-text);}
+/* Progress bar */
+.progress-row{display:flex;align-items:center;gap:10px;margin-top:4px;}
+.progress-track{flex:1;height:6px;background:var(--color-border-default);border-radius:var(--radius-full);overflow:hidden;}
+.progress-fill{height:100%;background:var(--color-brand-600);border-radius:var(--radius-full);}
+.progress-pct{font-size:12px;font-weight:500;color:var(--color-text-secondary);}
+
+/* ── Section title ── */
+.section-title{font-size:20px;font-weight:500;color:rgba(10,13,18,0.9);}
+
+/* ── Dividend history ── */
+.history-section{display:flex;flex-direction:column;gap:20px;}
+.history-row{display:flex;gap:40px;align-items:stretch;}
+
+/* chart card */
+.history-card{
+  flex:1;min-width:0;
+  background:var(--color-surface);
+  border:1px solid rgba(0,0,0,0.09);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+}
+.chart-panel{padding:20px 20px 0;}
+.chart-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;}
+.chart-total{font-size:20px;font-weight:500;color:rgba(10,13,18,0.9);}
+.chart-total-label{font-size:12px;color:rgba(10,13,18,0.5);margin-top:2px;}
+
+/* time tab bar */
+.time-tabs{
+  display:flex;gap:4px;
+  background:#F5F5F5;border-radius:16px;padding:4px;
+}
+.time-tab{
+  padding:4px 10px;border-radius:12px;
+  font-size:12px;font-weight:400;color:rgba(10,13,18,0.5);
+  cursor:pointer;border:none;background:transparent;
+  transition:background .12s,color .12s;font-family:var(--font-body);
+  white-space:nowrap;
+}
+.time-tab:hover{color:rgba(10,13,18,0.7);}
+.time-tab.active{background:#FAFAFA;color:rgba(10,13,18,0.9);}
+
+/* bar chart */
+.chart-body{padding:0 20px 20px;}
+.bar-chart{
+  display:flex;align-items:flex-end;
+  justify-content:space-between;
+  height:213px;gap:0;
+}
+.bar-col{display:flex;flex-direction:column;align-items:center;width:32px;flex-shrink:0;}
+.bar{
+  width:32px;border-radius:4px 4px 0 0;
+  background:#B8CCF0;
+  cursor:pointer;transition:background .15s;
+}
+.bar:hover,.bar.active{background:#7FA8E8;}
+.x-axis{
+  display:flex;justify-content:space-between;
+  padding:8px 0 0;
+}
+.x-label{font-size:12px;color:rgba(10,13,18,0.6);white-space:nowrap;width:32px;text-align:center;}
+
+/* breakdown panel */
+.breakdown-panel{
+  width:240px;flex-shrink:0;
+  background:#FAFAFA;
+  border:1px dashed rgba(0,0,0,0.09);
+  border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;padding:24px;text-align:center;
+}
+.breakdown-plus{
+  width:48px;height:48px;border-radius:50%;
+  background:#F5F5F5;border:1px solid rgba(0,0,0,0.06);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--color-text-tertiary);
+}
+.breakdown-text{display:flex;flex-direction:column;gap:4px;align-items:center;}
+.breakdown-title{font-size:16px;font-weight:500;color:rgba(10,13,18,0.7);}
+.breakdown-sub{font-size:14px;color:rgba(10,13,18,0.6);}
+
+/* ── Bottom two-col ── */
+.bottom-row{display:flex;gap:40px;align-items:start;}
+.bottom-left{flex:1;min-width:0;display:flex;flex-direction:column;gap:20px;}
+.bottom-right{width:400px;flex-shrink:0;display:flex;flex-direction:column;gap:40px;}
+
+/* ── Holdings table ── */
+.holdings-card{
+  background:var(--color-surface);
+  border:1px solid rgba(0,0,0,0.09);
+  border-radius:12px;
+  overflow:hidden;
+}
+.table{width:100%;border-collapse:collapse;}
+.table col.col-asset{}
+.table col.col-shares{width:140px;}
+.table col.col-ttm{width:120px;}
+.table col.col-yield{width:120px;}
+.table col.col-next{width:120px;}
+.table col.col-rule{width:140px;}
+.table th{
+  font-size:12px;font-weight:500;color:var(--color-text-tertiary);
+  padding:16px 20px;text-align:left;
+  border-bottom:1px solid var(--color-border-default);
+  background:#FAFAFA;
+  white-space:nowrap;
+}
+.table th.sortable{cursor:pointer;user-select:none;}
+.table th .sort-icon{margin-left:3px;opacity:0.5;font-size:10px;}
+.table td{
+  padding:0 20px;height:70px;font-size:14px;color:var(--color-text-primary);
+  border-bottom:1px solid var(--color-border-default);
+  vertical-align:middle;
+}
+.table tr:last-child td{border-bottom:none;}
+.table tr:hover td{background:var(--color-surface-subtle);}
+.asset-cell{display:flex;align-items:center;gap:12px;}
+.asset-logo{width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--color-surface-subtle);border:1px solid var(--color-border-default);}
+.asset-logo img{width:100%;height:100%;object-fit:contain;display:block;}
+.asset-ticker{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+.asset-name{font-size:12px;color:var(--color-text-tertiary);}
+.positive{color:var(--color-success-text);}
+.negative{color:var(--color-error-text);}
+.next-pay-date{font-size:14px;color:var(--color-text-primary);}
+.next-pay-amount{font-size:12px;color:var(--color-text-tertiary);}
+/* rule badges */
+.rule-badge{display:inline-flex;padding:2px 10px;border-radius:var(--radius-full);font-size:12px;font-weight:500;border:1px solid transparent;white-space:nowrap;}
+.rule-drip{background:#DCFCE7;border-color:#BBF7D0;color:#166534;}
+.rule-strategy{background:var(--color-brand-50);border-color:var(--color-brand-200);color:var(--color-brand-700);}
+.rule-custom{background:var(--color-surface-subtle);border-color:var(--color-border-default);color:var(--color-text-secondary);}
+.rule-cash{background:#FEF3C7;border-color:#FDE68A;color:#92400E;}
+
+/* ── Bottom right sections ── */
+.right-section{display:flex;flex-direction:column;gap:20px;}
+.right-section-header{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.view-schedule{font-size:14px;color:rgba(10,13,18,0.6);text-decoration:none;display:flex;align-items:center;gap:4px;transition:color .12s;}
+.view-schedule:hover{color:rgba(10,13,18,0.9);}
+
+/* Upcoming payments */
+.upcoming-card{
+  background:var(--color-surface);
+  border:1px solid rgba(0,0,0,0.09);
+  border-radius:12px;
+  overflow:hidden;
+}
+.upcoming-table{width:100%;}
+.upcoming-table col.col-date{width:88px;}
+.upcoming-table col.col-payment{width:120px;}
+.upcoming-table th{
+  font-size:12px;font-weight:500;color:var(--color-text-tertiary);
+  padding:16px 20px;text-align:left;
+  border-bottom:1px solid var(--color-border-default);
+  background:#FAFAFA;
+  white-space:nowrap;
+}
+.upcoming-table td{padding:0 20px;height:64px;font-size:14px;vertical-align:middle;border-bottom:1px solid var(--color-border-default);}
+.upcoming-table tr:last-child td{border-bottom:none;}
+.upcoming-table tr:hover td{background:var(--color-surface-subtle);}
+.upay-date{font-size:14px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;}
+.upay-asset{display:flex;align-items:center;gap:10px;}
+.upay-logo{width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--color-surface-subtle);border:1px solid var(--color-border-default);}
+.upay-logo img{width:100%;height:100%;object-fit:contain;display:block;}
+.upay-name{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+.upay-sub{font-size:12px;color:var(--color-text-tertiary);}
+.upay-amount{font-size:14px;font-weight:500;color:var(--color-success-text);text-align:right;white-space:nowrap;}
+
+/* Recent activity */
+.activity-card{
+  background:var(--color-surface);
+  border:1px solid rgba(0,0,0,0.09);
+  border-radius:12px;
+  padding:20px;
+  display:flex;flex-direction:column;gap:32px;
+}
+.activity-date-group{display:flex;flex-direction:column;gap:16px;}
+.activity-date-label{font-size:12px;font-weight:500;color:var(--color-text-tertiary);margin-bottom:4px;}
+.activity-items{display:flex;flex-direction:column;}
+.activity-row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--color-border-default);
+  cursor:pointer;transition:opacity .12s;
+}
+.activity-row:last-child{border-bottom:none;padding-bottom:0;}
+.activity-row:first-child{padding-top:0;}
+.activity-row:hover{opacity:0.75;}
+.activity-logo{width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--color-surface-subtle);border:1px solid var(--color-border-default);}
+.activity-logo img{width:100%;height:100%;object-fit:contain;display:block;}
+.activity-info{flex:1;min-width:0;}
+.activity-name{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+.activity-sub{font-size:12px;color:var(--color-text-tertiary);}
+.activity-amount{font-size:14px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <app-sidebar active="home"></app-sidebar>
+
+  <div class="main">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <a class="page-header-title" href="../home/homepage.html">
+        <svg class="page-header-chevron" fill="none" stroke="currentColor" viewBox="0 0 18 18" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11 13.5L6.5 9 11 4.5"/></svg>
+        Dividend management
+      </a>
+      <div class="header-right">
+        <a class="dividend-rule-pill" href="#">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="6" stroke="#A4A7AE" stroke-width="1.3"/>
+            <path d="M8 7v4" stroke="#A4A7AE" stroke-width="1.3" stroke-linecap="round"/>
+            <circle cx="8" cy="5.5" r="0.75" fill="#A4A7AE"/>
+          </svg>
+          <span class="dividend-rule-label">Default Dividend Rule:</span>
+          <span class="rule-chip">Cash</span>
+        </a>
+        <button class="settings-btn" title="Settings">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M16.2 12.3a1.5 1.5 0 0 0 .3 1.65l.05.05a1.82 1.82 0 0 1-2.57 2.57l-.05-.05a1.5 1.5 0 0 0-1.65-.3 1.5 1.5 0 0 0-.91 1.37V18a1.82 1.82 0 0 1-3.64 0v-.08a1.5 1.5 0 0 0-.98-1.37 1.5 1.5 0 0 0-1.65.3l-.05.05a1.82 1.82 0 0 1-2.57-2.57l.05-.05a1.5 1.5 0 0 0 .3-1.65 1.5 1.5 0 0 0-1.37-.91H2a1.82 1.82 0 0 1 0-3.64h.08a1.5 1.5 0 0 0 1.37-.98 1.5 1.5 0 0 0-.3-1.65l-.05-.05a1.82 1.82 0 0 1 2.57-2.57l.05.05a1.5 1.5 0 0 0 1.65.3h.07a1.5 1.5 0 0 0 .91-1.37V2a1.82 1.82 0 0 1 3.64 0v.08a1.5 1.5 0 0 0 .91 1.37 1.5 1.5 0 0 0 1.65-.3l.05-.05a1.82 1.82 0 0 1 2.57 2.57l-.05.05a1.5 1.5 0 0 0-.3 1.65v.07a1.5 1.5 0 0 0 1.37.91H18a1.82 1.82 0 0 1 0 3.64h-.08a1.5 1.5 0 0 0-1.37.91Z" stroke="currentColor" stroke-width="1.4"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="content">
+
+      <!-- Metric cards -->
+      <div class="metric-row">
+        <!-- TTM Dividends -->
+        <div class="metric-card brand">
+          <div class="metric-label">TTM Dividends</div>
+          <div class="metric-value-row">
+            <div class="metric-value">$1,075.16</div>
+            <div class="metric-badge">1.89% of portfolio</div>
+          </div>
+          <div class="metric-sub positive">+12.3% v.s. last year</div>
+        </div>
+        <!-- Projected Annual Return -->
+        <div class="metric-card">
+          <div class="metric-label">Projected Annual Return</div>
+          <div class="metric-value-row">
+            <div class="metric-value">$292.66</div>
+            <div class="metric-sub">/ $1,198.55 received</div>
+          </div>
+          <div class="progress-row">
+            <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
+            <div class="progress-pct">40%</div>
+          </div>
+        </div>
+        <!-- Monthly Average -->
+        <div class="metric-card">
+          <div class="metric-label">Monthly Average</div>
+          <div class="metric-value">$90.24</div>
+          <div class="metric-sub">$2.95 per day</div>
+        </div>
+      </div>
+
+      <!-- Dividend history -->
+      <div class="history-section">
+        <div class="section-title">Dividend history</div>
+        <div class="history-row">
+          <!-- Chart card -->
+          <div class="history-card">
+            <div class="chart-panel">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-total">$234,984,486.24</div>
+                  <div class="chart-total-label">Dividends earned all time</div>
+                </div>
+                <div class="time-tabs">
+                  <button class="time-tab">1D</button>
+                  <button class="time-tab">1W</button>
+                  <button class="time-tab">1M</button>
+                  <button class="time-tab">3M</button>
+                  <button class="time-tab">6M</button>
+                  <button class="time-tab">YTD</button>
+                  <button class="time-tab">1Y</button>
+                  <button class="time-tab active">All</button>
+                </div>
+              </div>
+            </div>
+            <div class="chart-body">
+              <div class="bar-chart" id="bar-chart"></div>
+              <div class="x-axis" id="x-axis"></div>
+            </div>
+          </div>
+          <!-- Breakdown panel -->
+          <div class="breakdown-panel">
+            <div class="breakdown-plus">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="breakdown-text">
+              <div class="breakdown-title">Dividend breakdown</div>
+              <div class="breakdown-sub">Click a bar to view dividend details</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom two-col -->
+      <div class="bottom-row">
+
+        <!-- Left: Holdings table -->
+        <div class="bottom-left">
+          <div class="section-title">Dividend-paying holdings</div>
+          <div class="holdings-card">
+            <table class="table">
+              <colgroup>
+                <col class="col-asset">
+                <col class="col-shares">
+                <col class="col-ttm">
+                <col class="col-yield">
+                <col class="col-next">
+                <col class="col-rule">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>Asset</th>
+                  <th class="sortable">Shares <span class="sort-icon">↑↓</span></th>
+                  <th class="sortable">TTM Income <span class="sort-icon">↑↓</span></th>
+                  <th class="sortable">Yield <span class="sort-icon">↑↓</span></th>
+                  <th>Next payment</th>
+                  <th>Rule</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="asset-cell"><div class="asset-logo"><img src="../assets/logos/NVDA.webp" alt="NVDA"></div><div><div class="asset-ticker">NVDA</div><div class="asset-name">NVIDIA</div></div></div></td>
+                  <td>45</td>
+                  <td class="positive">+$235.35</td>
+                  <td>0.51%</td>
+                  <td><div class="next-pay-date">Feb 13</div><div class="next-pay-amount">~ $11.25</div></td>
+                  <td><span class="rule-badge rule-drip">Drip</span></td>
+                </tr>
+                <tr>
+                  <td><div class="asset-cell"><div class="asset-logo"><img src="../assets/logos/AAPL.webp" alt="AAPL"></div><div><div class="asset-ticker">AAPL</div><div class="asset-name">Apple Inc.</div></div></div></td>
+                  <td>150</td>
+                  <td class="positive">+$4.50</td>
+                  <td>0.03%</td>
+                  <td><div class="next-pay-date">Feb 14</div><div class="next-pay-amount">~ $3.00</div></td>
+                  <td><span class="rule-badge rule-strategy">Strategy</span></td>
+                </tr>
+                <tr>
+                  <td><div class="asset-cell"><div class="asset-logo"><img src="../assets/logos/AMZN.webp" alt="AMZN"></div><div><div class="asset-ticker">AMZN</div><div class="asset-name">Amazon.com</div></div></div></td>
+                  <td>120</td>
+                  <td class="positive">+$1.20</td>
+                  <td class="negative">-0.99%</td>
+                  <td><div class="next-pay-date">Feb 14</div><div class="next-pay-amount">~ $2.50</div></td>
+                  <td><span class="rule-badge rule-custom">Custom</span></td>
+                </tr>
+                <tr>
+                  <td><div class="asset-cell"><div class="asset-logo"><img src="../assets/logos/GOOG.webp" alt="GOOGL"></div><div><div class="asset-ticker">GOOGL</div><div class="asset-name">Alphabet Inc.</div></div></div></td>
+                  <td>2800</td>
+                  <td class="positive">+$30.00</td>
+                  <td>1.08%</td>
+                  <td><div class="next-pay-date">Feb 13</div><div class="next-pay-amount">~ $15.00</div></td>
+                  <td><span class="rule-badge rule-drip">Drip</span></td>
+                </tr>
+                <tr>
+                  <td><div class="asset-cell"><div class="asset-logo"><img src="../assets/logos/MSFT.webp" alt="MSFT"></div><div><div class="asset-ticker">MSFT</div><div class="asset-name">Microsoft Corp.</div></div></div></td>
+                  <td>300</td>
+                  <td class="positive">+$5.25</td>
+                  <td>1.76%</td>
+                  <td><div class="next-pay-date">Feb 14</div><div class="next-pay-amount">~ $750</div></td>
+                  <td><span class="rule-badge rule-cash">Cash</span></td>
+                </tr>
+                <tr>
+                  <td><div class="asset-cell"><div class="asset-logo"><img src="../assets/logos/TSLA.webp" alt="TSLA"></div><div><div class="asset-ticker">TSLA</div><div class="asset-name">Tesla Inc.</div></div></div></td>
+                  <td>600</td>
+                  <td class="positive">+$10.00</td>
+                  <td class="negative">-1.64%</td>
+                  <td><div class="next-pay-date">Feb 14</div><div class="next-pay-amount">~ $5.00</div></td>
+                  <td><span class="rule-badge rule-strategy">Strategy</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right: Upcoming + Recent -->
+        <div class="bottom-right">
+
+          <!-- Upcoming payments -->
+          <div class="right-section">
+            <div class="right-section-header">
+              <div class="section-title">Upcoming payments</div>
+              <a class="view-schedule" href="#">View full schedule
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.25 3.5L8.75 7L5.25 10.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </div>
+            <div class="upcoming-card">
+              <table class="upcoming-table">
+                <colgroup>
+                  <col class="col-date">
+                  <col>
+                  <col class="col-payment">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Asset</th>
+                    <th style="text-align:right;">Payment</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><div class="upay-date">Feb 2</div></td>
+                    <td><div class="upay-asset"><div class="upay-logo"><img src="../assets/logos/AMZN.webp" alt="AMZN"></div><div><div class="upay-name">AMZN</div><div class="upay-sub">Amazon.com</div></div></div></td>
+                    <td class="upay-amount">+$1.20</td>
+                  </tr>
+                  <tr>
+                    <td><div class="upay-date">Feb 2</div></td>
+                    <td><div class="upay-asset"><div class="upay-logo"><img src="../assets/logos/GOOG.webp" alt="GOOGL"></div><div><div class="upay-name">GOOGL</div><div class="upay-sub">Alphabet Inc.</div></div></div></td>
+                    <td class="upay-amount">+$30.00</td>
+                  </tr>
+                  <tr>
+                    <td><div class="upay-date">Feb 5</div></td>
+                    <td><div class="upay-asset"><div class="upay-logo"><img src="../assets/logos/TSLA.webp" alt="TSLA"></div><div><div class="upay-name">TSLA</div><div class="upay-sub">Tesla Inc.</div></div></div></td>
+                    <td class="upay-amount">+$10.00</td>
+                  </tr>
+                  <tr>
+                    <td><div class="upay-date">Feb 13</div></td>
+                    <td><div class="upay-asset"><div class="upay-logo"><img src="../assets/logos/NVDA.webp" alt="NVDA"></div><div><div class="upay-name">NVDA</div><div class="upay-sub">NVIDIA</div></div></div></td>
+                    <td class="upay-amount">+$11.25</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recent activity -->
+          <div class="right-section">
+            <div class="section-title">Recent activity</div>
+            <div class="activity-card">
+              <!-- Jan 21 group -->
+              <div class="activity-date-group">
+                <div class="activity-date-label">January 21, 2026</div>
+                <div class="activity-items">
+                  <div class="activity-row">
+                    <div class="activity-logo"><img src="../assets/logos/NVDA.webp" alt="NVDA"></div>
+                    <div class="activity-info">
+                      <div class="activity-name">NVDA dividend</div>
+                      <div class="activity-sub">Kept as cash</div>
+                    </div>
+                    <div class="activity-amount">$15.53</div>
+                  </div>
+                  <div class="activity-row">
+                    <div class="activity-logo"><img src="../assets/logos/AMZN.webp" alt="AMZN"></div>
+                    <div class="activity-info">
+                      <div class="activity-name">AMZN dividend</div>
+                      <div class="activity-sub">Split: 70% AAPL, 30% NVDA</div>
+                    </div>
+                    <div class="activity-amount">$106.80</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Jan 15 group -->
+              <div class="activity-date-group">
+                <div class="activity-date-label">January 15, 2026</div>
+                <div class="activity-items">
+                  <div class="activity-row">
+                    <div class="activity-logo" style="background:#C7312E;display:flex;align-items:center;justify-content:center;">
+                      <span style="font-size:12px;font-weight:700;color:#fff;">V</span>
+                    </div>
+                    <div class="activity-info">
+                      <div class="activity-name">VOO dividend</div>
+                      <div class="activity-sub">Reinvested in VOO</div>
+                    </div>
+                    <div class="activity-amount">$20.00</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Jan 10 group -->
+              <div class="activity-date-group">
+                <div class="activity-date-label">January 10, 2026</div>
+                <div class="activity-items">
+                  <div class="activity-row">
+                    <div class="activity-logo"><img src="../assets/logos/MSFT.webp" alt="MSFT"></div>
+                    <div class="activity-info">
+                      <div class="activity-name">MSFT dividend</div>
+                      <div class="activity-sub">Reinvested per strategy</div>
+                    </div>
+                    <div class="activity-amount">$63.24</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- /content -->
+  </div>
+</div>
+
+<script>
+// Bar heights derived from Figma inset-top values (213px total container)
+// inset-top: 48,16,80,40,80,24,48,40,48,32,16,56
+const bars = [
+  { label: "Jan '25",  px: 165 },
+  { label: "Feb '25",  px: 197 },
+  { label: "Mar '25",  px: 133 },
+  { label: "Apr '25",  px: 173 },
+  { label: "May '25",  px: 133 },
+  { label: "Jun '25",  px: 189 },
+  { label: "Jul '25",  px: 165 },
+  { label: "Aug '25",  px: 173 },
+  { label: "Sep '25",  px: 165 },
+  { label: "Oct '25",  px: 181 },
+  { label: "Dec '25",  px: 197 },
+  { label: "Jan '26",  px: 157 },
+];
+
+const chart = document.getElementById('bar-chart');
+chart.innerHTML = bars.map((b, i) => `
+  <div class="bar-col">
+    <div class="bar${i === 10 ? ' active' : ''}" style="height:${b.px}px;" data-label="${b.label}"></div>
+  </div>
+`).join('');
+
+const xAxis = document.getElementById('x-axis');
+xAxis.innerHTML = bars.map(b => `<div class="x-label">${b.label}</div>`).join('');
+
+// Time tab switching
+document.querySelectorAll('.time-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.time-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Bar click
+document.querySelectorAll('.bar').forEach(bar => {
+  bar.addEventListener('click', () => {
+    document.querySelectorAll('.bar').forEach(b => b.classList.remove('active'));
+    bar.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

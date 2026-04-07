@@ -404,7 +404,9 @@ app-sidebar{align-self:stretch;display:flex;flex-shrink:0}
   border:1px solid var(--color-border-container);border-radius:var(--radius-xl);
   box-shadow:var(--shadow-card);
   padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-4);
+  cursor:pointer;transition:border-color .12s;text-decoration:none;color:inherit;
 }
+.dividend-card:hover{border-color:var(--color-gray-300);}
 .dividend-header{display:flex;align-items:center;justify-content:space-between}
 .dividend-label{font-size:var(--text-sm);font-weight:var(--font-weight-medium);color:var(--color-text-secondary)}
 .dividend-period-select{
@@ -931,7 +933,7 @@ app-sidebar{align-self:stretch;display:flex;flex-shrink:0}
             </div>
           </a>
           <div style="height:var(--space-6)"></div>
-          <div class="dividend-card">
+          <a class="dividend-card" href="../dividends/dividends.html">
             <div>
               <div class="dividend-header">
                 <span class="dividend-label">Dividend earned</span>
@@ -972,7 +974,7 @@ app-sidebar{align-self:stretch;display:flex;flex-shrink:0}
                 <span class="dividend-amount">$82.40 (20%)</span>
               </div>
             </div>
-          </div>
+          </a>
         </div>
 
         <!-- Carousel -->
