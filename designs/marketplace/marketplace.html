@@ -266,12 +266,37 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
 
-.managers-empty{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:80px 24px;gap:12px;text-align:center;
-}
-.managers-empty-title{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--color-text-primary);}
-.managers-empty-sub{font-size:14px;color:var(--color-text-tertiary);max-width:320px;line-height:1.5;}
+/* ── Manager grid ── */
+.manager-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+
+/* ── Manager card ── */
+.manager-card{background:var(--color-surface);border:1px solid rgba(0,0,0,0.09);border-radius:var(--radius-md);overflow:hidden;cursor:pointer;transition:border-color .12s,background .12s;}
+.manager-card:hover{border-color:rgba(0,0,0,0.14);background:var(--color-surface-subtle);}
+.manager-card-inner{display:flex;flex-direction:column;gap:20px;padding:16px;}
+
+/* Avatar */
+.manager-avatar-wrap{position:relative;width:56px;height:56px;flex-shrink:0;}
+.manager-avatar-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(0,0,0,0.07);background:var(--color-surface);display:flex;align-items:center;justify-content:center;padding:3px;}
+.manager-avatar-inner{width:100%;height:100%;border-radius:50%;border:1px solid rgba(0,0,0,0.08);overflow:hidden;flex:1;}
+.manager-avatar-inner img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;}
+.manager-avatar-initials{width:100%;height:100%;border-radius:50%;background:var(--color-border-strong);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--color-text-tertiary);}
+
+/* Profile row */
+.manager-profile{display:flex;align-items:center;gap:12px;}
+.manager-info{display:flex;flex-direction:column;gap:0;flex:1;min-width:0;}
+.manager-name{font-size:14px;font-weight:500;color:rgba(10,13,18,0.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.manager-bio{font-size:12px;color:rgba(10,13,18,0.6);line-height:1.5;}
+
+/* Tags */
+.manager-tags{display:flex;flex-wrap:wrap;gap:8px;}
+.manager-tag{background:var(--color-surface-subtle);border:1px solid var(--color-border-default);border-radius:var(--radius-full);padding:2px 10px;font-size:12px;color:rgba(10,13,18,0.7);white-space:nowrap;}
+
+/* Stats */
+.manager-stats{display:flex;flex-direction:column;gap:12px;}
+.manager-stat-row{display:flex;align-items:center;justify-content:space-between;font-size:14px;}
+.manager-stat-label{color:rgba(10,13,18,0.6);}
+.manager-stat-val{color:rgba(10,13,18,0.9);}
+.manager-divider{height:1px;background:var(--color-border-default);}
 </style>
 </head>
 <body>
@@ -408,10 +433,264 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
 
       <!-- Managers tab -->
       <div class="tab-panel" id="tab-managers">
-        <div class="managers-empty">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="14" r="7" stroke="#D5D7DA" stroke-width="2"/><path d="M6 36c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="#D5D7DA" stroke-width="2" stroke-linecap="round"/></svg>
-          <div class="managers-empty-title">Managers coming soon</div>
-          <div class="managers-empty-sub">Browse and follow professional portfolio managers. Check back soon.</div>
+        <div class="manager-grid">
+
+          <!-- Card 1: Logan Weaver -->
+          <div class="manager-card">
+            <div class="manager-card-inner">
+              <div class="manager-profile">
+                <div class="manager-avatar-wrap">
+                  <div class="manager-avatar-ring">
+                    <div class="manager-avatar-inner"><img src="../assets/manager-avatars/manager-1.jpg" alt="Logan Weaver"></div>
+                  </div>
+                </div>
+                <div class="manager-info">
+                  <div class="manager-name">Logan Weaver</div>
+                  <div class="manager-bio">Driven to help clients achieve financial independence.</div>
+                </div>
+              </div>
+              <div class="manager-tags">
+                <span class="manager-tag">Information technology</span>
+                <span class="manager-tag">Cybersecurity</span>
+              </div>
+              <div class="manager-stats">
+                <div class="manager-stat-row"><span class="manager-stat-label">AUM</span><span class="manager-stat-val">$25,242.60</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Experience</span><span class="manager-stat-val">10 years</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Number of strategies</span><span class="manager-stat-val">24</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Alex Chen -->
+          <div class="manager-card">
+            <div class="manager-card-inner">
+              <div class="manager-profile">
+                <div class="manager-avatar-wrap">
+                  <div class="manager-avatar-ring">
+                    <div class="manager-avatar-inner"><img src="../assets/manager-avatars/manager-2.jpg" alt="Alex Chen"></div>
+                  </div>
+                </div>
+                <div class="manager-info">
+                  <div class="manager-name">Alex Chen</div>
+                  <div class="manager-bio">Focused on maximizing returns through innovative investment strategies.</div>
+                </div>
+              </div>
+              <div class="manager-tags">
+                <span class="manager-tag">Asset management</span>
+                <span class="manager-tag">Equities</span>
+              </div>
+              <div class="manager-stats">
+                <div class="manager-stat-row"><span class="manager-stat-label">AUM</span><span class="manager-stat-val">$18,900.00</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Experience</span><span class="manager-stat-val">8 years</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Number of strategies</span><span class="manager-stat-val">18</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Sarah Kim -->
+          <div class="manager-card">
+            <div class="manager-card-inner">
+              <div class="manager-profile">
+                <div class="manager-avatar-wrap">
+                  <div class="manager-avatar-ring">
+                    <div class="manager-avatar-inner"><img src="../assets/manager-avatars/manager-3.jpg" alt="Sarah Kim"></div>
+                  </div>
+                </div>
+                <div class="manager-info">
+                  <div class="manager-name">Sarah Kim</div>
+                  <div class="manager-bio">Expert in assessing and mitigating financial risks to protect assets.</div>
+                </div>
+              </div>
+              <div class="manager-tags">
+                <span class="manager-tag">Financial services</span>
+                <span class="manager-tag">Risk management</span>
+              </div>
+              <div class="manager-stats">
+                <div class="manager-stat-row"><span class="manager-stat-label">AUM</span><span class="manager-stat-val">$31,750.00</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Experience</span><span class="manager-stat-val">12 years</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Number of strategies</span><span class="manager-stat-val">31</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: James Park -->
+          <div class="manager-card">
+            <div class="manager-card-inner">
+              <div class="manager-profile">
+                <div class="manager-avatar-wrap">
+                  <div class="manager-avatar-ring">
+                    <div class="manager-avatar-inner"><img src="../assets/manager-avatars/manager-4.jpg" alt="James Park"></div>
+                  </div>
+                </div>
+                <div class="manager-info">
+                  <div class="manager-name">James Park</div>
+                  <div class="manager-bio">Dedicated to building strong relationships and ensuring client satisfaction.</div>
+                </div>
+              </div>
+              <div class="manager-tags">
+                <span class="manager-tag">Customer service</span>
+                <span class="manager-tag">Client management</span>
+              </div>
+              <div class="manager-stats">
+                <div class="manager-stat-row"><span class="manager-stat-label">AUM</span><span class="manager-stat-val">$14,320.80</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Experience</span><span class="manager-stat-val">6 years</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Number of strategies</span><span class="manager-stat-val">11</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: Maria Lopez -->
+          <div class="manager-card">
+            <div class="manager-card-inner">
+              <div class="manager-profile">
+                <div class="manager-avatar-wrap">
+                  <div class="manager-avatar-ring">
+                    <div class="manager-avatar-inner"><img src="../assets/manager-avatars/manager-5.jpg" alt="Maria Lopez"></div>
+                  </div>
+                </div>
+                <div class="manager-info">
+                  <div class="manager-name">Maria Lopez</div>
+                  <div class="manager-bio">Advises clients on investment opportunities and portfolio diversification.</div>
+                </div>
+              </div>
+              <div class="manager-tags">
+                <span class="manager-tag">Wealth management</span>
+                <span class="manager-tag">Investments</span>
+              </div>
+              <div class="manager-stats">
+                <div class="manager-stat-row"><span class="manager-stat-label">AUM</span><span class="manager-stat-val">$42,100.00</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Experience</span><span class="manager-stat-val">15 years</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Number of strategies</span><span class="manager-stat-val">37</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6: David Liu -->
+          <div class="manager-card">
+            <div class="manager-card-inner">
+              <div class="manager-profile">
+                <div class="manager-avatar-wrap">
+                  <div class="manager-avatar-ring">
+                    <div class="manager-avatar-inner"><img src="../assets/manager-avatars/manager-6.jpg" alt="David Liu"></div>
+                  </div>
+                </div>
+                <div class="manager-info">
+                  <div class="manager-name">David Liu</div>
+                  <div class="manager-bio">Helps clients create tailored financial plans to meet their goals.</div>
+                </div>
+              </div>
+              <div class="manager-tags">
+                <span class="manager-tag">Financial advising</span>
+                <span class="manager-tag">Retirement planning</span>
+              </div>
+              <div class="manager-stats">
+                <div class="manager-stat-row"><span class="manager-stat-label">AUM</span><span class="manager-stat-val">$22,580.40</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Experience</span><span class="manager-stat-val">9 years</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Number of strategies</span><span class="manager-stat-val">20</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 7: Emma Taylor -->
+          <div class="manager-card">
+            <div class="manager-card-inner">
+              <div class="manager-profile">
+                <div class="manager-avatar-wrap">
+                  <div class="manager-avatar-ring">
+                    <div class="manager-avatar-inner"><img src="../assets/manager-avatars/manager-7.jpg" alt="Emma Taylor"></div>
+                  </div>
+                </div>
+                <div class="manager-info">
+                  <div class="manager-name">Emma Taylor</div>
+                  <div class="manager-bio">Specializes in tax planning strategies to minimize liabilities.</div>
+                </div>
+              </div>
+              <div class="manager-tags">
+                <span class="manager-tag">Accountancy</span>
+                <span class="manager-tag">Tax optimization</span>
+              </div>
+              <div class="manager-stats">
+                <div class="manager-stat-row"><span class="manager-stat-label">AUM</span><span class="manager-stat-val">$19,440.20</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Experience</span><span class="manager-stat-val">11 years</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Number of strategies</span><span class="manager-stat-val">16</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 8: Ryan Mitchell -->
+          <div class="manager-card">
+            <div class="manager-card-inner">
+              <div class="manager-profile">
+                <div class="manager-avatar-wrap">
+                  <div class="manager-avatar-ring">
+                    <div class="manager-avatar-inner">
+                      <div class="manager-avatar-initials">RM</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="manager-info">
+                  <div class="manager-name">Ryan Mitchell</div>
+                  <div class="manager-bio">Ensures adherence to regulatory requirements and internal policies.</div>
+                </div>
+              </div>
+              <div class="manager-tags">
+                <span class="manager-tag">Regulatory compliance</span>
+                <span class="manager-tag">Audit</span>
+              </div>
+              <div class="manager-stats">
+                <div class="manager-stat-row"><span class="manager-stat-label">AUM</span><span class="manager-stat-val">$11,200.00</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Experience</span><span class="manager-stat-val">7 years</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Number of strategies</span><span class="manager-stat-val">9</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 9: Nina Patel -->
+          <div class="manager-card">
+            <div class="manager-card-inner">
+              <div class="manager-profile">
+                <div class="manager-avatar-wrap">
+                  <div class="manager-avatar-ring">
+                    <div class="manager-avatar-inner">
+                      <div class="manager-avatar-initials">NP</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="manager-info">
+                  <div class="manager-name">Nina Patel</div>
+                  <div class="manager-bio">Analyzes market trends to guide investment strategies and decisions.</div>
+                </div>
+              </div>
+              <div class="manager-tags">
+                <span class="manager-tag">Market analysis</span>
+                <span class="manager-tag">Research</span>
+              </div>
+              <div class="manager-stats">
+                <div class="manager-stat-row"><span class="manager-stat-label">AUM</span><span class="manager-stat-val">$28,670.90</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Experience</span><span class="manager-stat-val">13 years</span></div>
+                <div class="manager-divider"></div>
+                <div class="manager-stat-row"><span class="manager-stat-label">Number of strategies</span><span class="manager-stat-val">29</span></div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
