@@ -61,11 +61,13 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
 .dividend-rule-pill:hover{border-color:rgba(0,0,0,0.14);}
 .dividend-rule-label{font-size:14px;font-weight:500;color:rgba(10,13,18,0.7);white-space:nowrap;}
 .rule-chip{
-  background:#FEF7EE;border:1px solid #F9D7AF;
   border-radius:var(--radius-full);
-  padding:2px 8px;font-size:12px;font-weight:500;color:#B84416;
-  white-space:nowrap;
+  padding:2px 8px;font-size:12px;font-weight:500;
+  white-space:nowrap;border:1px solid transparent;
 }
+.rule-chip,.rule-chip-cash{background:#FEF7EE;border-color:#F9D7AF;color:#B84416;}
+.rule-chip-drip{background:#EEF7EE;border-color:#CBE7CC;color:#316434;}
+.rule-chip-strategy{background:#F1F6FD;border-color:#C8DBF5;color:#3757BE;}
 .settings-btn{
   width:32px;height:32px;border-radius:var(--radius-sm);
   display:flex;align-items:center;justify-content:center;
@@ -116,7 +118,7 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
 
 /* ── Dividend history ── */
 .history-section{display:flex;flex-direction:column;gap:20px;}
-.history-row{display:flex;gap:40px;align-items:stretch;}
+.history-row{display:flex;gap:20px;align-items:stretch;}
 
 /* chart card */
 .history-card{
@@ -231,10 +233,10 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
 .next-pay-amount{font-size:12px;color:var(--color-text-tertiary);}
 /* rule badges */
 .rule-badge{display:inline-flex;padding:2px 10px;border-radius:var(--radius-full);font-size:12px;font-weight:500;border:1px solid transparent;white-space:nowrap;}
-.rule-drip{background:#DCFCE7;border-color:#BBF7D0;color:#166534;}
-.rule-strategy{background:var(--color-brand-50);border-color:var(--color-brand-200);color:var(--color-brand-700);}
-.rule-custom{background:var(--color-surface-subtle);border-color:var(--color-border-default);color:var(--color-text-secondary);}
-.rule-cash{background:#FEF3C7;border-color:#FDE68A;color:#92400E;}
+.rule-drip{background:#EEF7EE;border-color:#CBE7CC;color:#316434;}
+.rule-strategy{background:#F1F6FD;border-color:#C8DBF5;color:#3757BE;}
+.rule-custom{background:#FAFAFA;border-color:#E9EAEB;color:#414651;}
+.rule-cash{background:#FEF7EE;border-color:#F9D7AF;color:#B84416;}
 
 /* ── Bottom right sections ── */
 .right-section{display:flex;flex-direction:column;gap:20px;}
@@ -298,6 +300,99 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
 .activity-name{font-size:14px;font-weight:500;color:var(--color-text-primary);}
 .activity-sub{font-size:12px;color:var(--color-text-tertiary);}
 .activity-amount{font-size:14px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;}
+
+/* ── Dividend Rule Modal ── */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(10,13,18,0.35);
+  display:flex;align-items:center;justify-content:center;
+  z-index:1000;
+  opacity:0;pointer-events:none;
+  transition:opacity 180ms ease;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-overlay.open .modal{transform:translateY(0);opacity:1;}
+.modal{
+  background:var(--color-surface);
+  border-radius:16px;
+  width:400px;
+  box-shadow:0 8px 40px rgba(10,13,18,0.18),0 0 0 1px rgba(10,13,18,0.06);
+  transform:translateY(8px);opacity:0;
+  transition:transform 180ms ease,opacity 180ms ease;
+}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 20px 16px;
+}
+.modal-title{font-size:16px;font-weight:600;color:var(--color-text-primary);}
+.modal-close{
+  width:28px;height:28px;border-radius:6px;
+  background:transparent;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--color-text-tertiary);flex-shrink:0;
+  transition:background .12s,color .12s;
+}
+.modal-close:hover{background:var(--color-border-default);color:var(--color-text-primary);}
+.modal-body{padding:0 20px 16px;display:flex;flex-direction:column;gap:8px;}
+.rule-option{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;
+  border:1.5px solid rgba(0,0,0,0.09);
+  border-radius:10px;cursor:pointer;
+  transition:border-color .12s,background .12s;
+}
+.rule-option:hover{border-color:rgba(0,0,0,0.16);}
+.rule-option.selected{border-color:var(--color-brand-600);background:var(--color-brand-50);}
+.rule-radio{
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;
+  border:2px solid rgba(0,0,0,0.2);
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .12s;
+}
+.rule-option.selected .rule-radio{border-color:var(--color-brand-600);}
+.rule-radio-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--color-brand-600);
+  opacity:0;transition:opacity .12s,transform .12s;transform:scale(0.5);
+}
+.rule-option.selected .rule-radio-dot{opacity:1;transform:scale(1);}
+.rule-option-content{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.rule-option-text{flex:1;min-width:0;}
+.rule-option-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+.rule-option-desc{font-size:12px;color:var(--color-text-tertiary);margin-top:2px;}
+.rule-info{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:10px 14px;
+  background:var(--color-surface-subtle);
+  border-radius:8px;
+  font-size:12px;color:var(--color-text-tertiary);line-height:1.5;
+  margin-top:4px;
+}
+.modal-footer{
+  display:flex;gap:8px;
+  padding:16px 20px 20px;
+  border-top:1px solid var(--color-border-default);
+}
+.btn-cancel{
+  flex:1;padding:9px 16px;
+  border:1px solid var(--color-border-strong);
+  border-radius:var(--radius-md);
+  background:var(--color-surface);cursor:pointer;
+  font-size:14px;font-weight:500;color:var(--color-text-primary);
+  font-family:var(--font-body);letter-spacing:-0.5px;
+  transition:background .12s,border-color .12s;
+}
+.btn-cancel:hover{background:var(--color-surface-subtle);}
+.btn-save{
+  flex:2;padding:9px 16px;
+  border:none;border-radius:var(--radius-md);
+  background:var(--color-brand-600);
+  color:#fff;cursor:pointer;
+  font-size:14px;font-weight:500;
+  font-family:var(--font-body);letter-spacing:-0.5px;
+  transition:background .12s;
+}
+.btn-save:hover{background:var(--color-brand-700);}
 </style>
 </head>
 <body>
@@ -603,6 +698,63 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
   </div>
 </div>
 
+<!-- Dividend Rule Modal -->
+<div class="modal-overlay" id="dividend-rule-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Set your default Dividend Rule</div>
+      <button class="modal-close" id="modal-close-btn" title="Close">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <div class="rule-option selected" data-rule="cash" data-label="Cash">
+        <div class="rule-radio"><div class="rule-radio-dot"></div></div>
+        <div class="rule-option-content">
+          <div class="rule-option-text">
+            <div class="rule-option-title">Keep as Cash</div>
+            <div class="rule-option-desc">Dividends stay in your cash balance</div>
+          </div>
+          <span class="rule-badge rule-cash">Cash</span>
+        </div>
+      </div>
+
+      <div class="rule-option" data-rule="drip" data-label="Drip">
+        <div class="rule-radio"><div class="rule-radio-dot"></div></div>
+        <div class="rule-option-content">
+          <div class="rule-option-text">
+            <div class="rule-option-title">Reinvest in same asset (Drip)</div>
+            <div class="rule-option-desc">Buy more of the asset automatically</div>
+          </div>
+          <span class="rule-badge rule-drip">Drip</span>
+        </div>
+      </div>
+
+      <div class="rule-option" data-rule="strategy" data-label="Strategy">
+        <div class="rule-radio"><div class="rule-radio-dot"></div></div>
+        <div class="rule-option-content">
+          <div class="rule-option-text">
+            <div class="rule-option-title">Reinvest per strategy</div>
+            <div class="rule-option-desc">Allocate according to your target weights</div>
+          </div>
+          <span class="rule-badge rule-strategy">Strategy</span>
+        </div>
+      </div>
+
+      <div class="rule-info">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;margin-top:1px;color:var(--color-text-tertiary)"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 6.5v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="5" r="0.6" fill="currentColor"/></svg>
+        The selected rule will be applied to all assets without a custom rule.
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="modal-cancel-btn">Cancel</button>
+      <button class="btn-save" id="modal-save-btn">Save Rule</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // Bar heights derived from Figma inset-top values (213px total container)
 // inset-top: 48,16,80,40,80,24,48,40,48,32,16,56
@@ -645,6 +797,36 @@ document.querySelectorAll('.bar').forEach(bar => {
     document.querySelectorAll('.bar').forEach(b => b.classList.remove('active'));
     bar.classList.add('active');
   });
+});
+
+// Dividend Rule Modal
+const ruleModal = document.getElementById('dividend-rule-modal');
+function openRuleModal() { ruleModal.classList.add('open'); }
+function closeRuleModal() { ruleModal.classList.remove('open'); }
+
+document.querySelector('.dividend-rule-pill').addEventListener('click', openRuleModal);
+document.querySelector('.settings-btn').addEventListener('click', openRuleModal);
+document.getElementById('modal-close-btn').addEventListener('click', closeRuleModal);
+document.getElementById('modal-cancel-btn').addEventListener('click', closeRuleModal);
+ruleModal.addEventListener('click', e => { if (e.target === ruleModal) closeRuleModal(); });
+
+document.querySelectorAll('.rule-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.rule-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+  });
+});
+
+document.getElementById('modal-save-btn').addEventListener('click', () => {
+  const selected = document.querySelector('.rule-option.selected');
+  if (selected) {
+    const ruleValue = selected.dataset.rule;
+    const ruleLabel = selected.dataset.label;
+    const chip = document.querySelector('.rule-chip');
+    chip.textContent = ruleLabel;
+    chip.className = 'rule-chip rule-chip-' + ruleValue;
+  }
+  closeRuleModal();
 });
 </script>
 </body>
