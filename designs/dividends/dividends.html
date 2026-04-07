@@ -78,7 +78,7 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
 .settings-btn:hover{background:var(--color-border-default);color:var(--color-text-primary);}
 
 /* ── Scrollable content ── */
-.content{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:40px;}
+.content{flex:1;overflow-y:auto;padding:24px 40px 24px 24px;display:flex;flex-direction:column;gap:40px;}
 .content::-webkit-scrollbar{width:6px;}
 .content::-webkit-scrollbar-track{background:transparent;}
 .content::-webkit-scrollbar-thumb{background:var(--color-border-strong);border-radius:3px;}
@@ -159,23 +159,36 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
 .bar{
   width:32px;border-radius:4px 4px 0 0;
   background:#B8CCF0;
-  cursor:pointer;transition:background .15s;
+  cursor:pointer;
+  transition:background .2s, opacity .2s, transform .15s;
+  transform-origin:bottom center;
 }
-.bar:hover,.bar.active{background:#7FA8E8;}
+.bar:hover{background:#7FA8E8;}
+.bar.active{background:#406AD0;}
+.bar.dimmed{opacity:0.35;}
+@keyframes barPop{0%{transform:scaleY(1)}25%{transform:scaleY(0.96)}100%{transform:scaleY(1)}}
+.bar.popping{animation:barPop 160ms ease-out;}
 .x-axis{
   display:flex;justify-content:space-between;
   padding:8px 0 0;
 }
 .x-label{font-size:12px;color:rgba(10,13,18,0.6);white-space:nowrap;width:32px;text-align:center;}
 
-/* breakdown panel */
+/* breakdown panel — empty state */
 .breakdown-panel{
-  width:240px;flex-shrink:0;
+  width:400px;flex-shrink:0;
   background:#FAFAFA;
   border:1px dashed rgba(0,0,0,0.09);
   border-radius:12px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:12px;padding:24px;text-align:center;
+  transition:background .2s,border .2s;
+}
+.breakdown-panel.has-data{
+  background:var(--color-surface);
+  border:1px solid rgba(0,0,0,0.09);
+  align-items:stretch;justify-content:flex-start;
+  padding:20px;gap:16px;text-align:left;
 }
 .breakdown-plus{
   width:48px;height:48px;border-radius:50%;
@@ -186,6 +199,74 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
 .breakdown-text{display:flex;flex-direction:column;gap:4px;align-items:center;}
 .breakdown-title{font-size:16px;font-weight:500;color:rgba(10,13,18,0.7);}
 .breakdown-sub{font-size:14px;color:rgba(10,13,18,0.6);}
+/* breakdown active state */
+.bd-header{display:flex;align-items:center;justify-content:space-between;}
+.bd-month{font-size:14px;font-weight:500;color:rgba(10,13,18,0.9);}
+.bd-total{font-size:14px;font-weight:500;color:#3757BE;}
+.bd-divider{border:none;border-top:1px solid var(--color-border-default);margin:0;}
+.bd-main{display:flex;gap:20px;align-items:flex-start;}
+.bd-donut{flex-shrink:0;}
+.bd-list{flex:1;min-width:0;display:flex;flex-direction:column;gap:0;}
+.bd-item{display:flex;align-items:center;justify-content:space-between;padding:7px 0;}
+.bd-item+.bd-item{border-top:1px solid var(--color-border-default);}
+.bd-item-left{display:flex;align-items:center;gap:8px;}
+.bd-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;display:inline-block;}
+.bd-ticker{font-size:12px;color:rgba(10,13,18,0.9);}
+.bd-amount{font-size:12px;color:rgba(10,13,18,0.7);}
+.bd-dist-badge{
+  display:inline-flex;align-items:center;
+  background:#FAFAFA;border:1px solid #E9EAEB;
+  border-radius:6px;padding:2px 6px;
+  font-size:10px;font-weight:500;color:#414651;
+}
+.bd-progress-track{
+  height:8px;border-radius:var(--radius-full);
+  background:#F5BA7C;overflow:hidden;
+  position:relative;
+}
+.bd-progress-fill{
+  position:absolute;left:0;top:0;bottom:0;
+  background:#A2D3A5;border-radius:var(--radius-full);
+}
+.bd-dist-rows{display:flex;flex-direction:column;gap:8px;}
+.bd-dist-row{display:flex;align-items:center;justify-content:space-between;}
+.bd-dist-left{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(10,13,18,0.9);}
+.bd-dist-val{font-size:12px;color:rgba(10,13,18,0.7);}
+/* breakdown content animations */
+@keyframes bdFadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bdScaleIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+@keyframes panelIn{from{opacity:0;transform:scale(0.97)}to{opacity:1;transform:scale(1)}}
+/* ── Toast ── */
+.toast{
+  position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(12px);
+  background:var(--color-surface);
+  border:1px solid rgba(0,0,0,0.09);
+  border-radius:var(--radius-lg);
+  box-shadow:0 4px 24px rgba(10,13,18,0.12),0 0 0 1px rgba(0,0,0,0.04);
+  padding:12px 16px;
+  display:flex;align-items:center;gap:10px;
+  font-size:14px;font-weight:500;color:var(--color-text-primary);
+  white-space:nowrap;pointer-events:none;
+  opacity:0;z-index:2000;
+  transition:opacity 200ms ease, transform 200ms ease;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.hide{opacity:0;transform:translateX(-50%) translateY(8px);}
+.toast-icon{
+  width:20px;height:20px;border-radius:50%;flex-shrink:0;
+  background:#EEF7EE;border:1px solid #CBE7CC;
+  display:flex;align-items:center;justify-content:center;
+  color:#316434;
+}
+.bd-anim{opacity:0;animation:bdFadeUp 240ms ease forwards;}
+.bd-anim-1{animation-delay:30ms;}
+.bd-anim-2{animation-delay:90ms;}
+.bd-anim-3{animation-delay:140ms;}
+.bd-anim-4{animation-delay:190ms;}
+.bd-donut-wrap{animation:bdScaleIn 320ms cubic-bezier(.34,1.4,.64,1) forwards;}
+.bd-item{opacity:0;animation:bdFadeUp 200ms ease forwards;}
+.breakdown-panel.has-data{animation:panelIn 220ms ease;}
+.bd-progress-fill{transition:width 600ms cubic-bezier(.25,1,.5,1);}
 
 /* ── Bottom two-col ── */
 .bottom-row{display:flex;gap:40px;align-items:start;}
@@ -233,6 +314,8 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
 .next-pay-amount{font-size:12px;color:var(--color-text-tertiary);}
 /* rule badges */
 .rule-badge{display:inline-flex;padding:2px 10px;border-radius:var(--radius-full);font-size:12px;font-weight:500;border:1px solid transparent;white-space:nowrap;}
+.table tbody tr{cursor:pointer;}
+.table tbody tr:hover td{background:var(--color-surface-subtle);}
 .rule-drip{background:#EEF7EE;border-color:#CBE7CC;color:#316434;}
 .rule-strategy{background:#F1F6FD;border-color:#C8DBF5;color:#3757BE;}
 .rule-custom{background:#FAFAFA;border-color:#E9EAEB;color:#414651;}
@@ -490,7 +573,7 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
             </div>
           </div>
           <!-- Breakdown panel -->
-          <div class="breakdown-panel">
+          <div class="breakdown-panel" id="breakdown-panel">
             <div class="breakdown-plus">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             </div>
@@ -755,6 +838,77 @@ html,body{height:100%;background:var(--color-surface-subtle);font-family:var(--f
   </div>
 </div>
 
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-icon">
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <span id="toast-msg">Rule updated</span>
+</div>
+
+<!-- Asset-specific Dividend Rule Modal -->
+<div class="modal-overlay" id="asset-rule-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="asset-modal-title">AAPL Dividend Rule</div>
+      <button class="modal-close" id="asset-modal-close-btn" title="Close">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <div class="rule-option" data-rule="cash" data-label="Cash">
+        <div class="rule-radio"><div class="rule-radio-dot"></div></div>
+        <div class="rule-option-content">
+          <div class="rule-option-text">
+            <div class="rule-option-title">Keep as Cash</div>
+            <div class="rule-option-desc">Dividends stay in your cash balance</div>
+          </div>
+          <span class="rule-badge rule-cash">Cash</span>
+        </div>
+      </div>
+
+      <div class="rule-option" data-rule="drip" data-label="Drip">
+        <div class="rule-radio"><div class="rule-radio-dot"></div></div>
+        <div class="rule-option-content">
+          <div class="rule-option-text">
+            <div class="rule-option-title">Reinvest in same asset (Drip)</div>
+            <div class="rule-option-desc asset-drip-desc">Buy more automatically</div>
+          </div>
+          <span class="rule-badge rule-drip">Drip</span>
+        </div>
+      </div>
+
+      <div class="rule-option" data-rule="strategy" data-label="Strategy">
+        <div class="rule-radio"><div class="rule-radio-dot"></div></div>
+        <div class="rule-option-content">
+          <div class="rule-option-text">
+            <div class="rule-option-title">Reinvest per strategy</div>
+            <div class="rule-option-desc">Allocate according to your target weights</div>
+          </div>
+          <span class="rule-badge rule-strategy">Strategy</span>
+        </div>
+      </div>
+
+      <div class="rule-option" data-rule="custom" data-label="Custom">
+        <div class="rule-radio"><div class="rule-radio-dot"></div></div>
+        <div class="rule-option-content">
+          <div class="rule-option-text">
+            <div class="rule-option-title">Custom Split</div>
+            <div class="rule-option-desc">Define custom allocation percentages</div>
+          </div>
+          <span class="rule-badge rule-custom">Custom</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="asset-modal-cancel-btn">Cancel</button>
+      <button class="btn-save" id="asset-modal-save-btn">Save Rule</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // Bar heights derived from Figma inset-top values (213px total container)
 // inset-top: 48,16,80,40,80,24,48,40,48,32,16,56
@@ -791,13 +945,149 @@ document.querySelectorAll('.time-tab').forEach(btn => {
   });
 });
 
+// Per-bar breakdown data
+const barBreakdown = [
+  { total: '$189.40', reinvestedPct: 66 },
+  { total: '$221.85', reinvestedPct: 72 },
+  { total: '$148.30', reinvestedPct: 58 },
+  { total: '$193.70', reinvestedPct: 64 },
+  { total: '$147.60', reinvestedPct: 55 },
+  { total: '$210.90', reinvestedPct: 70 },
+  { total: '$183.20', reinvestedPct: 61 },
+  { total: '$192.45', reinvestedPct: 68 },
+  { total: '$183.80', reinvestedPct: 60 },
+  { total: '$201.35', reinvestedPct: 74 },
+  { total: '$221.85', reinvestedPct: 72 },
+  { total: '$174.60', reinvestedPct: 63 },
+];
+
+const HOLDINGS = [
+  { ticker: 'VTI',  color: '#406AD0', amount: '$89.50',  pct: '18%' },
+  { ticker: 'SCHD', color: '#E8A0A0', amount: '$75.30',  pct: '15%' },
+  { ticker: 'JNJ',  color: '#F5A623', amount: '$120.00', pct: '30%' },
+  { ticker: 'MSFT', color: '#5BB85D', amount: '$95.75',  pct: '22%' },
+  { ticker: 'O',    color: '#9B6DC5', amount: '$110.25', pct: '25%' },
+  { ticker: 'AAPL', color: '#54B8C0', amount: '$82.40',  pct: '20%' },
+];
+
+// Donut chart SVG generator (draw-on via JS animation after insert)
+function buildDonut(size = 100) {
+  const cx = size / 2, cy = size / 2, r = size * 0.34, strokeW = size * 0.22;
+  const circ = 2 * Math.PI * r;
+  const segs = HOLDINGS.map(h => ({ color: h.color, pct: parseFloat(h.pct) }));
+  const total = segs.reduce((s, x) => s + x.pct, 0);
+  let offset = 0;
+  // Start all segments hidden (dasharray 0 circ), animate to real values via data attrs
+  const circles = segs.map((seg, i) => {
+    const len = (seg.pct / total) * circ;
+    const dashOffset = circ - offset;
+    const el = `<circle data-len="${len.toFixed(2)}" data-circ="${circ.toFixed(2)}" data-off="${dashOffset.toFixed(2)}"
+      cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${seg.color}" stroke-width="${strokeW}"
+      stroke-dasharray="0 ${circ}" stroke-dashoffset="${dashOffset}"
+      style="transition:stroke-dasharray ${300 + i * 60}ms cubic-bezier(.25,1,.5,1) ${i * 50}ms" />`;
+    offset += len;
+    return el;
+  }).join('');
+  return `<div class="bd-donut-wrap"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="transform:rotate(-90deg);display:block">${circles}</svg></div>`;
+}
+
+function renderBreakdown(barIndex) {
+  const panel = document.getElementById('breakdown-panel');
+  const data = barBreakdown[barIndex];
+  const b = bars[barIndex];
+  const reinvAmt = (parseFloat(data.total.replace('$','')) * data.reinvestedPct / 100).toFixed(2);
+  const cashAmt  = (parseFloat(data.total.replace('$','')) * (100 - data.reinvestedPct) / 100).toFixed(2);
+  const monthNames = {Jan:'January',Feb:'February',Mar:'March',Apr:'April',May:'May',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'};
+  const [mon, yr] = b.label.split(" '");
+  const monthLabel = `${monthNames[mon] || mon} 20${yr}`;
+
+  // If already has data, fade out first then re-render
+  const wasActive = panel.classList.contains('has-data');
+  if (wasActive) { panel.style.opacity = '0'; panel.style.transition = 'opacity 100ms ease'; }
+
+  setTimeout(() => {
+    panel.style.opacity = '';
+    panel.style.transition = '';
+    panel.classList.add('has-data');
+    panel.innerHTML = `
+      <div class="bd-anim bd-anim-1 bd-header">
+        <span class="bd-month">${monthLabel}</span>
+        <span class="bd-total">${data.total}</span>
+      </div>
+      <hr class="bd-anim bd-anim-1 bd-divider">
+      <div class="bd-anim bd-anim-2 bd-main">
+        ${buildDonut(100)}
+        <div class="bd-list">
+          ${HOLDINGS.map((h, i) => `
+            <div class="bd-item" style="animation-delay:${160 + i * 35}ms">
+              <div class="bd-item-left">
+                <span class="bd-dot" style="background:${h.color}"></span>
+                <span class="bd-ticker">${h.ticker}</span>
+              </div>
+              <span class="bd-amount">${h.amount} (${h.pct})</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      <hr class="bd-anim bd-anim-3 bd-divider">
+      <div class="bd-anim bd-anim-4" style="display:flex;flex-direction:column;gap:10px;">
+        <div><span class="bd-dist-badge">Dividend distribution</span></div>
+        <div class="bd-progress-track"><div class="bd-progress-fill" style="width:0%"></div></div>
+        <div class="bd-dist-rows">
+          <div class="bd-dist-row">
+            <div class="bd-dist-left"><span class="bd-dot" style="background:#A2D3A5"></span>Reinvested</div>
+            <span class="bd-dist-val">$${reinvAmt} (${data.reinvestedPct}%)</span>
+          </div>
+          <div class="bd-dist-row">
+            <div class="bd-dist-left"><span class="bd-dot" style="background:#F5BA7C"></span>Kept as cash</div>
+            <span class="bd-dist-val">$${cashAmt} (${100 - data.reinvestedPct}%)</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Animate donut segments after DOM is ready
+    requestAnimationFrame(() => {
+      panel.querySelectorAll('circle[data-len]').forEach(c => {
+        c.setAttribute('stroke-dasharray', `${c.dataset.len} ${parseFloat(c.dataset.circ) - parseFloat(c.dataset.len)}`);
+      });
+      // Animate progress bar after a short delay
+      setTimeout(() => {
+        const fill = panel.querySelector('.bd-progress-fill');
+        if (fill) fill.style.width = data.reinvestedPct + '%';
+      }, 300);
+    });
+  }, wasActive ? 110 : 0);
+}
+
 // Bar click
-document.querySelectorAll('.bar').forEach(bar => {
+document.querySelectorAll('.bar').forEach((bar, i) => {
   bar.addEventListener('click', () => {
-    document.querySelectorAll('.bar').forEach(b => b.classList.remove('active'));
+    const allBars = document.querySelectorAll('.bar');
+    // Pop animation on clicked bar
+    bar.classList.remove('popping');
+    void bar.offsetWidth; // reflow to restart animation
+    bar.classList.add('popping');
+    // Dim others, activate this one
+    allBars.forEach(b => { b.classList.remove('active'); b.classList.add('dimmed'); });
+    bar.classList.remove('dimmed');
     bar.classList.add('active');
+    renderBreakdown(i);
   });
 });
+
+// Toast
+let toastTimer;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  toast.classList.remove('hide');
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.add('hide');
+    setTimeout(() => toast.classList.remove('show', 'hide'), 220);
+  }, 3000);
+}
 
 // Dividend Rule Modal
 const ruleModal = document.getElementById('dividend-rule-modal');
@@ -818,15 +1108,83 @@ document.querySelectorAll('.rule-option').forEach(opt => {
 });
 
 document.getElementById('modal-save-btn').addEventListener('click', () => {
-  const selected = document.querySelector('.rule-option.selected');
+  const selected = document.querySelector('#dividend-rule-modal .rule-option.selected');
   if (selected) {
     const ruleValue = selected.dataset.rule;
     const ruleLabel = selected.dataset.label;
     const chip = document.querySelector('.rule-chip');
     chip.textContent = ruleLabel;
     chip.className = 'rule-chip rule-chip-' + ruleValue;
+    showToast(`Default rule updated to ${ruleLabel}`);
   }
   closeRuleModal();
+});
+
+// ── Asset-specific Rule Modal ──
+const assetModal = document.getElementById('asset-rule-modal');
+const assetSaveBtn = document.getElementById('asset-modal-save-btn');
+let currentBadgeEl = null;
+
+function openAssetRuleModal(badgeEl, ticker, currentRule) {
+  currentBadgeEl = badgeEl;
+  // Set title
+  document.getElementById('asset-modal-title').textContent = `${ticker} Dividend Rule`;
+  // Update drip description with ticker
+  document.querySelector('.asset-drip-desc').textContent = `Buy more ${ticker} automatically`;
+  // Set current selection
+  const opts = assetModal.querySelectorAll('.rule-option');
+  opts.forEach(o => o.classList.remove('selected'));
+  const match = [...opts].find(o => o.dataset.label.toLowerCase() === currentRule.toLowerCase());
+  if (match) match.classList.add('selected');
+  updateAssetSaveBtn();
+  assetModal.classList.add('open');
+}
+
+function closeAssetRuleModal() { assetModal.classList.remove('open'); currentBadgeEl = null; }
+
+function updateAssetSaveBtn() {
+  const sel = assetModal.querySelector('.rule-option.selected');
+  assetSaveBtn.textContent = sel && sel.dataset.rule === 'custom' ? 'Define allocation' : 'Save Rule';
+}
+
+// Option clicks in asset modal
+assetModal.querySelectorAll('.rule-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    assetModal.querySelectorAll('.rule-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    updateAssetSaveBtn();
+  });
+});
+
+document.getElementById('asset-modal-close-btn').addEventListener('click', closeAssetRuleModal);
+document.getElementById('asset-modal-cancel-btn').addEventListener('click', closeAssetRuleModal);
+assetModal.addEventListener('click', e => { if (e.target === assetModal) closeAssetRuleModal(); });
+
+assetSaveBtn.addEventListener('click', () => {
+  const selected = assetModal.querySelector('.rule-option.selected');
+  if (selected && currentBadgeEl) {
+    const ruleValue = selected.dataset.rule;
+    const ruleLabel = selected.dataset.label;
+    const ticker = document.getElementById('asset-modal-title').textContent.replace(' Dividend Rule','');
+    currentBadgeEl.textContent = ruleLabel;
+    currentBadgeEl.className = `rule-badge rule-${ruleValue}`;
+    if (ruleValue === 'custom') {
+      showToast(`${ticker} set to custom split`);
+    } else {
+      showToast(`${ticker} rule updated to ${ruleLabel}`);
+    }
+  }
+  closeAssetRuleModal();
+});
+
+// Wire up entire holdings table rows
+document.querySelectorAll('.table tbody tr').forEach(row => {
+  row.addEventListener('click', () => {
+    const ticker = row.querySelector('.asset-ticker').textContent.trim();
+    const badge = row.querySelector('.rule-badge');
+    const currentRule = badge.textContent.trim();
+    openAssetRuleModal(badge, ticker, currentRule);
+  });
 });
 </script>
 </body>
