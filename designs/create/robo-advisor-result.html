@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robo Advisor Result — Surmount B2C</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --color-text-primary: #181D27;
+  --color-text-secondary: #414651;
+  --color-text-tertiary: #717680;
+  --color-border-default: #E9EAEB;
+  --color-surface-subtle: #FAFAFA;
+  --color-bg-default: #FFFFFF;
+  --color-brand-600: #406AD0;
+  --color-chart-likely: #6DC382;
+  --color-chart-less-likely: #CEECD7;
+  --color-chart-accent: #058A33;
+  --font-display: 'Inter', sans-serif;
+  --font-body: 'Geist', sans-serif;
+  --letter-spacing: -0.5px;
+
+  /* Holdings allocation colors */
+  --c-1: #3A4DB0;
+  --c-2: #5868C8;
+  --c-3: #7A86D6;
+  --c-4: #98A4E0;
+  --c-5: #B4BEE8;
+  --c-cash: #5BBF7A;
+}
+
+body {
+  font-family: var(--font-body);
+  background: #D4D4D2;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing);
+}
+
+.screen {
+  width: 390px;
+  background: var(--color-bg-default);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ——— Status bar ——— */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px 6px;
+  flex-shrink: 0;
+}
+
+.status-time {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.3px;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ——— Nav row ——— */
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 20px 12px;
+}
+
+.back-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  background: none; border: none; cursor: pointer;
+  border-radius: 50%;
+}
+.back-btn:hover { background: var(--color-surface-subtle); }
+
+.cancel-btn {
+  font-family: var(--font-body);
+  font-size: 16px; font-weight: 500;
+  color: var(--color-text-primary);
+  background: none; border: none; cursor: pointer;
+  text-decoration: underline;
+  letter-spacing: var(--letter-spacing);
+  padding: 4px 0;
+}
+
+/* ——— Headline ——— */
+.headline-wrap { padding: 0 20px 4px; }
+
+.headline {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  letter-spacing: -0.8px;
+}
+
+/* ——— Chart ——— */
+.chart-wrap {
+  padding: 8px 0 0;
+  width: 100%;
+}
+.chart-wrap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+}
+
+/* ——— Input controls card ——— */
+.controls-card {
+  margin: 0 20px 24px;
+  border: 1.5px solid var(--color-border-default);
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+
+.control-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 12px;
+  text-align: center;
+}
+.control-col + .control-col {
+  border-left: 1.5px solid var(--color-border-default);
+}
+
+.control-label {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.stepper-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border-default);
+  background: var(--color-bg-default);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: border-color 0.15s ease;
+}
+.stepper-btn:hover:not([disabled]) { border-color: var(--color-text-secondary); }
+.stepper-btn[disabled] { opacity: 0.35; cursor: not-allowed; }
+
+.stepper-value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  color: var(--color-text-primary);
+  min-width: 64px;
+  text-align: center;
+}
+
+.control-sub {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+/* ——— Holdings section ——— */
+.holdings-section { padding: 0 20px; }
+
+.holdings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.holdings-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.5px;
+}
+
+.edit-btn {
+  background: none; border: none; cursor: pointer;
+  padding: 4px;
+  color: var(--color-text-tertiary);
+  display: flex; align-items: center;
+}
+.edit-btn:hover { color: var(--color-text-primary); }
+
+/* ——— Tab bar ——— */
+.tab-bar {
+  display: flex;
+  background: #F0F0EE;
+  border-radius: 999px;
+  padding: 3px;
+  margin-bottom: 14px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  letter-spacing: var(--letter-spacing);
+  transition: all 0.15s;
+}
+
+.tab-btn.active {
+  background: #fff;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* ——— Allocation bar ——— */
+.alloc-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  gap: 2px;
+  margin-bottom: 16px;
+}
+.alloc-seg { height: 100%; }
+.alloc-seg:first-child { border-radius: 999px 0 0 999px; }
+.alloc-seg:last-child  { border-radius: 0 999px 999px 0; }
+
+/* ——— Holdings list ——— */
+.holdings-list {
+  border: 1.5px solid var(--color-border-default);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.holding-item { }
+
+.holding-row {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  gap: 10px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.holding-row:hover { background: var(--color-surface-subtle); }
+
+.holding-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%; flex-shrink: 0;
+}
+
+.holding-info { flex: 1; min-width: 0; }
+.holding-name {
+  font-size: 14px; font-weight: 500;
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing);
+  line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.holding-right {
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+
+.holding-pct {
+  font-size: 14px; font-weight: 400;
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing);
+}
+
+.chevron {
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.holding-item.expanded .chevron { transform: rotate(180deg); }
+
+/* Expanded detail panel */
+.holding-detail {
+  display: none;
+  background: var(--color-surface-subtle);
+  border-top: 1px solid var(--color-border-default);
+  padding: 12px 16px 14px;
+  gap: 8px;
+  flex-direction: column;
+}
+.holding-item.expanded .holding-detail { display: flex; }
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.detail-label {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  letter-spacing: var(--letter-spacing);
+}
+.detail-value {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  letter-spacing: var(--letter-spacing);
+}
+
+/* Divider between items */
+.holding-item + .holding-item { border-top: 1px solid var(--color-border-default); }
+
+/* ——— CTA section ——— */
+.cta-section {
+  padding: 0 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.btn-invest {
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: none;
+  background: var(--color-brand-600);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn-invest:hover { background: #3757BE; }
+
+.btn-skip {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  letter-spacing: var(--letter-spacing);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px 0;
+}
+</style>
+</head>
+<body>
+
+<div class="screen">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <!-- Signal -->
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+        <rect x="0" y="7" width="3" height="5" rx="1" fill="#181D27"/>
+        <rect x="4.5" y="4.5" width="3" height="7.5" rx="1" fill="#181D27"/>
+        <rect x="9" y="2" width="3" height="10" rx="1" fill="#181D27"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1" fill="#181D27" opacity="0.3"/>
+      </svg>
+      <!-- WiFi -->
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" fill="#181D27"/>
+        <path d="M3.9 6.9C5 5.8 6.4 5.1 8 5.1s3 .7 4.1 1.8" stroke="#181D27" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+        <path d="M1.2 4.2C3 2.4 5.4 1.3 8 1.3s5 1.1 6.8 2.9" stroke="#181D27" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+      </svg>
+      <!-- Battery -->
+      <div style="display:flex;align-items:center;gap:1px;">
+        <div style="width:25px;height:12px;border:1.5px solid #181D27;border-radius:3px;padding:1.5px;">
+          <div style="width:100%;height:100%;background:#181D27;border-radius:1px;"></div>
+        </div>
+        <div style="width:2px;height:5px;background:#181D27;border-radius:0 1px 1px 0;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav row -->
+  <div class="nav-row">
+    <button class="back-btn">
+      <svg width="9" height="16" viewBox="0 0 9 16" fill="none">
+        <path d="M8 1L1.5 8L8 15" stroke="#181D27" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <button class="cancel-btn">Cancel</button>
+  </div>
+
+  <!-- Headline -->
+  <div class="headline-wrap">
+    <h1 class="headline">By age <span id="proj-age">32</span>, you<br>could have<br><span id="proj-value">$124,567.46</span></h1>
+  </div>
+
+  <!-- Projection chart -->
+  <div class="chart-wrap">
+    <svg id="proj-chart" viewBox="0 0 776 530" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+
+      <!-- Less likely outer band -->
+      <path d="M20,487.2784308562651C39.13605917288346,479.7744528433024,58.27211834576693,472.2704748303398,83.53856977095523,461.7406775533632C108.80502119614354,451.21088027638655,140.2018648736368,437.655263735396,170.03700304734176,423.6281502637972C199.87214122104672,409.6010367921984,228.1455738909632,395.1024263899914,256.77241833270466,379.8748573111912C285.39926277444613,364.64728823239096,314.37951898801293,348.69076047699764,343.27085160909115,331.93862870638344C372.1621842301694,315.18649693576924,400.96459325875935,297.63876114993417,429.7692848854776,279.12538438665877C458.5739765121958,260.61200762338336,487.3809507370421,241.1329898826676,516.2677181618641,220.6507498653748C545.1544855866861,200.16850984808198,574.1210462114834,178.68304755421227,603.003133447227,156.43901929198097C631.8852206829706,134.19499102974967,660.6828345296602,111.19239679915677,689.5015667236135,86.65946592243301C718.3202989175667,62.126535045709254,747.1601494587833,36.06326752285463,776,10L776,237.3792462277075C747.1601494587834,249.3088761190876,718.3202989175668,261.2385060104677,689.5015667236135,272.5391544739925C660.6828345296601,283.8398029375173,631.8852206829706,294.51146997318693,603.003133447227,305.04856060380524C574.1210462114834,315.58565123442355,545.154485586686,325.9881654599907,516.2677181618641,336.0194422674466C487.38095073704216,346.05071907490253,458.5739765121957,355.7107584642473,429.7692848854776,364.9657741302896C400.96459325875946,374.2207897963319,372.1621842301695,383.0707817390719,343.27085160909115,391.6557938890507C314.3795189880128,400.2408060390295,285.39926277444624,408.56083839624733,256.77241833270466,416.81472056394455C228.1455738909631,425.06860273164176,199.87214122104663,433.25633470981876,170.03700304734176,441.67792506672106C140.20186487363688,450.09951542362336,108.8050211961436,458.7549641592513,83.53856977095523,466.3945530445854C58.27211834576688,474.0341419299195,39.136059172883435,480.6578709649598,20,487.2816Z"
+            fill="rgb(206,236,215)"/>
+
+      <!-- Likely inner band -->
+      <path d="M20,487.2773043706769C39.13605917288346,479.9591318726441,58.27211834576693,472.6409593746111,83.53856977095523,462.7557440068804C108.80502119614354,452.87052863914965,140.2018648736368,440.4182704017213,170.03700304734176,427.713099927644C199.87214122104672,415.0079294535667,228.1455738909632,402.0498467428402,256.77241833270466,388.6140180467624C285.39926277444613,375.1781893506846,314.37951898801293,361.2646146692556,343.27085160909115,346.80933546760104C372.1621842301694,332.3540562659465,400.96459325875935,317.35707254406657,429.7692848854776,301.6692155735839C458.5739765121958,285.9813586031013,487.3809507370421,269.60262838401593,516.2677181618641,252.52168416491008C545.1544855866861,235.4407399458042,574.1210462114834,217.65758172667796,603.003133447227,199.39656664149817C631.8852206829706,181.13555155631838,660.6828345296602,162.3966796050851,689.5015667236135,142.57482623216129C718.3202989175667,122.75297285923747,747.1601494587833,101.84813806462313,776,80.94330327000878L776,176.00895080049972C747.1601494587834,191.15798878940757,718.3202989175668,206.30702677831542,689.5015667236135,220.70827450725807C660.6828345296601,235.10952223620072,631.8852206829706,248.7629797051781,603.003133447227,262.1841984349272C574.1210462114834,275.60541716467634,545.154485586686,288.794397155197,516.2677181618641,301.5223485022789C487.38095073704216,314.2502998493608,458.5739765121957,326.517222553004,429.7692848854776,338.3056243476824C400.96459325875946,350.0940261423608,372.1621842301695,361.4039070280743,343.27085160909115,372.37864321742853C314.3795189880128,383.3533794067828,285.39926277444624,393.9929708997776,256.77241833270466,404.43182813783187C228.1455738909631,414.8706853758861,199.87214122104663,425.10880835899974,170.03700304734176,435.4051403711098C140.20186487363688,445.7014723832198,108.8050211961436,456.05601342432635,83.53856977095523,464.7114561550389C58.27211834576688,473.3668988857514,39.136059172883435,480.3232433060699,20,487.27958772638846Z"
+            fill="rgb(109,195,130)"/>
+
+      <!-- Hover indicator -->
+      <g id="hover-g">
+        <line id="hover-line"
+              x1="689.5015667236135" x2="689.5015667236135" y1="10" y2="492.2816"
+              stroke="#181D27" stroke-width="1" stroke-dasharray="3 4" stroke-opacity="0.2"/>
+        <rect id="hover-pill"
+              x="560" y="131" width="123" height="26" rx="13"
+              fill="rgba(255,255,255,0.92)" stroke="#E9EAEB" stroke-width="1"/>
+        <circle id="hover-dot"
+                cx="689.5015667236135" cy="176.52279258493814" r="5" fill="#058A33" stroke="#fff" stroke-width="2"/>
+        <text id="hover-label"
+              x="681.5" y="148.5"
+              text-anchor="end" font-family="Geist, sans-serif" font-size="15" font-weight="700"
+              fill="#181D27">$124,567.46</text>
+      </g>
+
+      <!-- Today dot -->
+      <circle cx="20" cy="487.2524556488901" r="6" stroke="#fff" stroke-width="2" fill="#058A33"/>
+
+      <!-- X-axis labels -->
+      <text x="20" y="516" text-anchor="start" font-family="Geist, sans-serif" font-size="14" fill="#717680">Today</text>
+      <text x="689.5" y="516" text-anchor="middle" font-family="Geist, sans-serif" font-size="14" fill="#717680">Age 32</text>
+
+      <!-- Hit area -->
+      <rect id="chart-hit" x="20" y="10" width="756" height="477.2816" fill="transparent" style="cursor:crosshair;"/>
+    </svg>
+  </div>
+
+  <!-- Input controls card -->
+  <div class="controls-card">
+    <div class="control-col">
+      <p class="control-label">If you start with a</p>
+      <div class="stepper">
+        <button class="stepper-btn" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M19 11a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2h14Z" fill="#B0B0B0"/>
+          </svg>
+        </button>
+        <span class="stepper-value">$100</span>
+        <button class="stepper-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M11 19v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 1 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0Z" fill="#181D27"/>
+          </svg>
+        </button>
+      </div>
+      <p class="control-sub">initial contribution</p>
+    </div>
+
+    <div class="control-col">
+      <p class="control-label">If you save</p>
+      <div class="stepper">
+        <button class="stepper-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M19 11a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2h14Z" fill="#181D27"/>
+          </svg>
+        </button>
+        <span class="stepper-value">$1,000</span>
+        <button class="stepper-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M11 19v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 1 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0Z" fill="#181D27"/>
+          </svg>
+        </button>
+      </div>
+      <p class="control-sub">every month</p>
+    </div>
+  </div>
+
+  <!-- Holdings section -->
+  <div class="holdings-section">
+    <div class="holdings-header">
+      <h2 class="holdings-title">Holdings</h2>
+      <button class="edit-btn">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+          <path d="M14.85 2.15a2.12 2.12 0 0 1 3 3L5.75 17.25l-3.9.65.65-3.9L14.85 2.15Z"
+                stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <button class="tab-btn active">Asset</button>
+      <button class="tab-btn">Sector</button>
+    </div>
+
+    <!-- Allocation bar -->
+    <div class="alloc-bar">
+      <div class="alloc-seg" style="flex:32.0;background:var(--c-1);"></div>
+      <div class="alloc-seg" style="flex:25.9;background:var(--c-2);"></div>
+      <div class="alloc-seg" style="flex:20.2;background:var(--c-3);"></div>
+      <div class="alloc-seg" style="flex:12.8;background:var(--c-4);"></div>
+      <div class="alloc-seg" style="flex:6.0;background:var(--c-5);"></div>
+      <div class="alloc-seg" style="flex:3.1;background:var(--c-cash);"></div>
+    </div>
+
+    <!-- Holdings list -->
+    <div class="holdings-list">
+
+      <!-- Row 1 — expanded -->
+      <div class="holding-item expanded" onclick="toggleHolding(this)">
+        <div class="holding-row">
+          <div class="holding-dot" style="background:var(--c-1);"></div>
+          <div class="holding-info">
+            <span class="holding-name">Vanguard S&P 500 ETF</span>
+          </div>
+          <div class="holding-right">
+            <span class="holding-pct">32.0%</span>
+            <svg class="chevron" width="12" height="7" viewBox="0 0 12 7" fill="none">
+              <path d="M1 1L6 6L11 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="holding-detail">
+          <div class="detail-row">
+            <span class="detail-label">Symbol</span>
+            <span class="detail-value">VOO</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Investment</span>
+            <span class="detail-value">32.0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2 — collapsed -->
+      <div class="holding-item" onclick="toggleHolding(this)">
+        <div class="holding-row">
+          <div class="holding-dot" style="background:var(--c-2);"></div>
+          <div class="holding-info">
+            <span class="holding-name">SPDR S&P 500 ETF Trust</span>
+          </div>
+          <div class="holding-right">
+            <span class="holding-pct">25.9%</span>
+            <svg class="chevron" width="12" height="7" viewBox="0 0 12 7" fill="none">
+              <path d="M1 1L6 6L11 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="holding-detail">
+          <div class="detail-row">
+            <span class="detail-label">Symbol</span>
+            <span class="detail-value">SPY</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Investment</span>
+            <span class="detail-value">25.9%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3 — collapsed -->
+      <div class="holding-item" onclick="toggleHolding(this)">
+        <div class="holding-row">
+          <div class="holding-dot" style="background:var(--c-3);"></div>
+          <div class="holding-info">
+            <span class="holding-name">iShares Core S&P 500 ETF</span>
+          </div>
+          <div class="holding-right">
+            <span class="holding-pct">20.2%</span>
+            <svg class="chevron" width="12" height="7" viewBox="0 0 12 7" fill="none">
+              <path d="M1 1L6 6L11 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="holding-detail">
+          <div class="detail-row">
+            <span class="detail-label">Symbol</span>
+            <span class="detail-value">IVV</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Investment</span>
+            <span class="detail-value">20.2%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 4 — collapsed -->
+      <div class="holding-item" onclick="toggleHolding(this)">
+        <div class="holding-row">
+          <div class="holding-dot" style="background:var(--c-4);"></div>
+          <div class="holding-info">
+            <span class="holding-name">Schwab U.S. Large-Cap ETF</span>
+          </div>
+          <div class="holding-right">
+            <span class="holding-pct">12.8%</span>
+            <svg class="chevron" width="12" height="7" viewBox="0 0 12 7" fill="none">
+              <path d="M1 1L6 6L11 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="holding-detail">
+          <div class="detail-row">
+            <span class="detail-label">Symbol</span>
+            <span class="detail-value">SCHX</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Investment</span>
+            <span class="detail-value">12.8%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 5 — collapsed -->
+      <div class="holding-item" onclick="toggleHolding(this)">
+        <div class="holding-row">
+          <div class="holding-dot" style="background:var(--c-5);"></div>
+          <div class="holding-info">
+            <span class="holding-name">SPDR Portfolio S&P 500 ETF</span>
+          </div>
+          <div class="holding-right">
+            <span class="holding-pct">6.0%</span>
+            <svg class="chevron" width="12" height="7" viewBox="0 0 12 7" fill="none">
+              <path d="M1 1L6 6L11 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="holding-detail">
+          <div class="detail-row">
+            <span class="detail-label">Symbol</span>
+            <span class="detail-value">SPTM</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Investment</span>
+            <span class="detail-value">6.0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 6 — Cash -->
+      <div class="holding-item" onclick="toggleHolding(this)">
+        <div class="holding-row">
+          <div class="holding-dot" style="background:var(--c-cash);"></div>
+          <div class="holding-info">
+            <span class="holding-name">Cash (USD)</span>
+          </div>
+          <div class="holding-right">
+            <span class="holding-pct">3.1%</span>
+            <svg class="chevron" width="12" height="7" viewBox="0 0 12 7" fill="none">
+              <path d="M1 1L6 6L11 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="holding-detail">
+          <div class="detail-row">
+            <span class="detail-label">Symbol</span>
+            <span class="detail-value">USD</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Investment</span>
+            <span class="detail-value">3.1%</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <button class="btn-invest">Invest now</button>
+    <button class="btn-skip">Continue without this portfolio</button>
+  </div>
+
+</div>
+
+<script>
+// ——— Holdings toggle ———
+function toggleHolding(item) {
+  item.classList.toggle('expanded');
+}
+
+// ——— Chart hover interaction ———
+// SVG data points (bezier endpoints from exact Wealthsimple source paths)
+const MEDIAN = [
+  [20, 487.2524556488901],[83.53856977095523, 463.56950220839366],
+  [170.03700304734176, 430.13519237862977],[256.77241833270466, 394.4476173590607],
+  [343.27085160909115, 356.35492104613786],[429.7692848854776, 315.6950131764412],
+  [516.2677181618641, 272.294879607756],[603.003133447227, 225.9698461173693],
+  [689.5015667236135, 176.52279258493814],[776, 123.74331421615317]
+];
+
+const LIKELY_TOP = [
+  [20, 487.2773043706769],[83.53856977095523, 462.7557440068804],
+  [170.03700304734176, 427.713099927644],[256.77241833270466, 388.6140180467624],
+  [343.27085160909115, 346.80933546760104],[429.7692848854776, 301.6692155735839],
+  [516.2677181618641, 252.52168416491008],[603.003133447227, 199.39656664149817],
+  [689.5015667236135, 142.57482623216129],[776, 80.94330327000878]
+];
+
+const LIKELY_BOTTOM = [
+  [20, 487.27958772638846],[83.53856977095523, 464.7114561550389],
+  [170.03700304734176, 435.4051403711098],[256.77241833270466, 404.43182813783187],
+  [343.27085160909115, 372.37864321742853],[429.7692848854776, 338.3056243476824],
+  [516.2677181618641, 301.5223485022789],[603.003133447227, 262.1841984349272],
+  [689.5015667236135, 220.70827450725807],[776, 176.00895080049972]
+];
+
+const LESS_LIKELY_TOP = [
+  [20, 487.2784308562651],[83.53856977095523, 461.7406775533632],
+  [170.03700304734176, 423.6281502637972],[256.77241833270466, 379.8748573111912],
+  [343.27085160909115, 331.93862870638344],[429.7692848854776, 279.12538438665877],
+  [516.2677181618641, 220.6507498653748],[603.003133447227, 156.43901929198097],
+  [689.5015667236135, 86.65946592243301],[776, 10]
+];
+
+const LESS_LIKELY_BOTTOM = [
+  [20, 487.2816],[83.53856977095523, 466.3945530445854],
+  [170.03700304734176, 441.67792506672106],[256.77241833270466, 416.81472056394455],
+  [343.27085160909115, 391.6557938890507],[429.7692848854776, 364.9657741302896],
+  [516.2677181618641, 336.0194422674466],[603.003133447227, 305.04856060380524],
+  [689.5015667236135, 272.5391544739925],[776, 237.3792462277075]
+];
+
+function lerp(pts, x) {
+  if (x <= pts[0][0]) return pts[0][1];
+  if (x >= pts[pts.length - 1][0]) return pts[pts.length - 1][1];
+  for (let i = 0; i < pts.length - 1; i++) {
+    if (x >= pts[i][0] && x <= pts[i + 1][0]) {
+      const t = (x - pts[i][0]) / (pts[i + 1][0] - pts[i][0]);
+      return pts[i][1] + t * (pts[i + 1][1] - pts[i][1]);
+    }
+  }
+  return pts[pts.length - 1][1];
+}
+
+// Dollar calibration: starting $100, target $124,567.46 at age 32
+// Y positions remain the same as the original Wealthsimple chart
+const Y_TODAY   = 487.2524556488901, V_TODAY   = 100;
+const Y_TARGET  = 176.52279258493814, V_TARGET  = 124567.46;
+const SCALE = (V_TARGET - V_TODAY) / (Y_TODAY - Y_TARGET);
+
+function yToVal(y) {
+  return Math.max(0, V_TODAY + (Y_TODAY - y) * SCALE);
+}
+
+function fmt(v) {
+  if (v >= 1e6) return '$' + (v / 1e6).toFixed(2) + 'M';
+  if (v >= 1e3) return '$' + (v / 1e3).toFixed(1) + 'K';
+  return '$' + v.toFixed(0);
+}
+
+function fmtFull(v) {
+  if (v >= 1e6) return '$' + (v / 1e6).toFixed(2) + 'M';
+  return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+const X_TODAY = 20, AGE_TODAY = 25;
+const X_TARGET = 689.5015667236135, AGE_TARGET = 32;
+const PX_PER_YEAR = (X_TARGET - X_TODAY) / (AGE_TARGET - AGE_TODAY);
+
+function xToAge(x) {
+  return Math.round(AGE_TODAY + (x - X_TODAY) / PX_PER_YEAR);
+}
+
+const chart     = document.getElementById('proj-chart');
+const hitArea   = document.getElementById('chart-hit');
+const hoverLine = document.getElementById('hover-line');
+const hoverPill = document.getElementById('hover-pill');
+const hoverDot  = document.getElementById('hover-dot');
+const hoverLabel = document.getElementById('hover-label');
+const projAge   = document.getElementById('proj-age');
+const projValue = document.getElementById('proj-value');
+
+const PILL_W = 123, PILL_H = 26;
+
+function update(svgX) {
+  svgX = Math.max(20, Math.min(776, svgX));
+
+  const medY  = lerp(MEDIAN, svgX);
+  const val   = yToVal(medY);
+  const age   = xToAge(svgX);
+  const label = svgX === X_TARGET ? fmtFull(val) : fmt(val);
+
+  // Headline
+  projAge.textContent   = age;
+  projValue.textContent = svgX === X_TARGET ? '$124,567.46' : label;
+
+  // Line
+  hoverLine.setAttribute('x1', svgX);
+  hoverLine.setAttribute('x2', svgX);
+
+  // Dot
+  hoverDot.setAttribute('cx', svgX);
+  hoverDot.setAttribute('cy', medY);
+
+  // Pill: left of cursor by default, flip right if near left edge
+  let pillX, textX, anchor;
+  if (svgX < 150) {
+    pillX  = svgX + 8;
+    textX  = svgX + 14;
+    anchor = 'start';
+  } else {
+    pillX  = svgX - PILL_W - 8;
+    textX  = svgX - 8;
+    anchor = 'end';
+  }
+  const pillY = medY - PILL_H / 2;
+
+  hoverPill.setAttribute('x', pillX);
+  hoverPill.setAttribute('y', pillY);
+  hoverLabel.setAttribute('x', textX);
+  hoverLabel.setAttribute('y', pillY + PILL_H * 0.7);
+  hoverLabel.setAttribute('text-anchor', anchor);
+  hoverLabel.textContent = svgX === X_TARGET ? '$124,567.46' : label;
+}
+
+function toSvgX(e) {
+  const rect = chart.getBoundingClientRect();
+  return ((e.clientX - rect.left) / rect.width) * 776;
+}
+
+hitArea.addEventListener('mousemove', e => update(toSvgX(e)));
+hitArea.addEventListener('mouseleave', () => update(X_TARGET));
+
+// Init at age 32
+update(X_TARGET);
+</script>
+
+</body>
+</html>

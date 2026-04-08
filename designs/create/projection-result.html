@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projection Result — Surmount B2C</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --color-text-primary: #181D27;
+  --color-text-secondary: #414651;
+  --color-text-tertiary: #717680;
+  --color-border-default: #E9EAEB;
+  --color-surface-subtle: #FAFAFA;
+  --color-bg-default: #FFFFFF;
+  --color-chart-likely: #6DC382;
+  --color-chart-less-likely: #CEECD7;
+  --color-chart-accent: #058A33;
+  --font-display: 'Inter', sans-serif;
+  --font-body: 'Geist', sans-serif;
+  --letter-spacing: -0.5px;
+}
+
+body {
+  font-family: var(--font-body);
+  background: #EEEEED;
+  display: flex;
+  justify-content: center;
+  padding: 48px 20px;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing);
+}
+
+.card {
+  width: 480px;
+  background: var(--color-bg-default);
+  border-radius: 16px;
+  box-shadow: 0px 8px 24px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* ——— Top section ——— */
+.card-top { padding: 28px 24px 16px; }
+
+.headline {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+  letter-spacing: -0.5px;
+  margin-bottom: 20px;
+}
+
+.chart-wrap { width: 100%; margin-bottom: 14px; }
+.chart-wrap svg { display: block; width: 100%; height: auto; cursor: crosshair; }
+
+/* Legend + about row */
+.legend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 4px;
+}
+.legend-items { display: flex; align-items: center; gap: 14px; }
+.legend-item { display: flex; align-items: center; gap: 7px; }
+.legend-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+.legend-text { font-size: 12px; color: var(--color-text-primary); line-height: 1; }
+.legend-text strong { font-weight: 600; }
+
+.about-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  color: var(--color-text-primary); letter-spacing: var(--letter-spacing);
+  padding: 0; white-space: nowrap;
+}
+
+/* ——— Divider ——— */
+.divider { height: 1px; background: var(--color-border-default); }
+
+/* ——— Bottom section ——— */
+.card-bottom {
+  background: var(--color-surface-subtle);
+  padding: 24px 0 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.contrib-col {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; padding: 0 16px;
+}
+.contrib-col + .contrib-col { border-left: 1px solid var(--color-border-default); }
+.contrib-label { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 10px; }
+
+.stepper { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.stepper-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1.5px solid var(--color-border-default);
+  background: var(--color-bg-default);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: border-color 0.15s ease;
+}
+.stepper-btn:hover:not([disabled]) { border-color: var(--color-text-secondary); }
+.stepper-btn[disabled] { opacity: 0.35; cursor: not-allowed; }
+
+.stepper-value {
+  font-family: var(--font-display); font-size: 28px; font-weight: 700;
+  letter-spacing: -1px; color: var(--color-text-primary);
+  min-width: 72px; text-align: center;
+}
+.contrib-sub { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 10px; }
+.contrib-hint { font-size: 12px; color: var(--color-text-tertiary); line-height: 1.6; max-width: 185px; }
+.contrib-hint strong { color: var(--color-text-primary); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-top">
+    <h2 class="headline">By age <span id="proj-age">32</span>, we expect you'll have around <span id="proj-value">$1.88M</span>.</h2>
+
+    <div class="chart-wrap">
+      <svg id="proj-chart" viewBox="0 0 776 530" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+
+        <!-- Less likely outer band -->
+        <path d="M20,487.2784308562651C39.13605917288346,479.7744528433024,58.27211834576693,472.2704748303398,83.53856977095523,461.7406775533632C108.80502119614354,451.21088027638655,140.2018648736368,437.655263735396,170.03700304734176,423.6281502637972C199.87214122104672,409.6010367921984,228.1455738909632,395.1024263899914,256.77241833270466,379.8748573111912C285.39926277444613,364.64728823239096,314.37951898801293,348.69076047699764,343.27085160909115,331.93862870638344C372.1621842301694,315.18649693576924,400.96459325875935,297.63876114993417,429.7692848854776,279.12538438665877C458.5739765121958,260.61200762338336,487.3809507370421,241.1329898826676,516.2677181618641,220.6507498653748C545.1544855866861,200.16850984808198,574.1210462114834,178.68304755421227,603.003133447227,156.43901929198097C631.8852206829706,134.19499102974967,660.6828345296602,111.19239679915677,689.5015667236135,86.65946592243301C718.3202989175667,62.126535045709254,747.1601494587833,36.06326752285463,776,10L776,237.3792462277075C747.1601494587834,249.3088761190876,718.3202989175668,261.2385060104677,689.5015667236135,272.5391544739925C660.6828345296601,283.8398029375173,631.8852206829706,294.51146997318693,603.003133447227,305.04856060380524C574.1210462114834,315.58565123442355,545.154485586686,325.9881654599907,516.2677181618641,336.0194422674466C487.38095073704216,346.05071907490253,458.5739765121957,355.7107584642473,429.7692848854776,364.9657741302896C400.96459325875946,374.2207897963319,372.1621842301695,383.0707817390719,343.27085160909115,391.6557938890507C314.3795189880128,400.2408060390295,285.39926277444624,408.56083839624733,256.77241833270466,416.81472056394455C228.1455738909631,425.06860273164176,199.87214122104663,433.25633470981876,170.03700304734176,441.67792506672106C140.20186487363688,450.09951542362336,108.8050211961436,458.7549641592513,83.53856977095523,466.3945530445854C58.27211834576688,474.0341419299195,39.136059172883435,480.6578709649598,20,487.2816Z"
+              fill="rgb(206,236,215)"/>
+
+        <!-- Likely inner band -->
+        <path d="M20,487.2773043706769C39.13605917288346,479.9591318726441,58.27211834576693,472.6409593746111,83.53856977095523,462.7557440068804C108.80502119614354,452.87052863914965,140.2018648736368,440.4182704017213,170.03700304734176,427.713099927644C199.87214122104672,415.0079294535667,228.1455738909632,402.0498467428402,256.77241833270466,388.6140180467624C285.39926277444613,375.1781893506846,314.37951898801293,361.2646146692556,343.27085160909115,346.80933546760104C372.1621842301694,332.3540562659465,400.96459325875935,317.35707254406657,429.7692848854776,301.6692155735839C458.5739765121958,285.9813586031013,487.3809507370421,269.60262838401593,516.2677181618641,252.52168416491008C545.1544855866861,235.4407399458042,574.1210462114834,217.65758172667796,603.003133447227,199.39656664149817C631.8852206829706,181.13555155631838,660.6828345296602,162.3966796050851,689.5015667236135,142.57482623216129C718.3202989175667,122.75297285923747,747.1601494587833,101.84813806462313,776,80.94330327000878L776,176.00895080049972C747.1601494587834,191.15798878940757,718.3202989175668,206.30702677831542,689.5015667236135,220.70827450725807C660.6828345296601,235.10952223620072,631.8852206829706,248.7629797051781,603.003133447227,262.1841984349272C574.1210462114834,275.60541716467634,545.154485586686,288.794397155197,516.2677181618641,301.5223485022789C487.38095073704216,314.2502998493608,458.5739765121957,326.517222553004,429.7692848854776,338.3056243476824C400.96459325875946,350.0940261423608,372.1621842301695,361.4039070280743,343.27085160909115,372.37864321742853C314.3795189880128,383.3533794067828,285.39926277444624,393.9929708997776,256.77241833270466,404.43182813783187C228.1455738909631,414.8706853758861,199.87214122104663,425.10880835899974,170.03700304734176,435.4051403711098C140.20186487363688,445.7014723832198,108.8050211961436,456.05601342432635,83.53856977095523,464.7114561550389C58.27211834576688,473.3668988857514,39.136059172883435,480.3232433060699,20,487.27958772638846Z"
+              fill="rgb(109,195,130)"/>
+
+        <!-- Hover indicator (dashed line + callout pill + dot) -->
+        <g id="hover-g">
+          <line id="hover-line"
+                x1="689.5015667236135" x2="689.5015667236135" y1="10" y2="492.2816"
+                stroke="#181D27" stroke-width="1" stroke-dasharray="3 4" stroke-opacity="0.18"/>
+          <rect id="hover-pill"
+                x="625.8344600951955" y="165.47028518442545" width="71.667" height="22.105" rx="11.05"
+                fill="#F2F2F2" fill-opacity="0.92"/>
+          <circle id="hover-dot"
+                  cx="689.5015667236135" cy="176.52279258493814" r="4" fill="#058A33"/>
+          <text id="hover-label"
+                x="681.5" y="181.5"
+                text-anchor="end" font-family="Geist, sans-serif" font-size="14" font-weight="700"
+                fill="#181D27">$1.88M</text>
+        </g>
+
+        <!-- Fixed Y-axis labels (always visible) -->
+        <rect x="705.734375" y="355.1227349069219" fill="#F9F9F9" fill-opacity="0.88" width="66.265625" height="22" rx="11"/>
+        <text x="766" y="370.6" text-anchor="end" font-family="Geist, sans-serif" font-size="14" fill="#414651">$700.0K</text>
+
+        <rect x="714.078125" y="239.4764932732917" fill="#F9F9F9" fill-opacity="0.88" width="57.921875" height="22" rx="11"/>
+        <text x="766" y="255.0" text-anchor="end" font-family="Geist, sans-serif" font-size="14" fill="#414651">$1.40M</text>
+
+        <rect x="715.265625" y="123.83025163966158" fill="#F9F9F9" fill-opacity="0.88" width="56.734375" height="22" rx="11"/>
+        <text x="766" y="139.3" text-anchor="end" font-family="Geist, sans-serif" font-size="14" fill="#414651">$2.10M</text>
+
+        <!-- Today dot (always on top of hover indicator) -->
+        <circle cx="20" cy="487.2524556488901" r="6" stroke="#F2F2F2" stroke-width="1" fill="#058A33"/>
+
+        <!-- X-axis labels -->
+        <text x="20" y="516" text-anchor="start" font-family="Geist, sans-serif" font-size="14" fill="#717680">Today</text>
+        <text x="736" y="516" text-anchor="middle" font-family="Geist, sans-serif" font-size="14" fill="#717680">Age 32</text>
+
+        <!-- Invisible hit area on top for mouse events -->
+        <rect id="chart-hit" x="20" y="10" width="756" height="477.2816" fill="transparent" style="cursor:crosshair;"/>
+      </svg>
+    </div>
+
+    <!-- Legend row -->
+    <div class="legend-row">
+      <div class="legend-items">
+        <div class="legend-item">
+          <div class="legend-swatch" style="background:var(--color-chart-likely);"></div>
+          <span class="legend-text"><strong>Likely:</strong> <span id="likely-range">$1.61M—$2.09M</span></span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-swatch" style="background:var(--color-chart-less-likely); border:1px solid #B8DFC3;"></div>
+          <span class="legend-text"><strong>Less likely:</strong> <span id="less-likely-range">$1.30M—$2.43M</span></span>
+        </div>
+      </div>
+      <button class="about-btn">
+        About this graph
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M8 10a1 1 0 1 1 0 2 1 1 0 0 1 0-2ZM8.5 4.15c1.09 0 1.85.94 1.85 1.94v.564c0 .726-.392 1.432-1.073 1.762l-.177.083-.146.067c-.051.025-.087.046-.115.062A.848.848 0 0 1 7.15 8.5c0-.601.325-.994.652-1.228.251-.179.62-.33.733-.385.042-.02.115-.097.115-.233v-.563a.292.292 0 0 0-.07-.197c-.035-.039-.064-.044-.08-.044h-1c-.016 0-.045.005-.08.044a.292.292 0 0 0-.07.197.85.85 0 1 1-1.7 0c0-1.001.76-1.94 1.85-1.94h1Z" fill="#414651"/>
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M8 .5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15Zm0 1.8a5.7 5.7 0 1 0 0 11.4A5.7 5.7 0 0 0 8 2.3Z" fill="#414651"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="card-bottom">
+    <div class="contrib-col">
+      <p class="contrib-label">If you start with a</p>
+      <div class="stepper">
+        <button class="stepper-btn" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M19 11a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2h14Z" fill="#94908D"/>
+          </svg>
+        </button>
+        <span class="stepper-value">$100</span>
+        <button class="stepper-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M11 19v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 1 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0Z" fill="#181D27"/>
+          </svg>
+        </button>
+      </div>
+      <p class="contrib-sub">initial contribution</p>
+      <p class="contrib-hint">This is <strong>0% of your savings</strong>. Most people keep at least <strong>3 months of expenses</strong> in an emergency fund.</p>
+    </div>
+
+    <div class="contrib-col">
+      <p class="contrib-label">If you save</p>
+      <div class="stepper">
+        <button class="stepper-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M19 11a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2h14Z" fill="#181D27"/>
+          </svg>
+        </button>
+        <span class="stepper-value">$15,583</span>
+        <button class="stepper-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M11 19v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 1 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0Z" fill="#181D27"/>
+          </svg>
+        </button>
+      </div>
+      <p class="contrib-sub">every month</p>
+      <p class="contrib-hint">This is <strong>20% of your income</strong>. It's common for people to save about <strong>15% of their income</strong> for retirement.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ——— Data points extracted from the original SVG paths ———
+// These are the bezier segment endpoints (10 x-positions across the chart)
+
+const MEDIAN = [
+  [20, 487.2524556488901],
+  [83.53856977095523, 463.56950220839366],
+  [170.03700304734176, 430.13519237862977],
+  [256.77241833270466, 394.4476173590607],
+  [343.27085160909115, 356.35492104613786],
+  [429.7692848854776, 315.6950131764412],
+  [516.2677181618641, 272.294879607756],
+  [603.003133447227, 225.9698461173693],
+  [689.5015667236135, 176.52279258493814],
+  [776, 123.74331421615317]
+];
+
+// Top edge of likely band (lower y = higher $ value)
+const LIKELY_TOP = [
+  [20, 487.2773043706769],
+  [83.53856977095523, 462.7557440068804],
+  [170.03700304734176, 427.713099927644],
+  [256.77241833270466, 388.6140180467624],
+  [343.27085160909115, 346.80933546760104],
+  [429.7692848854776, 301.6692155735839],
+  [516.2677181618641, 252.52168416491008],
+  [603.003133447227, 199.39656664149817],
+  [689.5015667236135, 142.57482623216129],
+  [776, 80.94330327000878]
+];
+
+// Bottom edge of likely band (higher y = lower $ value)
+const LIKELY_BOTTOM = [
+  [20, 487.27958772638846],
+  [83.53856977095523, 464.7114561550389],
+  [170.03700304734176, 435.4051403711098],
+  [256.77241833270466, 404.43182813783187],
+  [343.27085160909115, 372.37864321742853],
+  [429.7692848854776, 338.3056243476824],
+  [516.2677181618641, 301.5223485022789],
+  [603.003133447227, 262.1841984349272],
+  [689.5015667236135, 220.70827450725807],
+  [776, 176.00895080049972]
+];
+
+// Top edge of less likely band
+const LESS_LIKELY_TOP = [
+  [20, 487.2784308562651],
+  [83.53856977095523, 461.7406775533632],
+  [170.03700304734176, 423.6281502637972],
+  [256.77241833270466, 379.8748573111912],
+  [343.27085160909115, 331.93862870638344],
+  [429.7692848854776, 279.12538438665877],
+  [516.2677181618641, 220.6507498653748],
+  [603.003133447227, 156.43901929198097],
+  [689.5015667236135, 86.65946592243301],
+  [776, 10]
+];
+
+// Bottom edge of less likely band
+const LESS_LIKELY_BOTTOM = [
+  [20, 487.2816],
+  [83.53856977095523, 466.3945530445854],
+  [170.03700304734176, 441.67792506672106],
+  [256.77241833270466, 416.81472056394455],
+  [343.27085160909115, 391.6557938890507],
+  [429.7692848854776, 364.9657741302896],
+  [516.2677181618641, 336.0194422674466],
+  [603.003133447227, 305.04856060380524],
+  [689.5015667236135, 272.5391544739925],
+  [776, 237.3792462277075]
+];
+
+// ——— Interpolation ———
+function lerp(pts, x) {
+  if (x <= pts[0][0]) return pts[0][1];
+  if (x >= pts[pts.length - 1][0]) return pts[pts.length - 1][1];
+  for (let i = 0; i < pts.length - 1; i++) {
+    if (x >= pts[i][0] && x <= pts[i + 1][0]) {
+      const t = (x - pts[i][0]) / (pts[i + 1][0] - pts[i][0]);
+      return pts[i][1] + t * (pts[i + 1][1] - pts[i][1]);
+    }
+  }
+  return pts[pts.length - 1][1];
+}
+
+// ——— Y → Dollar value ———
+// Calibrated: y=487.2524 → ~$143,500 (today value); y=176.5228 → $1,880,000 (age 32)
+const Y_TODAY = 487.2524556488901, V_TODAY = 143500;
+const Y_TARGET = 176.52279258493814, V_TARGET = 1880000;
+const SCALE = (V_TARGET - V_TODAY) / (Y_TODAY - Y_TARGET); // $/pixel
+
+function yToVal(y) {
+  return Math.max(0, V_TODAY + (Y_TODAY - y) * SCALE);
+}
+
+// ——— Format dollar values ———
+function fmt(v) {
+  if (v >= 1e6) return '$' + (v / 1e6).toFixed(2) + 'M';
+  return '$' + (v / 1e3).toFixed(1) + 'K';
+}
+
+// ——— X → Age ———
+const X_TODAY = 20, AGE_TODAY = 25;
+const X_TARGET = 689.5015667236135, AGE_TARGET = 32;
+const PX_PER_YEAR = (X_TARGET - X_TODAY) / (AGE_TARGET - AGE_TODAY);
+
+function xToAge(x) {
+  return Math.round(AGE_TODAY + (x - X_TODAY) / PX_PER_YEAR);
+}
+
+// ——— DOM refs ———
+const chart      = document.getElementById('proj-chart');
+const hitArea    = document.getElementById('chart-hit');
+const hoverLine  = document.getElementById('hover-line');
+const hoverPill  = document.getElementById('hover-pill');
+const hoverDot   = document.getElementById('hover-dot');
+const hoverLabel = document.getElementById('hover-label');
+const projAge    = document.getElementById('proj-age');
+const projValue  = document.getElementById('proj-value');
+const likelyEl   = document.getElementById('likely-range');
+const lessEl     = document.getElementById('less-likely-range');
+
+const PILL_W = 71.667, PILL_H = 22.105;
+
+// ——— Update chart state ———
+function update(svgX) {
+  svgX = Math.max(20, Math.min(776, svgX));
+
+  const medY    = lerp(MEDIAN, svgX);
+  const val     = fmt(yToVal(medY));
+  const age     = xToAge(svgX);
+
+  const ltV  = fmt(yToVal(lerp(LIKELY_TOP, svgX)));
+  const lbV  = fmt(yToVal(lerp(LIKELY_BOTTOM, svgX)));
+  const lltV = fmt(yToVal(lerp(LESS_LIKELY_TOP, svgX)));
+  const llbV = fmt(yToVal(lerp(LESS_LIKELY_BOTTOM, svgX)));
+
+  // Headline
+  projAge.textContent   = age;
+  projValue.textContent = val;
+
+  // Legend: lower—upper
+  likelyEl.textContent = lbV + '\u2014' + ltV;
+  lessEl.textContent   = llbV + '\u2014' + lltV;
+
+  // Dashed line
+  hoverLine.setAttribute('x1', svgX);
+  hoverLine.setAttribute('x2', svgX);
+
+  // Dot on median
+  hoverDot.setAttribute('cx', svgX);
+  hoverDot.setAttribute('cy', medY);
+
+  // Pill: to the left by default, flip right if near left edge
+  let pillX, textX, anchor;
+  if (svgX < 90) {
+    pillX  = svgX + 6;
+    textX  = svgX + 11;
+    anchor = 'start';
+  } else {
+    pillX  = svgX - PILL_W - 6;
+    textX  = svgX - 8;
+    anchor = 'end';
+  }
+  const pillY = medY - PILL_H / 2;
+
+  hoverPill.setAttribute('x', pillX);
+  hoverPill.setAttribute('y', pillY);
+  hoverDot.setAttribute('cx', svgX);
+  hoverDot.setAttribute('cy', medY);
+
+  hoverLabel.setAttribute('x', textX);
+  hoverLabel.setAttribute('y', pillY + PILL_H * 0.73);
+  hoverLabel.setAttribute('text-anchor', anchor);
+  hoverLabel.textContent = val;
+}
+
+// ——— Convert client coords → SVG viewBox coords ———
+function toSvgX(e) {
+  const rect = chart.getBoundingClientRect();
+  return ((e.clientX - rect.left) / rect.width) * 776;
+}
+
+// ——— Event listeners ———
+hitArea.addEventListener('mousemove', e => update(toSvgX(e)));
+hitArea.addEventListener('mouseleave', () => update(X_TARGET)); // reset to age 32
+
+// Init
+update(X_TARGET);
+</script>
+
+</body>
+</html>

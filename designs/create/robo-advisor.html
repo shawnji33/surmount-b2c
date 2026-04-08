@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Robo Advisor — Surmount B2C Mobile</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 button{font-family:inherit;cursor:pointer;border:none;background:none;}
@@ -592,6 +593,238 @@ html,body{
   color:var(--color-text-primary);text-decoration:underline;text-underline-offset:2px;
   display:flex;align-items:center;justify-content:center;
 }
+
+/* ── S8 — New result: projection + holdings ─────────── */
+.s8-headline-wrap{padding:var(--sp-4) var(--sp-5) var(--sp-2);}
+.s8-headline{
+  font-family:var(--font-display);font-size:24px;font-weight:800;
+  line-height:1.25;color:var(--color-text-primary);letter-spacing:-.6px;
+}
+.s8-proj-wrap{padding:var(--sp-2) 0 0;width:100%;}
+.s8-proj-wrap svg{display:block;width:100%;height:auto;cursor:crosshair;}
+
+.s8-controls{
+  margin:var(--sp-4) var(--sp-5);
+  border:1.5px solid var(--color-border-default);border-radius:var(--r-xl);
+  display:grid;grid-template-columns:1fr 1fr;overflow:hidden;
+}
+.s8-ctrl-col{
+  display:flex;flex-direction:column;align-items:center;
+  padding:var(--sp-4) var(--sp-3);text-align:center;
+}
+.s8-ctrl-col+.s8-ctrl-col{border-left:1.5px solid var(--color-border-default);}
+.s8-ctrl-lbl{font-size:var(--text-xs);color:var(--color-text-tertiary);margin-bottom:var(--sp-2);line-height:1.4;}
+.s8-stepper{display:flex;align-items:center;gap:var(--sp-1h);margin-bottom:var(--sp-1);}
+.s8-step-btn{
+  width:28px;height:28px;border-radius:var(--r-full);
+  border:1.5px solid var(--color-border-default);background:var(--color-surface-default);
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .15s,transform .1s var(--spring),background .1s;
+  flex-shrink:0;-webkit-tap-highlight-color:transparent;
+}
+.s8-step-btn:hover:not([disabled]){border-color:var(--color-text-secondary);}
+.s8-step-btn:active:not([disabled]){transform:scale(.82);background:var(--color-surface-subtle);}
+.s8-step-btn[disabled]{opacity:.35;cursor:not-allowed;}
+.s8-step-val{
+  font-family:var(--font-display);font-size:20px;font-weight:700;
+  letter-spacing:-.6px;color:var(--color-text-primary);
+  min-width:54px;text-align:center;
+  transition:transform .22s var(--spring),opacity .12s;
+  display:inline-block;
+}
+@keyframes s8-pop{0%{transform:scale(1)}40%{transform:scale(1.1)}100%{transform:scale(1)}}
+.s8-step-val.pop{animation:s8-pop .28s var(--spring-bounce);}
+/* Holdings row tap feedback */
+.s8-h-row{-webkit-tap-highlight-color:transparent;}
+.s8-h-item:active .s8-h-row{background:var(--color-surface-subtle);}
+/* Tab press */
+.s8-tab:active{opacity:.7;}
+/* Headline value smooth dim on stepper change */
+#s8-proj-value{transition:opacity .1s;}
+#s8-proj-value.dim{opacity:.3;}
+.s8-ctrl-sub{font-size:var(--text-xs);color:var(--color-text-tertiary);}
+
+.s8-holdings-wrap{padding:0 var(--sp-5);}
+.s8-holdings-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3);}
+.s8-holdings-title{font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;color:var(--color-text-primary);letter-spacing:-.4px;}
+.s8-edit-btn{background:none;border:none;cursor:pointer;padding:var(--sp-1);color:var(--color-text-tertiary);}
+.s8-edit-btn:hover{color:var(--color-text-primary);}
+
+.s8-tab-bar{
+  display:flex;background:#F0F0EE;border-radius:var(--r-full);
+  padding:3px;margin-bottom:var(--sp-3);
+}
+.s8-tab{
+  flex:1;padding:7px var(--sp-3);border-radius:var(--r-full);border:none;
+  background:none;font-family:var(--font-body);font-size:var(--text-sm);
+  font-weight:var(--fw-medium);color:var(--color-text-tertiary);
+  letter-spacing:-.3px;transition:all .15s;
+}
+.s8-tab.active{
+  background:#fff;color:var(--color-text-primary);font-weight:var(--fw-semibold);
+  box-shadow:0 1px 4px rgba(0,0,0,.1);
+}
+
+.s8-alloc-bar{
+  display:flex;height:12px;border-radius:var(--r-full);
+  overflow:hidden;gap:1px;margin-bottom:var(--sp-4);
+}
+.s8-alloc-seg{height:100%;}
+.s8-alloc-seg:first-child{border-radius:var(--r-full) 0 0 var(--r-full);}
+.s8-alloc-seg:last-child{border-radius:0 var(--r-full) var(--r-full) 0;}
+
+.s8-holdings-list{
+  border:1.5px solid var(--color-border-default);border-radius:var(--r-xl);
+  overflow:hidden;margin-bottom:var(--sp-6);
+}
+.s8-h-item+.s8-h-item{border-top:1px solid var(--color-border-default);}
+.s8-h-row{
+  display:flex;align-items:center;padding:14px var(--sp-4);gap:var(--sp-2);
+  cursor:pointer;transition:background .1s;
+}
+.s8-h-row:hover{background:var(--color-surface-subtle);}
+.s8-h-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.s8-h-name{
+  flex:1;font-size:var(--text-sm);font-weight:var(--fw-medium);
+  color:var(--color-text-primary);letter-spacing:-.3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.s8-h-right{display:flex;align-items:center;gap:3px;flex-shrink:0;}
+.s8-h-pct{font-size:var(--text-sm);color:var(--color-text-primary);}
+.s8-h-chev{color:var(--color-text-tertiary);transition:transform .2s;}
+.s8-h-item.open .s8-h-chev{transform:rotate(180deg);}
+.s8-h-detail{
+  display:flex;flex-direction:column;gap:var(--sp-2);
+  background:var(--color-surface-subtle);overflow:hidden;
+  max-height:0;padding:0 var(--sp-4);
+  border-top:1px solid transparent;
+  transition:max-height .32s cubic-bezier(0.16,1,0.3,1),
+             padding .32s cubic-bezier(0.16,1,0.3,1),
+             border-color .2s;
+}
+.s8-h-item.open .s8-h-detail{
+  max-height:90px;padding:var(--sp-3) var(--sp-4);
+  border-top-color:var(--color-border-default);
+}
+.s8-h-drow{display:flex;align-items:center;justify-content:space-between;}
+.s8-h-dlbl{font-size:var(--text-xs);color:var(--color-text-tertiary);}
+.s8-h-dval{font-size:var(--text-xs);font-weight:var(--fw-medium);color:var(--color-text-secondary);}
+
+/* ── S-Customize — Portfolio weight editor ───────────── */
+#s-cust{background:var(--color-surface-default);transform:translateX(100%);z-index:10;}
+.scust-nav{
+  height:52px;padding:0 var(--sp-3);
+  display:flex;align-items:center;flex-shrink:0;
+}
+.scust-scroll{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:88px;
+}
+.scust-scroll::-webkit-scrollbar{display:none;}
+.scust-hdr{padding:var(--sp-1) var(--sp-5) var(--sp-5);}
+.scust-title{
+  font-family:var(--font-display);font-size:24px;font-weight:800;
+  color:var(--color-text-primary);letter-spacing:-.6px;line-height:1.2;
+  margin-bottom:var(--sp-1h);
+}
+.scust-sub{
+  font-size:var(--text-sm);color:var(--color-text-tertiary);
+  line-height:1.55;letter-spacing:-.2px;
+}
+.scust-list{padding:0 var(--sp-5);display:flex;flex-direction:column;gap:var(--sp-3);}
+.scust-row{
+  background:var(--color-surface-default);
+  border:1.5px solid var(--color-border-default);
+  border-radius:var(--r-xl);padding:var(--sp-4);
+}
+.scust-row-top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:var(--sp-3);
+}
+.scust-name{
+  font-size:var(--text-sm);font-weight:var(--fw-semibold);
+  color:var(--color-text-primary);letter-spacing:-.3px;
+}
+.scust-ticker-btn{
+  display:flex;align-items:center;gap:4px;
+  font-family:var(--font-body);font-size:var(--text-sm);
+  font-weight:var(--fw-semibold);color:var(--color-text-secondary);
+  background:none;border:none;cursor:pointer;
+  letter-spacing:-.2px;padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.scust-ticker-btn:active{opacity:.6;}
+.scust-row-btm{display:flex;align-items:center;gap:var(--sp-2);}
+.scust-adj{
+  width:28px;height:28px;border-radius:var(--r-full);
+  border:1.5px solid var(--color-border-default);
+  background:var(--color-surface-default);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;font-size:18px;line-height:1;
+  color:var(--color-text-primary);
+  transition:border-color .12s,transform .1s var(--spring),background .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+.scust-adj:active{transform:scale(.82);background:var(--color-surface-subtle);}
+.scust-adj[disabled]{opacity:.3;cursor:not-allowed;}
+.scust-slider-wrap{flex:1;position:relative;height:20px;display:flex;align-items:center;}
+.scust-track{
+  position:absolute;left:0;right:0;height:4px;border-radius:2px;
+  background:var(--color-border-default);overflow:hidden;pointer-events:none;
+}
+.scust-fill{
+  height:100%;border-radius:2px;
+  background:var(--color-brand-600);
+  transition:width .1s;
+}
+.scust-slider{
+  position:absolute;left:0;right:0;width:100%;
+  -webkit-appearance:none;appearance:none;
+  height:4px;background:transparent;outline:none;cursor:pointer;
+}
+.scust-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--color-base-white);
+  border:1.5px solid var(--color-gray-300);
+  box-shadow:0 2px 6px rgba(0,0,0,.14);
+  cursor:grab;transition:transform .1s var(--spring),box-shadow .1s;
+}
+.scust-slider::-webkit-slider-thumb:active{
+  cursor:grabbing;transform:scale(1.15);
+  box-shadow:0 3px 10px rgba(0,0,0,.2);
+}
+.scust-pct{
+  font-family:var(--font-display);font-size:var(--text-md);font-weight:700;
+  color:var(--color-text-primary);letter-spacing:-.4px;
+  min-width:38px;text-align:right;flex-shrink:0;
+}
+/* sticky bottom bar */
+.scust-bottom{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--color-surface-default);
+  padding:var(--sp-4) var(--sp-5);
+  padding-bottom:calc(var(--sp-5) + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--color-border-subtle);
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);
+}
+.scust-total-lbl{
+  font-size:var(--text-md);font-weight:var(--fw-semibold);
+  color:var(--color-text-primary);letter-spacing:-.3px;
+  transition:color .2s;
+}
+.scust-total-lbl.over{color:var(--color-error-700);}
+.scust-save{
+  height:48px;padding:0 var(--sp-8);
+  border-radius:var(--r-full);border:none;cursor:pointer;
+  background:var(--color-gray-900);color:var(--color-text-inverse);
+  font-family:var(--font-body);font-size:var(--text-md);font-weight:var(--fw-semibold);
+  letter-spacing:-.2px;
+  transition:opacity .15s,transform .1s var(--spring);
+  -webkit-tap-highlight-color:transparent;
+}
+.scust-save:active{transform:scale(.96);}
+.scust-save:disabled{opacity:.35;cursor:not-allowed;}
 
 /* ── S9 — Invest in your portfolio ──────────────────── */
 #s9{background:var(--color-surface-default);transform:translateY(100%);}
@@ -1357,178 +1590,161 @@ html,body{
 
   <div class="s8-scroll">
 
-    <!-- ─ Chart ─ -->
-    <div class="s8-chart">
-      <div class="s8-chart-header">
-        <div>
-          <div class="s8-chart-lbl">Hypothetical Return</div>
-          <div class="s8-chart-value">$142,103.92</div>
-          <div class="s8-chart-delta">
-            <span class="s8-delta-up">+$1,875.60</span>
-            <span>↑ 52%</span>
-            <span class="s8-chart-period-lbl">1 month</span>
-          </div>
+    <!-- ─ Headline ─ -->
+    <div class="s8-headline-wrap">
+      <h1 class="s8-headline">By age <span id="s8-proj-age">32</span>, you could have <span id="s8-proj-value">$124,567.46</span></h1>
+    </div>
+
+    <!-- ─ Fan projection chart ─ -->
+    <div class="s8-proj-wrap">
+      <svg id="s8-proj-chart" viewBox="0 0 776 520" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+        <defs>
+          <clipPath id="s8-chart-clip"><rect x="0" y="0" width="776" height="520"/></clipPath>
+        </defs>
+        <!-- Less likely outer band -->
+        <path clip-path="url(#s8-chart-clip)" d="M20,487.2784308562651C39.13605917288346,479.7744528433024,58.27211834576693,472.2704748303398,83.53856977095523,461.7406775533632C108.80502119614354,451.21088027638655,140.2018648736368,437.655263735396,170.03700304734176,423.6281502637972C199.87214122104672,409.6010367921984,228.1455738909632,395.1024263899914,256.77241833270466,379.8748573111912C285.39926277444613,364.64728823239096,314.37951898801293,348.69076047699764,343.27085160909115,331.93862870638344C372.1621842301694,315.18649693576924,400.96459325875935,297.63876114993417,429.7692848854776,279.12538438665877C458.5739765121958,260.61200762338336,487.3809507370421,241.1329898826676,516.2677181618641,220.6507498653748C545.1544855866861,200.16850984808198,574.1210462114834,178.68304755421227,603.003133447227,156.43901929198097C631.8852206829706,134.19499102974967,660.6828345296602,111.19239679915677,689.5015667236135,86.65946592243301C718.3202989175667,62.126535045709254,747.1601494587833,36.06326752285463,776,10L776,237.3792462277075C747.1601494587834,249.3088761190876,718.3202989175668,261.2385060104677,689.5015667236135,272.5391544739925C660.6828345296601,283.8398029375173,631.8852206829706,294.51146997318693,603.003133447227,305.04856060380524C574.1210462114834,315.58565123442355,545.154485586686,325.9881654599907,516.2677181618641,336.0194422674466C487.38095073704216,346.05071907490253,458.5739765121957,355.7107584642473,429.7692848854776,364.9657741302896C400.96459325875946,374.2207897963319,372.1621842301695,383.0707817390719,343.27085160909115,391.6557938890507C314.3795189880128,400.2408060390295,285.39926277444624,408.56083839624733,256.77241833270466,416.81472056394455C228.1455738909631,425.06860273164176,199.87214122104663,433.25633470981876,170.03700304734176,441.67792506672106C140.20186487363688,450.09951542362336,108.8050211961436,458.7549641592513,83.53856977095523,466.3945530445854C58.27211834576688,474.0341419299195,39.136059172883435,480.6578709649598,20,487.2816Z" fill="rgb(206,236,215)"/>
+        <!-- Likely inner band -->
+        <path clip-path="url(#s8-chart-clip)" d="M20,487.2773043706769C39.13605917288346,479.9591318726441,58.27211834576693,472.6409593746111,83.53856977095523,462.7557440068804C108.80502119614354,452.87052863914965,140.2018648736368,440.4182704017213,170.03700304734176,427.713099927644C199.87214122104672,415.0079294535667,228.1455738909632,402.0498467428402,256.77241833270466,388.6140180467624C285.39926277444613,375.1781893506846,314.37951898801293,361.2646146692556,343.27085160909115,346.80933546760104C372.1621842301694,332.3540562659465,400.96459325875935,317.35707254406657,429.7692848854776,301.6692155735839C458.5739765121958,285.9813586031013,487.3809507370421,269.60262838401593,516.2677181618641,252.52168416491008C545.1544855866861,235.4407399458042,574.1210462114834,217.65758172667796,603.003133447227,199.39656664149817C631.8852206829706,181.13555155631838,660.6828345296602,162.3966796050851,689.5015667236135,142.57482623216129C718.3202989175667,122.75297285923747,747.1601494587833,101.84813806462313,776,80.94330327000878L776,176.00895080049972C747.1601494587834,191.15798878940757,718.3202989175668,206.30702677831542,689.5015667236135,220.70827450725807C660.6828345296601,235.10952223620072,631.8852206829706,248.7629797051781,603.003133447227,262.1841984349272C574.1210462114834,275.60541716467634,545.154485586686,288.794397155197,516.2677181618641,301.5223485022789C487.38095073704216,314.2502998493608,458.5739765121957,326.517222553004,429.7692848854776,338.3056243476824C400.96459325875946,350.0940261423608,372.1621842301695,361.4039070280743,343.27085160909115,372.37864321742853C314.3795189880128,383.3533794067828,285.39926277444624,393.9929708997776,256.77241833270466,404.43182813783187C228.1455738909631,414.8706853758861,199.87214122104663,425.10880835899974,170.03700304734176,435.4051403711098C140.20186487363688,445.7014723832198,108.8050211961436,456.05601342432635,83.53856977095523,464.7114561550389C58.27211834576688,473.3668988857514,39.136059172883435,480.3232433060699,20,487.27958772638846Z" fill="rgb(109,195,130)"/>
+        <!-- Hover group -->
+        <g id="s8-hover-g">
+          <line id="s8-hover-line" x1="689.5" x2="689.5" y1="10" y2="492" stroke="#181D27" stroke-width="1" stroke-dasharray="3 4" stroke-opacity="0.2"/>
+          <rect id="s8-hover-pill" x="560" y="131" width="120" height="24" rx="12" fill="rgba(255,255,255,0.92)" stroke="#E9EAEB" stroke-width="1"/>
+          <circle id="s8-hover-dot" cx="689.5" cy="176.52" r="5" fill="#058A33" stroke="#fff" stroke-width="2"/>
+          <text id="s8-hover-lbl" x="681" y="147" text-anchor="end" font-family="Geist,sans-serif" font-size="14" font-weight="700" fill="#181D27">$124,567.46</text>
+        </g>
+        <!-- Today dot -->
+        <circle cx="20" cy="487.25" r="5" stroke="#fff" stroke-width="2" fill="#058A33"/>
+        <!-- X-axis labels -->
+        <text x="20" y="512" text-anchor="start" font-family="Geist,sans-serif" font-size="13" fill="#717680">Today</text>
+        <text x="689.5" y="512" text-anchor="middle" font-family="Geist,sans-serif" font-size="13" fill="#717680">Age 32</text>
+        <!-- Hit area -->
+        <rect id="s8-chart-hit" x="20" y="10" width="756" height="477" fill="transparent" style="cursor:crosshair;"/>
+      </svg>
+    </div>
+
+    <!-- ─ Input controls ─ -->
+    <div class="s8-controls">
+      <div class="s8-ctrl-col">
+        <p class="s8-ctrl-lbl">If you start with a</p>
+        <div class="s8-stepper">
+          <button id="s8-initial-dec" class="s8-step-btn" disabled>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path id="s8-idec-path" d="M19 11a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2h14Z" fill="#B0B0B0"/></svg>
+          </button>
+          <span id="s8-initial-val" class="s8-step-val">$100</span>
+          <button id="s8-initial-inc" class="s8-step-btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path id="s8-iinc-path" d="M11 19v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 1 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0Z" fill="#181D27"/></svg>
+          </button>
         </div>
-        <button class="s8-backtest">Run backtest</button>
+        <p class="s8-ctrl-sub">initial contribution</p>
       </div>
-      <div class="s8-chart-wrap">
-        <svg viewBox="0 0 353 130" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#406AD0" stop-opacity="0.18"/>
-              <stop offset="100%" stop-color="#406AD0" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <path d="M0 112 C18 108,35 105,55 101 C75 97,82 113,102 104 C122 95,132 88,152 80 C172 72,178 90,196 78 C214 66,224 62,240 54 C256 46,262 62,276 52 C290 42,302 36,320 28 C336 22,345 18,353 14 L353 130 L0 130Z" fill="url(#cg)"/>
-          <path d="M0 112 C18 108,35 105,55 101 C75 97,82 113,102 104 C122 95,132 88,152 80 C172 72,178 90,196 78 C214 66,224 62,240 54 C256 46,262 62,276 52 C290 42,302 36,320 28 C336 22,345 18,353 14" stroke="#406AD0" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="353" cy="14" r="5" fill="#181D27"/>
-          <circle cx="353" cy="14" r="10" fill="#181D27" fill-opacity="0.08"/>
-        </svg>
+      <div class="s8-ctrl-col">
+        <p class="s8-ctrl-lbl">If you save</p>
+        <div class="s8-stepper">
+          <button id="s8-monthly-dec" class="s8-step-btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path id="s8-mdec-path" d="M19 11a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2h14Z" fill="#181D27"/></svg>
+          </button>
+          <span id="s8-monthly-val" class="s8-step-val">$1,000</span>
+          <button id="s8-monthly-inc" class="s8-step-btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path id="s8-minc-path" d="M11 19v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 1 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0Z" fill="#181D27"/></svg>
+          </button>
+        </div>
+        <p class="s8-ctrl-sub">every month</p>
       </div>
-      <div class="s8-periods">
-        <button class="s8-prd on">1M</button>
-        <button class="s8-prd">3M</button>
-        <button class="s8-prd">YTD</button>
-        <button class="s8-prd">1Y</button>
-        <button class="s8-prd">ALL</button>
-        <button class="s8-prd">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2.5" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v3M11 1v3M2 6.5h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </div>
+
+    <!-- ─ Holdings ─ -->
+    <div class="s8-holdings-wrap">
+      <div class="s8-holdings-hdr">
+        <h2 class="s8-holdings-title">Holdings</h2>
+        <button class="s8-edit-btn" onclick="goToCustomize()">
+          <svg width="17" height="17" viewBox="0 0 20 20" fill="none"><path d="M14.85 2.15a2.12 2.12 0 0 1 3 3L5.75 17.25l-3.9.65.65-3.9L14.85 2.15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
-    </div>
-
-    <!-- ─ Key statistics ─ -->
-    <div class="s8-sec-hdr"><span class="s8-sec-title">Key statistics</span></div>
-    <div class="s8-card">
-      <div class="s8-stat-block">
-        <div class="s8-stat-row">
-          <div class="s8-stat-key">Returns <span class="s8-info">i</span></div>
-          <div class="s8-stat-val">1.18x</div>
-        </div>
-        <div class="s8-stat-row">
-          <div class="s8-stat-key muted">Total</div>
-          <div class="s8-stat-val dim">284.20%</div>
-        </div>
-        <div class="s8-stat-row">
-          <div class="s8-stat-key muted">CAGR</div>
-          <div class="s8-stat-val dim">14.50%</div>
-        </div>
-        <div class="s8-stat-row">
-          <div class="s8-stat-key muted">Average annual return</div>
-          <div class="s8-stat-val dim">14.70</div>
-        </div>
+      <div class="s8-tab-bar">
+        <button class="s8-tab active">Asset</button>
+        <button class="s8-tab">Sector</button>
       </div>
-      <div class="s8-hr"></div>
-      <div class="s8-stat-block">
-        <div class="s8-stat-row">
-          <div class="s8-stat-key">Stability <span class="s8-info">i</span></div>
-          <div class="s8-stat-val">1.26x</div>
-        </div>
-        <div class="s8-stat-row">
-          <div class="s8-stat-key muted">Max drawn</div>
-          <div class="s8-stat-val">-20.30%</div>
-        </div>
-        <div class="s8-stat-row">
-          <div class="s8-stat-key muted">Avg. drawdown</div>
-          <div class="s8-stat-val">-5.80%</div>
-        </div>
-        <div class="s8-stat-row">
-          <div class="s8-stat-key muted">Avg. drawdown duration</div>
-          <div class="s8-stat-val">98.7 days</div>
-        </div>
+      <div class="s8-alloc-bar">
+        <div class="s8-alloc-seg" style="flex:32;background:#3A4DB0;"></div>
+        <div class="s8-alloc-seg" style="flex:25.9;background:#5868C8;"></div>
+        <div class="s8-alloc-seg" style="flex:20.2;background:#7A86D6;"></div>
+        <div class="s8-alloc-seg" style="flex:12.8;background:#98A4E0;"></div>
+        <div class="s8-alloc-seg" style="flex:6;background:#B4BEE8;"></div>
+        <div class="s8-alloc-seg" style="flex:3.1;background:#5BBF7A;"></div>
       </div>
-      <div class="s8-hr"></div>
-      <div class="s8-stat-block">
-        <div class="s8-stat-row">
-          <div class="s8-stat-key">Diversification <span class="s8-info">i</span></div>
-          <div class="s8-stat-val">0.65x</div>
-        </div>
-        <div class="s8-stat-row">
-          <div class="s8-stat-key muted"># of assets</div>
-          <div class="s8-stat-val">20</div>
-        </div>
-        <div class="s8-stat-row">
-          <div class="s8-stat-key muted"># of sectors</div>
-          <div class="s8-stat-val">10</div>
-        </div>
-        <div class="s8-stat-row">
-          <div class="s8-stat-key muted">Highest concentration</div>
-          <div class="s8-stat-val">5.74% AAPL</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─ Invested strategies ─ -->
-    <div class="s8-sec-hdr">
-      <span class="s8-sec-title">Invested strategies</span>
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="color:var(--color-text-tertiary)"><rect x="1" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg>
-    </div>
-    <div class="s8-card">
-      <div class="s8-strat">
-        <div class="s8-avatar" style="background:linear-gradient(135deg,#7C3AED,#3B82F6);">Q</div>
-        <div class="s8-strat-name">Quantum Computing Leaders</div>
-        <div class="s8-badge">34%</div>
-        <svg class="s8-chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="s8-strat">
-        <div class="s8-avatar" style="background:linear-gradient(135deg,#2563EB,#06B6D4);">A</div>
-        <div class="s8-strat-name">Artificial Intelligence Innovators</div>
-        <div class="s8-badge">34%</div>
-        <svg class="s8-chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="s8-strat">
-        <div class="s8-avatar" style="background:linear-gradient(135deg,#059669,#34D399);">B</div>
-        <div class="s8-strat-name">Biotechnology</div>
-        <div class="s8-badge">34%</div>
-        <svg class="s8-chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div class="s8-strat">
-        <div class="s8-avatar" style="background:linear-gradient(135deg,#D97706,#10B981);">R</div>
-        <div class="s8-strat-name">Renewable Energy Projects</div>
-        <div class="s8-badge">34%</div>
-        <svg class="s8-chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <button class="s8-add-chip">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Add a strategy
-      </button>
-    </div>
-
-    <!-- ─ Breakdown ─ -->
-    <div class="s8-sec-hdr">
-      <span class="s8-sec-title">Breakdown</span>
-      <svg class="s8-chev" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 4.5l4.5 4.5L7 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="s8-card">
-      <div class="s8-bd-bar">
-        <div style="width:10%;background:#059669;"></div>
-        <div style="width:11%;background:#60A5FA;"></div>
-        <div style="width:26%;background:#2563EB;"></div>
-        <div style="width:25%;background:#1D4ED8;"></div>
-        <div style="flex:1;background:#1E3A8A;"></div>
-      </div>
-      <div class="s8-bd-row">
-        <div class="s8-bd-info">
-          <div class="s8-bd-title-row">
-            <span class="s8-bd-ttl">Equities</span>
-            <div class="s8-cdots">
-              <div class="s8-cdot" style="background:#059669;"></div>
-              <div class="s8-cdot" style="background:#60A5FA;"></div>
-              <div class="s8-cdot" style="background:#2563EB;"></div>
-              <div class="s8-cdot" style="background:#1D4ED8;"></div>
-              <div class="s8-cdot" style="background:#1E3A8A;"></div>
-            </div>
+      <div class="s8-holdings-list">
+        <!-- Row 1 — expanded -->
+        <div class="s8-h-item open" onclick="this.classList.toggle('open')">
+          <div class="s8-h-row">
+            <div class="s8-h-dot" style="background:#3A4DB0;"></div>
+            <span class="s8-h-name">Vanguard S&amp;P 500 ETF</span>
+            <div class="s8-h-right"><span class="s8-h-pct">32.0%</span><svg class="s8-h-chev" width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1L5.5 6L10 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           </div>
-          <div class="s8-bd-sub">US equities, International equities, Emerging market factor equities, Global factor equities</div>
+          <div class="s8-h-detail">
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Symbol</span><span class="s8-h-dval">VOO</span></div>
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Investment</span><span class="s8-h-dval">32.0%</span></div>
+          </div>
         </div>
-        <div class="s8-badge" style="align-self:flex-start;margin-top:var(--sp-3);">85%</div>
-      </div>
-      <div class="s8-hr" style="margin:0;"></div>
-      <div class="s8-bd-row">
-        <div class="s8-bd-info">
-          <div class="s8-bd-ttl">Cash (USD)</div>
+        <!-- Row 2 -->
+        <div class="s8-h-item" onclick="this.classList.toggle('open')">
+          <div class="s8-h-row">
+            <div class="s8-h-dot" style="background:#5868C8;"></div>
+            <span class="s8-h-name">SPDR S&amp;P 500 ETF Trust</span>
+            <div class="s8-h-right"><span class="s8-h-pct">25.9%</span><svg class="s8-h-chev" width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1L5.5 6L10 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="s8-h-detail">
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Symbol</span><span class="s8-h-dval">SPY</span></div>
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Investment</span><span class="s8-h-dval">25.9%</span></div>
+          </div>
         </div>
-        <div class="s8-badge">15%</div>
+        <!-- Row 3 -->
+        <div class="s8-h-item" onclick="this.classList.toggle('open')">
+          <div class="s8-h-row">
+            <div class="s8-h-dot" style="background:#7A86D6;"></div>
+            <span class="s8-h-name">iShares Core S&amp;P 500 ETF</span>
+            <div class="s8-h-right"><span class="s8-h-pct">20.2%</span><svg class="s8-h-chev" width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1L5.5 6L10 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="s8-h-detail">
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Symbol</span><span class="s8-h-dval">IVV</span></div>
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Investment</span><span class="s8-h-dval">20.2%</span></div>
+          </div>
+        </div>
+        <!-- Row 4 -->
+        <div class="s8-h-item" onclick="this.classList.toggle('open')">
+          <div class="s8-h-row">
+            <div class="s8-h-dot" style="background:#98A4E0;"></div>
+            <span class="s8-h-name">Schwab U.S. Large-Cap ETF</span>
+            <div class="s8-h-right"><span class="s8-h-pct">12.8%</span><svg class="s8-h-chev" width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1L5.5 6L10 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="s8-h-detail">
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Symbol</span><span class="s8-h-dval">SCHX</span></div>
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Investment</span><span class="s8-h-dval">12.8%</span></div>
+          </div>
+        </div>
+        <!-- Row 5 -->
+        <div class="s8-h-item" onclick="this.classList.toggle('open')">
+          <div class="s8-h-row">
+            <div class="s8-h-dot" style="background:#B4BEE8;"></div>
+            <span class="s8-h-name">SPDR Portfolio S&amp;P 500 ETF</span>
+            <div class="s8-h-right"><span class="s8-h-pct">6.0%</span><svg class="s8-h-chev" width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1L5.5 6L10 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="s8-h-detail">
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Symbol</span><span class="s8-h-dval">SPTM</span></div>
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Investment</span><span class="s8-h-dval">6.0%</span></div>
+          </div>
+        </div>
+        <!-- Row 6 — Cash -->
+        <div class="s8-h-item" onclick="this.classList.toggle('open')">
+          <div class="s8-h-row">
+            <div class="s8-h-dot" style="background:#5BBF7A;"></div>
+            <span class="s8-h-name">Cash (USD)</span>
+            <div class="s8-h-right"><span class="s8-h-pct">3.1%</span><svg class="s8-h-chev" width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1L5.5 6L10 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+          <div class="s8-h-detail">
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Symbol</span><span class="s8-h-dval">USD</span></div>
+            <div class="s8-h-drow"><span class="s8-h-dlbl">Investment</span><span class="s8-h-dval">3.1%</span></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1613,6 +1829,32 @@ html,body{
   </div>
 
   <div class="s10-home"><div class="s10-home-bar"></div></div>
+</div>
+
+<!-- ── S-Customize: Portfolio weight editor ─────────── -->
+<div class="screen" id="s-cust">
+  <!-- status bar injected by JS -->
+  <div class="scust-nav">
+    <button class="btn-nav" onclick="goBackFromCustomize()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10l5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="scust-scroll">
+    <div class="scust-hdr">
+      <h1 class="scust-title">Customize your<br>portfolio</h1>
+      <p class="scust-sub">Pick your ETFs and decide how much to invest in each.</p>
+    </div>
+
+    <div class="scust-list" id="scust-list">
+      <!-- rows injected by JS -->
+    </div>
+  </div>
+
+  <div class="scust-bottom">
+    <span class="scust-total-lbl" id="scust-total-lbl">Total: <span id="scust-total-val">100</span>%</span>
+    <button class="scust-save" id="scust-save-btn" onclick="saveCustomize()">Save</button>
+  </div>
 </div>
 
 </div><!-- /phone -->
@@ -2327,18 +2569,354 @@ function s9SegClick(btn) {
   btn.classList.add('on');
 }
 
+// ── S8 Fan-chart hover + stepper interaction ─────────
+(function() {
+  // SVG data points
+  const MEDIAN = [
+    [20,487.2524],[83.54,463.57],[170.04,430.14],[256.77,394.45],
+    [343.27,356.35],[429.77,315.70],[516.27,272.29],[603.00,225.97],
+    [689.50,176.52],[776,123.74]
+  ];
+  function lerp(pts, x) {
+    if (x <= pts[0][0]) return pts[0][1];
+    if (x >= pts[pts.length-1][0]) return pts[pts.length-1][1];
+    for (let i = 0; i < pts.length-1; i++) {
+      if (x >= pts[i][0] && x <= pts[i+1][0]) {
+        const t = (x-pts[i][0]) / (pts[i+1][0]-pts[i][0]);
+        return pts[i][1] + t*(pts[i+1][1]-pts[i][1]);
+      }
+    }
+    return pts[pts.length-1][1];
+  }
+
+  // Fixed SVG anchor positions
+  const Y_SVG_TODAY  = 487.2524; // SVG y for "today" (left edge, age 25)
+  const Y_SVG_TARGET = 176.52;   // SVG y for "target" (right edge, age 32)
+  const X0 = 20, AGE0 = 25, XT = 689.5, AGET = 32;
+  const PPY = (XT - X0) / (AGET - AGE0);
+
+  // Financial model: r = monthly rate calibrated so FV(100,1000,84mo) ≈ $124,567
+  const R = 0.00895, N = 84;
+  function calcFV(initial, monthly) {
+    const f = Math.pow(1 + R, N);
+    return initial * f + monthly * (f - 1) / R;
+  }
+
+  // Mutable calibration — driven by steppers
+  let vToday  = 100;
+  let vTarget = 124567.46;
+  let scale   = (vTarget - vToday) / (Y_SVG_TODAY - Y_SVG_TARGET);
+
+  function yToVal(y) { return Math.max(0, vToday + (Y_SVG_TODAY - y) * scale); }
+
+  function fmt(v) {
+    if (v >= 1e6) return '$' + (v/1e6).toFixed(2) + 'M';
+    if (v >= 1e3) return '$' + (v/1e3).toFixed(1) + 'K';
+    return '$' + Math.round(v);
+  }
+  function fmtFull(v) {
+    return '$' + v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  function fmtAmt(v) {
+    return '$' + v.toLocaleString('en-US');
+  }
+  function xToAge(x) { return Math.round(AGE0 + (x - X0) / PPY); }
+
+  const PILL_W = 120, PILL_H = 24;
+  let s8chart, s8hit, s8line, s8pill, s8dot, s8lbl, s8age, s8val;
+  let curSvgX = XT; // track current hover position
+
+  // Stepper step lists
+  const INIT_STEPS  = [0, 100, 250, 500, 1000, 2500, 5000, 10000];
+  const MONTH_STEPS = [100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000, 5000];
+  let initIdx  = 1;  // $100
+  let monthIdx = 4;  // $1,000
+
+  function recalibrate() {
+    const initial = INIT_STEPS[initIdx];
+    const monthly = MONTH_STEPS[monthIdx];
+    vToday  = initial;
+    vTarget = calcFV(initial, monthly);
+    scale   = (vTarget - vToday) / (Y_SVG_TODAY - Y_SVG_TARGET);
+  }
+
+  function popVal(el) {
+    el.classList.remove('pop');
+    void el.offsetWidth; // force reflow
+    el.classList.add('pop');
+    el.addEventListener('animationend', () => el.classList.remove('pop'), { once: true });
+  }
+
+  function dimHeadline(fn) {
+    if (!s8val) { fn(); return; }
+    s8val.classList.add('dim');
+    setTimeout(() => { fn(); s8val.classList.remove('dim'); }, 110);
+  }
+
+  function syncStepperBtn(btn, pathEl, disabled) {
+    btn.disabled = disabled;
+    pathEl.setAttribute('fill', disabled ? '#B0B0B0' : '#181D27');
+  }
+
+  function initS8Chart() {
+    s8chart = document.getElementById('s8-proj-chart');
+    s8hit   = document.getElementById('s8-chart-hit');
+    s8line  = document.getElementById('s8-hover-line');
+    s8pill  = document.getElementById('s8-hover-pill');
+    s8dot   = document.getElementById('s8-hover-dot');
+    s8lbl   = document.getElementById('s8-hover-lbl');
+    s8age   = document.getElementById('s8-proj-age');
+    s8val   = document.getElementById('s8-proj-value');
+    if (!s8hit) return;
+
+    // ── Chart hover (mouse + touch) ───────────────────
+    s8hit.addEventListener('mousemove', e => {
+      const r = s8chart.getBoundingClientRect();
+      curSvgX = ((e.clientX - r.left) / r.width) * 776;
+      updateS8(curSvgX);
+    });
+    s8hit.addEventListener('mouseleave', () => {
+      curSvgX = XT;
+      updateS8(XT);
+    });
+    s8hit.addEventListener('touchmove', e => {
+      e.preventDefault();
+      const t = e.touches[0];
+      const r = s8chart.getBoundingClientRect();
+      curSvgX = ((t.clientX - r.left) / r.width) * 776;
+      updateS8(curSvgX);
+    }, { passive: false });
+    s8hit.addEventListener('touchend', () => {
+      curSvgX = XT;
+      updateS8(XT);
+    });
+
+    // ── Initial contribution stepper ──────────────────
+    const iDecBtn  = document.getElementById('s8-initial-dec');
+    const iIncBtn  = document.getElementById('s8-initial-inc');
+    const iValEl   = document.getElementById('s8-initial-val');
+    const iDecPath = document.getElementById('s8-idec-path');
+    const iIncPath = document.getElementById('s8-iinc-path');
+
+    function updateInitStepper() {
+      iValEl.textContent = fmtAmt(INIT_STEPS[initIdx]);
+      syncStepperBtn(iDecBtn, iDecPath, initIdx === 0);
+      syncStepperBtn(iIncBtn, iIncPath, initIdx === INIT_STEPS.length - 1);
+      popVal(iValEl);
+    }
+
+    iDecBtn.addEventListener('click', () => {
+      if (initIdx > 0) {
+        initIdx--;
+        updateInitStepper();
+        dimHeadline(() => { recalibrate(); updateS8(XT); curSvgX = XT; });
+      }
+    });
+    iIncBtn.addEventListener('click', () => {
+      if (initIdx < INIT_STEPS.length - 1) {
+        initIdx++;
+        updateInitStepper();
+        dimHeadline(() => { recalibrate(); updateS8(XT); curSvgX = XT; });
+      }
+    });
+
+    // ── Monthly savings stepper ───────────────────────
+    const mDecBtn  = document.getElementById('s8-monthly-dec');
+    const mIncBtn  = document.getElementById('s8-monthly-inc');
+    const mValEl   = document.getElementById('s8-monthly-val');
+    const mDecPath = document.getElementById('s8-mdec-path');
+    const mIncPath = document.getElementById('s8-minc-path');
+
+    function updateMonthlyStepper() {
+      mValEl.textContent = fmtAmt(MONTH_STEPS[monthIdx]);
+      syncStepperBtn(mDecBtn, mDecPath, monthIdx === 0);
+      syncStepperBtn(mIncBtn, mIncPath, monthIdx === MONTH_STEPS.length - 1);
+      popVal(mValEl);
+    }
+
+    mDecBtn.addEventListener('click', () => {
+      if (monthIdx > 0) {
+        monthIdx--;
+        updateMonthlyStepper();
+        dimHeadline(() => { recalibrate(); updateS8(XT); curSvgX = XT; });
+      }
+    });
+    mIncBtn.addEventListener('click', () => {
+      if (monthIdx < MONTH_STEPS.length - 1) {
+        monthIdx++;
+        updateMonthlyStepper();
+        dimHeadline(() => { recalibrate(); updateS8(XT); curSvgX = XT; });
+      }
+    });
+
+    // ── Tab bar ───────────────────────────────────────
+    document.querySelectorAll('.s8-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.s8-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // ── Init ─────────────────────────────────────────
+    recalibrate();
+    updateS8(XT);
+  }
+
+  function updateS8(svgX) {
+    svgX = Math.max(20, Math.min(776, svgX));
+    const medY   = lerp(MEDIAN, svgX);
+    const age    = xToAge(svgX);
+    const val    = yToVal(medY);
+    const atRest = Math.abs(svgX - XT) < 2;
+    const dispVal = atRest ? fmtFull(vTarget) : fmt(val);
+
+    if (s8age) s8age.textContent = age;
+    if (s8val) s8val.textContent = dispVal;
+
+    s8line.setAttribute('x1', svgX); s8line.setAttribute('x2', svgX);
+    s8dot.setAttribute('cx', svgX);  s8dot.setAttribute('cy', medY);
+
+    let pillX, textX, anchor;
+    if (svgX < 150) { pillX = svgX+8;  textX = svgX+12; anchor = 'start'; }
+    else             { pillX = svgX-PILL_W-8; textX = svgX-8; anchor = 'end'; }
+    const pillY = medY - PILL_H/2;
+
+    s8pill.setAttribute('x', pillX);  s8pill.setAttribute('y', pillY);
+    s8lbl.setAttribute('x', textX);   s8lbl.setAttribute('y', pillY + PILL_H*0.7);
+    s8lbl.setAttribute('text-anchor', anchor);
+    s8lbl.textContent = atRest ? fmt(vTarget) : fmt(val);
+  }
+
+  window._initS8Chart = initS8Chart;
+})();
+
+// ── Customize portfolio ───────────────────────────────
+const CUST_HOLDINGS = [
+  { name: 'Vanguard S&P 500 ETF',        ticker: 'VOO',  weight: 32, color: '#3A4DB0' },
+  { name: 'SPDR S&P 500 ETF Trust',       ticker: 'SPY',  weight: 26, color: '#5868C8' },
+  { name: 'iShares Core S&P 500 ETF',     ticker: 'IVV',  weight: 20, color: '#7A86D6' },
+  { name: 'Schwab U.S. Large-Cap ETF',    ticker: 'SCHX', weight: 13, color: '#98A4E0' },
+  { name: 'SPDR Portfolio S&P 500 ETF',   ticker: 'SPTM', weight:  6, color: '#B4BEE8' },
+  { name: 'Cash (USD)',                   ticker: 'USD',  weight:  3, color: '#5BBF7A' },
+];
+let custWeights = CUST_HOLDINGS.map(h => h.weight);
+
+function custUpdateTotal() {
+  const total = custWeights.reduce((s, w) => s + w, 0);
+  const totalVal = document.getElementById('scust-total-val');
+  const totalLbl = document.getElementById('scust-total-lbl');
+  const saveBtn  = document.getElementById('scust-save-btn');
+  if (totalVal) totalVal.textContent = total;
+  if (totalLbl) totalLbl.classList.toggle('over', total !== 100);
+  if (saveBtn)  saveBtn.disabled = (total !== 100);
+}
+
+function custBuildRows() {
+  const list = document.getElementById('scust-list');
+  if (!list) return;
+  list.innerHTML = '';
+  CUST_HOLDINGS.forEach((h, i) => {
+    const row = document.createElement('div');
+    row.className = 'scust-row';
+    row.innerHTML = `
+      <div class="scust-row-top">
+        <span class="scust-name">${h.name}</span>
+        <button class="scust-ticker-btn">
+          ${h.ticker}
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="scust-row-btm">
+        <button class="scust-adj" id="scust-dec-${i}">
+          <svg width="12" height="2" viewBox="0 0 12 2" fill="none"><rect width="12" height="2" rx="1" fill="#181D27"/></svg>
+        </button>
+        <div class="scust-slider-wrap">
+          <div class="scust-track"><div class="scust-fill" id="scust-fill-${i}" style="width:${custWeights[i]}%;background:${h.color};"></div></div>
+          <input type="range" class="scust-slider" id="scust-slider-${i}" min="0" max="100" step="1" value="${custWeights[i]}">
+        </div>
+        <button class="scust-adj" id="scust-inc-${i}">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="#181D27" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <span class="scust-pct" id="scust-pct-${i}">${custWeights[i]}%</span>
+      </div>`;
+    list.appendChild(row);
+
+    const slider = document.getElementById('scust-slider-' + i);
+    const fill   = document.getElementById('scust-fill-' + i);
+    const pctEl  = document.getElementById('scust-pct-' + i);
+    const decBtn = document.getElementById('scust-dec-' + i);
+    const incBtn = document.getElementById('scust-inc-' + i);
+
+    function setWeight(v) {
+      v = Math.max(0, Math.min(100, v));
+      custWeights[i] = v;
+      slider.value     = v;
+      fill.style.width = v + '%';
+      pctEl.textContent = v + '%';
+      decBtn.disabled  = v === 0;
+      incBtn.disabled  = v === 100;
+      custUpdateTotal();
+    }
+
+    slider.addEventListener('input', () => setWeight(parseInt(slider.value)));
+    decBtn.addEventListener('click', () => setWeight(custWeights[i] - 1));
+    incBtn.addEventListener('click', () => setWeight(custWeights[i] + 1));
+    // Init disabled state
+    decBtn.disabled = custWeights[i] === 0;
+    incBtn.disabled = custWeights[i] === 100;
+  });
+  custUpdateTotal();
+}
+
+function goToCustomize() {
+  const scust = document.getElementById('s-cust');
+  if (!scust) return;
+  // inject status bar
+  if (!scust.querySelector('.status-bar')) {
+    const sb = document.querySelector('#s8 .status-bar');
+    if (sb) scust.insertAdjacentHTML('afterbegin', sb.outerHTML);
+  }
+  // reset weights to current
+  custWeights = CUST_HOLDINGS.map(h => h.weight);
+  custBuildRows();
+  // slide in
+  scust.style.transition = 'none';
+  scust.style.transform  = 'translateX(100%)';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    scust.style.transition = 'transform 0.42s cubic-bezier(0.16,1,0.3,1)';
+    scust.style.transform  = 'translateX(0)';
+  }));
+}
+
+function goBackFromCustomize() {
+  const scust = document.getElementById('s-cust');
+  if (!scust) return;
+  scust.style.transition = 'transform 0.32s cubic-bezier(0.4,0,1,1)';
+  scust.style.transform  = 'translateX(100%)';
+}
+
+function saveCustomize() {
+  // Persist weights back into the main holdings display
+  const names = ['Vanguard S&P 500 ETF','SPDR S&P 500 ETF Trust','iShares Core S&P 500 ETF','Schwab U.S. Large-Cap ETF','SPDR Portfolio S&P 500 ETF','Cash (USD)'];
+  custWeights.forEach((w, i) => {
+    CUST_HOLDINGS[i].weight = w;
+    // Update pct display in s8 holdings list
+    const pcts = document.querySelectorAll('.s8-h-pct');
+    if (pcts[i]) pcts[i].textContent = w + '%';
+    // Update alloc bar segments
+    const segs = document.querySelectorAll('.s8-alloc-seg');
+    if (segs[i]) segs[i].style.flex = w;
+  });
+  goBackFromCustomize();
+}
+
 function renderResult() {
   if (textTimer) { clearInterval(textTimer); textTimer = null; }
   // Reset scroll position for s8
   const scroll = document.querySelector('.s8-scroll');
   if (scroll) scroll.scrollTop = 0;
-  // Wire up period tab interactions
-  document.querySelectorAll('.s8-prd').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.s8-prd').forEach(b => b.classList.remove('on'));
-      btn.classList.add('on');
-    });
-  });
+  // Init chart hover
+  if (window._initS8Chart) window._initS8Chart();
   goToResults();
 }
 </script>
