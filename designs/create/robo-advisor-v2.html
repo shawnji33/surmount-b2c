@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Robo Advisor V2 — Surmount B2C</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+
+:root{
+  --white:#FFFFFF;
+  --gray-50:#FAFAFA;
+  --gray-100:#F5F5F5;
+  --gray-300:#D5D7DA;
+  --text-primary:#181D27;
+  --text-secondary:rgba(10,13,18,0.7);
+  --text-tertiary:#717680;
+  --border-secondary:rgba(0,0,0,0.06);
+  --brand-600:#406AD0;
+  --icon-color:#414651;
+
+  /* Design-system token aliases */
+  --color-text-primary:#181D27;
+  --color-text-secondary:#414651;
+  --color-text-tertiary:#717680;
+  --color-border-default:#E9EAEB;
+  --color-surface-subtle:#FAFAFA;
+
+  --font-display:'Inter',sans-serif;
+  --font-body:'Geist',system-ui,sans-serif;
+
+  --sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;
+
+  --r-md:8px;--r-xl:12px;--r-full:9999px;
+  --spring:cubic-bezier(0.34,1.05,0.64,1);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+
+  --shadow-card:0 2px 12px 0 rgba(10,13,18,0.03);
+}
+
+html,body{
+  min-height:100vh;
+  font-family:var(--font-body);
+  background:#E5E5E3;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:48px 32px;
+}
+.dev-nav{
+  margin-top:20px;
+  display:flex;align-items:center;gap:4px;
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:999px;
+  padding:5px 8px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.07);
+}
+.dev-nav-sep{
+  width:1px;height:16px;background:rgba(0,0,0,0.1);margin:0 4px;flex-shrink:0;
+}
+.dev-nav-label{
+  font-size:11px;font-weight:500;color:var(--text-tertiary);padding:0 4px;letter-spacing:-0.1px;
+}
+.dev-btn{
+  padding:5px 11px;border-radius:999px;
+  font-family:var(--font-body);font-size:12px;font-weight:500;color:var(--text-primary);
+  background:transparent;border:none;cursor:pointer;white-space:nowrap;
+  transition:background .12s,transform .1s var(--spring);
+  -webkit-tap-highlight-color:transparent;
+}
+.dev-btn:hover{background:rgba(0,0,0,0.07);}
+.dev-btn:active{transform:scale(.94);}
+.dev-btn.dev-active{background:var(--brand-600);color:#fff;}
+
+.phone{
+  width:393px;height:852px;border-radius:50px;
+  overflow:hidden;position:relative;
+  background:var(--gray-50);
+  box-shadow:0 0 0 1px rgba(0,0,0,0.09),0 32px 80px rgba(0,0,0,0.14),0 8px 20px rgba(0,0,0,0.07);
+  flex-shrink:0;
+}
+
+.screen{
+  position:absolute;inset:0;
+  background:var(--gray-50);
+  transform:translateX(100%);
+  transition:transform .38s var(--ease-out);
+  will-change:transform;
+}
+.screen.active{transform:translateX(0);}
+.screen.exit{transform:translateX(-25%);}
+
+.status-bar{
+  height:50px;padding:14px 24px 0;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.status-time{
+  font-family:var(--font-body);font-size:15px;font-weight:600;
+  color:var(--text-primary);letter-spacing:-0.3px;
+}
+
+.nav-bar{
+  height:48px;padding:0 12px;
+  display:flex;align-items:center;
+  position:relative;
+}
+.btn-back{
+  width:40px;height:40px;border-radius:var(--r-xl);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-primary);flex-shrink:0;
+  transition:background .12s,transform .15s var(--spring);
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-back:hover{background:var(--gray-100);}
+.btn-back:active{transform:scale(.82);}
+
+.progress-dots{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:flex;align-items:center;gap:5px;
+  width:140px;justify-content:center;
+}
+.pdot{
+  height:5px;border-radius:var(--r-full);
+  background:var(--gray-300);width:20px;
+  transition:width .4s var(--spring),background .25s;
+  flex-shrink:0;
+}
+.pdot.active{background:var(--brand-600);}
+.progress-dots .pdot.active{flex:1;width:auto;}
+
+/* ── S1 Welcome ── */
+.content-area{
+  position:absolute;left:0;right:0;
+  padding:0 20px;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+#s1 .content-area{top:50px;height:694px;gap:var(--sp-5);padding-top:16px;}
+
+.logo-row{display:flex;align-items:center;gap:10px;height:32px;}
+.logo-wordmark{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text-primary);letter-spacing:-0.4px;}
+.headline{font-family:var(--font-display);font-size:40px;font-weight:700;color:var(--text-primary);line-height:42px;letter-spacing:-1.2px;}
+.body-text{font-size:16px;font-weight:400;color:var(--text-secondary);line-height:24px;}
+.feature-card{background:var(--gray-100);border:1px solid var(--border-secondary);border-radius:var(--r-xl);padding:17px;display:flex;flex-direction:column;gap:var(--sp-5);}
+.feature-row{display:flex;align-items:flex-start;gap:var(--sp-3);}
+.feat-icon{width:24px;height:24px;flex-shrink:0;margin-top:1px;}
+.feat-text{font-size:14px;font-weight:400;color:var(--text-primary);line-height:20px;}
+
+.cta-btn{
+  position:absolute;top:760px;left:20px;right:20px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px 16px;
+  background:var(--brand-600);
+  border:2px solid rgba(255,255,255,0.12);
+  border-radius:var(--r-md);
+  color:#fff;font-size:16px;font-weight:500;line-height:24px;
+  cursor:pointer;
+  transition:opacity .15s,transform .12s var(--spring);
+  -webkit-tap-highlight-color:transparent;
+}
+.cta-btn:hover{opacity:.88;}
+.cta-btn:active{transform:scale(.98);opacity:.82;transition-duration:.06s;}
+
+/* ── Quiz shell ── */
+.quiz-body{
+  position:absolute;top:97px;left:20px;right:20px;bottom:24px;
+  display:flex;flex-direction:column;gap:24px;
+}
+.quiz-header{
+  flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;
+  gap:8px;text-align:center;padding-top:8px;
+  transition:opacity .18s ease,transform .18s ease;
+}
+.quiz-header.fading{opacity:0;transform:translateY(-6px);pointer-events:none;}
+
+.step-title{font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--text-primary);line-height:36px;letter-spacing:0;}
+.step-subtitle{font-size:14px;font-weight:400;color:var(--text-tertiary);line-height:22px;}
+
+.options-viewport{
+  flex:1;position:relative;overflow:hidden;min-height:0;
+  margin:0 -20px; /* extend clip region to full phone width */
+}
+.options-list{
+  position:absolute;inset:0;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  display:flex;flex-direction:column;gap:var(--sp-3);
+  padding:0 20px 4px; /* restore card margins */
+}
+.options-list::-webkit-scrollbar{display:none;}
+
+/* ── Option cards ── */
+.option-card{
+  width:100%;min-height:74px;
+  background:var(--white);
+  border:1px solid var(--border-secondary);
+  border-radius:var(--r-xl);
+  box-shadow:var(--shadow-card);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;
+  cursor:pointer;
+  transition:border-color .15s,box-shadow .15s,transform .12s var(--spring);
+  -webkit-tap-highlight-color:transparent;
+  flex-shrink:0;
+}
+.option-card:hover{border-color:var(--gray-300);}
+.option-card:active{transform:scale(.99);}
+.option-card.selected{border-color:var(--brand-600);box-shadow:0 0 0 3px rgba(64,106,208,.12),var(--shadow-card);}
+
+.option-left{display:flex;align-items:center;gap:var(--sp-3);flex:1;min-width:0;}
+.option-icon{width:20px;height:20px;flex-shrink:0;color:var(--icon-color);}
+.option-text{display:flex;flex-direction:column;gap:2px;text-align:left;align-items:flex-start;min-width:0;flex:1;}
+.option-label{font-size:14px;font-weight:500;color:var(--text-primary);line-height:20px;}
+.option-desc{font-size:12px;font-weight:400;color:var(--text-tertiary);line-height:18px;}
+.option-card.single .option-label{font-size:16px;}
+
+.option-radio{
+  width:20px;height:20px;border-radius:var(--r-full);
+  border:1.5px solid var(--gray-300);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .15s,background .15s;margin-left:12px;
+}
+.option-card.selected .option-radio{border-color:var(--brand-600);background:var(--brand-600);}
+.option-radio-dot{
+  width:7px;height:7px;border-radius:var(--r-full);
+  background:#fff;opacity:0;transform:scale(0);
+  transition:opacity .15s,transform .2s var(--spring);
+}
+.option-card.selected .option-radio-dot{opacity:1;transform:scale(1);}
+
+/* ── Light loading screen ── */
+.loading-light{background:var(--gray-50);}
+.loading-pgbar{
+  position:absolute;top:52px;left:20px;right:20px;
+  height:4px;background:rgba(10,13,18,0.06);border-radius:999px;overflow:hidden;
+}
+.loading-pgbar-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#E4B774 0%,#A5C1EF 55%,#406AD0 100%);
+  border-radius:999px;
+  transition:width .6s cubic-bezier(.25,.46,.45,.94);
+}
+.loading-halo{
+  position:absolute;top:52px;left:0;right:0;
+  height:340px;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.halo-rainbow-svg{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  will-change:transform,opacity;
+}
+.halo-arc-glow{
+  animation:arc-glow-breathe 4.5s ease-in-out infinite;
+}
+@keyframes arc-glow-breathe{
+  0%,100%{opacity:0.38;}
+  50%{opacity:0.72;}
+}
+.halo-logo{
+  position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:center;
+}
+.halo-logo video{
+  width:72px;height:72px;object-fit:contain;
+}
+.loading-copy{
+  position:absolute;top:336px;left:0;right:0;
+  padding:0 32px;text-align:center;
+}
+.loading-h1{
+  font-family:var(--font-display);font-size:24px;font-weight:700;
+  color:var(--text-primary);line-height:32px;letter-spacing:-0.4px;
+}
+.loading-p{
+  font-size:14px;color:var(--text-tertiary);line-height:20px;margin-top:8px;
+}
+.loading-action{
+  position:absolute;top:468px;left:0;right:0;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.load-spinner{width:18px;height:18px;position:relative;}
+.load-spinner svg{position:absolute;inset:0;width:100%;height:100%;}
+.spinner-ring{animation:spin 1.1s linear infinite;}
+.load-label{
+  font-family:var(--font-display);font-size:16px;font-weight:600;
+  color:var(--text-primary);letter-spacing:-0.2px;
+  transition:color .25s;
+}
+.load-label.done{color:var(--text-tertiary);font-weight:500;}
+.loading-chip{
+  position:absolute;top:512px;left:50%;transform:translate(-50%,8px);
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px 8px 10px;
+  background:#FFFFFF;
+  border:1px solid var(--border-secondary);
+  border-radius:999px;
+  opacity:0;pointer-events:none;
+  transition:opacity .28s ease,transform .28s ease;
+  white-space:nowrap;
+  box-shadow:var(--shadow-card);
+}
+.loading-chip.visible{opacity:1;transform:translate(-50%,0);}
+.chip-icon{
+  width:22px;height:22px;border-radius:7px;
+  background:linear-gradient(135deg,#A892F0 0%,#6F53D9 100%);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  flex-shrink:0;
+}
+.chip-icon svg{width:12px;height:12px;}
+.chip-text{font-size:13px;font-weight:500;color:var(--text-primary);letter-spacing:-0.1px;}
+.loading-disclaimer{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;
+  background:#FFFFFF;
+  border:1px solid var(--border-secondary);
+  border-radius:16px;
+  width:calc(100% - 48px);
+  box-shadow:var(--shadow-card);
+}
+.disc-icon{width:16px;height:16px;flex-shrink:0;color:var(--text-tertiary);}
+.disc-icon svg{width:100%;height:100%;}
+.loading-disclaimer span{
+  font-size:13px;color:var(--text-tertiary);line-height:18px;letter-spacing:-0.1px;
+}
+@keyframes rainbow-breathe{
+  0%,100%{transform:scale(1) translateY(0);opacity:0.88;}
+  50%{transform:scale(1.04) translateY(-8px);opacity:1;}
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── Portfolio Recommendation Screen ── */
+#portfolio{background:#F5F5F7;}
+.port-nav{
+  height:52px;background:#F5F5F7;
+  display:flex;align-items:center;
+  padding:0 20px;position:relative;
+}
+.port-nav-title{
+  position:absolute;left:50%;transform:translateX(-50%);
+  font-family:var(--font-display);font-size:16px;font-weight:600;
+  color:var(--text-primary);letter-spacing:-0.2px;white-space:nowrap;
+}
+.port-back{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.07);color:var(--text-primary);flex-shrink:0;
+  transition:background .12s,transform .15s var(--spring);
+}
+.port-back:hover{background:rgba(0,0,0,0.12);}
+.port-back:active{transform:scale(.85);}
+
+/* Underline tab bar */
+.port-tabs{
+  background:#F5F5F7;padding:0 20px;
+  display:flex;align-items:flex-end;gap:24px;
+  overflow-x:auto;scrollbar-width:none;
+  border-bottom:1px solid rgba(0,0,0,0.07);
+  flex-shrink:0;
+}
+.port-tabs::-webkit-scrollbar{display:none;}
+.port-tab{
+  padding:10px 0 10px;
+  font-size:14px;font-weight:500;letter-spacing:-0.1px;
+  white-space:nowrap;cursor:pointer;
+  color:var(--text-tertiary);background:transparent;
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+  transition:color .15s,border-color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.port-tab.active{
+  color:var(--text-primary);font-weight:600;
+  border-bottom-color:var(--brand-600);
+}
+
+/* scroll container */
+.port-scroll{
+  position:absolute;top:152px;left:0;right:0;bottom:0;
+  overflow-y:auto;scrollbar-width:none;
+  padding:28px 20px 100px;
+}
+.port-scroll::-webkit-scrollbar{display:none;}
+
+/* ── Flat section layout ── */
+.port-section{ margin-bottom:36px; }
+
+.port-section-label{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;
+}
+.port-section-label-text{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--font-display);font-size:16px;font-weight:700;
+  color:var(--text-primary);letter-spacing:-0.3px;
+}
+.port-section-label-text svg{color:var(--text-tertiary);}
+.port-see-all{font-size:14px;font-weight:500;color:var(--brand-600);letter-spacing:-0.1px;cursor:pointer;}
+
+/* ── Risk metrics bottom sheet ── */
+.sheet-overlay{
+  position:absolute;inset:0;z-index:80;
+  background:rgba(0,0,0,0);
+  pointer-events:none;
+  transition:background .3s ease;
+}
+.sheet-overlay.open{
+  background:rgba(0,0,0,0.55);
+  pointer-events:auto;
+}
+.risk-sheet{
+  position:absolute;left:0;right:0;bottom:0;z-index:81;
+  background:#fff;
+  border-radius:20px 20px 0 0;
+  padding:0 0 40px;
+  transform:translateY(100%);
+  transition:transform .38s cubic-bezier(0.16,1,0.3,1);
+  max-height:88%;
+  display:flex;flex-direction:column;
+}
+.risk-sheet.open{ transform:translateY(0); }
+.risk-sheet-handle{
+  width:36px;height:4px;border-radius:2px;
+  background:rgba(0,0,0,0.12);
+  margin:10px auto 0;flex-shrink:0;
+}
+.risk-sheet-head{
+  padding:16px 20px 0;flex-shrink:0;
+}
+.risk-sheet-close{
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(0,0,0,0.06);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;margin-bottom:16px;
+  color:var(--color-text-primary);font-size:14px;font-weight:400;
+  flex-shrink:0;
+  transition:background .15s;
+}
+.risk-sheet-close:active{background:rgba(0,0,0,0.1);}
+.risk-sheet-title{
+  font-family:var(--font-display);font-size:24px;font-weight:700;
+  color:var(--color-text-primary);letter-spacing:-0.4px;margin-bottom:8px;
+}
+.risk-sheet-desc{
+  font-size:13px;color:var(--color-text-tertiary);line-height:1.5;
+  margin-bottom:24px;
+}
+.risk-sheet-body{
+  overflow-y:auto;flex:1;padding:0 20px;
+}
+.risk-sheet-body::-webkit-scrollbar{display:none;}
+.risk-sheet-group{ margin-bottom:28px; }
+.risk-sheet-group-label{
+  display:flex;align-items:center;gap:5px;
+  font-family:var(--font-display);font-size:15px;font-weight:700;
+  color:var(--color-text-primary);letter-spacing:-0.2px;margin-bottom:4px;
+}
+.risk-sheet-group-label svg{color:var(--color-text-tertiary);}
+.risk-sheet-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 0;border-bottom:1px solid var(--color-border-default);
+}
+.risk-sheet-row:last-child{border-bottom:none;}
+.risk-sheet-row-label{font-size:14px;color:var(--color-text-tertiary);letter-spacing:-0.1px;}
+.risk-sheet-row-val{font-size:14px;font-weight:400;color:var(--color-text-primary);letter-spacing:-0.2px;}
+.risk-sheet-row-val.pos{color:var(--color-text-success);}
+.risk-sheet-row-val.neg{color:var(--color-text-error);}
+.risk-sheet-row-val.neu{color:var(--color-text-primary);}
+
+/* Allocation bottom sheet */
+.alloc-sheet{
+  position:absolute;left:0;right:0;bottom:0;z-index:81;
+  background:#fff;
+  border-radius:20px 20px 0 0;
+  padding:0 0 40px;
+  transform:translateY(110%);
+  transition:transform .42s cubic-bezier(0.16,1,0.3,1);
+  height:78%;
+  display:flex;flex-direction:column;
+  will-change:transform;
+}
+.alloc-sheet.open{ transform:translateY(0); }
+.alloc-tabs{
+  display:flex;gap:4px;
+  background:rgba(0,0,0,0.06);
+  border-radius:10px;
+  padding:3px;
+  margin:0 20px 16px;
+  flex-shrink:0;
+}
+.alloc-tab{
+  flex:1;padding:7px 0;border:none;outline:none;
+  background:transparent;border-radius:8px;
+  font-family:var(--font-body);font-size:14px;font-weight:400;
+  color:var(--color-text-tertiary);letter-spacing:-0.1px;cursor:pointer;
+  transition:background .22s ease, color .22s ease, box-shadow .22s ease;
+}
+.alloc-tab.active{
+  background:#fff;
+  color:var(--color-text-primary);
+  box-shadow:0 1px 4px rgba(0,0,0,0.10);
+}
+.alloc-panels-wrap{
+  position:relative;flex:1;overflow:hidden;
+}
+.alloc-panel{
+  position:absolute;inset:0;
+  padding:0 20px 0;
+  overflow-y:auto;
+  opacity:0;
+  transform:translateX(14px);
+  pointer-events:none;
+  transition:opacity .24s ease, transform .26s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.alloc-panel::-webkit-scrollbar{display:none;}
+.alloc-panel.visible{
+  opacity:1;transform:translateX(0);pointer-events:auto;
+}
+.alloc-panel.exit-left{
+  opacity:0;transform:translateX(-14px);pointer-events:none;
+}
+.alloc-holding{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 0;border-bottom:1px solid var(--color-border-default);
+}
+.alloc-holding:last-child{border-bottom:none;}
+.alloc-holding-logo{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-weight:400;letter-spacing:-0.3px;
+  overflow:hidden;
+}
+.alloc-holding-logo img{
+  width:100%;height:100%;object-fit:cover;border-radius:50%;
+}
+.alloc-holding-logo.gray{ background:var(--color-surface-subtle);border:1px solid var(--color-border-default);color:var(--color-text-tertiary);font-size:12px; }
+.alloc-holding-info{ flex:1;min-width:0; }
+.alloc-holding-name{
+  font-size:14px;font-weight:400;color:var(--color-text-primary);
+  letter-spacing:-0.2px;line-height:1.35;margin-bottom:2px;
+}
+.alloc-holding-ticker{
+  font-size:12px;color:var(--color-text-secondary);letter-spacing:-0.1px;
+}
+.alloc-holding-pct{
+  font-size:14px;font-weight:400;color:var(--color-text-secondary);
+  letter-spacing:-0.2px;flex-shrink:0;
+}
+
+/* Portfolio hero — flat, no card */
+.port-hero-row{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;gap:12px;
+  margin-bottom:10px;
+}
+.port-hero-name{
+  font-family:var(--font-display);font-size:32px;font-weight:800;
+  color:var(--text-primary);letter-spacing:-1px;line-height:1;
+}
+.port-risk-row{
+  display:flex;align-items:center;gap:6px;margin-top:8px;
+}
+.port-risk-dot{width:8px;height:8px;border-radius:50%;background:var(--brand-600);flex-shrink:0;}
+.port-risk-label{font-size:14px;font-weight:500;color:var(--brand-600);letter-spacing:-0.1px;}
+.port-badge{
+  display:flex;align-items:center;gap:5px;
+  padding:6px 12px;border-radius:999px;
+  background:#EBF1FF;
+  font-size:12px;font-weight:600;color:var(--brand-600);
+  letter-spacing:-0.1px;white-space:nowrap;flex-shrink:0;margin-top:4px;
+}
+.port-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--brand-600);}
+
+/* Performance — flat */
+.port-perf-num{
+  font-family:var(--font-display);font-size:44px;font-weight:800;
+  color:#1A6332;letter-spacing:-1.5px;line-height:1;
+}
+.port-perf-sub{
+  font-size:13px;color:var(--text-tertiary);margin-top:6px;letter-spacing:-0.1px;line-height:18px;
+}
+.port-chart{width:100%;height:155px;margin-top:14px;}
+.port-chart svg{width:100%;height:100%;}
+.chart-line{fill:none;stroke:#406AD0;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.chart-area{fill:url(#chartGrad);opacity:0.2;}
+.chart-baseline{stroke:#D5D7DA;stroke-width:1;stroke-dasharray:4 4;}
+.port-chart-labels{
+  display:flex;justify-content:space-between;
+  font-size:11px;color:var(--text-tertiary);margin-top:6px;letter-spacing:-0.1px;
+}
+
+/* Allocation rows — flat on page bg */
+.alloc-row{
+  display:flex;align-items:center;
+  padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.06);
+}
+.alloc-row:last-child{border-bottom:none;}
+.alloc-label{font-size:14px;color:var(--text-tertiary);width:52px;flex-shrink:0;letter-spacing:-0.1px;}
+.alloc-track{flex:1;height:7px;background:rgba(0,0,0,0.08);border-radius:4px;overflow:hidden;margin:0 12px;}
+.alloc-fill{height:100%;border-radius:4px;background:var(--brand-600);}
+.alloc-pct{font-size:14px;font-weight:500;color:var(--text-primary);width:32px;text-align:right;letter-spacing:-0.1px;}
+
+/* Metric rows — flat */
+.metric-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.06);
+}
+.metric-row:last-child{border-bottom:none;}
+.metric-label{font-size:14px;color:var(--text-tertiary);letter-spacing:-0.1px;}
+.metric-val{font-size:14px;font-weight:600;letter-spacing:-0.1px;}
+.metric-val.pos{color:#1A6332;}
+.metric-val.neg{color:#98443D;}
+.metric-val.neu{color:var(--text-primary);}
+
+/* About — flat text */
+.port-about-text{
+  font-size:14px;color:var(--text-tertiary);line-height:20px;letter-spacing:-0.1px;
+}
+.port-show-more{
+  display:inline-block;margin-top:8px;
+  font-size:14px;font-weight:500;color:var(--brand-600);
+}
+
+/* Get help — single card item (individual items may be cards) */
+.port-help-row{
+  background:#fff;border-radius:var(--r-xl);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;cursor:pointer;
+  transition:background .12s;
+  box-shadow:var(--shadow-card);
+}
+.port-help-row:active{background:var(--gray-50);}
+.port-help-label{font-size:15px;font-weight:500;color:var(--text-primary);letter-spacing:-0.1px;}
+.port-help-chevron{color:var(--text-tertiary);font-size:20px;line-height:1;}
+
+/* Legal */
+.port-legal{
+  font-size:12px;color:var(--text-tertiary);text-align:center;
+  line-height:18px;letter-spacing:-0.1px;
+}
+
+/* Sticky CTA */
+.port-cta-bar{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:12px 20px 32px;
+  background:linear-gradient(to top,#F5F5F7 65%,transparent);
+  pointer-events:none;
+}
+.port-cta-btn{
+  width:100%;height:52px;border-radius:var(--r-xl);
+  background:var(--brand-600);color:#fff;
+  font-family:var(--font-display);font-size:16px;font-weight:600;
+  letter-spacing:-0.2px;cursor:pointer;border:none;
+  pointer-events:all;
+  transition:background .12s,transform .15s var(--spring);
+  box-shadow:0 4px 16px rgba(64,106,208,0.3);
+}
+.port-cta-btn:hover{background:#3757BE;}
+.port-cta-btn:active{transform:scale(.97);}
+
+/* ── Invest flow screens ── */
+.invest-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;height:56px;flex-shrink:0;
+}
+.invest-back{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+.invest-back svg{color:var(--color-text-primary);}
+.invest-cancel{
+  font-size:14px;color:var(--brand-600);cursor:pointer;letter-spacing:-0.1px;
+}
+.invest-title{
+  font-family:var(--font-display);font-size:20px;font-weight:600;
+  color:var(--color-text-primary);letter-spacing:-0.4px;
+  padding:0 20px 20px;flex-shrink:0;
+}
+.invest-settings-chip{
+  display:flex;align-items:center;gap:4px;
+  background:rgba(0,0,0,0.05);border-radius:16px;
+  padding:5px 10px 5px 12px;cursor:pointer;
+  font-size:14px;color:var(--color-text-primary);letter-spacing:-0.1px;
+}
+/* Amount screen */
+.amount-display{
+  display:flex;align-items:center;justify-content:center;
+  padding:40px 20px 32px;
+}
+.amount-number{
+  font-family:var(--font-display);font-size:52px;font-weight:700;
+  color:var(--color-text-primary);letter-spacing:-2px;line-height:1;
+}
+.amount-number.empty{ color:rgba(0,0,0,0.2); }
+.amount-cursor{
+  display:inline-block;width:2px;height:52px;
+  background:var(--brand-600);margin-left:2px;border-radius:1px;
+  animation:blink 1s step-end infinite;
+}
+@keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:0;} }
+.from-section{
+  margin:0 20px 20px;padding:12px 0;
+  border-top:1px solid var(--color-border-default);
+  border-bottom:1px solid var(--color-border-default);
+}
+.from-label{
+  font-size:12px;color:var(--color-text-tertiary);letter-spacing:-0.1px;
+  margin-bottom:10px;
+}
+.from-row{
+  display:flex;align-items:center;gap:12px;cursor:pointer;
+}
+.from-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--brand-600);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.from-avatar svg{ color:#fff; }
+.from-info{ flex:1;min-width:0; }
+.from-name{ font-size:14px;font-weight:500;color:var(--color-text-primary);letter-spacing:-0.1px; }
+.from-bal{ font-size:12px;color:var(--color-text-tertiary);letter-spacing:-0.1px;margin-top:1px; }
+.from-chevron{ color:var(--color-text-tertiary); }
+/* Numeric keypad */
+.numpad{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(209,211,217,0.95);
+  backdrop-filter:blur(20px);
+  padding:6px 6px 0;
+}
+.numpad-row{ display:flex;gap:5px;margin-bottom:5px; }
+.numpad-key{
+  flex:1;height:46px;border-radius:5px;border:none;
+  background:#fff;cursor:pointer;outline:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 1px 0 rgba(0,0,0,0.3);
+  transition:background .08s;
+  font-family:var(--font-body);
+}
+.numpad-key:active{ background:rgba(0,0,0,0.08); }
+.numpad-key.dark{ background:transparent;box-shadow:none; }
+.numpad-key.dark:active{ background:rgba(0,0,0,0.08);border-radius:5px; }
+.numpad-key-num{ font-size:24px;font-weight:400;color:#000;letter-spacing:0.3px;line-height:1; }
+.numpad-key-sub{ font-size:9px;font-weight:600;color:#000;letter-spacing:1.5px;margin-top:1px; }
+.numpad-home{ height:34px;display:flex;align-items:center;justify-content:center; }
+.numpad-home-bar{ width:134px;height:5px;background:#000;border-radius:3px; }
+/* Next button bar on amount screen */
+.invest-cta-bar{
+  position:absolute;left:0;right:0;padding:0 20px 16px;
+  background:#fff;z-index:2;
+}
+.invest-cta-btn{
+  width:100%;height:52px;border-radius:var(--r-xl);
+  background:var(--brand-600);color:#fff;
+  font-family:var(--font-display);font-size:16px;font-weight:500;
+  letter-spacing:-0.2px;cursor:pointer;border:none;
+  transition:background .12s,transform .15s;
+  box-shadow:0 4px 16px rgba(64,106,208,0.25);
+}
+.invest-cta-btn:hover{ background:#3757BE; }
+.invest-cta-btn:active{ transform:scale(.97); }
+/* Summary screen */
+.summary-body{
+  flex:1;overflow-y:auto;padding:0 20px;
+}
+.summary-body::-webkit-scrollbar{display:none;}
+.summary-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;border-bottom:1px solid var(--color-border-default);
+}
+.summary-row:last-child{ border-bottom:none; }
+.summary-key{ font-size:14px;color:var(--color-text-tertiary);letter-spacing:-0.1px; }
+.summary-val{ font-size:14px;color:var(--color-text-primary);letter-spacing:-0.2px;text-align:right; }
+.summary-val-row{ display:flex;align-items:center;gap:8px; }
+.summary-avatar{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--brand-600);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.summary-avatar svg{ color:#fff; }
+/* Confirmation screen */
+.confirm-body{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:0 32px;text-align:center;
+}
+.confirm-icon{
+  width:64px;height:64px;border-radius:50%;
+  border:2px solid #059669;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:24px;
+}
+.confirm-icon svg{ color:#059669; }
+.confirm-title{
+  font-family:var(--font-display);font-size:20px;font-weight:600;
+  color:var(--color-text-primary);letter-spacing:-0.4px;line-height:1.3;
+  margin-bottom:12px;
+}
+.confirm-desc{
+  font-size:14px;color:var(--color-text-tertiary);letter-spacing:-0.1px;line-height:1.5;
+  margin-bottom:8px;
+}
+.confirm-ref{
+  font-size:14px;color:var(--color-text-tertiary);letter-spacing:-0.1px;margin-bottom:28px;
+}
+.confirm-ref span{ color:var(--color-text-primary);font-weight:500; }
+.confirm-share{
+  display:flex;align-items:center;gap:6px;
+  font-size:14px;color:var(--brand-600);cursor:pointer;letter-spacing:-0.1px;
+}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- ═══ SCREEN 1: Welcome ═══ -->
+<div class="screen active" id="s1">
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <svg width="67" height="12" viewBox="0 0 67 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.8" fill="#181D27"/><rect x="4.5" y="5" width="3" height="7" rx="0.8" fill="#181D27"/><rect x="9" y="3" width="3" height="9" rx="0.8" fill="#181D27"/><rect x="13.5" y="1" width="3" height="11" rx="0.8" fill="#181D27"/><path d="M27.5 9.8a2.8 2.8 0 0 1 4 0" stroke="#181D27" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M25 7.2a6.3 6.3 0 0 1 9 0" stroke="#181D27" stroke-width="1.4" stroke-linecap="round" fill="none"/><circle cx="29.5" cy="12" r="1.3" fill="#181D27"/><rect x="42" y="1.5" width="21" height="9" rx="2" stroke="#181D27" stroke-width="1" fill="none"/><path d="M63.5 4v4a2 2 0 0 0 0-4z" fill="#181D27"/><rect x="43.5" y="3" width="14" height="6" rx="1.2" fill="#181D27"/></svg>
+  </div>
+  <div class="content-area">
+    <div class="logo-row">
+      <svg width="32" height="32" viewBox="0 0 38 38" fill="none"><path d="M3 14.8C3 10.3 3 8.08 3.87 6.37 4.64 4.86 5.86 3.64 7.37 2.87 9.08 2 11.32 2 15.8 2h6.4c4.48 0 6.72 0 8.43.87 1.51.77 2.73 1.99 3.5 3.5C35 8.08 35 10.32 35 14.8v6.4c0 4.48 0 6.72-.87 8.43a9.88 9.88 0 01-3.5 3.5C28.92 34 26.68 34 22.2 34h-6.4c-4.48 0-6.72 0-8.43-.87a9.88 9.88 0 01-3.5-3.5C3 27.92 3 25.68 3 21.2v-6.4z" fill="url(#lg0)"/><path d="M19 13.14a8.7 8.7 0 00-1.76 1.6l-1.19 1.13c-.54-.28-1.14-.42-1.74-.42-1 0-1.94.34-2.66 1.03A3.54 3.54 0 009 19c0-1.6.65-3.11 1.85-4.24 2.22-2.11 5.69-2.32 8.15-.62z" fill="url(#lg1)"/><path d="M23.37 18.81l-2.42 2.3-1.19 1.13c-.24.23-.5.43-.77.62-1.1.76-2.4 1.14-3.69 1.14-1.61 0-3.23-.59-4.46-1.76A5.52 5.52 0 019 18h2.6c0 .94.38 1.83 1.08 2.49 1.23 1.17 3.13 1.35 4.56.52.24-.14.47-.31.68-.52l1.31-1.24 2.3-2.19c.51-.49 1.33-.49 1.84 0 .51.49.51 1.27 0 1.75z" fill="url(#lg2)"/><path d="M29 18h-2.6c0-.94-.38-1.83-1.08-2.5-.72-.68-1.67-1.02-2.62-1.02-.67 0-1.34.17-1.93.52-.24.14-.47.31-.68.52l-1.31 1.24-2.3 2.18a1.29 1.29 0 01-1.84 0 1.28 1.28 0 010-1.75l2.42-2.3 1.19-1.13c.24-.23.5-.43.77-.62 2.46-1.7 5.94-1.5 8.15.62A7.49 7.49 0 0129 18z" fill="url(#lg3)"/><path d="M29 18c0 1.6-.65 3.11-1.85 4.24-1.23 1.17-2.84 1.76-4.46 1.76-1.3 0-2.6-.38-3.67-1.14.27-.18.53-.39.77-.62l1.19-1.13c.54.28 1.14.42 1.74.42.95 0 1.9-.34 2.62-1.02.7-.67 1.08-1.55 1.08-2.5H29z" fill="url(#lg4)"/><defs><linearGradient id="lg0" x1="3" y1="2" x2="35" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#F5F7FA"/><stop offset="1" stop-color="#C3CFE2"/></linearGradient><linearGradient id="lg1" x1="9" y1="15" x2="19" y2="15.1" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#1047D2"/></linearGradient><linearGradient id="lg2" x1="9" y1="20.3" x2="23.7" y2="20.5" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#54E3DF"/></linearGradient><linearGradient id="lg3" x1="14.2" y1="15.6" x2="29" y2="15.8" gradientUnits="userSpaceOnUse"><stop stop-color="#54E3DF"/><stop offset="1" stop-color="#34A6ED"/></linearGradient><linearGradient id="lg4" x1="19" y1="21" x2="29" y2="21.1" gradientUnits="userSpaceOnUse"><stop stop-color="#1047D2"/><stop offset="1" stop-color="#34A6ED"/></linearGradient></defs></svg>
+      <span class="logo-wordmark">Surmount</span>
+    </div>
+    <h1 class="headline">Design your perfect<br>portfolio.</h1>
+    <p class="body-text">Answer 5 short questions and we'll build the right investment strategy for you — no jargon, no guesswork.</p>
+    <div class="feature-card">
+      <div class="feature-row">
+        <svg class="feat-icon" viewBox="0 0 256 256" fill="none" color="#414651"><rect width="256" height="256" fill="none"/><circle cx="128" cy="112" r="32" opacity="0.2" fill="currentColor"/><polyline points="180 40 216 40 216 76" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="180 216 216 216 216 180" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="76 216 40 216 40 180" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="76 40 40 40 40 76" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="128" cy="112" r="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M80,168a60,60,0,0,1,96,0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+        <p class="feat-text">Get a personalized portfolio designed specifically for your investment goals</p>
+      </div>
+      <div class="feature-row">
+        <svg class="feat-icon" viewBox="0 0 256 256" fill="none" color="#414651"><rect width="256" height="256" fill="none"/><circle cx="128" cy="128" r="88" opacity="0.2" fill="currentColor"/><polyline points="168 96 216 96 216 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M216,96,187.72,67.72A88,88,0,0,0,64,67" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="88 160 40 160 40 208" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M40,160l28.28,28.28A88,88,0,0,0,192,189" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+        <p class="feat-text">We handle it all for you, managing everything from choosing assets to executing trades</p>
+      </div>
+    </div>
+  </div>
+  <button class="cta-btn" onclick="welcomeToQuiz()">
+    Get started
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4.167 10h11.666M10.833 5.833 15 10l-4.167 4.167" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div><!-- /s1 -->
+
+
+<!-- ═══ QUIZ SHELL ═══ -->
+<div class="screen" id="quiz">
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <svg width="67" height="12" viewBox="0 0 67 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.8" fill="#181D27"/><rect x="4.5" y="5" width="3" height="7" rx="0.8" fill="#181D27"/><rect x="9" y="3" width="3" height="9" rx="0.8" fill="#181D27"/><rect x="13.5" y="1" width="3" height="11" rx="0.8" fill="#181D27"/><path d="M27.5 9.8a2.8 2.8 0 0 1 4 0" stroke="#181D27" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M25 7.2a6.3 6.3 0 0 1 9 0" stroke="#181D27" stroke-width="1.4" stroke-linecap="round" fill="none"/><circle cx="29.5" cy="12" r="1.3" fill="#181D27"/><rect x="42" y="1.5" width="21" height="9" rx="2" stroke="#181D27" stroke-width="1" fill="none"/><path d="M63.5 4v4a2 2 0 0 0 0-4z" fill="#181D27"/><rect x="43.5" y="3" width="14" height="6" rx="1.2" fill="#181D27"/></svg>
+  </div>
+  <div class="nav-bar">
+    <button class="btn-back" onclick="stepBack()">
+      <svg width="20" height="20" viewBox="0 0 256 256" fill="none" color="#181D27"><rect width="256" height="256" fill="none"/><polyline points="160 208 80 128 160 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+    </button>
+    <div class="progress-dots" id="quiz-pdots">
+      <div class="pdot active"></div>
+      <div class="pdot"></div>
+      <div class="pdot"></div>
+      <div class="pdot"></div>
+      <div class="pdot"></div>
+    </div>
+  </div>
+  <div class="quiz-body">
+    <div class="quiz-header" id="quiz-header">
+      <p class="step-title" id="quiz-title"></p>
+      <p class="step-subtitle" id="quiz-subtitle"></p>
+    </div>
+    <div class="options-viewport" id="options-viewport"></div>
+  </div>
+</div><!-- /quiz -->
+
+
+<!-- ═══ LOADING ═══ -->
+<div class="screen loading-light" id="loading">
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <svg width="67" height="12" viewBox="0 0 67 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.8" fill="#181D27"/><rect x="4.5" y="5" width="3" height="7" rx="0.8" fill="#181D27"/><rect x="9" y="3" width="3" height="9" rx="0.8" fill="#181D27"/><rect x="13.5" y="1" width="3" height="11" rx="0.8" fill="#181D27"/><path d="M27.5 9.8a2.8 2.8 0 0 1 4 0" stroke="#181D27" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M25 7.2a6.3 6.3 0 0 1 9 0" stroke="#181D27" stroke-width="1.4" stroke-linecap="round" fill="none"/><circle cx="29.5" cy="12" r="1.3" fill="#181D27"/><rect x="42" y="1.5" width="21" height="9" rx="2" stroke="#181D27" stroke-width="1" fill="none"/><path d="M63.5 4v4a2 2 0 0 0 0-4z" fill="#181D27"/><rect x="43.5" y="3" width="14" height="6" rx="1.2" fill="#181D27"/></svg>
+  </div>
+  <div class="loading-pgbar"><div class="loading-pgbar-fill" id="lp-fill"></div></div>
+  <div class="loading-halo">
+    <svg class="halo-rainbow-svg" viewBox="0 0 393 340" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="rg" x1="0" y1="0" x2="393" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="#E4B774" stop-opacity="0.90"/>
+          <stop offset="26%"  stop-color="#F9A8D4" stop-opacity="0.80"/>
+          <stop offset="50%"  stop-color="#C4B5FD" stop-opacity="0.82"/>
+          <stop offset="76%"  stop-color="#A5C1EF" stop-opacity="0.84"/>
+          <stop offset="100%" stop-color="#5B8DEF" stop-opacity="0.90"/>
+        </linearGradient>
+        <filter id="arc-blur" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="12"/>
+        </filter>
+        <filter id="glow-blur" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="34"/>
+        </filter>
+      </defs>
+      <!-- wide-blur breathing glow layer -->
+      <ellipse class="halo-arc-glow" cx="196" cy="700" rx="430" ry="560"
+        stroke="url(#rg)" stroke-width="130" fill="none"
+        filter="url(#glow-blur)"/>
+      <!-- main crisp arc -->
+      <ellipse cx="196" cy="700" rx="430" ry="560"
+        stroke="url(#rg)" stroke-width="68" fill="none"
+        filter="url(#arc-blur)"/>
+    </svg>
+    <div class="halo-logo">
+      <video autoplay loop muted playsinline>
+        <source src="../assets/loaders/loader_grey.webm" type="video/webm">
+      </video>
+    </div>
+  </div>
+  <div class="loading-copy">
+    <h1 class="loading-h1">Here's what I've learned<br>about your goals</h1>
+    <p class="loading-p">Don't worry, you can customize<br>everything later in settings.</p>
+  </div>
+  <div class="loading-action">
+    <div class="load-spinner" id="lp-spinner">
+      <svg class="spinner-ring" viewBox="0 0 256 256" fill="none" color="#406AD0"><rect width="256" height="256" fill="none"/><circle cx="128" cy="128" r="96" opacity="0.2" fill="currentColor"/><path d="M168,40a97,97,0,0,1,56,88,96,96,0,0,1-192,0A97,97,0,0,1,88,40" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+      <svg class="spinner-check" viewBox="0 0 256 256" fill="none" color="#16B364" style="display:none"><rect width="256" height="256" fill="none"/><circle cx="128" cy="128" r="96" opacity="0.2" fill="currentColor"/><polyline points="88 136 112 160 168 104" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="128" cy="128" r="96" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+    </div>
+    <span class="load-label" id="lp-label">Adding your goal</span>
+  </div>
+  <div class="loading-chip" id="lp-chip">
+    <div class="chip-icon" id="lp-chip-icon"></div>
+    <span class="chip-text" id="lp-chip-text"></span>
+  </div>
+  <div class="loading-disclaimer">
+    <div class="disc-icon"><svg viewBox="0 0 256 256" fill="none" color="#A4A7AE"><rect width="256" height="256" fill="none"/><circle cx="128" cy="128" r="96" opacity="0.2" fill="currentColor"/><path d="M120,120a8,8,0,0,1,8,8v40a8,8,0,0,0,8,8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="128" cy="128" r="96" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="124" cy="84" r="12" fill="currentColor"/></svg></div>
+    <span>This can take up to a minute. Please keep the app open.</span>
+  </div>
+</div><!-- /loading -->
+
+<!-- ═══ SCREEN: Portfolio Recommendation ═══ -->
+<div class="screen" id="portfolio">
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <svg width="67" height="12" viewBox="0 0 67 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.8" fill="#181D27"/><rect x="4.5" y="5" width="3" height="7" rx="0.8" fill="#181D27"/><rect x="9" y="3" width="3" height="9" rx="0.8" fill="#181D27"/><rect x="13.5" y="1" width="3" height="11" rx="0.8" fill="#181D27"/><path d="M27.5 9.8a2.8 2.8 0 0 1 4 0" stroke="#181D27" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M25 7.2a6.3 6.3 0 0 1 9 0" stroke="#181D27" stroke-width="1.4" stroke-linecap="round" fill="none"/><circle cx="29.5" cy="12" r="1.3" fill="#181D27"/><rect x="42" y="1.5" width="21" height="9" rx="2" stroke="#181D27" stroke-width="1" fill="none"/><path d="M63.5 4v4a2 2 0 0 0 0-4z" fill="#181D27"/><rect x="43.5" y="3" width="14" height="6" rx="1.2" fill="#181D27"/></svg>
+  </div>
+  <div class="port-nav">
+    <button class="port-back" onclick="goTo('loading')">
+      <svg width="18" height="18" viewBox="0 0 256 256" fill="none"><path d="M224 128H32M112 48 32 128l80 80" stroke="#181D27" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <span class="port-nav-title">Your recommendations</span>
+  </div>
+  <!-- Underline tabs -->
+  <div class="port-tabs">
+    <button class="port-tab" onclick="switchTab(this,'Conservative')">Conservative</button>
+    <button class="port-tab active" onclick="switchTab(this,'Balanced')">Balanced</button>
+    <button class="port-tab" onclick="switchTab(this,'Growth')">Growth</button>
+    <button class="port-tab" onclick="switchTab(this,'Aggressive')">Aggressive</button>
+  </div>
+
+  <!-- Scrollable content — flat layout -->
+  <div class="port-scroll">
+
+    <!-- SECTION: Portfolio identity — no label, just hero -->
+    <div class="port-section">
+      <div class="port-hero-row">
+        <div>
+          <div class="port-hero-name" id="port-name">Balanced</div>
+          <div class="port-risk-row">
+            <div class="port-risk-dot"></div>
+            <span class="port-risk-label">Risk 3/5</span>
+          </div>
+        </div>
+        <div class="port-badge"><div class="port-badge-dot"></div>Recommended</div>
+      </div>
+    </div>
+
+    <!-- SECTION: Performance -->
+    <div class="port-section">
+      <div class="port-perf-num">+38.4%</div>
+      <div class="port-perf-sub">Past 5 years &nbsp;·&nbsp; Simulated past performance</div>
+      <div class="port-chart">
+        <svg viewBox="0 0 361 148" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#406AD0" stop-opacity="0.45"/>
+              <stop offset="100%" stop-color="#406AD0" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line class="chart-baseline" x1="0" y1="118" x2="361" y2="118"/>
+          <path class="chart-area" d="M0,127 C20,138 40,148 60,134 C85,118 95,112 115,104 C140,93 155,82 175,72 C210,56 240,40 275,26 C310,13 335,6 361,0 L361,148 L0,148 Z"/>
+          <path class="chart-line" d="M0,127 C20,138 40,148 60,134 C85,118 95,112 115,104 C140,93 155,82 175,72 C210,56 240,40 275,26 C310,13 335,6 361,0"/>
+          <circle cx="361" cy="2" r="5" fill="#406AD0"/>
+          <circle cx="361" cy="2" r="9" fill="#406AD0" opacity="0.15"/>
+        </svg>
+      </div>
+      <div class="port-chart-labels"><span>Today</span><span>2030</span></div>
+    </div>
+
+    <!-- SECTION: Portfolio allocation — flat label + rows -->
+    <div class="port-section">
+      <div class="port-section-label">
+        <span class="port-section-label-text">
+          Portfolio allocation
+          <svg width="14" height="14" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="128" r="96" stroke="currentColor" stroke-width="18"/><line x1="128" y1="96" x2="128" y2="168" stroke="currentColor" stroke-width="18" stroke-linecap="round"/><circle cx="128" cy="64" r="10" fill="currentColor"/></svg>
+        </span>
+        <span class="port-see-all" onclick="openAllocSheet()">See all</span>
+      </div>
+      <div class="alloc-row">
+        <span class="alloc-label">Stocks</span>
+        <div class="alloc-track"><div class="alloc-fill" style="width:60%"></div></div>
+        <span class="alloc-pct">60%</span>
+      </div>
+      <div class="alloc-row">
+        <span class="alloc-label">Bonds</span>
+        <div class="alloc-track"><div class="alloc-fill" style="width:35%;opacity:0.6"></div></div>
+        <span class="alloc-pct">35%</span>
+      </div>
+      <div class="alloc-row">
+        <span class="alloc-label">Cash</span>
+        <div class="alloc-track"><div class="alloc-fill" style="width:5%;opacity:0.35"></div></div>
+        <span class="alloc-pct">5%</span>
+      </div>
+    </div>
+
+    <!-- SECTION: Risk metrics — flat label + rows -->
+    <div class="port-section">
+      <div class="port-section-label">
+        <span class="port-section-label-text">
+          Risk metrics
+          <svg width="14" height="14" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="128" r="96" stroke="currentColor" stroke-width="18"/><line x1="128" y1="96" x2="128" y2="168" stroke="currentColor" stroke-width="18" stroke-linecap="round"/><circle cx="128" cy="64" r="10" fill="currentColor"/></svg>
+        </span>
+        <span class="port-see-all" onclick="openRiskSheet()">See all</span>
+      </div>
+      <div class="metric-row"><span class="metric-label">Average annual return</span><span class="metric-val pos">+8.15%</span></div>
+      <div class="metric-row"><span class="metric-label">Dividend yield</span><span class="metric-val pos">+1.87%</span></div>
+      <div class="metric-row"><span class="metric-label">Maximum drawdown</span><span class="metric-val neg">-18.4%</span></div>
+      <div class="metric-row"><span class="metric-label">Standard deviation</span><span class="metric-val neu">8.2%</span></div>
+    </div>
+
+    <!-- SECTION: About — flat label + text -->
+    <div class="port-section">
+      <div class="port-section-label">
+        <span class="port-section-label-text">About this portfolio</span>
+      </div>
+      <p class="port-about-text">Designed for investors with a medium-term horizon. Best for investors looking for relatively higher returns, whilst willing to accept some market volatility. Includes a diversified mix of global equities and investment-grade bonds.</p>
+      <span class="port-show-more">Show more</span>
+    </div>
+
+    <!-- SECTION: Get help — single card item (individual items may be cards) -->
+    <div class="port-section">
+      <div class="port-help-row">
+        <span class="port-help-label">Get help</span>
+        <span class="port-help-chevron">›</span>
+      </div>
+    </div>
+
+    <!-- Legal -->
+    <p class="port-legal">Simulated past performance is based on historical data and does not guarantee future results. Your capital is at risk.</p>
+
+  </div>
+
+  <!-- Sticky CTA -->
+  <div class="port-cta-bar">
+    <button class="port-cta-btn" id="port-cta-btn" onclick="goTo('invest-amount')">Invest in Balanced portfolio</button>
+  </div>
+
+  <!-- ── Risk Metrics Bottom Sheet ── -->
+  <!-- Allocation sheet -->
+  <div class="sheet-overlay" id="alloc-overlay" onclick="closeAllocSheet()"></div>
+  <div class="alloc-sheet" id="alloc-sheet">
+    <div class="risk-sheet-handle"></div>
+    <div class="risk-sheet-head">
+      <div class="risk-sheet-close" onclick="closeAllocSheet()">✕</div>
+      <div class="risk-sheet-title">Portfolio allocation</div>
+      <div class="risk-sheet-desc">Full breakdown of your portfolio holdings across stocks, bonds, and cash</div>
+    </div>
+    <!-- Tabs -->
+    <div class="alloc-tabs">
+      <button class="alloc-tab active" onclick="switchAllocTab('stocks', this)">Stocks <span style="color:var(--color-text-tertiary);font-weight:400">60%</span></button>
+      <button class="alloc-tab" onclick="switchAllocTab('bonds', this)">Bonds <span style="color:var(--color-text-tertiary);font-weight:400">35%</span></button>
+      <button class="alloc-tab" onclick="switchAllocTab('cash', this)">Cash <span style="color:var(--color-text-tertiary);font-weight:400">5%</span></button>
+    </div>
+    <div class="alloc-panels-wrap">
+    <!-- Stocks panel -->
+    <div class="alloc-panel visible" id="alloc-stocks">
+      <div class="alloc-holding">
+        <div class="alloc-holding-logo"><img src="../assets/logos/AAPL.webp" alt="AAPL"></div>
+        <div class="alloc-holding-info">
+          <div class="alloc-holding-name">Apple Inc.</div>
+          <div class="alloc-holding-ticker">AAPL</div>
+        </div>
+        <div class="alloc-holding-pct">20%</div>
+      </div>
+      <div class="alloc-holding">
+        <div class="alloc-holding-logo"><img src="../assets/logos/MSFT.webp" alt="MSFT"></div>
+        <div class="alloc-holding-info">
+          <div class="alloc-holding-name">Microsoft Corporation</div>
+          <div class="alloc-holding-ticker">MSFT</div>
+        </div>
+        <div class="alloc-holding-pct">15%</div>
+      </div>
+      <div class="alloc-holding">
+        <div class="alloc-holding-logo"><img src="../assets/logos/NVDA.webp" alt="NVDA"></div>
+        <div class="alloc-holding-info">
+          <div class="alloc-holding-name">NVIDIA Corporation</div>
+          <div class="alloc-holding-ticker">NVDA</div>
+        </div>
+        <div class="alloc-holding-pct">10%</div>
+      </div>
+      <div class="alloc-holding">
+        <div class="alloc-holding-logo"><img src="../assets/logos/GOOG.webp" alt="GOOG"></div>
+        <div class="alloc-holding-info">
+          <div class="alloc-holding-name">Alphabet Inc.</div>
+          <div class="alloc-holding-ticker">GOOG</div>
+        </div>
+        <div class="alloc-holding-pct">10%</div>
+      </div>
+      <div class="alloc-holding">
+        <div class="alloc-holding-logo"><img src="../assets/logos/META.webp" alt="META"></div>
+        <div class="alloc-holding-info">
+          <div class="alloc-holding-name">Meta Platforms, Inc.</div>
+          <div class="alloc-holding-ticker">META</div>
+        </div>
+        <div class="alloc-holding-pct">5%</div>
+      </div>
+    </div>
+    <!-- Bonds panel -->
+    <div class="alloc-panel" id="alloc-bonds">
+      <div class="alloc-holding">
+        <div class="alloc-holding-logo"><img src="../assets/logos/MA.webp" alt="MA"></div>
+        <div class="alloc-holding-info">
+          <div class="alloc-holding-name">iShares Core Global Aggregate Bond ETF</div>
+          <div class="alloc-holding-ticker">AGGG</div>
+        </div>
+        <div class="alloc-holding-pct">15%</div>
+      </div>
+      <div class="alloc-holding">
+        <div class="alloc-holding-logo"><img src="../assets/logos/AMZN.webp" alt="AMZN"></div>
+        <div class="alloc-holding-info">
+          <div class="alloc-holding-name">Xtrackers Global Government Bond ETF</div>
+          <div class="alloc-holding-ticker">XGSG</div>
+        </div>
+        <div class="alloc-holding-pct">12%</div>
+      </div>
+      <div class="alloc-holding">
+        <div class="alloc-holding-logo"><img src="../assets/logos/V.webp" alt="V"></div>
+        <div class="alloc-holding-info">
+          <div class="alloc-holding-name">iShares $ Treasury Bond 7-10yr ETF</div>
+          <div class="alloc-holding-ticker">IBTM</div>
+        </div>
+        <div class="alloc-holding-pct">8%</div>
+      </div>
+    </div>
+    <!-- Cash panel -->
+    <div class="alloc-panel" id="alloc-cash">
+      <div class="alloc-holding">
+        <div class="alloc-holding-logo gray">$</div>
+        <div class="alloc-holding-info">
+          <div class="alloc-holding-name">Goldman Sachs Liquid Reserves Fund</div>
+          <div class="alloc-holding-ticker">GSLRF</div>
+        </div>
+        <div class="alloc-holding-pct">5%</div>
+      </div>
+    </div>
+    </div><!-- /alloc-panels-wrap -->
+  </div><!-- /alloc-sheet -->
+
+  <div class="sheet-overlay" id="risk-overlay" onclick="closeRiskSheet()"></div>
+  <div class="risk-sheet" id="risk-sheet">
+    <div class="risk-sheet-handle"></div>
+    <div class="risk-sheet-head">
+      <div class="risk-sheet-close" onclick="closeRiskSheet()">✕</div>
+      <div class="risk-sheet-title">Risk metrics</div>
+      <div class="risk-sheet-desc">All the metrics are shown for Balanced portfolio based on simulated data for the past 5 years unless specified otherwise</div>
+    </div>
+    <div class="risk-sheet-body">
+
+      <!-- Performance group -->
+      <div class="risk-sheet-group">
+        <div class="risk-sheet-group-label">
+          Performance
+          <svg width="14" height="14" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="128" r="96" stroke="currentColor" stroke-width="18"/><line x1="128" y1="96" x2="128" y2="168" stroke="currentColor" stroke-width="18" stroke-linecap="round"/><circle cx="128" cy="64" r="10" fill="currentColor"/></svg>
+        </div>
+        <div class="risk-sheet-row"><span class="risk-sheet-row-label">Average annual return</span><span class="risk-sheet-row-val pos">+10.3%</span></div>
+        <div class="risk-sheet-row"><span class="risk-sheet-row-label">Median return</span><span class="risk-sheet-row-val pos">+11.19%</span></div>
+        <div class="risk-sheet-row"><span class="risk-sheet-row-label">Best year return</span><span class="risk-sheet-row-val pos">+21.99%</span></div>
+      </div>
+
+      <!-- Risk group -->
+      <div class="risk-sheet-group">
+        <div class="risk-sheet-group-label">
+          Risk
+          <svg width="14" height="14" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="128" r="96" stroke="currentColor" stroke-width="18"/><line x1="128" y1="96" x2="128" y2="168" stroke="currentColor" stroke-width="18" stroke-linecap="round"/><circle cx="128" cy="64" r="10" fill="currentColor"/></svg>
+        </div>
+        <div class="risk-sheet-row"><span class="risk-sheet-row-label">Maximum drawdown</span><span class="risk-sheet-row-val neg">-21.63%</span></div>
+        <div class="risk-sheet-row"><span class="risk-sheet-row-label">Average drawdown</span><span class="risk-sheet-row-val neg">-9.8%</span></div>
+        <div class="risk-sheet-row"><span class="risk-sheet-row-label">Beta</span><span class="risk-sheet-row-val neu">0.83</span></div>
+        <div class="risk-sheet-row"><span class="risk-sheet-row-label">Standard deviation</span><span class="risk-sheet-row-val neu">8.55%</span></div>
+        <div class="risk-sheet-row"><span class="risk-sheet-row-label">Sharpe ratio</span><span class="risk-sheet-row-val neu">0.97</span></div>
+        <div class="risk-sheet-row"><span class="risk-sheet-row-label">VaR</span><span class="risk-sheet-row-val pos">+1.23%</span></div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /portfolio -->
+
+<!-- ── Screen: Invest — Amount ── -->
+<div class="screen" id="invest-amount" style="display:flex;flex-direction:column;background:#fff;">
+  <!-- Header -->
+  <div class="invest-header">
+    <div class="invest-back" onclick="goTo('portfolio')">
+      <svg width="24" height="24" viewBox="0 0 256 256" fill="none"><path d="M224 128H32M32 128L96 64M32 128L96 192" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="invest-settings-chip">
+      Order settings
+      <svg width="16" height="16" viewBox="0 0 256 256" fill="none"><path d="M80 104L128 152L176 104" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+
+  <!-- Amount display -->
+  <div class="amount-display">
+    <div class="amount-number" id="amount-display">$0</div><span class="amount-cursor"></span>
+  </div>
+
+  <!-- From account -->
+  <div class="from-section">
+    <div class="from-label">From</div>
+    <div class="from-row">
+      <div class="from-avatar">
+        <svg width="20" height="20" viewBox="0 0 256 256" fill="none"><rect x="32" y="64" width="192" height="160" rx="8" stroke="white" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M176 64V48a16 16 0 0 0-16-16H96a16 16 0 0 0-16 16v16" stroke="white" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="from-info">
+        <div class="from-name">BCU Checking</div>
+        <div class="from-bal">$2,254.32 available</div>
+      </div>
+      <div class="from-chevron">
+        <svg width="20" height="20" viewBox="0 0 256 256" fill="none"><path d="M80 104L128 152L176 104" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next button -->
+  <div class="invest-cta-bar" style="bottom:292px;">
+    <button class="invest-cta-btn" onclick="goTo('invest-summary')">Next</button>
+  </div>
+
+  <!-- Numeric keypad -->
+  <div class="numpad" id="numpad">
+    <div class="numpad-row">
+      <button class="numpad-key" onclick="numpadTap('1')"><span class="numpad-key-num">1</span></button>
+      <button class="numpad-key" onclick="numpadTap('2')"><span class="numpad-key-num">2</span><span class="numpad-key-sub">ABC</span></button>
+      <button class="numpad-key" onclick="numpadTap('3')"><span class="numpad-key-num">3</span><span class="numpad-key-sub">DEF</span></button>
+    </div>
+    <div class="numpad-row">
+      <button class="numpad-key" onclick="numpadTap('4')"><span class="numpad-key-num">4</span><span class="numpad-key-sub">GHI</span></button>
+      <button class="numpad-key" onclick="numpadTap('5')"><span class="numpad-key-num">5</span><span class="numpad-key-sub">JKL</span></button>
+      <button class="numpad-key" onclick="numpadTap('6')"><span class="numpad-key-num">6</span><span class="numpad-key-sub">MNO</span></button>
+    </div>
+    <div class="numpad-row">
+      <button class="numpad-key" onclick="numpadTap('7')"><span class="numpad-key-num">7</span><span class="numpad-key-sub">PQRS</span></button>
+      <button class="numpad-key" onclick="numpadTap('8')"><span class="numpad-key-num">8</span><span class="numpad-key-sub">TUV</span></button>
+      <button class="numpad-key" onclick="numpadTap('9')"><span class="numpad-key-num">9</span><span class="numpad-key-sub">WXYZ</span></button>
+    </div>
+    <div class="numpad-row">
+      <button class="numpad-key dark" onclick="numpadTap('.')"><span class="numpad-key-num" style="font-size:28px;">.</span></button>
+      <button class="numpad-key" onclick="numpadTap('0')"><span class="numpad-key-num">0</span></button>
+      <button class="numpad-key dark" onclick="numpadTap('del')">
+        <svg width="22" height="16" viewBox="0 0 28 20" fill="none"><path d="M10 2H26C27.1 2 28 2.9 28 4V16C28 17.1 27.1 18 26 18H10L2 10L10 2Z" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 7L13 13M13 7L18 13" stroke="black" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="numpad-home"><div class="numpad-home-bar"></div></div>
+  </div>
+</div><!-- /invest-amount -->
+
+<!-- ── Screen: Invest — Deposit Summary ── -->
+<div class="screen" id="invest-summary" style="display:flex;flex-direction:column;background:#fff;">
+  <div class="invest-header">
+    <div class="invest-back" onclick="goTo('invest-amount')">
+      <svg width="24" height="24" viewBox="0 0 256 256" fill="none"><path d="M224 128H32M32 128L96 64M32 128L96 192" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="invest-cancel" onclick="goTo('portfolio')">Cancel</div>
+  </div>
+  <div class="invest-title">Deposit summary</div>
+
+  <div class="summary-body">
+    <div class="summary-row">
+      <span class="summary-key">Amount</span>
+      <span class="summary-val" id="summary-amount">$1,200.00</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-key">Date</span>
+      <span class="summary-val">Today, Apr 21</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-key">Frequency</span>
+      <span class="summary-val">Once</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-key">From</span>
+      <div class="summary-val-row">
+        <div class="summary-avatar">
+          <svg width="12" height="12" viewBox="0 0 256 256" fill="none"><rect x="32" y="64" width="192" height="160" rx="8" stroke="white" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="M176 64V48a16 16 0 0 0-16-16H96a16 16 0 0 0-16 16v16" stroke="white" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="summary-val">Checking ···324</span>
+      </div>
+    </div>
+    <div class="summary-row">
+      <span class="summary-key">To</span>
+      <div class="summary-val-row">
+        <div class="summary-avatar" style="background:#059669;">
+          <svg width="12" height="12" viewBox="0 0 256 256" fill="none"><polyline points="32 128 80 80 144 144 176 112 224 160" stroke="white" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="summary-val">Balanced portfolio</span>
+      </div>
+    </div>
+    <div class="summary-row">
+      <span class="summary-key">Available</span>
+      <span class="summary-val">Instantly</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="invest-cta-bar" style="position:relative;padding:20px 20px 32px;">
+    <button class="invest-cta-btn" id="summary-cta-btn" onclick="goTo('invest-confirm')">Deposit $1,200.00</button>
+  </div>
+</div><!-- /invest-summary -->
+
+<!-- ── Screen: Invest — Confirmation ── -->
+<div class="screen" id="invest-confirm" style="display:flex;flex-direction:column;background:#fff;">
+  <div class="invest-header" style="justify-content:flex-end;">
+    <!-- no back on confirmation -->
+  </div>
+
+  <div class="confirm-body">
+    <div class="confirm-icon">
+      <svg width="28" height="28" viewBox="0 0 256 256" fill="none"><polyline points="40 144 96 200 216 80" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="confirm-title">Your $1,200 deposit is on its way to your investment account</div>
+    <div class="confirm-desc">Funds should be available immediately.</div>
+    <div class="confirm-ref">Confirmation # <span>888772</span></div>
+    <div class="confirm-share">
+      <svg width="16" height="16" viewBox="0 0 256 256" fill="none"><circle cx="176" cy="48" r="28" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><circle cx="80" cy="128" r="28" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><circle cx="176" cy="208" r="28" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><line x1="148.44" y1="67.64" x2="107.56" y2="108.36" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><line x1="148.44" y1="188.36" x2="107.56" y2="147.64" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Share
+    </div>
+  </div>
+
+  <!-- Done button -->
+  <div class="invest-cta-bar" style="position:relative;padding:0 20px 32px;">
+    <button class="invest-cta-btn" onclick="goTo('portfolio')">Done</button>
+  </div>
+</div><!-- /invest-confirm -->
+
+</div><!-- /phone -->
+
+<nav class="dev-nav">
+  <button class="dev-btn dev-active" id="dnav-s1" onclick="jumpTo('s1')">Welcome</button>
+  <div class="dev-nav-sep"></div>
+  <span class="dev-nav-label">Quiz</span>
+  <button class="dev-btn" id="dnav-q0" onclick="jumpTo('quiz',0)">1</button>
+  <button class="dev-btn" id="dnav-q1" onclick="jumpTo('quiz',1)">2</button>
+  <button class="dev-btn" id="dnav-q2" onclick="jumpTo('quiz',2)">3</button>
+  <button class="dev-btn" id="dnav-q3" onclick="jumpTo('quiz',3)">4</button>
+  <button class="dev-btn" id="dnav-q4" onclick="jumpTo('quiz',4)">5</button>
+  <div class="dev-nav-sep"></div>
+  <button class="dev-btn" id="dnav-loading" onclick="jumpTo('loading')">Generating</button>
+  <div class="dev-nav-sep"></div>
+  <button class="dev-btn" id="dnav-portfolio" onclick="jumpTo('portfolio')">Portfolio</button>
+</nav>
+
+<script>
+const ICONS = {
+  generalInvesting: `<path d="M220.34,96H224a16,16,0,0,1,16,16v32a16,16,0,0,1-16,16h-8l-18.1,50.69a8,8,0,0,1-7.54,5.31H177.64a8,8,0,0,1-7.54-5.31L166.29,200H97.71L93.9,210.69A8,8,0,0,1,86.36,216H73.64a8,8,0,0,1-7.54-5.31L53,174a79.7,79.7,0,0,1-21-54h0a80,80,0,0,1,80-80h32a80,80,0,0,1,73.44,48.22,82.22,82.22,0,0,1,2.9,7.78" opacity="0.2" fill="currentColor"/><circle cx="180" cy="116" r="12" fill="currentColor"/><line x1="112" y1="72" x2="152" y2="72" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="216" y1="40" x2="144" y2="40" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M8,144a24,24,0,0,1,24-24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M220.34,96H224a16,16,0,0,1,16,16v32a16,16,0,0,1-16,16h-8l-18.1,50.69a8,8,0,0,1-7.54,5.31H177.64a8,8,0,0,1-7.54-5.31L166.29,200H97.71L93.9,210.69A8,8,0,0,1,86.36,216H73.64a8,8,0,0,1-7.54-5.31L53,174a79.7,79.7,0,0,1-21-54h0a80,80,0,0,1,80-80h32a80,80,0,0,1,73.44,48.22,82.22,82.22,0,0,1,2.9,7.78" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>`,
+
+  largePurchase: `<path d="M224,176v24a8,8,0,0,1-8,8H192a8,8,0,0,1-8-8V176Z" opacity="0.2" fill="currentColor"/><path d="M72,176v24a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V176Z" opacity="0.2" fill="currentColor"/><path d="M224,112,194.11,44.75A8,8,0,0,0,186.8,40H69.2a8,8,0,0,0-7.31,4.75L32,112Z" opacity="0.2" fill="currentColor"/><line x1="16" y1="112" x2="240" y2="112" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M224,176v24a8,8,0,0,1-8,8H192a8,8,0,0,1-8-8V176" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M72,176v24a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V176" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="64" y1="144" x2="80" y2="144" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="176" y1="144" x2="192" y2="144" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M224,112,194.11,44.75A8,8,0,0,0,186.8,40H69.2a8,8,0,0,0-7.31,4.75L32,112v64H224Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>`,
+
+  retirement: `<circle cx="128" cy="40" r="24" opacity="0.2" fill="currentColor"/><path d="M149.17,80a24,24,0,0,1,18,8.13l45.32,51.38a12,12,0,0,1-17,17L160,128l22.87,86.93a12,12,0,0,1-21.75,10.14L128,168,94.88,225.07a12,12,0,0,1-21.75-10.14L96,128,60.49,156.49a12,12,0,0,1-17-17L88.83,88.13a24,24,0,0,1,18-8.13Z" opacity="0.2" fill="currentColor"/><circle cx="128" cy="40" r="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M149.17,80a24,24,0,0,1,18,8.13l45.32,51.38a12,12,0,0,1-17,17L160,128l22.87,86.93a12,12,0,0,1-21.75,10.14L128,168,94.88,225.07a12,12,0,0,1-21.75-10.14L96,128,60.49,156.49a12,12,0,0,1-17-17L88.83,88.13a24,24,0,0,1,18-8.13Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>`,
+
+  emergencyFund: `<path d="M184,120V64H32a8,8,0,0,0-8,8V184a8,8,0,0,0,8,8H56a24,24,0,0,1,48,0h64a24,24,0,0,1,16-22.63h0A24,24,0,0,1,216,192h24a8,8,0,0,0,8-8V120Z" opacity="0.2" fill="currentColor"/><circle cx="192" cy="192" r="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="80" cy="192" r="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="168" y1="192" x2="104" y2="192" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M56,192H32a8,8,0,0,1-8-8V72a8,8,0,0,1,8-8H184V169.37" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="88" y1="120" x2="136" y2="120" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="112" y1="96" x2="112" y2="144" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="184" y1="120" x2="248" y2="120" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M184,80h42.58A8,8,0,0,1,234,85l14,35v64a8,8,0,0,1-8,8H216" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>`
+};
+
+const QUIZ = [
+  {
+    title: 'Portfolio goal',
+    subtitle: "What's your investment goal?",
+    options: [
+      { label: 'General investing', desc: 'Build up your wealth',        icon: ICONS.generalInvesting },
+      { label: 'Large purchase',   desc: 'Save up for something big',    icon: ICONS.largePurchase },
+      { label: 'Retirement',       desc: 'Look after your future self',  icon: ICONS.retirement },
+      { label: 'Emergency fund',   desc: 'So you can be ready',          icon: ICONS.emergencyFund }
+    ]
+  },
+  {
+    title: 'Investment horizon',
+    subtitle: 'How long do you plan to invest for?',
+    options: [
+      { label: 'More than 10 years' },
+      { label: '5 – 10 years' },
+      { label: '2 – 5 years' },
+      { label: 'Up to 2 years' }
+    ]
+  },
+  {
+    title: 'Investment knowledge',
+    subtitle: 'How do you describe your investment knowledge?',
+    options: [
+      { label: 'Inexperienced' },
+      { label: 'Somewhat knowledgeable' },
+      { label: 'Knowledgeable' },
+      { label: 'Very knowledgeable' }
+    ]
+  },
+  {
+    title: 'Risk tolerance',
+    subtitle: 'How would you define your risk tolerance?',
+    options: [
+      { label: 'Very conservative',    desc: 'Want to protect my capital' },
+      { label: 'Somewhat conservative',desc: 'Prefer to limit portfolio movements, even with lower returns' },
+      { label: 'Moderate',             desc: 'Open to noticeable portfolio volatility, to get higher returns' },
+      { label: 'Somewhat aggressive',  desc: 'Comfortable with higher portfolio movements, to get significantly higher returns' },
+      { label: 'Aggressive',           desc: 'Comfortable with very high portfolio movements, to maximise my returns' }
+    ]
+  },
+  {
+    title: 'Investment outlay',
+    subtitle: 'Are you planning to invest greater than 50% of your net worth?',
+    options: [
+      { label: 'Yes' },
+      { label: 'No' }
+    ]
+  }
+];
+
+let step = 0, busy = false;
+
+function buildOptionsHTML(opts) {
+  return opts.map(opt => {
+    const single = !opt.desc ? ' single' : '';
+    const iconHTML = opt.icon
+      ? `<svg class="option-icon" viewBox="0 0 256 256" fill="none">${opt.icon}</svg>`
+      : '';
+    const descHTML = opt.desc ? `<span class="option-desc">${opt.desc}</span>` : '';
+    return `<button class="option-card${single}" onclick="selectOpt(this)">
+        <div class="option-left">${iconHTML}<div class="option-text"><span class="option-label">${opt.label}</span>${descHTML}</div></div>
+        <div class="option-radio"><div class="option-radio-dot"></div></div>
+      </button>`;
+  }).join('');
+}
+
+function welcomeToQuiz() {
+  step = 0;
+  const q = QUIZ[0];
+  document.getElementById('quiz-title').textContent = q.title;
+  document.getElementById('quiz-subtitle').textContent = q.subtitle;
+
+  const viewport = document.getElementById('options-viewport');
+  viewport.innerHTML = '';
+  const list = document.createElement('div');
+  list.className = 'options-list';
+  list.innerHTML = buildOptionsHTML(q.options);
+  viewport.appendChild(list);
+
+  updateDots(0);
+  goTo('quiz');
+}
+
+function renderStep(stepIdx, forward) {
+  const q = QUIZ[stepIdx];
+  const header = document.getElementById('quiz-header');
+  const viewport = document.getElementById('options-viewport');
+
+  // Fade header out
+  header.classList.add('fading');
+
+  // Grab old list before appending new one
+  const oldList = viewport.querySelector('.options-list');
+
+  // Create new list positioned off-screen
+  const newList = document.createElement('div');
+  newList.className = 'options-list';
+  newList.innerHTML = buildOptionsHTML(q.options);
+  newList.style.transform = `translateX(${forward ? '100%' : '-100%'})`;
+  newList.style.transition = 'none';
+  viewport.appendChild(newList);
+
+  // Force reflow so the initial transform is painted before we animate
+  newList.getBoundingClientRect();
+
+  // Animate both lists simultaneously
+  requestAnimationFrame(() => {
+    newList.style.transition = 'transform .36s ease-in-out';
+    newList.style.transform = 'translateX(0)';
+    if (oldList) {
+      oldList.style.transition = 'transform .36s ease-in-out';
+      oldList.style.transform = `translateX(${forward ? '-100%' : '100%'})`;
+    }
+  });
+
+  // Update header text when it's invisible (midpoint of fade)
+  setTimeout(() => {
+    document.getElementById('quiz-title').textContent = q.title;
+    document.getElementById('quiz-subtitle').textContent = q.subtitle;
+    header.classList.remove('fading');
+    updateDots(stepIdx);
+  }, 180);
+
+  // Cleanup after slide completes
+  setTimeout(() => {
+    if (oldList && oldList.parentNode) oldList.remove();
+    step = stepIdx;
+    busy = false;
+  }, 400);
+}
+
+function stepBack() {
+  if (busy) return;
+  if (step === 0) {
+    goTo('s1');
+  } else {
+    busy = true;
+    renderStep(step - 1, false);
+  }
+}
+
+function selectOpt(card) {
+  if (busy) return;
+  const viewport = document.getElementById('options-viewport');
+  viewport.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  if (step < QUIZ.length - 1) {
+    busy = true;
+    setTimeout(() => renderStep(step + 1, true), 320);
+  } else {
+    busy = true;
+    setTimeout(() => { goTo('loading'); runLoading(); }, 400);
+  }
+}
+
+function updateDots(idx) {
+  document.querySelectorAll('#quiz-pdots .pdot').forEach((d, i) => {
+    d.classList.toggle('active', i === idx);
+  });
+}
+
+const ICON_CHIP = {
+  target: `<svg viewBox="0 0 256 256" fill="none" color="#fff"><rect width="256" height="256" fill="none"/><circle cx="128" cy="128" r="48" opacity="0.2" fill="currentColor"/><line x1="128" y1="128" x2="224" y2="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M195.88,60.12a95.88,95.88,0,1,0,18.77,26.49" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M161.94,94.06a48,48,0,1,0,14,31.2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>`,
+  clock: `<svg viewBox="0 0 256 256" fill="none" color="#fff"><rect width="256" height="256" fill="none"/><circle cx="128" cy="128" r="96" opacity="0.2" fill="currentColor"/><circle cx="128" cy="128" r="96" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="128 72 128 128 176 152" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>`,
+  book: `<svg viewBox="0 0 256 256" fill="none" color="#fff"><rect width="256" height="256" fill="none"/><path d="M160,80a32,32,0,0,0-32,32A32,32,0,0,0,96,80H24V200H96a32,32,0,0,1,32,32,32,32,0,0,1,32-32h72V80Z" opacity="0.3" fill="currentColor"/><path d="M128,112a32,32,0,0,1,32-32h72V200H160a32,32,0,0,0-32,32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><path d="M24,200H96a32,32,0,0,1,32,32V112A32,32,0,0,0,96,80H24Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>`,
+  chart: `<svg viewBox="0 0 256 256" fill="none" color="#fff"><rect width="256" height="256" fill="none"/><path d="M32,48H208a16,16,0,0,1,16,16V208a0,0,0,0,1,0,0H32a0,0,0,0,1,0,0V48A0,0,0,0,1,32,48Z" opacity="0.2" fill="currentColor"/><polyline points="224 208 32 208 32 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="200 72 128 144 96 112 32 176" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="200 112 200 72 160 72" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>`,
+  circles: `<svg viewBox="0 0 256 256" fill="none" color="#fff"><rect width="256" height="256" fill="none"/><circle cx="80" cy="80" r="32" opacity="0.2" fill="currentColor"/><circle cx="176" cy="80" r="32" opacity="0.2" fill="currentColor"/><circle cx="80" cy="176" r="32" opacity="0.2" fill="currentColor"/><circle cx="176" cy="176" r="32" opacity="0.2" fill="currentColor"/><circle cx="80" cy="80" r="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="176" cy="80" r="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="80" cy="176" r="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><circle cx="176" cy="176" r="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>`
+};
+
+const LOADING_STEPS = [
+  { active: 'Adding your goal',           done: 'Goal added',        chip: 'General investing', iconKey: 'target' },
+  { active: 'Noting your timeline',       done: 'Timeline set',      chip: '5 – 10 years',      iconKey: 'clock' },
+  { active: 'Logging your experience',    done: 'Experience logged', chip: 'Knowledgeable',     iconKey: 'book' },
+  { active: 'Applying your risk profile', done: 'Risk profile set',  chip: 'Moderate',          iconKey: 'chart' },
+  { active: 'Finalizing allocations',     done: 'Allocations ready', chip: '12 assets matched', iconKey: 'circles' }
+];
+
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+async function runLoading() {
+  const spinRing  = document.querySelector('#lp-spinner .spinner-ring');
+  const spinCheck = document.querySelector('#lp-spinner .spinner-check');
+  const label     = document.getElementById('lp-label');
+  const chip      = document.getElementById('lp-chip');
+  const chipText  = document.getElementById('lp-chip-text');
+  const chipIcon  = document.getElementById('lp-chip-icon');
+  const fill      = document.getElementById('lp-fill');
+
+  for (let i = 0; i < LOADING_STEPS.length; i++) {
+    const s = LOADING_STEPS[i];
+    spinRing.style.display = 'block';
+    spinCheck.style.display = 'none';
+    label.classList.remove('done');
+    label.textContent = s.active;
+    fill.style.width = `${(i / LOADING_STEPS.length) * 100}%`;
+
+    await wait(380);
+    chipText.textContent = s.chip;
+    chipIcon.innerHTML   = ICON_CHIP[s.iconKey];
+    chip.classList.add('visible');
+    await wait(1300);
+
+    spinRing.style.display = 'none';
+    spinCheck.style.display = 'block';
+    label.classList.add('done');
+    label.textContent = s.done;
+    fill.style.width = `${((i + 1) / LOADING_STEPS.length) * 100}%`;
+    await wait(200);
+
+    chip.classList.remove('visible');
+    await wait(260);
+  }
+
+  // All done — brief pause then slide into portfolio
+  fill.style.width = '100%';
+  await wait(600);
+  goTo('portfolio');
+}
+
+function switchTab(el, name) {
+  document.querySelectorAll('.port-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('port-name').textContent = name;
+  document.getElementById('port-cta-btn').textContent = `Invest in ${name} portfolio`;
+}
+
+function setDevActive(id) {
+  document.querySelectorAll('.dev-btn').forEach(b => b.classList.remove('dev-active'));
+  const el = document.getElementById('dnav-' + id);
+  if (el) el.classList.add('dev-active');
+}
+
+function jumpTo(screenId, quizStep) {
+  busy = false;
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active','exit');
+    s.style.transition = 'none';
+    s.style.transform = 'translateX(100%)';
+  });
+  const target = document.getElementById(screenId);
+  target.style.transform = 'translateX(0)';
+  target.classList.add('active');
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.screen').forEach(s => { s.style.transition = ''; });
+  });
+  if (screenId === 'quiz' && quizStep !== undefined) {
+    step = quizStep;
+    const q = QUIZ[quizStep];
+    document.getElementById('quiz-title').textContent = q.title;
+    document.getElementById('quiz-subtitle').textContent = q.subtitle;
+    const viewport = document.getElementById('options-viewport');
+    viewport.innerHTML = '';
+    const list = document.createElement('div');
+    list.className = 'options-list';
+    list.innerHTML = buildOptionsHTML(q.options);
+    viewport.appendChild(list);
+    updateDots(quizStep);
+    setDevActive('q' + quizStep);
+  } else if (screenId === 'loading') {
+    runLoading();
+    setDevActive('loading');
+  } else {
+    setDevActive(screenId);
+  }
+}
+
+function goTo(id) {
+  const current = document.querySelector('.screen.active');
+  const next = document.getElementById(id);
+  if (!next || current === next) return;
+  const screens = Array.from(document.querySelectorAll('.screen'));
+  const forward = screens.indexOf(next) > screens.indexOf(current);
+
+  if (forward) {
+    next.style.transform = 'translateX(100%)';
+    next.classList.add('active');
+    requestAnimationFrame(() => {
+      next.style.transform = '';
+      current.classList.add('exit');
+    });
+  } else {
+    next.style.transition = 'none';
+    next.style.transform = 'translateX(0)';
+    next.classList.add('active');
+    next.getBoundingClientRect();
+    next.style.transition = '';
+    current.style.transform = 'translateX(100%)';
+  }
+
+  current.addEventListener('transitionend', () => {
+    current.classList.remove('active', 'exit');
+    current.style.transform = '';
+    next.style.transform = '';
+  }, { once: true });
+}
+
+// Numpad
+let _amountRaw = '';
+function numpadTap(key) {
+  if (key === 'del') {
+    _amountRaw = _amountRaw.slice(0, -1);
+  } else if (key === '.') {
+    if (_amountRaw.includes('.')) return;
+    _amountRaw += _amountRaw === '' ? '0.' : '.';
+  } else {
+    if (_amountRaw.length >= 8) return;
+    if (_amountRaw === '0') { _amountRaw = key; }
+    else _amountRaw += key;
+  }
+  const el = document.getElementById('amount-display');
+  if (_amountRaw === '' || _amountRaw === '0') {
+    el.textContent = '$0';
+    el.classList.add('empty');
+  } else {
+    el.classList.remove('empty');
+    const [int, dec] = _amountRaw.split('.');
+    const formatted = parseInt(int || '0', 10).toLocaleString();
+    el.textContent = '$' + formatted + (dec !== undefined ? '.' + dec : '');
+  }
+  // sync summary button + amount
+  const display = el.textContent;
+  const sumCta = document.getElementById('summary-cta-btn');
+  const sumAmt = document.getElementById('summary-amount');
+  if (sumCta) sumCta.textContent = 'Deposit ' + display;
+  if (sumAmt) sumAmt.textContent = display;
+}
+
+function openAllocSheet() {
+  document.getElementById('alloc-overlay').classList.add('open');
+  document.getElementById('alloc-sheet').classList.add('open');
+}
+function closeAllocSheet() {
+  document.getElementById('alloc-overlay').classList.remove('open');
+  document.getElementById('alloc-sheet').classList.remove('open');
+}
+function switchAllocTab(id, btn) {
+  const tabs = Array.from(document.querySelectorAll('.alloc-tab'));
+  const panels = ['stocks','bonds','cash'];
+  const prevIdx = tabs.findIndex(t => t.classList.contains('active'));
+  const nextIdx = tabs.indexOf(btn);
+  const forward = nextIdx > prevIdx;
+
+  const current = document.querySelector('.alloc-panel.visible');
+  const next = document.getElementById('alloc-' + id);
+  if (!next || current === next) return;
+
+  tabs.forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Position incoming panel off-screen in the correct direction
+  next.style.transition = 'none';
+  next.style.opacity = '0';
+  next.style.transform = forward ? 'translateX(14px)' : 'translateX(-14px)';
+  next.classList.add('visible');
+  next.getBoundingClientRect(); // force reflow
+
+  // Animate current out
+  current.style.transition = '';
+  current.style.opacity = '0';
+  current.style.transform = forward ? 'translateX(-14px)' : 'translateX(14px)';
+
+  // Animate incoming in
+  next.style.transition = '';
+  next.style.opacity = '1';
+  next.style.transform = 'translateX(0)';
+
+  current.addEventListener('transitionend', () => {
+    current.classList.remove('visible');
+    current.style.transform = '';
+    current.style.opacity = '';
+    current.style.transition = '';
+    next.style.transform = '';
+    next.style.opacity = '';
+    next.style.transition = '';
+  }, { once: true });
+}
+
+function openRiskSheet() {
+  document.getElementById('risk-overlay').classList.add('open');
+  document.getElementById('risk-sheet').classList.add('open');
+}
+function closeRiskSheet() {
+  document.getElementById('risk-overlay').classList.remove('open');
+  document.getElementById('risk-sheet').classList.remove('open');
+}
+
+// Auto-navigate via ?screen=portfolio URL param
+const _startScreen = new URLSearchParams(window.location.search).get('screen');
+if (_startScreen) jumpTo(_startScreen);
+</script>
+</body>
+</html>

@@ -65,7 +65,33 @@ html,body{
   color:var(--color-text-primary);
   background:#FAFAFA;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:var(--sp-8);position:relative;overflow:hidden;
+  padding:var(--sp-8);padding-top:calc(var(--sp-8) + 52px);position:relative;overflow:hidden;
+}
+
+/* ── Dev nav ── */
+.dev-nav{
+  position:fixed;top:16px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:4px;
+  background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);
+  border:1px solid var(--color-border-default);border-radius:var(--r-full);
+  padding:5px 10px 5px 14px;
+  box-shadow:0 2px 12px rgba(10,13,18,.07);
+  z-index:1000;white-space:nowrap;
+}
+.dev-nav-label{
+  font-size:11px;font-weight:500;color:var(--color-text-tertiary);
+  letter-spacing:.02em;margin-right:4px;
+}
+.dev-nav-btn{
+  font-family:var(--font-body);font-size:12px;font-weight:500;
+  color:var(--color-text-secondary);
+  padding:4px 10px;border-radius:var(--r-full);border:none;
+  background:none;cursor:pointer;letter-spacing:-.1px;
+  transition:background .12s,color .12s;
+}
+.dev-nav-btn:hover{background:var(--color-gray-100);color:var(--color-text-primary);}
+.dev-nav-btn.active{
+  background:var(--color-gray-900);color:#fff;
 }
 .page-label{display:none;}
 
@@ -317,13 +343,13 @@ html,body{
 #s0 .status-bar{background:transparent;}
 .welcome-area{
   flex:1;overflow-y:auto;
-  padding:var(--sp-10) var(--sp-5) var(--sp-4);
+  padding:var(--sp-4) var(--sp-5) var(--sp-4);
   display:flex;flex-direction:column;
   position:relative;overflow:hidden;
   background:transparent;
 }
 .welcome-area>*{position:relative;z-index:1;}
-.welcome-logo-row{display:flex;align-items:center;gap:10px;margin-bottom:var(--sp-12);}
+.welcome-logo-row{display:flex;align-items:center;gap:10px;margin-bottom:var(--sp-6);}
 .welcome-wordmark{font-family:var(--font-display);font-size:var(--text-md);font-weight:var(--fw-bold);color:var(--color-text-primary);letter-spacing:-.4px;}
 .welcome-badge{
   display:inline-flex;align-items:center;gap:var(--sp-1h);
@@ -644,11 +670,104 @@ html,body{
 #s8-proj-value.dim{opacity:.3;}
 .s8-ctrl-sub{font-size:var(--text-xs);color:var(--color-text-tertiary);}
 
+/* ── Risk level section ── */
+.s8-section{padding:0 var(--sp-5);margin-bottom:var(--sp-5);}
+.s8-section-title{
+  font-family:var(--font-display);font-size:var(--text-lg);font-weight:var(--fw-medium);
+  color:var(--color-text-primary);letter-spacing:-.4px;margin-bottom:var(--sp-3);
+}
+.s8-risk-val{
+  font-family:var(--font-body);font-size:var(--text-md);font-weight:var(--fw-medium);
+  color:var(--color-text-primary);
+}
+.s8-risk-stats{display:flex;gap:var(--sp-4);}
+.s8-risk-stat{
+  flex:1;padding:var(--sp-3);
+  border:1px solid var(--color-border-default);border-radius:var(--r-lg);
+  background:#fff;display:flex;flex-direction:column;gap:6px;
+}
+.s8-risk-stat-lbl{font-size:var(--text-xs);color:var(--color-text-tertiary);line-height:1.5;}
+.s8-risk-stat-val{font-size:var(--text-sm);color:var(--color-text-primary);}
+.s8-positive{color:var(--color-text-success);}
+.s8-risk-level{display:flex;align-items:center;gap:var(--sp-2);}
+.s8-risk-lvl-dot{
+  width:10px;height:10px;border-radius:50%;flex-shrink:0;
+  background:#5BBF7A;transition:background .3s;
+}
+.s8-risk-lvl-dot.red{background:#C84040;}
+.s8-risk-lvl-dot.yellow{background:#D4A017;}
+.s8-risk-lvl-dot.green{background:#5BBF7A;}
+
+/* ── Dropdown ── */
+.s8-dropdown{position:relative;margin-bottom:var(--sp-4);}
+.s8-risk-select{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;border:1px solid var(--color-border-default);
+  border-radius:var(--r-md);background:#fff;cursor:pointer;
+  transition:border-color .15s;
+}
+.s8-risk-select:hover{border-color:var(--color-border-strong);}
+.s8-risk-chev{transition:transform .22s var(--spring);flex-shrink:0;}
+.s8-dropdown.open .s8-risk-chev{transform:rotate(180deg);}
+.s8-dropdown-list{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;
+  background:#fff;border:1px solid var(--color-border-default);
+  border-radius:var(--r-xl);overflow:hidden;
+  box-shadow:var(--shadow-lift);z-index:20;
+  opacity:0;transform:translateY(-6px) scale(.98);transform-origin:top center;
+  pointer-events:none;transition:opacity .18s,transform .22s var(--spring);
+}
+.s8-dropdown.open .s8-dropdown-list{
+  opacity:1;transform:translateY(0) scale(1);pointer-events:auto;
+}
+.s8-dropdown-opt{
+  display:block;width:100%;padding:14px var(--sp-4);text-align:left;
+  font-family:var(--font-body);font-size:var(--text-md);font-weight:var(--fw-medium);
+  color:var(--color-text-primary);background:none;border:none;cursor:pointer;
+  transition:background .1s;letter-spacing:-.2px;
+}
+.s8-dropdown-opt+.s8-dropdown-opt{border-top:1px solid var(--color-border-subtle);}
+.s8-dropdown-opt:hover{background:var(--color-surface-subtle);}
+.s8-dropdown-opt--active{color:var(--color-brand-600);font-weight:var(--fw-semibold);}
+
+/* ── Skeleton shimmer ── */
+@keyframes s8-shimmer{
+  0%{background-position:200% center;}
+  100%{background-position:-200% center;}
+}
+.s8-skel{
+  border-radius:6px;
+  background:linear-gradient(90deg,#f0f0ee 25%,#e4e4e2 50%,#f0f0ee 75%);
+  background-size:200% 100%;
+  animation:s8-shimmer 1.4s ease infinite;
+}
+.s8-about-skel{height:14px;margin-bottom:8px;}
+.s8-about-skel:last-child{width:65%;}
+.s8-h-skel-row{
+  display:flex;align-items:center;gap:var(--sp-2);
+  padding:14px var(--sp-4);
+}
+.s8-h-skel-dot{width:7px;height:7px;border-radius:3.5px;flex-shrink:0;background:#e4e4e2;}
+.s8-h-skel-bar{height:14px;border-radius:6px;flex:1;
+  background:linear-gradient(90deg,#f0f0ee 25%,#e4e4e2 50%,#f0f0ee 75%);
+  background-size:200% 100%;animation:s8-shimmer 1.4s ease infinite;
+}
+.s8-h-skel-pct{width:36px;height:14px;border-radius:6px;flex-shrink:0;
+  background:linear-gradient(90deg,#f0f0ee 25%,#e4e4e2 50%,#f0f0ee 75%);
+  background-size:200% 100%;animation:s8-shimmer 1.4s ease infinite;
+}
+
+/* ── About section + holdings wrap ── */
 .s8-holdings-wrap{padding:0 var(--sp-5);}
-.s8-holdings-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3);}
-.s8-holdings-title{font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;color:var(--color-text-primary);letter-spacing:-.4px;}
-.s8-edit-btn{background:none;border:none;cursor:pointer;padding:var(--sp-1);color:var(--color-text-tertiary);}
-.s8-edit-btn:hover{color:var(--color-text-primary);}
+.s8-about{margin-bottom:var(--sp-3);}
+.s8-about-title{
+  font-family:var(--font-display);font-size:var(--text-lg);font-weight:var(--fw-medium);
+  color:var(--color-text-primary);letter-spacing:-.4px;margin-bottom:4px;
+}
+.s8-about-text{
+  font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.5;
+  margin-bottom:var(--sp-3);
+}
 
 .s8-tab-bar{
   display:flex;background:#F0F0EE;border-radius:var(--r-full);
@@ -683,7 +802,9 @@ html,body{
   cursor:pointer;transition:background .1s;
 }
 .s8-h-row:hover{background:var(--color-surface-subtle);}
-.s8-h-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.s8-h-row--flat{cursor:default;}
+.s8-h-row--flat:hover{background:none;}
+.s8-h-dot{width:7px;height:7px;border-radius:3.5px;flex-shrink:0;}
 .s8-h-name{
   flex:1;font-size:var(--text-sm);font-weight:var(--fw-medium);
   color:var(--color-text-primary);letter-spacing:-.3px;
@@ -1354,6 +1475,17 @@ html,body{
 
 <div class="page-label">Robo Advisor · Mobile Flow · Surmount B2C</div>
 
+<!-- ── Dev screen nav ─────────────────────────────────── -->
+<nav class="dev-nav">
+  <span class="dev-nav-label">Jump to</span>
+  <button class="dev-nav-btn active" data-screen="s0"     onclick="devGoTo('s0')">Welcome</button>
+  <button class="dev-nav-btn"        data-screen="quiz"   onclick="devGoTo('quiz')">Quiz</button>
+  <button class="dev-nav-btn"        data-screen="s7"     onclick="devGoTo('s7')">Loading</button>
+  <button class="dev-nav-btn"        data-screen="s8"     onclick="devGoTo('s8')">Results</button>
+  <button class="dev-nav-btn"        data-screen="s10"    onclick="devGoTo('s10')">Confirm</button>
+  <button class="dev-nav-btn"        data-screen="s-cust" onclick="devGoTo('s-cust')">Customize</button>
+</nav>
+
 <div class="phone">
 
 <template id="status-tpl">
@@ -1381,7 +1513,7 @@ html,body{
       <svg width="32" height="32" viewBox="0 0 38 38" fill="none"><path d="M3 14.8C3 10.3 3 8.08 3.87 6.37 4.64 4.86 5.86 3.64 7.37 2.87 9.08 2 11.32 2 15.8 2h6.4c4.48 0 6.72 0 8.43.87 1.51.77 2.73 1.99 3.5 3.5C35 8.08 35 10.32 35 14.8v6.4c0 4.48 0 6.72-.87 8.43a9.88 9.88 0 01-3.5 3.5C28.92 34 26.68 34 22.2 34h-6.4c-4.48 0-6.72 0-8.43-.87a9.88 9.88 0 01-3.5-3.5C3 27.92 3 25.68 3 21.2v-6.4z" fill="url(#wg0)"/><path d="M19 13.14a8.7 8.7 0 00-1.76 1.6l-1.19 1.13c-.54-.28-1.14-.42-1.74-.42-1 0-1.94.34-2.66 1.03A3.54 3.54 0 009 19c0-1.6.65-3.11 1.85-4.24 2.22-2.11 5.69-2.32 8.15-.62z" fill="url(#wg1)"/><path d="M23.37 18.81l-2.42 2.3-1.19 1.13c-.24.23-.5.43-.77.62-1.1.76-2.4 1.14-3.69 1.14-1.61 0-3.23-.59-4.46-1.76A5.52 5.52 0 019 18h2.6c0 .94.38 1.83 1.08 2.49 1.23 1.17 3.13 1.35 4.56.52.24-.14.47-.31.68-.52l1.31-1.24 2.3-2.19c.51-.49 1.33-.49 1.84 0 .51.49.51 1.27 0 1.75z" fill="url(#wg2)"/><path d="M29 18h-2.6c0-.94-.38-1.83-1.08-2.5-.72-.68-1.67-1.02-2.62-1.02-.67 0-1.34.17-1.93.52-.24.14-.47.31-.68.52l-1.31 1.24-2.3 2.18a1.29 1.29 0 01-1.84 0 1.28 1.28 0 010-1.75l2.42-2.3 1.19-1.13c.24-.23.5-.43.77-.62 2.46-1.7 5.94-1.5 8.15.62A7.49 7.49 0 0129 18z" fill="url(#wg3)"/><path d="M29 18c0 1.6-.65 3.11-1.85 4.24-1.23 1.17-2.84 1.76-4.46 1.76-1.3 0-2.6-.38-3.67-1.14.27-.18.53-.39.77-.62l1.19-1.13c.54.28 1.14.42 1.74.42.95 0 1.9-.34 2.62-1.02.7-.67 1.08-1.55 1.08-2.5H29z" fill="url(#wg4)"/><defs><linearGradient id="wg0" x1="3" y1="2" x2="35" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#F5F7FA"/><stop offset="1" stop-color="#C3CFE2"/></linearGradient><linearGradient id="wg1" x1="9" y1="15" x2="19" y2="15.1" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#1047D2"/></linearGradient><linearGradient id="wg2" x1="9" y1="20.3" x2="23.7" y2="20.5" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#54E3DF"/></linearGradient><linearGradient id="wg3" x1="14.2" y1="15.6" x2="29" y2="15.8" gradientUnits="userSpaceOnUse"><stop stop-color="#54E3DF"/><stop offset="1" stop-color="#34A6ED"/></linearGradient><linearGradient id="wg4" x1="19" y1="21" x2="29" y2="21.1" gradientUnits="userSpaceOnUse"><stop stop-color="#1047D2"/><stop offset="1" stop-color="#34A6ED"/></linearGradient></defs></svg>
       <span class="welcome-wordmark">Surmount</span>
     </div>
-    <h1 class="welcome-headline">Find your perfect<br>portfolio.</h1>
+    <h1 class="welcome-headline">Design your perfect<br>portfolio.</h1>
     <p class="welcome-body">Answer 6 short questions and we'll build the right investment strategy for you — no jargon, no guesswork.</p>
     <div class="welcome-features">
       <div class="welcome-feature"><div class="feat-dot"></div><span>Personalized to your goals &amp; timeline</span></div>
@@ -1652,19 +1784,48 @@ html,body{
       </div>
     </div>
 
-    <!-- ─ Holdings ─ -->
-    <div class="s8-holdings-wrap">
-      <div class="s8-holdings-hdr">
-        <h2 class="s8-holdings-title">Holdings</h2>
-        <button class="s8-edit-btn" onclick="goToCustomize()">
-          <svg width="17" height="17" viewBox="0 0 20 20" fill="none"><path d="M14.85 2.15a2.12 2.12 0 0 1 3 3L5.75 17.25l-3.9.65.65-3.9L14.85 2.15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <!-- ─ Risk level ─ -->
+    <div class="s8-section">
+      <h2 class="s8-section-title">Risk level</h2>
+      <div class="s8-dropdown" id="s8-dropdown">
+        <button class="s8-risk-select" id="s8-risk-select-btn" onclick="toggleRiskDropdown(event)">
+          <span class="s8-risk-val" id="s8-risk-label">Balanced</span>
+          <svg class="s8-risk-chev" id="s8-risk-chev" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
+        <div class="s8-dropdown-list" id="s8-dropdown-list">
+          <button class="s8-dropdown-opt" data-risk="aggressive" onclick="setRiskProfile('aggressive')">Aggressive</button>
+          <button class="s8-dropdown-opt" data-risk="growth" onclick="setRiskProfile('growth')">Growth</button>
+          <button class="s8-dropdown-opt s8-dropdown-opt--active" data-risk="balanced" onclick="setRiskProfile('balanced')">Balanced</button>
+          <button class="s8-dropdown-opt" data-risk="conservative" onclick="setRiskProfile('conservative')">Conservative</button>
+        </div>
+      </div>
+      <div class="s8-risk-stats">
+        <div class="s8-risk-stat">
+          <span class="s8-risk-stat-lbl">Top Industry</span>
+          <span class="s8-risk-stat-val" id="s8-stat-industry">Utilities</span>
+        </div>
+        <div class="s8-risk-stat">
+          <span class="s8-risk-stat-lbl">1-year return</span>
+          <span class="s8-risk-stat-val s8-positive" id="s8-stat-return">+8.50%</span>
+        </div>
+        <div class="s8-risk-stat">
+          <span class="s8-risk-stat-lbl">Risk</span>
+          <div class="s8-risk-level"><span class="s8-risk-lvl-dot" id="s8-stat-dot"></span><span class="s8-risk-stat-val" id="s8-stat-risk">Low</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─ About + Holdings ─ -->
+    <div class="s8-holdings-wrap">
+      <div class="s8-about">
+        <h2 class="s8-about-title">About this portfolio</h2>
+        <p class="s8-about-text" id="s8-about-text">This growth-oriented mix gives you exposure to global stocks and some long-duration bonds. Meant for long-term returns with some protection from volatility.</p>
       </div>
       <div class="s8-tab-bar">
-        <button class="s8-tab active">Asset</button>
-        <button class="s8-tab">Sector</button>
+        <button class="s8-tab active" onclick="setTab('asset')">Asset</button>
+        <button class="s8-tab"        onclick="setTab('sector')">Sector</button>
       </div>
-      <div class="s8-alloc-bar">
+      <div class="s8-alloc-bar" id="s8-alloc-bar">
         <div class="s8-alloc-seg" style="flex:32;background:#3A4DB0;"></div>
         <div class="s8-alloc-seg" style="flex:25.9;background:#5868C8;"></div>
         <div class="s8-alloc-seg" style="flex:20.2;background:#7A86D6;"></div>
@@ -1672,7 +1833,7 @@ html,body{
         <div class="s8-alloc-seg" style="flex:6;background:#B4BEE8;"></div>
         <div class="s8-alloc-seg" style="flex:3.1;background:#5BBF7A;"></div>
       </div>
-      <div class="s8-holdings-list">
+      <div class="s8-holdings-list" id="s8-holdings-list">
         <!-- Row 1 — expanded -->
         <div class="s8-h-item open" onclick="this.classList.toggle('open')">
           <div class="s8-h-row">
@@ -2918,6 +3079,282 @@ function renderResult() {
   // Init chart hover
   if (window._initS8Chart) window._initS8Chart();
   goToResults();
+}
+
+// ── Dev screen jump nav ───────────────────────────────
+function devGoTo(key) {
+  // Hide everything
+  document.querySelectorAll('.screen').forEach(s => {
+    s.style.transition = 'none';
+    s.style.transform  = 'translateX(100%)';
+  });
+  document.getElementById('quiz-shell').style.transform = 'translateX(100%)';
+
+  if (key === 'quiz') {
+    const shell = document.getElementById('quiz-shell');
+    shell.style.transform = 'translateX(0)';
+    current = 'quiz'; quizStep = 1;
+    // Show first question
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const qc = document.getElementById('qc-' + i);
+      if (!qc) continue;
+      qc.style.transition = 'none';
+      qc.style.transform  = i === 1 ? 'translateX(0)' : 'translateX(100%)';
+      qc.classList.remove('entered');
+    }
+    setTimeout(() => {
+      const qc = document.getElementById('qc-1');
+      if (qc) { qc.classList.remove('entered'); void qc.offsetWidth; qc.classList.add('entered'); }
+    }, 50);
+  } else if (key === 's8') {
+    selections = {1:2,2:2,3:1,4:2,5:1,6:0};
+    renderResult();
+    current = 8;
+  } else if (key === 's-cust') {
+    selections = {1:2,2:2,3:1,4:2,5:1,6:0};
+    const s8 = document.getElementById('s8');
+    s8.style.transform = 'translateX(0)';
+    current = 8;
+    goToCustomize();
+  } else {
+    const el = document.getElementById(key);
+    if (el) el.style.transform = 'translateX(0)';
+    current = parseInt(key.replace('s','')) || 0;
+  }
+
+  // Update active pill
+  document.querySelectorAll('.dev-nav-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.screen === key);
+  });
+}
+
+// ── Risk level selector ───────────────────────────────
+const RISK_PROFILES = {
+  aggressive: {
+    label: 'Aggressive',
+    industry: 'Technology',
+    ret: '+7.0–9.0%',
+    risk: 'High',
+    dot: 'red',
+    about: 'An aggressive growth portfolio maximizing long-term returns through equity-heavy exposure. Best suited for investors with a long horizon who can weather significant volatility.',
+    holdings: [
+      { name: 'Invesco QQQ Trust',        symbol: 'QQQ',  pct: 35.0, color: '#3A4DB0' },
+      { name: 'ARK Innovation ETF',        symbol: 'ARKK', pct: 25.0, color: '#5868C8' },
+      { name: 'Vanguard Growth ETF',       symbol: 'VUG',  pct: 20.0, color: '#7A86D6' },
+      { name: 'iShares Russell 2000',      symbol: 'IWM',  pct: 12.0, color: '#98A4E0' },
+      { name: 'SPDR S&P 500 ETF',         symbol: 'SPY',  pct:  5.0, color: '#B4BEE8' },
+      { name: 'Cash (USD)',                symbol: 'USD',  pct:  3.0, color: '#5BBF7A' },
+    ],
+    sectors: [
+      { name: 'Technology',              top: 'QQQ',  pct: 42.0, color: '#3A4DB0' },
+      { name: 'Communications',          top: 'ARKK', pct: 18.0, color: '#5868C8' },
+      { name: 'Consumer Discretionary',  top: 'VUG',  pct: 14.0, color: '#7A86D6' },
+      { name: 'Financials',              top: 'IWM',  pct: 10.0, color: '#98A4E0' },
+      { name: 'Healthcare',              top: 'SPY',  pct:  8.0, color: '#B4BEE8' },
+      { name: 'Materials',               top: 'SPY',  pct:  4.0, color: '#C8D0F0' },
+      { name: 'Energy',                  top: 'USD',  pct:  2.0, color: '#5BBF7A' },
+      { name: 'Consumer Staples',        top: 'USD',  pct:  1.0, color: '#A8D4B8' },
+      { name: 'Utilities',               top: 'USD',  pct:  1.0, color: '#D4C8A0' },
+    ]
+  },
+  growth: {
+    label: 'Growth',
+    industry: 'Financials',
+    ret: '+6.5–8.0%',
+    risk: 'Medium',
+    dot: 'yellow',
+    about: 'A growth-focused portfolio balancing strong equity returns with moderate diversification. Suitable for investors seeking above-average growth while managing downside risk.',
+    holdings: [
+      { name: 'Vanguard S&P 500 ETF',     symbol: 'VOO',  pct: 28.0, color: '#3A4DB0' },
+      { name: 'iShares MSCI World ETF',    symbol: 'URTH', pct: 22.0, color: '#5868C8' },
+      { name: 'Vanguard Growth ETF',       symbol: 'VUG',  pct: 18.0, color: '#7A86D6' },
+      { name: 'SPDR S&P 500 ETF',         symbol: 'SPY',  pct: 15.0, color: '#98A4E0' },
+      { name: 'iShares Core S&P 500 ETF', symbol: 'IVV',  pct: 12.0, color: '#B4BEE8' },
+      { name: 'Cash (USD)',                symbol: 'USD',  pct:  5.0, color: '#5BBF7A' },
+    ],
+    sectors: [
+      { name: 'Technology',              top: 'VOO',  pct: 35.0, color: '#3A4DB0' },
+      { name: 'Financials',              top: 'URTH', pct: 20.0, color: '#5868C8' },
+      { name: 'Healthcare',              top: 'VUG',  pct: 15.0, color: '#7A86D6' },
+      { name: 'Consumer Discretionary',  top: 'SPY',  pct: 13.0, color: '#98A4E0' },
+      { name: 'Communications',          top: 'IVV',  pct:  9.0, color: '#B4BEE8' },
+      { name: 'Consumer Staples',        top: 'USD',  pct:  4.0, color: '#C8D0F0' },
+      { name: 'Materials',               top: 'USD',  pct:  2.0, color: '#A8D4B8' },
+      { name: 'Energy',                  top: 'USD',  pct:  1.0, color: '#5BBF7A' },
+      { name: 'Utilities',               top: 'USD',  pct:  1.0, color: '#D4C8A0' },
+    ]
+  },
+  balanced: {
+    label: 'Balanced',
+    industry: 'Utilities',
+    ret: '+8.50%',
+    risk: 'Low',
+    dot: 'green',
+    about: 'This growth-oriented mix gives you exposure to global stocks and some long-duration bonds. Meant for long-term returns with some protection from volatility.',
+    holdings: [
+      { name: 'Vanguard S&P 500 ETF',       symbol: 'VOO',  pct: 32.0, color: '#3A4DB0' },
+      { name: 'SPDR S&P 500 ETF Trust',      symbol: 'SPY',  pct: 25.9, color: '#5868C8' },
+      { name: 'iShares Core S&P 500 ETF',    symbol: 'IVV',  pct: 20.2, color: '#7A86D6' },
+      { name: 'Schwab U.S. Large-Cap ETF',   symbol: 'SCHX', pct: 12.8, color: '#98A4E0' },
+      { name: 'SPDR Portfolio S&P 500 ETF',  symbol: 'SPTM', pct:  6.0, color: '#B4BEE8' },
+      { name: 'Cash (USD)',                   symbol: 'USD',  pct:  3.1, color: '#5BBF7A' },
+    ],
+    sectors: [
+      { name: 'Technology',              top: 'VOO',  pct: 28.0, color: '#3A4DB0' },
+      { name: 'Financials',              top: 'SPY',  pct: 18.0, color: '#5868C8' },
+      { name: 'Healthcare',              top: 'IVV',  pct: 13.0, color: '#7A86D6' },
+      { name: 'Consumer Discretionary',  top: 'SCHX', pct: 12.0, color: '#98A4E0' },
+      { name: 'Communications',          top: 'SPTM', pct: 10.0, color: '#B4BEE8' },
+      { name: 'Consumer Staples',        top: 'VOO',  pct:  7.0, color: '#C8D0F0' },
+      { name: 'Materials',               top: 'SPY',  pct:  4.0, color: '#A8D4B8' },
+      { name: 'Energy',                  top: 'IVV',  pct:  3.0, color: '#5BBF7A' },
+      { name: 'Utilities',               top: 'SCHX', pct:  3.0, color: '#D4C8A0' },
+      { name: 'Real Estate',             top: 'USD',  pct:  2.0, color: '#D4B8C8' },
+    ]
+  },
+  conservative: {
+    label: 'Conservative',
+    industry: 'Consumer Staples',
+    ret: '+5.0–6.5%',
+    risk: 'Low',
+    dot: 'green',
+    about: 'A conservative portfolio prioritizing capital preservation with steady income. Designed for risk-averse investors seeking stable, predictable returns over growth.',
+    holdings: [
+      { name: 'Vanguard Total Bond Market',      symbol: 'BND', pct: 35.0, color: '#3A4DB0' },
+      { name: 'iShares TIPS Bond ETF',            symbol: 'TIP', pct: 25.0, color: '#5868C8' },
+      { name: 'Vanguard Dividend Appreciation',   symbol: 'VIG', pct: 18.0, color: '#7A86D6' },
+      { name: 'iShares Core S&P 500 ETF',         symbol: 'IVV', pct: 12.0, color: '#98A4E0' },
+      { name: 'SPDR Gold Shares',                 symbol: 'GLD', pct:  7.0, color: '#B4BEE8' },
+      { name: 'Cash (USD)',                        symbol: 'USD', pct:  3.0, color: '#5BBF7A' },
+    ],
+    sectors: [
+      { name: 'Financials',              top: 'BND',  pct: 22.0, color: '#3A4DB0' },
+      { name: 'Utilities',               top: 'TIP',  pct: 20.0, color: '#5868C8' },
+      { name: 'Consumer Staples',        top: 'VIG',  pct: 18.0, color: '#7A86D6' },
+      { name: 'Healthcare',              top: 'IVV',  pct: 15.0, color: '#98A4E0' },
+      { name: 'Real Estate',             top: 'GLD',  pct: 10.0, color: '#B4BEE8' },
+      { name: 'Energy',                  top: 'GLD',  pct:  7.0, color: '#C8D0F0' },
+      { name: 'Materials',               top: 'USD',  pct:  5.0, color: '#A8D4B8' },
+      { name: 'Technology',              top: 'USD',  pct:  3.0, color: '#5BBF7A' },
+    ]
+  }
+};
+
+let currentRisk = 'balanced';
+let currentTab  = 'asset';
+let riskLoadTimer = null;
+
+function toggleRiskDropdown(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('s8-dropdown');
+  const isOpen = dd.classList.contains('open');
+  dd.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    // Close on outside click
+    setTimeout(() => document.addEventListener('click', closeRiskDropdownOutside, { once: true }), 0);
+  }
+}
+
+function closeRiskDropdownOutside() {
+  document.getElementById('s8-dropdown').classList.remove('open');
+}
+
+function setRiskProfile(key) {
+  if (key === currentRisk) {
+    document.getElementById('s8-dropdown').classList.remove('open');
+    return;
+  }
+  currentRisk = key;
+  const p = RISK_PROFILES[key];
+
+  // Update dropdown label + active state
+  document.getElementById('s8-risk-label').textContent = p.label;
+  document.getElementById('s8-dropdown').classList.remove('open');
+  document.querySelectorAll('.s8-dropdown-opt').forEach(btn => {
+    btn.classList.toggle('s8-dropdown-opt--active', btn.dataset.risk === key);
+  });
+
+  // Update stats immediately
+  document.getElementById('s8-stat-industry').textContent = p.industry;
+  const retEl = document.getElementById('s8-stat-return');
+  retEl.textContent = p.ret;
+  retEl.className = 's8-risk-stat-val' + (p.dot !== 'red' ? ' s8-positive' : '');
+  document.getElementById('s8-stat-risk').textContent = p.risk;
+  const dot = document.getElementById('s8-stat-dot');
+  dot.className = 's8-risk-lvl-dot ' + p.dot;
+
+  // Show about skeleton
+  const aboutEl = document.getElementById('s8-about-text');
+  aboutEl.innerHTML = '<span class="s8-skel s8-about-skel" style="display:block;width:100%"></span><span class="s8-skel s8-about-skel" style="display:block;width:80%"></span><span class="s8-skel s8-about-skel" style="display:block"></span>';
+
+  // Show holdings skeletons
+  const holdingsList = document.getElementById('s8-holdings-list');
+  const allocBar     = document.getElementById('s8-alloc-bar');
+  const skelCount    = currentTab === 'sector' ? 10 : 6;
+  holdingsList.innerHTML = Array.from({length: skelCount}).map((_, i) => `
+    <div class="s8-h-skel-row" style="${i > 0 ? 'border-top:1px solid var(--color-border-default)' : ''}">
+      <div class="s8-h-skel-dot"></div>
+      <div class="s8-h-skel-bar" style="width:${55 + Math.random()*30}%;animation-delay:${i*0.06}s"></div>
+      <div class="s8-h-skel-pct" style="animation-delay:${i*0.06+0.1}s"></div>
+    </div>`).join('');
+  // Alloc bar shimmer
+  allocBar.innerHTML = `<div class="s8-skel" style="flex:1;height:12px;border-radius:var(--r-full);"></div>`;
+
+  // After delay, render real data
+  if (riskLoadTimer) clearTimeout(riskLoadTimer);
+  riskLoadTimer = setTimeout(() => renderRiskContent(p), 2200);
+}
+
+function setTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.s8-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === tab);
+  });
+  renderRiskContent(RISK_PROFILES[currentRisk]);
+}
+
+function renderRiskContent(p) {
+  // About text
+  document.getElementById('s8-about-text').textContent = p.about;
+
+  const items = currentTab === 'sector' ? p.sectors : p.holdings;
+
+  // Alloc bar
+  const allocBar = document.getElementById('s8-alloc-bar');
+  allocBar.innerHTML = items.map((h, i) => {
+    const first = i === 0 ? 'border-radius:var(--r-full) 0 0 var(--r-full);' : '';
+    const last  = i === items.length-1 ? 'border-radius:0 var(--r-full) var(--r-full) 0;' : '';
+    return `<div class="s8-alloc-seg" style="flex:${h.pct};background:${h.color};${first}${last}"></div>`;
+  }).join('');
+
+  // List
+  const list = document.getElementById('s8-holdings-list');
+  if (currentTab === 'sector') {
+    list.innerHTML = items.map((h, i) => `
+      <div class="s8-h-item s8-h-item--flat" style="${i > 0 ? 'border-top:1px solid var(--color-border-default)' : ''}">
+        <div class="s8-h-row s8-h-row--flat">
+          <div class="s8-h-dot" style="background:${h.color}"></div>
+          <span class="s8-h-name">${h.name}</span>
+          <span class="s8-h-pct">${h.pct.toFixed(1)}%</span>
+        </div>
+      </div>`).join('');
+  } else {
+    list.innerHTML = items.map((h, i) => `
+      <div class="s8-h-item${i === 0 ? ' open' : ''}" onclick="this.classList.toggle('open')">
+        <div class="s8-h-row">
+          <div class="s8-h-dot" style="background:${h.color}"></div>
+          <span class="s8-h-name">${h.name}</span>
+          <div class="s8-h-right">
+            <span class="s8-h-pct">${h.pct.toFixed(1)}%</span>
+            <svg class="s8-h-chev" width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1L5.5 6L10 1" stroke="#717680" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+        <div class="s8-h-detail">
+          <div class="s8-h-drow"><span class="s8-h-dlbl">Symbol</span><span class="s8-h-dval">${h.symbol}</span></div>
+          <div class="s8-h-drow"><span class="s8-h-dlbl">Investment</span><span class="s8-h-dval">${h.pct.toFixed(1)}%</span></div>
+        </div>
+      </div>`).join('');
+  }
 }
 </script>
 </body>

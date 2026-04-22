@@ -1,0 +1,3152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surmount — John Smith (Advisor Profile)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --color-gray-50:#FAFAFA;--color-gray-100:#F5F5F5;--color-gray-200:#E9EAEB;
+  --color-gray-300:#D5D7DA;--color-gray-400:#A4A7AE;--color-gray-500:#717680;
+  --color-gray-600:#535862;--color-gray-700:#414651;--color-gray-900:#181D27;
+  --color-brand-600:#406AD0;--color-brand-700:#3757BE;
+  --color-success-700:#316434;
+  --color-green-chart:#72BE7C;
+  --font-display:'Inter',sans-serif;
+  --font-body:'Geist',system-ui,sans-serif;
+  --shadow-card:0px 2px 12px 0px rgba(10,13,18,0.03);
+  --ease-ios:cubic-bezier(0.32,0.72,0,1);
+}
+
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--font-body);
+  background:#DDE1E9;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.5px;
+}
+
+/* ══════════════════════════════════════════
+   PHONE SHELL
+══════════════════════════════════════════ */
+.phone{
+  width:390px;height:844px;
+  border-radius:44px;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 28px 80px rgba(0,0,0,0.22),0 0 0 1px rgba(0,0,0,0.09);
+}
+
+/* ══════════════════════════════════════════
+   SCREEN SYSTEM — iOS-style slide nav
+══════════════════════════════════════════ */
+.screen{
+  position:absolute;inset:0;
+  background:#FCFCFC;
+  display:flex;flex-direction:column;
+  will-change:transform;
+  transition:transform 300ms var(--ease-ios);
+}
+/* Screen 0: listing — slides in on top of portfolio */
+#screenListing{
+  transform:translateX(100%);
+  z-index:2;
+}
+#screenListing.active{
+  transform:translateX(0);
+}
+#screenListing.pushed{
+  transform:translateX(-28%);
+}
+#screenListing::after{
+  content:'';
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0);
+  pointer-events:none;
+  transition:background 300ms var(--ease-ios);
+  z-index:99;
+}
+#screenListing.pushed::after{
+  background:rgba(0,0,0,0.18);
+}
+
+/* Screen 1: profile — starts off-screen right */
+#screenProfile{
+  transform:translateX(100%);
+  z-index:3;
+}
+#screenProfile.active{
+  transform:translateX(0);
+}
+/* Screen 1 pushed back when schedule is active */
+#screenProfile.pushed{
+  transform:translateX(-28%);
+}
+/* Dim overlay on profile screen when pushed */
+#screenProfile::after{
+  content:'';
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0);
+  pointer-events:none;
+  transition:background 300ms var(--ease-ios);
+  z-index:99;
+}
+#screenProfile.pushed::after{
+  background:rgba(0,0,0,0.18);
+}
+/* Screen 2: schedule starts off-screen right */
+#screenSchedule{
+  transform:translateX(100%);
+  z-index:4;
+}
+#screenSchedule.active{
+  transform:translateX(0);
+}
+/* Schedule pushed back when confirm is active */
+#screenSchedule.pushed{
+  transform:translateX(-28%);
+}
+#screenSchedule::after{
+  content:'';
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0);
+  pointer-events:none;
+  transition:background 300ms var(--ease-ios);
+  z-index:99;
+}
+#screenSchedule.pushed::after{
+  background:rgba(0,0,0,0.18);
+}
+
+/* ══════════════════════════════════════════
+   SHARED: STATUS BAR
+══════════════════════════════════════════ */
+.status-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 16px;
+  flex-shrink:0;height:56px;
+  background:#FCFCFC;
+}
+.status-time{
+  font-family:var(--font-display);font-size:17px;font-weight:600;
+  color:var(--color-gray-900);letter-spacing:-0.3px;flex:1;
+}
+.status-island{
+  width:125px;height:37px;background:#000;border-radius:100px;flex-shrink:0;
+}
+.status-icons{
+  display:flex;align-items:center;gap:7px;flex:1;justify-content:flex-end;
+}
+.status-icons img{display:block;}
+
+/* ══════════════════════════════════════════
+   SHARED: NAV BAR
+══════════════════════════════════════════ */
+.nav-bar{
+  display:flex;align-items:center;
+  padding:12px 16px;flex-shrink:0;background:#FCFCFC;
+}
+.nav-btn{
+  width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:6px;cursor:pointer;flex-shrink:0;
+  /* hover */
+  transition:background 120ms;
+}
+.nav-btn:hover{background:var(--color-gray-100);}
+.nav-btn:active{background:var(--color-gray-200);}
+
+/* ══════════════════════════════════════════
+   SHARED: SCROLL AREA
+══════════════════════════════════════════ */
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:32px;}
+.scroll-area::-webkit-scrollbar{display:none;}
+
+/* ══════════════════════════════════════════
+   PROFILE — CONTENT WRAP
+══════════════════════════════════════════ */
+.content-wrap{
+  display:flex;flex-direction:column;gap:24px;
+  align-items:center;padding:20px 16px 0;
+}
+
+/* ── Profile card ── */
+.profile-card{
+  background:#fff;border-radius:20px;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,0.05),var(--shadow-card);
+  padding:20px;display:flex;flex-direction:column;gap:20px;
+  width:100%;overflow:hidden;position:relative;
+}
+
+.profile-firm-logo{
+  position:absolute;top:19px;right:19px;
+  width:56px;height:55px;z-index:3;
+  filter:drop-shadow(0px 2px 12px rgba(162,173,179,0.27));
+}
+.profile-firm-logo-inner{position:absolute;inset:0;}
+.profile-firm-logo-inner img{
+  position:absolute;
+  width:148.96%;height:148.96%;left:-24.48%;top:-22.63%;
+  max-width:none;display:block;
+}
+
+.profile-top{display:flex;flex-direction:column;gap:8px;}
+.avatar-row{display:flex;align-items:center;gap:4px;position:relative;}
+.avatar-wrap{position:relative;flex-shrink:0;width:56px;height:56px;}
+.avatar-img{width:56px;height:56px;border-radius:50%;object-fit:cover;display:block;}
+.verified-badge{
+  position:absolute;bottom:-1px;right:-1px;
+  width:16px;height:16px;overflow:hidden;
+}
+.badge-outer{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;}
+.badge-inner{
+  position:absolute;
+  top:29.68%;left:29.68%;right:29.68%;bottom:26.56%;
+  width:calc(100% - 59.36%);height:calc(100% - 56.24%);
+  object-fit:contain;display:block;
+}
+.profile-name-block{display:flex;flex-direction:column;}
+.profile-name{font-size:18px;font-weight:500;line-height:28px;color:rgba(10,13,18,0.9);letter-spacing:-0.5px;}
+.profile-title{font-size:14px;font-weight:400;line-height:20px;color:rgba(65,70,81,0.9);letter-spacing:-0.5px;}
+
+/* ── Action buttons ── */
+.action-row{display:flex;gap:12px;padding:0;width:100%;}
+.btn-primary{
+  flex:1;height:40px;border-radius:8px;
+  background:var(--color-brand-600);
+  border:2px solid rgba(255,255,255,0.12);
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:#fff;cursor:pointer;letter-spacing:-0.5px;padding:0 14px;
+  transition:background 150ms, transform 100ms;
+}
+.btn-primary:hover{background:var(--color-brand-700);}
+.btn-primary:active{transform:scale(0.97);background:var(--color-brand-700);}
+.btn-primary img{width:18px;height:18px;flex-shrink:0;}
+
+/* ── Sections ── */
+.sections-wrap{display:flex;flex-direction:column;gap:40px;width:100%;}
+.section-heading{
+  font-size:16px;font-weight:500;line-height:24px;
+  color:rgba(10,13,18,0.9);letter-spacing:-0.5px;margin-bottom:12px;
+}
+
+/* About */
+.about-text{font-size:14px;font-weight:400;line-height:20px;color:rgba(10,13,18,0.7);letter-spacing:-0.5px;}
+.social-icons-row{display:flex;align-items:center;gap:16px;margin-top:12px;}
+.social-icon{width:18px;height:18px;flex-shrink:0;position:relative;overflow:hidden;}
+.social-icon img{width:100%;height:100%;display:block;object-fit:contain;}
+.social-icon.instagram{position:relative;}
+.social-icon.instagram img.ig-gradient{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  -webkit-mask-image:url('https://www.figma.com/api/mcp/asset/c33a21aa-85a5-4a83-9ad2-64db29182333');
+  mask-image:url('https://www.figma.com/api/mcp/asset/c33a21aa-85a5-4a83-9ad2-64db29182333');
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+}
+.tiktok-wrap{width:18px;height:18px;flex-shrink:0;position:relative;}
+.tiktok-wrap img{position:absolute;display:block;}
+
+/* Strategies */
+.strategies-header{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.strategies-badge{
+  display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;
+  background:var(--color-gray-50);border:1px solid var(--color-gray-200);
+  font-size:12px;font-weight:500;line-height:18px;color:var(--color-gray-700);letter-spacing:-0.5px;
+}
+.strategies-scroll{
+  display:flex;gap:16px;overflow-x:auto;padding-bottom:4px;
+  margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none;
+}
+.strategies-scroll::-webkit-scrollbar{display:none;}
+.strategy-card{
+  flex-shrink:0;width:220px;height:120px;border-radius:8px;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,0.05);overflow:hidden;
+  position:relative;background:#fff;
+  transition:transform 200ms, box-shadow 200ms;
+  cursor:pointer;
+}
+.strategy-card:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08),0 4px 16px rgba(10,13,18,0.08);}
+.strategy-card-bg{position:absolute;inset:0;}
+.strategy-card-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.strategy-card-overlay{position:absolute;inset:0;}
+.strategy-card-content{
+  position:absolute;inset:0;display:flex;flex-direction:column;gap:8px;
+  justify-content:center;left:15px;top:50%;transform:translateY(-50%);z-index:2;
+}
+.strategy-name{font-size:12px;font-weight:500;line-height:18px;color:#fff;letter-spacing:-0.5px;width:180px;}
+.strategy-avatars{display:flex;align-items:center;}
+.strategy-avatar{
+  width:18px;height:18px;border-radius:50%;
+  border:0.5px solid rgba(0,0,0,0.08);object-fit:contain;
+  margin-right:-4px;flex-shrink:0;
+}
+.strategy-stats{display:flex;align-items:center;font-size:12px;font-weight:500;line-height:18px;letter-spacing:-0.5px;}
+.strategy-return{color:var(--color-green-chart);}
+.strategy-period{color:var(--color-gray-300);}
+.strategy-period::before{content:'·';margin:0 4px;}
+
+/* Fees */
+.fee-rows{display:flex;flex-direction:column;}
+.fee-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;}
+.fee-row+.fee-row{border-top:1px solid var(--color-gray-200);}
+.fee-label{font-size:14px;font-weight:400;line-height:18px;color:var(--color-gray-700);letter-spacing:-0.5px;}
+.fee-value{font-size:14px;font-weight:400;line-height:20px;color:var(--color-gray-900);letter-spacing:-0.5px;}
+.fee-value.brand{color:var(--color-brand-600);}
+
+/* Timeline */
+.timeline-list{display:flex;flex-direction:column;gap:4px;}
+.timeline-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;}
+.timeline-item+.timeline-item{border-top:1px solid var(--color-gray-200);}
+.tl-logo-wrap{width:36px;height:36px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);overflow:hidden;flex-shrink:0;}
+.tl-logo-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.tl-info{flex:1;display:flex;flex-direction:column;gap:1px;}
+.tl-org{font-size:14px;font-weight:500;line-height:20px;color:var(--color-gray-900);letter-spacing:-0.5px;}
+.tl-role{font-size:12px;font-weight:400;line-height:18px;color:var(--color-gray-700);letter-spacing:-0.5px;}
+.tl-period{font-size:12px;font-weight:400;line-height:18px;color:var(--color-gray-500);letter-spacing:-0.5px;}
+
+/* Map */
+.map-section-wrap{background:#fff;padding:10px 0;width:390px;flex-shrink:0;}
+.map-section{position:relative;width:390px;height:234px;background:#ddd;overflow:hidden;}
+.map-tile{position:absolute;left:-1px;top:-2px;width:397px;height:256px;object-fit:cover;pointer-events:none;display:block;}
+.map-fade-top{position:absolute;top:0;left:0;right:0;height:54px;background:linear-gradient(to bottom,#FCFCFC 0%,rgba(252,252,252,0) 78.704%);z-index:3;pointer-events:none;}
+.map-fade-bottom{position:absolute;bottom:0;left:0;right:0;height:54px;background:linear-gradient(to top,#FCFCFC 0%,rgba(252,252,252,0) 78.704%);z-index:3;pointer-events:none;}
+.map-dot{
+  position:absolute;left:188.5px;top:83.5px;
+  width:13px;height:13px;border-radius:6.5px;
+  background:var(--color-brand-600);
+  box-shadow:0 0 0 0 rgba(64,106,208,0.22),0 2px 10px 0 rgba(64,106,208,0.48);
+  z-index:4;
+  animation:mapPulse 2.4s ease-out infinite;
+}
+@keyframes mapPulse{
+  0%{box-shadow:0 0 0 0 rgba(64,106,208,0.4),0 2px 10px 0 rgba(64,106,208,0.48);}
+  70%{box-shadow:0 0 0 8px rgba(64,106,208,0),0 2px 10px 0 rgba(64,106,208,0.48);}
+  100%{box-shadow:0 0 0 0 rgba(64,106,208,0),0 2px 10px 0 rgba(64,106,208,0.48);}
+}
+.location-chip{
+  position:absolute;top:26px;left:16px;z-index:5;
+  display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,0.8);
+  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+  border:1.111px solid rgba(0,0,0,0.07);border-radius:20px;
+  padding:5px 11px 5px 7.986px;box-shadow:var(--shadow-card);height:27.778px;
+}
+.location-icon{width:16px;height:16px;flex-shrink:0;}
+.location-icon img{width:100%;height:100%;display:block;object-fit:contain;}
+.location-text{font-size:12px;font-weight:500;color:rgba(10,13,18,0.7);letter-spacing:-0.3px;white-space:nowrap;}
+
+/* ══════════════════════════════════════════
+   CARD FLIP
+══════════════════════════════════════════ */
+.card-flip-container{
+  width:100%;perspective:1200px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.card-flip-inner{
+  position:relative;width:100%;
+  transform-style:preserve-3d;-webkit-transform-style:preserve-3d;
+  display:grid;
+}
+.card-front,.card-back{grid-area:1/1;}
+
+@keyframes flipForward{from{transform:rotateY(0deg);}to{transform:rotateY(180deg);}}
+@keyframes flipBackward{from{transform:rotateY(180deg);}to{transform:rotateY(0deg);}}
+@keyframes scalePulse{0%{transform:scale(1);}45%{transform:scale(0.96);}55%{transform:scale(0.96);}100%{transform:scale(1);}}
+
+.card-front{backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+
+.card-back{
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  transform:rotateY(180deg);
+  border-radius:20px;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,0.09),var(--shadow-card);
+  padding:20px;overflow:hidden;
+  display:flex;flex-direction:row;align-items:center;gap:20px;
+  background:
+    linear-gradient(234.14deg,rgba(71,105,228,0.44) 1.69%,rgba(60,135,226,0.44) 25.35%,rgba(49,139,224,0.44) 50.81%,rgba(49,151,224,0.44) 75.92%,rgba(31,140,167,0.44) 98.19%),
+    #fff;
+}
+.card-back-spiral{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:440px;height:220px;z-index:1;pointer-events:none;
+}
+.card-back-spiral img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;display:block;}
+.card-back-text-block{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;position:relative;z-index:3;}
+.quote-mark{display:block;width:17px;height:12px;flex-shrink:0;}
+.quote-text{
+  font-family:var(--font-body);font-size:14px;font-weight:500;line-height:20px;
+  color:rgba(6,14,40,0.7);letter-spacing:-0.5px;
+}
+.card-back-avatar-wrap{
+  width:64px;height:80px;border-radius:4px;
+  border:1px solid rgba(0,0,0,0.06);overflow:hidden;
+  position:relative;flex-shrink:0;z-index:2;
+}
+.card-back-avatar-overlay{position:absolute;inset:0;background:rgba(83,88,98,0.2);border-radius:4px;}
+.card-back-avatar{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block;
+  backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);
+}
+
+/* ══════════════════════════════════════════
+   SCHEDULE SCREEN
+══════════════════════════════════════════ */
+.sched-scroll{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  padding-bottom:140px;
+}
+.sched-scroll::-webkit-scrollbar{display:none;}
+
+.sched-wrap{display:flex;flex-direction:column;padding:0 16px;}
+
+.sched-header{padding:0 0 16px;display:flex;flex-direction:column;gap:2px;}
+.sched-title{font-size:18px;font-weight:500;line-height:28px;color:rgba(10,13,18,0.9);letter-spacing:-0.5px;}
+.sched-subtitle{font-size:14px;font-weight:400;line-height:20px;color:rgba(10,13,18,0.7);letter-spacing:-0.5px;}
+
+.sched-sections{display:flex;flex-direction:column;gap:20px;padding-bottom:24px;}
+
+/* Info box */
+.info-box{
+  background:var(--color-gray-100);border:1px solid var(--color-gray-100);
+  border-radius:12px;padding:17px;display:flex;flex-direction:column;gap:12px;
+}
+.info-row{display:flex;align-items:center;gap:12px;}
+.info-icon{width:24px;height:24px;flex-shrink:0;position:relative;}
+.info-icon img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:contain;}
+.info-text{display:flex;flex-direction:column;}
+.info-label{font-size:14px;font-weight:500;line-height:20px;color:var(--color-gray-900);letter-spacing:-0.5px;}
+.info-desc{font-size:12px;font-weight:400;line-height:18px;color:var(--color-gray-500);letter-spacing:-0.5px;}
+
+/* Sched section heading */
+.sched-section-heading{
+  font-size:16px;font-weight:500;line-height:24px;
+  color:rgba(10,13,18,0.9);letter-spacing:-0.5px;margin-bottom:12px;
+}
+
+/* Day picker */
+.day-scroll{
+  display:flex;gap:12px;overflow-x:auto;
+  margin:0 -16px;padding:0 16px 2px;scrollbar-width:none;
+}
+.day-scroll::-webkit-scrollbar{display:none;}
+
+.day-pill{
+  flex-shrink:0;width:64px;
+  border:1px solid var(--color-gray-200);border-radius:8px;
+  overflow:hidden;background:#fff;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:border-color 150ms, box-shadow 150ms;
+}
+.day-pill:hover:not(.day-selected){
+  border-color:var(--color-gray-300);
+  box-shadow:0 1px 4px rgba(10,13,18,0.06);
+}
+.day-pill.day-selected{border-color:var(--color-brand-600);}
+
+.day-pill-top{
+  background:var(--color-gray-50);
+  padding:4px 8px 2px;display:flex;align-items:center;justify-content:center;
+  transition:background 150ms;
+}
+.day-pill.day-selected .day-pill-top{background:var(--color-brand-600);}
+.day-pill-top span{
+  font-size:12px;font-weight:500;line-height:18px;
+  color:var(--color-gray-500);letter-spacing:-0.5px;white-space:nowrap;
+  transition:color 150ms;
+}
+.day-pill.day-selected .day-pill-top span{color:#fff;}
+
+.day-pill-bot{
+  padding:1px 8px 3px;display:flex;align-items:center;justify-content:center;
+}
+.day-pill-bot span{
+  font-size:18px;font-weight:500;line-height:28px;
+  color:rgba(10,13,18,0.7);letter-spacing:-0.5px;white-space:nowrap;
+  transition:color 150ms;
+}
+.day-pill.day-selected .day-pill-bot span{color:var(--color-brand-600);}
+
+/* Time grid */
+.time-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.time-slot{
+  border:1px solid var(--color-gray-200);border-radius:8px;background:#fff;
+  padding:15px 0;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background 150ms, border-color 150ms, transform 100ms;
+}
+.time-slot:hover:not(.time-selected):not(.time-unavailable){
+  background:var(--color-gray-50);border-color:var(--color-gray-300);
+}
+.time-slot:active:not(.time-unavailable){transform:scale(0.97);}
+.time-slot span{font-size:14px;font-weight:500;line-height:20px;color:var(--color-gray-900);letter-spacing:-0.5px;transition:color 150ms;}
+.time-slot.time-selected{background:var(--color-brand-600);border-color:var(--color-brand-600);}
+.time-slot.time-selected span{color:#fff;}
+.time-slot.time-unavailable{background:var(--color-gray-50);cursor:default;}
+.time-slot.time-unavailable span{color:var(--color-gray-400);}
+
+/* Disclaimer */
+.disclaimer{
+  background:var(--color-gray-50);border:1px solid rgba(0,0,0,0.06);
+  border-radius:8px;padding:12px;margin-top:12px;
+}
+.disclaimer p{font-size:12px;font-weight:400;line-height:18px;color:rgba(10,13,18,0.6);letter-spacing:-0.5px;}
+
+/* Bottom bar */
+.sched-bottom{
+  position:absolute;bottom:0;left:0;right:0;
+  background:#fff;border-top:1px solid rgba(0,0,0,0.09);
+  padding:12px 16px 32px;
+  display:flex;flex-direction:column;gap:12px;
+  z-index:10;
+}
+.sched-selected-text{
+  font-size:14px;font-weight:500;line-height:20px;
+  color:var(--color-gray-500);text-align:center;letter-spacing:-0.5px;
+}
+.sched-selected-text em{font-style:normal;color:var(--color-gray-700);}
+.btn-send{
+  width:100%;height:44px;
+  background:var(--color-brand-600);
+  border:2px solid rgba(255,255,255,0.12);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-body);font-size:16px;font-weight:500;
+  color:#fff;cursor:pointer;letter-spacing:-0.5px;
+  transition:background 150ms, transform 100ms;
+}
+.btn-send:hover{background:var(--color-brand-700);}
+.btn-send:active{transform:scale(0.97);background:var(--color-brand-700);}
+.btn-send.sent{background:#316434;border-color:rgba(255,255,255,0.12);}
+
+/* ══════════════════════════════════════════
+   SCREEN 3 — CONFIRM
+══════════════════════════════════════════ */
+#screenConfirm{
+  transform:translateX(100%);
+  z-index:5;
+}
+#screenConfirm.active{
+  transform:translateX(0);
+}
+
+/* Confirm header */
+.confirm-header{
+  display:flex;align-items:center;justify-content:flex-end;
+  padding:12px 16px;flex-shrink:0;
+}
+.confirm-close{
+  width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:6px;cursor:pointer;
+  transition:background 120ms;
+  flex-shrink:0;
+}
+.confirm-close:hover{background:var(--color-gray-100);}
+.confirm-close:active{background:var(--color-gray-200);}
+
+/* Confirm body */
+.confirm-body{
+  flex:1;overflow-y:auto;
+  display:flex;flex-direction:column;align-items:center;
+  padding:20px 28px 32px;
+  gap:20px;
+}
+
+/* Hero icon */
+.confirm-icon-wrap{
+  width:56px;height:56px;flex-shrink:0;
+  opacity:0;transform:scale(0.6);
+  transition:opacity 250ms ease, transform 400ms cubic-bezier(0.34,1.56,0.64,1);
+}
+.confirm-icon-wrap.in{opacity:1;transform:scale(1);}
+
+/* Checkmark circle SVG draw animation */
+@keyframes circleIn{
+  from{stroke-dashoffset:157}
+  to{stroke-dashoffset:0}
+}
+@keyframes checkIn{
+  from{stroke-dashoffset:30}
+  to{stroke-dashoffset:0}
+}
+.confirm-icon-wrap .circle-path{
+  stroke-dasharray:157;stroke-dashoffset:157;
+  animation:none;
+}
+.confirm-icon-wrap.in .circle-path{
+  animation:circleIn 300ms ease forwards;
+}
+.confirm-icon-wrap .check-path{
+  stroke-dasharray:30;stroke-dashoffset:30;
+  animation:none;
+}
+.confirm-icon-wrap.in .check-path{
+  animation:checkIn 220ms ease forwards 220ms;
+}
+
+/* Text block */
+.confirm-text{
+  display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;
+  opacity:0;transform:translateY(12px);
+  transition:opacity 280ms ease, transform 280ms ease;
+}
+.confirm-text.in{opacity:1;transform:translateY(0);}
+.confirm-title{
+  font-family:var(--font-display);font-size:20px;font-weight:600;
+  color:var(--color-gray-900);text-align:center;line-height:26px;letter-spacing:-0.3px;
+}
+.confirm-subtitle{
+  font-family:var(--font-body);font-size:14px;font-weight:400;
+  color:rgba(10,13,18,0.7);text-align:center;line-height:20px;letter-spacing:-0.5px;
+}
+
+/* Summary card */
+.confirm-card{
+  width:100%;background:#fff;
+  border:1px solid var(--color-gray-200);border-radius:12px;
+  padding:4px 0;
+  opacity:0;transform:translateY(12px);
+  transition:opacity 280ms ease, transform 280ms ease;
+}
+.confirm-card.in{opacity:1;transform:translateY(0);}
+.confirm-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 17px;
+}
+.confirm-row+.confirm-row{
+  border-top:1px solid var(--color-gray-200);
+}
+.confirm-row-label{
+  font-family:var(--font-body);font-size:14px;font-weight:400;
+  color:var(--color-gray-500);letter-spacing:-0.5px;line-height:20px;
+}
+.confirm-row-value{
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:var(--color-gray-900);letter-spacing:-0.5px;line-height:20px;
+}
+.confirm-badge{
+  display:inline-flex;align-items:center;
+  background:#FEF7EE;border:1px solid #F9D7AF;
+  border-radius:9999px;padding:2px 10px;
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:#B84416;letter-spacing:-0.5px;line-height:20px;
+}
+
+/* Actions */
+.confirm-actions{
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  width:100%;
+  opacity:0;transform:translateY(12px);
+  transition:opacity 280ms ease, transform 280ms ease;
+}
+.confirm-actions.in{opacity:1;transform:translateY(0);}
+.btn-view{
+  width:100%;height:40px;
+  background:#fff;border:1px solid rgba(0,0,0,0.09);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:rgba(10,13,18,0.7);cursor:pointer;letter-spacing:-0.5px;
+  transition:background 120ms, transform 100ms;
+}
+.btn-view:hover{background:var(--color-gray-100);}
+.btn-view:active{transform:scale(0.97);}
+.btn-back-advisors{
+  margin-top:12px;
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:var(--color-brand-700);cursor:pointer;letter-spacing:-0.5px;
+  background:none;border:none;padding:4px 8px;border-radius:6px;
+  transition:color 120ms, background 120ms;
+}
+.btn-back-advisors:hover{color:var(--color-brand-600);background:rgba(64,106,208,0.06);}
+.btn-back-advisors:active{transform:scale(0.97);}
+
+/* ══════════════════════════════════════════
+   SCREEN 0 — ADVISOR LISTING
+══════════════════════════════════════════ */
+.listing-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;flex-shrink:0;position:relative;
+}
+.listing-nav-title{
+  position:absolute;left:50%;transform:translateX(-50%);
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:var(--color-gray-900);letter-spacing:-0.5px;
+}
+
+.listing-scroll{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+.listing-header{
+  padding:0 16px 16px;
+  display:flex;flex-direction:column;gap:2px;
+}
+.listing-header h2{
+  font-family:var(--font-body);font-size:16px;font-weight:500;
+  color:rgba(10,13,18,0.9);letter-spacing:-0.5px;line-height:28px;
+}
+.listing-header p{
+  font-family:var(--font-body);font-size:14px;font-weight:400;
+  color:rgba(10,13,18,0.7);letter-spacing:-0.5px;line-height:20px;
+}
+
+/* Tabs */
+.listing-tabs{
+  display:flex;align-items:flex-end;gap:0;
+  padding:0 16px;
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;flex-shrink:0;
+  border-bottom:1px solid var(--color-gray-200);
+  margin-bottom:20px;
+}
+.listing-tabs::-webkit-scrollbar{display:none;}
+.listing-tab{
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px 8px;
+  height:32px;
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:var(--color-gray-500);letter-spacing:-0.5px;
+  white-space:nowrap;cursor:pointer;
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+  transition:color 150ms, border-color 150ms;
+  background:none;border-left:none;border-right:none;border-top:none;flex-shrink:0;
+  margin-right:12px;
+}
+.listing-tab:last-child{margin-right:0;}
+.listing-tab.active{
+  color:var(--color-gray-900);
+  border-bottom:2px solid var(--color-gray-700);
+}
+
+/* Cards container */
+.listing-cards{
+  display:flex;flex-direction:column;gap:0;
+  padding:0 16px 24px;
+  gap:12px;
+}
+
+/* Tab panels */
+@keyframes tabFadeIn{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes tabFadeOut{
+  from{opacity:1;transform:translateY(0);}
+  to{opacity:0;transform:translateY(-6px);}
+}
+.tab-panel{display:flex;flex-direction:column;gap:12px;}
+.tab-panel[hidden]{display:none;}
+.tab-panel.entering{animation:tabFadeIn 240ms cubic-bezier(0.22,1,0.36,1) forwards;}
+.tab-panel.exiting{animation:tabFadeOut 120ms ease forwards;pointer-events:none;}
+
+/* Advisor card — mobile: tap only, no hover */
+.advisor-card{
+  background:#fff;
+  border:1px solid rgba(0,0,0,0.06);
+  border-radius:16px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:transform 120ms var(--ease-ios);
+  flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.advisor-card:active{
+  transform:scale(0.975);
+}
+
+/* Card image area — Figma approach: inner box is 358:272 aspect ratio,
+   centered with background color visible on sides */
+.advisor-card-img{
+  height:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  position:relative;
+}
+.advisor-photo-inner{
+  aspect-ratio:358/272;
+  height:100%;
+  position:relative;
+  flex-shrink:0;
+  overflow:hidden;
+}
+.advisor-photo-inner img.advisor-photo{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+}
+
+/* Diagonal "Surmount's pick" banner */
+.badge-pick{
+  position:absolute;
+  top:-55px;right:-64px;
+  width:203px;height:171px;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+  z-index:2;
+}
+.badge-pick-inner{
+  transform:rotate(38.8deg);
+  padding:8px 10px;
+  border-radius:0;
+  border:1px solid rgba(0,0,0,0.04);
+  font-family:var(--font-body);font-size:10px;font-weight:500;
+  letter-spacing:-0.3px;line-height:13px;
+  white-space:nowrap;
+  width:237px;text-align:center;
+}
+
+/* Small pill badge on image (Español / Promoted) */
+.badge-pill{
+  position:absolute;bottom:8px;left:12px;
+  display:flex;align-items:center;gap:6px;
+  padding:8px 10px;border-radius:8px;
+  border:1px solid rgba(0,0,0,0.04);
+  box-shadow:0 2px 4px rgba(151,151,151,0.15);
+  z-index:2;overflow:hidden;
+  font-family:var(--font-body);font-size:12px;font-weight:500;
+  letter-spacing:-0.3px;line-height:18px;
+}
+.badge-pill::before{
+  content:'';
+  position:absolute;inset:0;
+  border-radius:inherit;
+  z-index:-1;
+}
+.badge-pill-icon{
+  width:22px;height:22px;
+  border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.badge-pill-icon img{width:10px;height:10px;display:block;}
+
+/* Not sure banner */
+.advisor-banner{
+  display:flex;align-items:center;gap:12px;
+  background:#F5F5F5;
+  border:1px solid rgba(0,0,0,0.06);
+  border-radius:12px;
+  padding:13px;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:background 120ms ease;
+  margin-top:8px;
+}
+.advisor-banner:active{background:#E8E8E8;}
+.advisor-banner-left{
+  flex:1;min-width:0;
+  display:flex;align-items:center;gap:12px;
+}
+.advisor-banner-icon{
+  width:24px;height:24px;flex-shrink:0;display:block;
+}
+.advisor-banner-text{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;gap:1.7px;
+}
+.advisor-banner-title{
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:#181D27;letter-spacing:-0.5px;line-height:20px;
+  white-space:nowrap;
+}
+.advisor-banner-subtitle{
+  font-family:var(--font-body);font-size:11px;font-weight:400;
+  color:#414651;letter-spacing:-0.5px;line-height:15.4px;
+}
+.advisor-banner-chevron{
+  flex-shrink:0;
+}
+
+/* Card info */
+.advisor-card-info{
+  padding:12px 16px 14px;
+}
+.advisor-name-row{
+  display:flex;align-items:center;gap:4px;flex-wrap:wrap;
+  margin-bottom:2px;
+}
+.advisor-name{
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:rgba(10,13,18,0.9);letter-spacing:-0.5px;line-height:20px;
+  white-space:nowrap;
+}
+.advisor-verified{
+  width:12px;height:12px;flex-shrink:0;display:block;
+}
+.advisor-cred{
+  display:inline-flex;align-items:center;
+  background:var(--color-gray-50);border:1px solid var(--color-gray-200);
+  border-radius:6px;padding:2px 6px;
+  font-family:var(--font-body);font-size:10px;font-weight:500;
+  color:var(--color-gray-700);letter-spacing:-0.3px;line-height:13px;
+}
+.advisor-subtitle{
+  font-family:var(--font-body);font-size:12px;font-weight:400;
+  color:rgba(10,13,18,0.7);letter-spacing:-0.5px;line-height:18px;
+}
+
+/* ══════════════════════════════════════════
+   QUIZ SCREEN (z:5)
+══════════════════════════════════════════ */
+#screenQuiz{transform:translateX(100%);z-index:6;background:#fff;}
+#screenQuiz.active{transform:translateX(0);}
+#screenQuiz.pushed{transform:translateX(-28%);}
+#screenQuiz.pushed::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.18);pointer-events:none;z-index:10;}
+
+/* RESULTS SCREEN (z:7) */
+#screenResults{transform:translateX(100%);z-index:7;}
+#screenResults.active{transform:translateX(0);}
+
+/* PORTFOLIO HOME SCREEN (z:1) — root screen, visible on load */
+#screenPortfolio{transform:translateX(0);z-index:1;background:#FCFCFC;}
+#screenPortfolio.pushed{transform:translateX(-28%);}
+#screenPortfolio::after{
+  content:'';position:absolute;inset:0;
+  background:rgba(0,0,0,0);pointer-events:none;
+  transition:background 300ms var(--ease-ios);z-index:99;
+}
+#screenPortfolio.pushed::after{background:rgba(0,0,0,0.18);}
+
+.pf-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;flex-shrink:0;}
+.pf-header-pill{
+  display:flex;align-items:center;gap:8px;
+  border:1px solid rgba(0,0,0,0.09);border-radius:35px;
+  padding:6px 8px;background:transparent;cursor:pointer;
+  box-shadow:0 1px 10px rgba(10,13,18,0.02);position:relative;overflow:hidden;
+}
+.pf-header-pill::before{
+  content:'';position:absolute;inset:0;border-radius:35px;
+  background:linear-gradient(to right,#E9EAEB,#FAFAFA);mix-blend-mode:luminosity;
+}
+.pf-header-pill-avatar{width:20px;height:20px;border-radius:50%;border:0.5px solid rgba(0,0,0,0.1);flex-shrink:0;overflow:hidden;position:relative;}
+.pf-header-pill-avatar img{width:100%;height:100%;object-fit:cover;}
+.pf-header-pill-label{font-family:var(--font-body);font-size:14px;font-weight:500;color:#414651;letter-spacing:-0.5px;position:relative;}
+.pf-header-pill-chevron{width:20px;height:20px;flex-shrink:0;position:relative;}
+.pf-header-pill-chevron img{width:100%;height:100%;}
+.pf-header-actions{display:flex;align-items:center;gap:12px;position:relative;}
+.pf-header-icon-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;position:relative;}
+.pf-header-icon-btn img{width:20px;height:20px;display:block;}
+.pf-notif-dot{position:absolute;width:6px;height:6px;background:#F04438;border-radius:50%;top:4px;left:4px;pointer-events:none;}
+
+.pf-hero{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 16px;}
+.pf-pro-badge{
+  display:flex;align-items:center;gap:4px;
+  border:1px solid rgba(0,0,0,0.1);border-radius:35px;
+  padding:4px 10px 4px 6px;position:relative;overflow:hidden;
+  box-shadow:0 1px 2px rgba(10,13,18,0.05);
+}
+.pf-pro-badge-bg{position:absolute;inset:0;border-radius:35px;overflow:hidden;}
+.pf-pro-badge-bg img{width:100%;height:100%;object-fit:cover;}
+.pf-pro-icon{width:20px;height:20px;flex-shrink:0;mix-blend-mode:luminosity;overflow:hidden;position:relative;}
+.pf-pro-icon img{width:100%;height:100%;}
+.pf-pro-label{font-family:var(--font-body);font-size:12px;font-weight:500;color:rgba(10,13,18,0.7);letter-spacing:-0.5px;position:relative;width:78px;}
+.pf-value-block{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.pf-value{font-family:var(--font-display);font-size:24px;font-weight:500;color:var(--color-gray-900);letter-spacing:-0.5px;}
+.pf-perf{font-family:var(--font-body);font-size:14px;font-weight:500;color:#3b7e3f;letter-spacing:-0.5px;}
+
+.pf-chart-wrap{width:100%;height:237px;flex-shrink:0;position:relative;overflow:hidden;}
+
+.pf-tabs{
+  display:flex;align-items:center;
+  background:#F5F5F5;border-radius:16px;padding:4px;
+  margin:0 16px;flex-shrink:0;
+}
+.pf-tab{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:4px 0;border-radius:12px;cursor:pointer;
+  font-family:var(--font-body);font-size:12px;font-weight:400;
+  color:rgba(10,13,18,0.5);letter-spacing:-0.5px;white-space:nowrap;
+}
+.pf-tab.active{background:#FAFAFA;color:rgba(10,13,18,0.9);}
+
+.pf-actions{display:flex;gap:12px;margin:0 16px;flex-shrink:0;}
+.pf-action-tile{
+  flex:1;background:#F5F5F5;border:1px solid rgba(0,0,0,0.06);border-radius:10px;
+  padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;
+}
+.pf-action-tile-icon{width:20px;height:20px;}
+.pf-action-tile-icon img{width:100%;height:100%;}
+.pf-action-label{font-family:var(--font-body);font-size:14px;font-weight:500;color:rgba(10,13,18,0.7);letter-spacing:-0.5px;}
+
+.pf-promo{
+  background:#EDECE6;border-radius:12px;padding:16px;
+  margin:0 16px;height:107px;overflow:hidden;position:relative;cursor:pointer;flex-shrink:0;
+}
+.pf-promo-top{display:flex;align-items:flex-start;justify-content:space-between;}
+.pf-promo-text{display:flex;flex-direction:column;width:273px;}
+.pf-promo-title{font-family:var(--font-body);font-size:14px;font-weight:500;color:rgba(10,13,18,0.9);letter-spacing:-0.5px;line-height:20px;}
+.pf-promo-subtitle{font-family:var(--font-body);font-size:12px;font-weight:400;color:rgba(10,13,18,0.7);letter-spacing:-0.5px;line-height:18px;}
+.pf-promo-close{width:16px;height:16px;flex-shrink:0;}
+.pf-promo-avatars{position:absolute;bottom:12px;right:-7px;width:80px;height:32px;}
+.pf-promo-av{position:absolute;border-radius:50%;border:0.75px solid rgba(0,0,0,0.08);overflow:hidden;}
+.pf-promo-av img{width:100%;height:100%;object-fit:cover;}
+
+.pf-section{display:flex;flex-direction:column;gap:16px;padding:0 16px;}
+.pf-section-head{display:flex;align-items:center;gap:6px;}
+.pf-section-title{font-family:var(--font-body);font-size:20px;font-weight:500;color:rgba(10,13,18,0.9);letter-spacing:-0.5px;}
+.pf-section-sort{width:24px;height:24px;flex-shrink:0;transform:rotate(-90deg);}
+.pf-section-sort img{width:100%;height:100%;}
+
+.pf-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;}
+.pf-row:not(:last-child){border-bottom:1px solid rgba(0,0,0,0.06);}
+.pf-row:not(:first-child){padding-top:12px;}
+.pf-row-left{display:flex;align-items:center;gap:12px;}
+.pf-row-avatar{width:32px;height:32px;border-radius:50%;border:0.75px solid rgba(0,0,0,0.08);flex-shrink:0;overflow:hidden;position:relative;}
+.pf-row-avatar img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.pf-row-labels{display:flex;flex-direction:column;gap:4px;}
+.pf-row-name{font-family:var(--font-body);font-size:14px;font-weight:400;color:rgba(10,13,18,0.9);letter-spacing:-0.5px;white-space:nowrap;}
+.pf-row-sub{display:flex;align-items:center;gap:6px;}
+.pf-broker-avs{display:flex;align-items:center;}
+.pf-broker-av{width:16px;height:16px;border-radius:50%;border:0.5px solid rgba(0,0,0,0.08);flex-shrink:0;overflow:hidden;margin-right:-4px;}
+.pf-broker-av img{width:100%;height:100%;object-fit:cover;}
+.pf-broker-av:last-child{margin-right:0;}
+.pf-row-sub-label{font-family:var(--font-body);font-size:12px;font-weight:400;color:#535862;letter-spacing:-0.5px;white-space:nowrap;}
+.pf-row-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.pf-row-val{font-family:var(--font-body);font-size:14px;font-weight:400;color:rgba(10,13,18,0.9);letter-spacing:-0.5px;white-space:nowrap;}
+.pf-row-change{font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:-0.5px;white-space:nowrap;}
+.pf-row-change.up{color:#3b7e3f;}
+.pf-row-change.neutral{color:#535862;}
+.pf-activity-date{font-family:var(--font-body);font-size:12px;font-weight:500;color:rgba(10,13,18,0.6);letter-spacing:-0.5px;padding-bottom:12px;display:block;}
+
+.pf-view-all{
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(0,0,0,0.09);border-radius:8px;padding:8px 12px;cursor:pointer;
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  color:rgba(10,13,18,0.7);letter-spacing:-0.5px;
+}
+
+.pf-bottom-nav{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:16px 64px 44px;border-top:1px solid rgba(50,48,47,0.08);
+  background:#fff;flex-shrink:0;
+}
+.pf-nav-icon{width:26px;height:26px;flex-shrink:0;cursor:pointer;}
+.pf-nav-icon img{width:100%;height:100%;display:block;}
+
+/* Quiz nav row */
+.quiz-nav{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 20px 4px;
+}
+.quiz-progress-bar{flex:1;display:flex;gap:4px;}
+.quiz-step{flex:1;height:3px;background:var(--color-gray-200);border-radius:2px;transition:background 280ms ease;}
+.quiz-step.filled{background:var(--color-brand-600);}
+.quiz-step.active{background:var(--color-brand-600);opacity:0.5;}
+
+/* Quiz body */
+.quiz-body{flex:1;overflow:hidden;position:relative;}
+.quiz-question-wrap{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  padding:28px 20px 20px;
+  overflow-y:auto;
+}
+.quiz-headline{
+  font-family:var(--font-display);font-size:28px;font-weight:700;
+  color:var(--color-gray-900);letter-spacing:-0.8px;line-height:1.15;
+  margin-bottom:8px;
+}
+.quiz-sub{
+  font-size:14px;color:var(--color-gray-500);
+  line-height:1.5;letter-spacing:-0.3px;margin-bottom:28px;
+}
+
+/* Option cards (emoji + title + sub) */
+.quiz-label{font-size:12px;font-weight:500;color:var(--color-brand-600);letter-spacing:-0.3px;margin-bottom:6px;}
+.quiz-options{display:flex;flex-direction:column;gap:10px;}
+.quiz-option{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 16px;
+  background:#fff;
+  border:1.5px solid var(--color-gray-200);
+  border-radius:14px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:border-color 150ms ease,background 150ms ease,transform 120ms ease;
+}
+.quiz-option:active{transform:scale(0.975);background:var(--color-gray-50);}
+.quiz-option.selected{border-color:var(--color-brand-600);background:#F0F4FD;}
+.quiz-option-emoji{font-size:22px;line-height:1;flex-shrink:0;width:28px;text-align:center;}
+.quiz-option-text{flex:1;min-width:0;}
+.quiz-option-title{font-size:14px;font-weight:500;color:var(--color-gray-900);letter-spacing:-0.4px;line-height:1.25;}
+.quiz-option-sub{font-size:12px;color:var(--color-gray-500);letter-spacing:-0.3px;line-height:1.35;margin-top:2px;}
+
+/* Quiz slide animations */
+@keyframes qSlideInRight {from{transform:translateX(60px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes qSlideOutLeft  {from{transform:translateX(0);opacity:1;}to{transform:translateX(-40px);opacity:0;}}
+@keyframes qSlideInLeft   {from{transform:translateX(-60px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes qSlideOutRight {from{transform:translateX(0);opacity:1;}to{transform:translateX(60px);opacity:0;}}
+.quiz-question-wrap.slide-in-right {animation:qSlideInRight  260ms cubic-bezier(0.22,1,0.36,1) forwards;}
+.quiz-question-wrap.slide-out-left {animation:qSlideOutLeft  180ms ease forwards;}
+.quiz-question-wrap.slide-in-left  {animation:qSlideInLeft   260ms cubic-bezier(0.22,1,0.36,1) forwards;}
+.quiz-question-wrap.slide-out-right{animation:qSlideOutRight 180ms ease forwards;}
+
+/* ══════════════════════════════════════════
+   RESULTS SCREEN
+══════════════════════════════════════════ */
+.results-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 20px 0;
+}
+.results-nav-title{
+  font-size:16px;font-weight:600;
+  color:var(--color-gray-900);letter-spacing:-0.5px;
+}
+.results-scroll{
+  flex:1;overflow-y:auto;padding:14px 20px 40px;
+  display:flex;flex-direction:column;gap:10px;
+}
+
+/* Answer chips */
+.answer-chips{display:flex;flex-wrap:wrap;gap:7px;flex-shrink:0;}
+.answer-chip{
+  display:flex;align-items:center;gap:5px;
+  padding:5px 10px;
+  background:#F0F4FD;
+  border:1px solid rgba(64,106,208,0.2);
+  border-radius:20px;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:background 120ms ease;
+}
+.answer-chip:active{background:#E3EBF8;}
+.answer-chip-text{
+  font-size:12px;font-weight:500;
+  color:var(--color-brand-600);letter-spacing:-0.3px;
+  white-space:nowrap;
+}
+.answer-chip-edit{width:11px;height:11px;opacity:0.6;flex-shrink:0;}
+
+/* Section heading */
+.results-section-label{
+  font-size:11px;font-weight:500;
+  color:var(--color-gray-500);letter-spacing:-0.3px;
+  margin-bottom:-4px;flex-shrink:0;
+}
+
+/* Result advisor card */
+.result-advisor-card{
+  background:#fff;
+  border:1px solid var(--color-gray-200);
+  border-radius:16px;overflow:hidden;
+  box-shadow:var(--shadow-card);
+  flex-shrink:0;
+}
+.result-advisor-img{
+  height:120px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;
+}
+.result-advisor-photo-inner{
+  aspect-ratio:358/272;height:100%;
+  position:relative;flex-shrink:0;overflow:hidden;
+}
+.result-advisor-photo-inner img{
+  position:absolute;inset:0;
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.result-rank-badge{
+  position:absolute;top:8px;left:10px;
+  background:rgba(10,13,18,0.52);color:#fff;
+  font-size:11px;font-weight:500;letter-spacing:-0.3px;
+  padding:3px 8px;border-radius:20px;
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+.result-advisor-info{
+  padding:10px 14px 12px;
+  border-bottom:1px solid var(--color-gray-200);
+}
+.result-advisor-name-row{
+  display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:2px;
+}
+.result-advisor-name{
+  font-size:14px;font-weight:600;
+  color:var(--color-gray-900);letter-spacing:-0.5px;
+}
+.result-advisor-subtitle{
+  font-size:12px;color:rgba(10,13,18,0.7);letter-spacing:-0.3px;
+}
+
+/* Rationale rows */
+.result-rationale{padding:0 14px;}
+.rationale-row{
+  display:flex;align-items:flex-start;gap:9px;
+  padding:8px 0;
+  border-bottom:1px solid var(--color-gray-200);
+}
+.rationale-row:last-child{border-bottom:none;}
+.rationale-indicator{
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;
+}
+.rationale-indicator.strong{background:#3D8B45;}
+.rationale-indicator.partial{background:#C97B0B;}
+.rationale-body{flex:1;min-width:0;}
+.rationale-said{
+  font-size:11px;font-weight:500;color:var(--color-gray-500);
+  letter-spacing:-0.3px;line-height:15px;
+}
+.rationale-text{
+  font-size:12px;font-weight:400;color:var(--color-gray-700);
+  letter-spacing:-0.3px;line-height:16px;margin-top:2px;
+}
+
+/* Match dots row */
+.match-dots-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 12px;
+  border-top:1px solid var(--color-gray-200);
+}
+.match-dots{display:flex;gap:5px;align-items:center;}
+.match-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--color-gray-200);
+}
+.match-dot.hit{background:var(--color-brand-600);}
+.match-strength-label{
+  font-size:11px;color:var(--color-gray-500);letter-spacing:-0.3px;
+}
+.match-strength-label b{color:var(--color-gray-900);font-weight:500;}
+
+/* Schedule from results CTA */
+.result-cta-btn{
+  width:100%;padding:13px;
+  background:var(--color-brand-600);color:#fff;
+  border:none;border-radius:12px;
+  font-family:var(--font-body);font-size:14px;font-weight:500;
+  letter-spacing:-0.3px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:background 120ms ease;
+}
+.result-cta-btn:active{background:var(--color-brand-700);}
+
+/* Fallback dashed card */
+.fallback-card{
+  display:flex;align-items:center;gap:12px;
+  padding:16px;
+  border:1.5px dashed var(--color-gray-300);
+  border-radius:14px;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  margin-top:4px;
+  transition:background 120ms ease;
+}
+.fallback-card:active{background:var(--color-gray-50);}
+.fallback-card-text{flex:1;min-width:0;}
+.fallback-card-title{
+  font-size:14px;font-weight:500;
+  color:var(--color-gray-900);letter-spacing:-0.4px;line-height:20px;
+}
+.fallback-card-sub{
+  font-size:12px;color:var(--color-gray-500);
+  letter-spacing:-0.3px;margin-top:2px;
+}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 0 — ADVISOR LISTING
+  ═══════════════════════════════════════ -->
+  <div class="screen" id="screenListing">
+
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-island"></div>
+      <div class="status-icons">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181D27"/><rect x="5" y="2" width="3" height="10" rx="1" fill="#181D27"/><rect x="10" y="0" width="3" height="12" rx="1" fill="#181D27"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#181D27" opacity="0.3"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.5C9.7 3.5 11.2 4.2 12.3 5.3L13.7 3.9C12.2 2.4 10.2 1.5 8 1.5C5.8 1.5 3.8 2.4 2.3 3.9L3.7 5.3C4.8 4.2 6.3 3.5 8 3.5Z" fill="#181D27"/><path d="M8 6.5C9.1 6.5 10.1 6.9 10.9 7.7L12.3 6.3C11.1 5.1 9.6 4.5 8 4.5C6.4 4.5 4.9 5.1 3.7 6.3L5.1 7.7C5.9 6.9 6.9 6.5 8 6.5Z" fill="#181D27"/><circle cx="8" cy="10" r="1.5" fill="#181D27"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#181D27" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#181D27"/><path d="M23 4.5V7.5C23.8 7.2 24.5 6.5 24.5 6C24.5 5.5 23.8 4.8 23 4.5Z" fill="#181D27" opacity="0.4"/></svg>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <div class="listing-nav">
+      <div class="nav-btn" id="listingBackBtn">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M12.5 15L7.5 10L12.5 5" stroke="#181D27" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="listing-nav-title">Find an advisor</span>
+      <div style="width:32px;height:32px;flex-shrink:0;"></div>
+    </div>
+
+    <div class="listing-scroll">
+
+      <!-- Header -->
+      <div class="listing-header">
+        <h2>Meet a human advisor</h2>
+        <p>Have a question or want to work with a professional? Browse advisors and reach out when ready.</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="listing-tabs">
+        <button class="listing-tab active" data-tab="for-you">For you</button>
+        <button class="listing-tab" data-tab="retirement">Retirement</button>
+        <button class="listing-tab" data-tab="long-term">Long-term</button>
+        <button class="listing-tab" data-tab="bilingual">Bilingual</button>
+        <button class="listing-tab" data-tab="tax">Tax</button>
+      </div>
+
+      <!-- Cards — tab panels -->
+      <div class="listing-cards">
+
+        <!-- ── For you ── -->
+        <div class="tab-panel" data-panel="for-you">
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#DFC2C0;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/367bed63-3512-4130-a215-ef10b52cceb5" alt="Noah Bennett">
+              </div>
+              <div class="badge-pick">
+                <div class="badge-pick-inner" style="background:linear-gradient(42.4deg,rgba(190,155,153,0.6) 14%,rgba(255,255,255,0.06) 51%,rgba(147,119,117,0.6) 84%);color:#7a5e5c;">Surmount's pick</div>
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Noah Bennett</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">Formerly @ Wealth Strategies</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:rgba(34,17,10,0.15);">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/f6580e4e-8893-4b42-ab1c-d5caa82faf03" alt="Eliot Swift">
+              </div>
+              <div class="badge-pill" style="backdrop-filter:blur(2px);background:rgba(233,234,235,0.7);color:rgba(10,13,18,0.7);">
+                <div class="badge-pill-icon" style="background:rgba(164,167,174,0.2);"><img src="https://www.figma.com/api/mcp/asset/a4dba029-550f-40b8-9e4b-8d9bf44be580" alt=""></div>
+                Español
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Eliot Swift</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">Financial Advisor @ Wealth Strategies</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#b4b8b9;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/a8151be6-1e87-4931-979d-38d5a2a0c0da" alt="Maya Thompson">
+              </div>
+              <div class="badge-pill" style="background:linear-gradient(63deg,rgba(255,231,0,0.8) 16%,rgb(255,233,132) 52%,rgba(233,198,24,0.8) 113%);color:#796800;box-shadow:0 2px 4px rgba(226,192,48,0.15),inset 0 2px 4px rgba(255,255,255,0.6);">
+                <div class="badge-pill-icon" style="background:rgba(189,157,0,0.75);"><img src="https://www.figma.com/api/mcp/asset/4cd011b8-70b9-40a7-bfb3-74a7fb453155" alt=""></div>
+                Promoted
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Maya Thompson</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">Wealth Manager @ Prosperity Partners</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#ABDBE7;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/72efa292-b25b-48b2-9d03-23ac453331b7" alt="Sophie Reynolds">
+              </div>
+              <div class="badge-pick">
+                <div class="badge-pick-inner" style="background:linear-gradient(42.4deg,rgba(171,219,231,0.6) 14%,rgba(196,224,231,0.6) 51%,rgba(171,219,231,0.6) 84%);color:#407d8c;">Surmount's pick</div>
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Sophie Reynolds</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">Formerly @ Prosperity Partners</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#E6E7E1;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/4ab165eb-2c2b-46ba-865c-22bd8b7926db" alt="Liam Carter">
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Liam Carter</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">Formerly @ Wealth Strategies</div>
+            </div>
+          </div>
+
+          <!-- Not sure banner -->
+          <div class="advisor-banner">
+            <div class="advisor-banner-left">
+              <!-- Question mark icon — Figma asset -->
+              <img class="advisor-banner-icon" src="https://www.figma.com/api/mcp/asset/b378d444-272e-4139-b18a-adb9b5644692" alt="" width="24" height="24">
+              <div class="advisor-banner-text">
+                <span class="advisor-banner-title">Not sure who's the right fit?</span>
+                <span class="advisor-banner-subtitle">Answer 4 quick questions — we'll curate a shortlist for you</span>
+              </div>
+            </div>
+            <!-- Chevron right — inline SVG -->
+            <div class="advisor-banner-chevron">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 12L10 8L6 4" stroke="#9A9FA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+        </div><!-- /for-you -->
+
+        <!-- ── Retirement ── -->
+        <div class="tab-panel" data-panel="retirement" hidden>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#ABDBE7;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/72efa292-b25b-48b2-9d03-23ac453331b7" alt="Sophie Reynolds">
+              </div>
+              <div class="badge-pick">
+                <div class="badge-pick-inner" style="background:linear-gradient(42.4deg,rgba(171,219,231,0.6) 14%,rgba(196,224,231,0.6) 51%,rgba(171,219,231,0.6) 84%);color:#407d8c;">Surmount's pick</div>
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Sophie Reynolds</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">RMA</span>
+              </div>
+              <div class="advisor-subtitle">Retirement specialist @ Prosperity Partners</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#E6E7E1;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/4ab165eb-2c2b-46ba-865c-22bd8b7926db" alt="Liam Carter">
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Liam Carter</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">401(k) & IRA planning @ Wealth Strategies</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#b4b8b9;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/a8151be6-1e87-4931-979d-38d5a2a0c0da" alt="Maya Thompson">
+              </div>
+              <div class="badge-pill" style="background:linear-gradient(63deg,rgba(255,231,0,0.8) 16%,rgb(255,233,132) 52%,rgba(233,198,24,0.8) 113%);color:#796800;box-shadow:0 2px 4px rgba(226,192,48,0.15),inset 0 2px 4px rgba(255,255,255,0.6);">
+                <div class="badge-pill-icon" style="background:rgba(189,157,0,0.75);"><img src="https://www.figma.com/api/mcp/asset/4cd011b8-70b9-40a7-bfb3-74a7fb453155" alt=""></div>
+                Promoted
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Maya Thompson</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">RICP</span>
+              </div>
+              <div class="advisor-subtitle">Formerly @ Fidelity Investments</div>
+            </div>
+          </div>
+
+          <!-- Fallback card -->
+          <div class="fallback-card">
+            <div class="fallback-card-text">
+              <div class="fallback-card-title">Not seeing your advisor?</div>
+              <div class="fallback-card-sub">Tell us about your goals and we'll curate a shortlist</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="#9A9FA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+
+        </div><!-- /retirement -->
+
+        <!-- ── Long-term ── -->
+        <div class="tab-panel" data-panel="long-term" hidden>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#DFC2C0;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/367bed63-3512-4130-a215-ef10b52cceb5" alt="Noah Bennett">
+              </div>
+              <div class="badge-pick">
+                <div class="badge-pick-inner" style="background:linear-gradient(42.4deg,rgba(190,155,153,0.6) 14%,rgba(255,255,255,0.06) 51%,rgba(147,119,117,0.6) 84%);color:#7a5e5c;">Surmount's pick</div>
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Noah Bennett</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">Long-term growth specialist · 14 yrs exp</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#E6E7E1;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/4ab165eb-2c2b-46ba-865c-22bd8b7926db" alt="Liam Carter">
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Liam Carter</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">ESG & index investing · Wealth Strategies</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#ABDBE7;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/72efa292-b25b-48b2-9d03-23ac453331b7" alt="Sophie Reynolds">
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Sophie Reynolds</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">Portfolio construction · Prosperity Partners</div>
+            </div>
+          </div>
+
+          <!-- Fallback card -->
+          <div class="fallback-card">
+            <div class="fallback-card-text">
+              <div class="fallback-card-title">Not seeing your advisor?</div>
+              <div class="fallback-card-sub">Tell us about your goals and we'll curate a shortlist</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="#9A9FA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+
+        </div><!-- /long-term -->
+
+        <!-- ── Bilingual ── -->
+        <div class="tab-panel" data-panel="bilingual" hidden>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:rgba(34,17,10,0.15);">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/f6580e4e-8893-4b42-ab1c-d5caa82faf03" alt="Eliot Swift">
+              </div>
+              <div class="badge-pill" style="backdrop-filter:blur(2px);background:rgba(233,234,235,0.7);color:rgba(10,13,18,0.7);">
+                <div class="badge-pill-icon" style="background:rgba(164,167,174,0.2);"><img src="https://www.figma.com/api/mcp/asset/a4dba029-550f-40b8-9e4b-8d9bf44be580" alt=""></div>
+                Español
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Eliot Swift</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">English · Español · Wealth Strategies</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#b4b8b9;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/a8151be6-1e87-4931-979d-38d5a2a0c0da" alt="Maya Thompson">
+              </div>
+              <div class="badge-pill" style="backdrop-filter:blur(2px);background:rgba(233,234,235,0.7);color:rgba(10,13,18,0.7);">
+                <div class="badge-pill-icon" style="background:rgba(164,167,174,0.2);">
+                  <svg viewBox="0 0 10 10" fill="none" style="width:10px;height:10px;"><path d="M2 5h6M5 2l3 3-3 3" stroke="rgba(10,13,18,0.7)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                普通话
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Maya Thompson</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">English · 普通话 · Prosperity Partners</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#DFC2C0;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/367bed63-3512-4130-a215-ef10b52cceb5" alt="Noah Bennett">
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Noah Bennett</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">CFA</span>
+              </div>
+              <div class="advisor-subtitle">English · Français · Wealth Strategies</div>
+            </div>
+          </div>
+
+          <!-- Fallback card -->
+          <div class="fallback-card">
+            <div class="fallback-card-text">
+              <div class="fallback-card-title">Not seeing your advisor?</div>
+              <div class="fallback-card-sub">Tell us about your goals and we'll curate a shortlist</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="#9A9FA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+
+        </div><!-- /bilingual -->
+
+        <!-- ── Tax ── -->
+        <div class="tab-panel" data-panel="tax" hidden>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#b4b8b9;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/a8151be6-1e87-4931-979d-38d5a2a0c0da" alt="Maya Thompson">
+              </div>
+              <div class="badge-pick">
+                <div class="badge-pick-inner" style="background:linear-gradient(42.4deg,rgba(180,184,185,0.6) 14%,rgba(220,220,220,0.06) 51%,rgba(150,155,160,0.6) 84%);color:#4a4f55;">Surmount's pick</div>
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Maya Thompson</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">EA</span>
+              </div>
+              <div class="advisor-subtitle">Tax-loss harvesting · Prosperity Partners</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#DFC2C0;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/367bed63-3512-4130-a215-ef10b52cceb5" alt="Noah Bennett">
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Noah Bennett</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">CPA</span>
+              </div>
+              <div class="advisor-subtitle">RSU & equity tax planning · Wealth Strategies</div>
+            </div>
+          </div>
+
+          <div class="advisor-card">
+            <div class="advisor-card-img" style="background:#E6E7E1;">
+              <div class="advisor-photo-inner">
+                <img class="advisor-photo" src="https://www.figma.com/api/mcp/asset/4ab165eb-2c2b-46ba-865c-22bd8b7926db" alt="Liam Carter">
+              </div>
+            </div>
+            <div class="advisor-card-info">
+              <div class="advisor-name-row">
+                <span class="advisor-name">Liam Carter</span>
+                <svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="advisor-cred">CFP</span><span class="advisor-cred">EA</span>
+              </div>
+              <div class="advisor-subtitle">Capital gains & estate planning · 11 yrs exp</div>
+            </div>
+          </div>
+
+          <!-- Fallback card -->
+          <div class="fallback-card">
+            <div class="fallback-card-text">
+              <div class="fallback-card-title">Not seeing your advisor?</div>
+              <div class="fallback-card-sub">Tell us about your goals and we'll curate a shortlist</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12L10 8L6 4" stroke="#9A9FA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+
+        </div><!-- /tax -->
+
+      </div><!-- /listing-cards -->
+    </div><!-- /listing-scroll -->
+
+  </div><!-- /screenListing -->
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 1 — ADVISOR PROFILE
+  ═══════════════════════════════════════ -->
+  <div class="screen" id="screenProfile">
+
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-island"></div>
+      <div class="status-icons">
+        <img src="https://www.figma.com/api/mcp/asset/51628e4d-5cc7-4401-9686-e511f8b627f0" alt="" width="19" height="12">
+        <img src="https://www.figma.com/api/mcp/asset/5466b2a7-7cd6-4cb3-8cba-d60e616708b7" alt="" width="17" height="12">
+        <img src="https://www.figma.com/api/mcp/asset/051d738b-8f3c-4aa2-8c0b-bafe68829aaa" alt="" width="27" height="13">
+      </div>
+    </div>
+
+    <div class="nav-bar">
+      <div class="nav-btn" id="profileBackBtn">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M12.5 15L7.5 10L12.5 5" stroke="#181D27" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="scroll-area">
+      <div class="content-wrap">
+
+        <!-- Flippable profile card -->
+        <div class="card-flip-container" id="profileFlip">
+          <div class="card-flip-inner">
+
+            <div class="card-front">
+              <div class="profile-card">
+                <div class="profile-firm-logo">
+                  <div class="profile-firm-logo-inner">
+                    <img src="https://www.figma.com/api/mcp/asset/02093d8c-657d-481e-8ca7-55846268162b" alt="Firm logo">
+                  </div>
+                </div>
+                <div class="profile-top">
+                  <div class="avatar-row">
+                    <div class="avatar-wrap">
+                      <img class="avatar-img" src="https://www.figma.com/api/mcp/asset/df4327e6-3326-48af-9799-63b6ace38690" alt="John Smith">
+                      <div class="verified-badge">
+                        <img class="badge-outer" src="https://www.figma.com/api/mcp/asset/b9549137-0129-4004-8173-b45137807aaf" alt="">
+                        <img class="badge-inner" src="https://www.figma.com/api/mcp/asset/45453669-0990-47ba-9bf7-c83989829e48" alt="">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="profile-name-block">
+                    <span class="profile-name">John Smith</span>
+                    <span class="profile-title">Investment Strategist @ BlackRock</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-back">
+              <div class="card-back-spiral">
+                <img src="https://www.figma.com/api/mcp/asset/53462156-7263-4b3b-8041-0587e0c5f156" alt="">
+              </div>
+              <div class="card-back-text-block">
+                <img class="quote-mark" src="https://www.figma.com/api/mcp/asset/8c9262b5-b148-4c43-9e22-e6b8f176a643" alt="">
+                <p class="quote-text">I help tech employees manage RSU-heavy portfolios, cut tax drag, and plan around vesting cliffs.</p>
+              </div>
+              <div class="card-back-avatar-wrap">
+                <div class="card-back-avatar-overlay"></div>
+                <img class="card-back-avatar" src="https://www.figma.com/api/mcp/asset/b2f092fa-93e2-4f99-8f94-a881f3bed984" alt="John Smith">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="action-row">
+          <button class="btn-primary" id="scheduleBtn">
+            <img src="https://www.figma.com/api/mcp/asset/4c9e2128-e377-463f-8d44-322abfa74886" alt="">
+            Schedule a call
+          </button>
+        </div>
+
+        <!-- Sections -->
+        <div class="sections-wrap">
+
+          <div>
+            <div class="section-heading">About</div>
+            <p class="about-text">John is a Certified Financial Planner with over 12 years of experience helping high-net-worth individuals and families build lasting wealth. At Merrill Lynch, she specializes in comprehensive financial planning — from portfolio construction to retirement transition strategies.</p>
+            <div class="social-icons-row">
+              <div class="social-icon"><img src="https://www.figma.com/api/mcp/asset/87554c6a-bf93-4608-9e75-0a87323a1497" alt="Website"></div>
+              <div class="social-icon"><img src="https://www.figma.com/api/mcp/asset/12c131c5-f06f-4fb1-a325-d34a266dd6d2" alt="Email"></div>
+              <div class="social-icon"><img src="https://www.figma.com/api/mcp/asset/d59d6d02-c66b-485e-9c70-587a37693a87" alt="X"></div>
+              <div class="social-icon"><img src="https://www.figma.com/api/mcp/asset/0b28c885-a220-4eae-84af-bdaa381fb393" alt="LinkedIn"></div>
+              <div class="social-icon instagram">
+                <img class="ig-gradient" src="https://www.figma.com/api/mcp/asset/15acb52f-a818-4128-9f8c-390218d7b548" alt="Instagram">
+              </div>
+              <div class="tiktok-wrap">
+                <img src="https://www.figma.com/api/mcp/asset/4e101709-1ba7-4762-b746-efeea0ee5342" alt="" style="top:4%;left:19.67%;right:5.62%;bottom:0;width:calc(100% - 25.29%);height:96%;">
+                <img src="https://www.figma.com/api/mcp/asset/3b261f69-aea3-4b3a-a1a0-dd2750b2de06" alt="" style="top:4%;left:11.04%;right:10.41%;bottom:4%;width:calc(100% - 21.45%);height:92%;">
+                <img src="https://www.figma.com/api/mcp/asset/0a252301-88f5-441a-bd1c-6757e8a17212" alt="" style="top:0;left:6.25%;right:10.41%;bottom:9.14%;width:calc(100% - 16.66%);height:90.86%;">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="strategies-header">
+              <span class="section-heading" style="margin-bottom:0">John's Strategies</span>
+              <span class="strategies-badge">28</span>
+            </div>
+            <div class="strategies-scroll">
+              <div class="strategy-card">
+                <div class="strategy-card-bg">
+                  <img src="https://www.figma.com/api/mcp/asset/d6100eeb-51dd-406c-ad51-8bc11b7f07cb" alt="">
+                  <div class="strategy-card-overlay" style="background:linear-gradient(271deg,rgba(47,27,0,0) 25.8%,rgb(47,27,0) 68.4%);"></div>
+                </div>
+                <div class="strategy-card-content">
+                  <span class="strategy-name">Quantum Computing Leaders</span>
+                  <div class="strategy-avatars">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/a485702f-0db3-47cd-a3dc-824c5223873c" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/cb8ee99a-fb1c-4eaa-8780-c0175a74a51b" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/b545faa7-e722-4058-a65d-bfec7c11df64" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/770385ef-ad45-4930-b87d-49f92f0f1316" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/25f7a6e6-197e-4023-be93-9dd0681ef5d7" alt="">
+                  </div>
+                  <div class="strategy-stats"><span class="strategy-return">+87.53%</span><span class="strategy-period">3 Year</span></div>
+                </div>
+              </div>
+              <div class="strategy-card">
+                <div class="strategy-card-bg">
+                  <img src="https://www.figma.com/api/mcp/asset/39371905-caa0-474f-bcc5-b787d61c1a00" alt="">
+                  <div class="strategy-card-overlay" style="background:linear-gradient(269deg,rgba(32,38,42,0) 25.9%,rgb(32,38,42) 67.1%);"></div>
+                </div>
+                <div class="strategy-card-content">
+                  <span class="strategy-name">Artificial Intelligence Innovations</span>
+                  <div class="strategy-avatars">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/a485702f-0db3-47cd-a3dc-824c5223873c" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/cb8ee99a-fb1c-4eaa-8780-c0175a74a51b" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/b545faa7-e722-4058-a65d-bfec7c11df64" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/770385ef-ad45-4930-b87d-49f92f0f1316" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/25f7a6e6-197e-4023-be93-9dd0681ef5d7" alt="">
+                  </div>
+                  <div class="strategy-stats"><span class="strategy-return">+65.12%</span><span class="strategy-period">1 Year</span></div>
+                </div>
+              </div>
+              <div class="strategy-card">
+                <div class="strategy-card-bg">
+                  <img src="https://www.figma.com/api/mcp/asset/9f545d66-73ec-44e8-b94b-0e50574bf6f1" alt="">
+                  <div class="strategy-card-overlay" style="background:linear-gradient(271deg,rgba(36,55,60,0.1) 25.8%,rgb(16,29,32) 68.4%);"></div>
+                </div>
+                <div class="strategy-card-content">
+                  <span class="strategy-name">RSI-Weighted ETFs</span>
+                  <div class="strategy-avatars">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/a485702f-0db3-47cd-a3dc-824c5223873c" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/cb8ee99a-fb1c-4eaa-8780-c0175a74a51b" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/b545faa7-e722-4058-a65d-bfec7c11df64" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/770385ef-ad45-4930-b87d-49f92f0f1316" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/25f7a6e6-197e-4023-be93-9dd0681ef5d7" alt="">
+                  </div>
+                  <div class="strategy-stats"><span class="strategy-return">+78.45%</span><span class="strategy-period">1 Year</span></div>
+                </div>
+              </div>
+              <div class="strategy-card">
+                <div class="strategy-card-bg">
+                  <img src="https://www.figma.com/api/mcp/asset/518c0902-01dd-4202-a6ab-a01444aaef89" alt="">
+                  <div class="strategy-card-overlay" style="background:linear-gradient(269deg,rgba(38,32,42,0) 25.9%,rgb(38,32,42) 67.1%);"></div>
+                </div>
+                <div class="strategy-card-content">
+                  <span class="strategy-name">E-commerce Expansion</span>
+                  <div class="strategy-avatars">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/a485702f-0db3-47cd-a3dc-824c5223873c" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/cb8ee99a-fb1c-4eaa-8780-c0175a74a51b" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/b545faa7-e722-4058-a65d-bfec7c11df64" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/770385ef-ad45-4930-b87d-49f92f0f1316" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/25f7a6e6-197e-4023-be93-9dd0681ef5d7" alt="">
+                  </div>
+                  <div class="strategy-stats"><span class="strategy-return">+80.67%</span><span class="strategy-period">1 Year</span></div>
+                </div>
+              </div>
+              <div class="strategy-card">
+                <div class="strategy-card-bg">
+                  <img src="https://www.figma.com/api/mcp/asset/4116ce82-c10b-40c5-8da0-66af1ad4c4ac" alt="">
+                  <div class="strategy-card-overlay" style="background:linear-gradient(269deg,rgba(68,38,21,0.1) 25.9%,rgb(24,19,13) 67.1%);"></div>
+                </div>
+                <div class="strategy-card-content">
+                  <span class="strategy-name">Deep Tech</span>
+                  <div class="strategy-avatars">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/a485702f-0db3-47cd-a3dc-824c5223873c" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/cb8ee99a-fb1c-4eaa-8780-c0175a74a51b" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/b545faa7-e722-4058-a65d-bfec7c11df64" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/770385ef-ad45-4930-b87d-49f92f0f1316" alt="">
+                    <img class="strategy-avatar" src="https://www.figma.com/api/mcp/asset/25f7a6e6-197e-4023-be93-9dd0681ef5d7" alt="">
+                  </div>
+                  <div class="strategy-stats"><span class="strategy-return">+53.32%</span><span class="strategy-period">1 Year</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-heading">Fee structure</div>
+            <div class="fee-rows">
+              <div class="fee-row"><span class="fee-label">Annual fee</span><span class="fee-value brand">1.0% AUM</span></div>
+              <div class="fee-row"><span class="fee-label">Account minimum</span><span class="fee-value">$250,000</span></div>
+              <div class="fee-row"><span class="fee-label">Commissions</span><span class="fee-value">None · fee-only</span></div>
+              <div class="fee-row"><span class="fee-label">Typical response</span><span class="fee-value">Within 24 hrs</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-heading">Experience</div>
+            <div class="timeline-list">
+              <div class="timeline-item">
+                <div class="tl-logo-wrap"><img src="https://www.figma.com/api/mcp/asset/36ddd534-0a12-4db5-ba6d-054e6476b4c9" alt="Goldman Sachs"></div>
+                <div class="tl-info"><span class="tl-org">Goldman Sachs</span><span class="tl-role">Financial Advisor, Wealth Management</span><span class="tl-period">2015 – 2021 · 6 yrs</span></div>
+              </div>
+              <div class="timeline-item">
+                <div class="tl-logo-wrap"><img src="https://www.figma.com/api/mcp/asset/09965f54-9874-45db-afd4-072e8caa373b" alt="Merrill Lynch"></div>
+                <div class="tl-info"><span class="tl-org">Merrill Lynch</span><span class="tl-role">Financial Advisor</span><span class="tl-period">2012 – 2015 · 3 yrs</span></div>
+              </div>
+              <div class="timeline-item">
+                <div class="tl-logo-wrap"><img src="https://www.figma.com/api/mcp/asset/5868da75-3366-4216-be11-49e75d01ddb0" alt="Fidelity"></div>
+                <div class="tl-info"><span class="tl-org">Fidelity Investments</span><span class="tl-role">Investment Analyst</span><span class="tl-period">2009 – 2012 · 3 yrs</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-heading">Education</div>
+            <div class="timeline-list">
+              <div class="timeline-item">
+                <div class="tl-logo-wrap"><img src="https://www.figma.com/api/mcp/asset/6de2f3a1-646c-42f7-83b0-9c244ca92888" alt="UC Berkeley Haas"></div>
+                <div class="tl-info"><span class="tl-org">UC Berkeley, Haas</span><span class="tl-role">MBA · Finance</span><span class="tl-period">2007 – 2009</span></div>
+              </div>
+              <div class="timeline-item">
+                <div class="tl-logo-wrap"><img src="https://www.figma.com/api/mcp/asset/3179a381-99c6-4529-bc47-17e9d965ceca" alt="Stanford"></div>
+                <div class="tl-info"><span class="tl-org">Stanford University</span><span class="tl-role">BS · Economics</span><span class="tl-period">2003 – 2007</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /sections-wrap -->
+      </div><!-- /content-wrap -->
+
+      <!-- Map -->
+      <div class="map-section-wrap">
+        <div class="map-section">
+          <img class="map-tile" src="https://www.figma.com/api/mcp/asset/8563e1f9-2389-4b3e-88c0-4f6f08d66b81" alt="">
+          <div class="map-fade-top"></div>
+          <div class="map-fade-bottom"></div>
+          <div class="map-dot"></div>
+          <div class="location-chip">
+            <div class="location-icon"><img src="https://www.figma.com/api/mcp/asset/b4b6d4af-f6dc-4639-a176-1d75fb3e50bd" alt=""></div>
+            <span class="location-text">San Francisco, CA</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /scroll-area -->
+  </div><!-- /screenProfile -->
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 2 — SCHEDULE MEETING
+  ═══════════════════════════════════════ -->
+  <div class="screen" id="screenSchedule">
+
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-island"></div>
+      <div class="status-icons">
+        <img src="https://www.figma.com/api/mcp/asset/d3e95331-3d1a-4827-8871-51393a4ccf8a" alt="" width="19" height="12">
+        <img src="https://www.figma.com/api/mcp/asset/2c1c0c48-b55c-4bca-97d9-32d3c18258a2" alt="" width="17" height="12">
+        <img src="https://www.figma.com/api/mcp/asset/fef6c423-60b8-43a7-b9f4-78e32a9aa686" alt="" width="27" height="13">
+      </div>
+    </div>
+
+    <div class="nav-bar">
+      <div class="nav-btn" id="backBtn">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M12.5 15L7.5 10L12.5 5" stroke="#181D27" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="sched-scroll">
+      <div class="sched-wrap">
+
+        <div class="sched-header">
+          <h1 class="sched-title">Pick a time with John</h1>
+          <p class="sched-subtitle">The advisor will confirm your request and share meeting details.</p>
+        </div>
+
+        <div class="sched-sections">
+
+          <!-- Info box -->
+          <div class="info-box">
+            <div class="info-row">
+              <div class="info-icon"><img src="https://www.figma.com/api/mcp/asset/f7a1aa3c-f909-473b-8d06-9151aed12d16" alt=""></div>
+              <div class="info-text">
+                <span class="info-label">Your request, their confirm</span>
+                <span class="info-desc">The advisor will reach out to confirm or suggest another time</span>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon"><img src="https://www.figma.com/api/mcp/asset/c3c0eff7-3eed-43d1-a9e0-65f762c08dd3" alt=""></div>
+              <div class="info-text">
+                <span class="info-label">Cancel or reschedule anytime</span>
+                <span class="info-desc">Right from Surmount, before the meeting</span>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-icon"><img src="https://www.figma.com/api/mcp/asset/3ad1a9d2-1a2a-46f6-b250-b5bf9a803c41" alt=""></div>
+              <div class="info-text">
+                <span class="info-label">No commitment to continue</span>
+                <span class="info-desc">Any decision to work together happens after the conversation</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Choose a day -->
+          <div>
+            <div class="sched-section-heading">Choose a day</div>
+            <div class="day-scroll">
+              <div class="day-pill" data-label="Tue, Apr 15"><div class="day-pill-top"><span>TUE</span></div><div class="day-pill-bot"><span>15</span></div></div>
+              <div class="day-pill day-selected" data-label="Wed, Apr 16"><div class="day-pill-top"><span>WED</span></div><div class="day-pill-bot"><span>16</span></div></div>
+              <div class="day-pill" data-label="Thu, Apr 17"><div class="day-pill-top"><span>THU</span></div><div class="day-pill-bot"><span>17</span></div></div>
+              <div class="day-pill" data-label="Fri, Apr 18"><div class="day-pill-top"><span>FRI</span></div><div class="day-pill-bot"><span>18</span></div></div>
+              <div class="day-pill" data-label="Sat, Apr 19"><div class="day-pill-top"><span>SAT</span></div><div class="day-pill-bot"><span>19</span></div></div>
+              <div class="day-pill" data-label="Sun, Apr 20"><div class="day-pill-top"><span>SUN</span></div><div class="day-pill-bot"><span>20</span></div></div>
+            </div>
+          </div>
+
+          <!-- Available times -->
+          <div>
+            <div class="sched-section-heading">Available times</div>
+            <div class="time-grid">
+              <div class="time-slot" data-time="9:00 AM"><span>9:00 AM</span></div>
+              <div class="time-slot" data-time="10:30 AM"><span>10:30 AM</span></div>
+              <div class="time-slot" data-time="11:15 AM"><span>11:15 AM</span></div>
+              <div class="time-slot time-unavailable"><span>—</span></div>
+              <div class="time-slot time-selected" data-time="3:00 PM"><span>3:00 PM</span></div>
+              <div class="time-slot" data-time="4:45 PM"><span>4:45 PM</span></div>
+            </div>
+            <div class="disclaimer">
+              <p>Times shown in your local time (Pacific Time). Your request is sent when you tap send — the advisor will follow up with confirmation and meeting details.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Fixed bottom bar -->
+    <div class="sched-bottom">
+      <div class="sched-selected-text">Selected: <em id="selectedLabel">Wed, Apr 16 · 3:00 PM</em></div>
+      <button class="btn-send" id="sendBtn">Send request</button>
+    </div>
+
+  </div><!-- /screenSchedule -->
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 3 — CONFIRM
+  ═══════════════════════════════════════ -->
+  <div class="screen" id="screenConfirm">
+
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-island"></div>
+      <div class="status-icons">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181D27"/><rect x="5" y="2" width="3" height="10" rx="1" fill="#181D27"/><rect x="10" y="0" width="3" height="12" rx="1" fill="#181D27"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#181D27" opacity="0.3"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.5C9.7 3.5 11.2 4.2 12.3 5.3L13.7 3.9C12.2 2.4 10.2 1.5 8 1.5C5.8 1.5 3.8 2.4 2.3 3.9L3.7 5.3C4.8 4.2 6.3 3.5 8 3.5Z" fill="#181D27"/><path d="M8 6.5C9.1 6.5 10.1 6.9 10.9 7.7L12.3 6.3C11.1 5.1 9.6 4.5 8 4.5C6.4 4.5 4.9 5.1 3.7 6.3L5.1 7.7C5.9 6.9 6.9 6.5 8 6.5Z" fill="#181D27"/><circle cx="8" cy="10" r="1.5" fill="#181D27"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#181D27" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#181D27"/><path d="M23 4.5V7.5C23.8 7.2 24.5 6.5 24.5 6C24.5 5.5 23.8 4.8 23 4.5Z" fill="#181D27" opacity="0.4"/></svg>
+      </div>
+    </div>
+
+    <!-- Header: only close button top-right -->
+    <div class="confirm-header">
+      <div class="confirm-close" id="confirmCloseBtn">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M15 5L5 15M5 5L15 15" stroke="#181D27" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="confirm-body">
+
+      <!-- Success icon -->
+      <div class="confirm-icon-wrap" id="confirmIcon">
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+          <circle cx="28" cy="28" r="24" fill="#F0FAF0" stroke="none"/>
+          <circle class="circle-path" cx="28" cy="28" r="24.5" stroke="#3D8B45" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path class="check-path" d="M19 28L25 34L37 22" stroke="#3D8B45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <!-- Heading -->
+      <div class="confirm-text" id="confirmText">
+        <div class="confirm-title">Your request is on its way</div>
+        <div class="confirm-subtitle">John will review your request and follow up within 1–2 business days to confirm a time and share meeting details.</div>
+      </div>
+
+      <!-- Summary card -->
+      <div class="confirm-card" id="confirmCard">
+        <div class="confirm-row">
+          <span class="confirm-row-label">Advisor</span>
+          <span class="confirm-row-value">John Smith, CFP®</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-row-label">Preferred time</span>
+          <span class="confirm-row-value" id="confirmTime">Wed, Apr 16 · 3:00 PM PT</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-row-label">Status</span>
+          <span class="confirm-badge">Awaiting confirmation</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="confirm-actions" id="confirmActions">
+        <button class="btn-view">View request</button>
+        <button class="btn-back-advisors" id="backToAdvisorsBtn">Back to advisors</button>
+      </div>
+
+    </div><!-- /confirm-body -->
+
+  </div><!-- /screenConfirm -->
+
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 4 — ADVISOR MATCH QUIZ
+  ═══════════════════════════════════════ -->
+  <div class="screen" id="screenQuiz">
+
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-island"></div>
+      <div class="status-icons">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181D27"/><rect x="5" y="2" width="3" height="10" rx="1" fill="#181D27"/><rect x="10" y="0" width="3" height="12" rx="1" fill="#181D27"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#181D27" opacity="0.3"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.5C9.7 3.5 11.2 4.2 12.3 5.3L13.7 3.9C12.2 2.4 10.2 1.5 8 1.5C5.8 1.5 3.8 2.4 2.3 3.9L3.7 5.3C4.8 4.2 6.3 3.5 8 3.5Z" fill="#181D27"/><path d="M8 6.5C9.1 6.5 10.1 6.9 10.9 7.7L12.3 6.3C11.1 5.1 9.6 4.5 8 4.5C6.4 4.5 4.9 5.1 3.7 6.3L5.1 7.7C5.9 6.9 6.9 6.5 8 6.5Z" fill="#181D27"/><circle cx="8" cy="10" r="1.5" fill="#181D27"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#181D27" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#181D27"/><path d="M23 4.5V7.5C23.8 7.2 24.5 6.5 24.5 6C24.5 5.5 23.8 4.8 23 4.5Z" fill="#181D27" opacity="0.4"/></svg>
+      </div>
+    </div>
+
+    <div class="quiz-nav">
+      <div class="nav-btn" id="quizBackBtn">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="#181D27" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="quiz-progress-bar" id="quizProgressBar">
+        <div class="quiz-step"></div>
+        <div class="quiz-step"></div>
+        <div class="quiz-step"></div>
+        <div class="quiz-step"></div>
+      </div>
+      <div class="nav-btn" id="quizCloseBtn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3L13 13M13 3L3 13" stroke="#181D27" stroke-width="1.67" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+
+    <div class="quiz-body" id="quizBody"></div>
+
+  </div><!-- /screenQuiz -->
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 5 — MATCH RESULTS
+  ═══════════════════════════════════════ -->
+  <div class="screen" id="screenResults">
+
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-island"></div>
+      <div class="status-icons">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#181D27"/><rect x="5" y="2" width="3" height="10" rx="1" fill="#181D27"/><rect x="10" y="0" width="3" height="12" rx="1" fill="#181D27"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#181D27" opacity="0.3"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 3.5C9.7 3.5 11.2 4.2 12.3 5.3L13.7 3.9C12.2 2.4 10.2 1.5 8 1.5C5.8 1.5 3.8 2.4 2.3 3.9L3.7 5.3C4.8 4.2 6.3 3.5 8 3.5Z" fill="#181D27"/><path d="M8 6.5C9.1 6.5 10.1 6.9 10.9 7.7L12.3 6.3C11.1 5.1 9.6 4.5 8 4.5C6.4 4.5 4.9 5.1 3.7 6.3L5.1 7.7C5.9 6.9 6.5 8 6.5Z" fill="#181D27"/><circle cx="8" cy="10" r="1.5" fill="#181D27"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#181D27" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#181D27"/><path d="M23 4.5V7.5C23.8 7.2 24.5 6.5 24.5 6C24.5 5.5 23.8 4.8 23 4.5Z" fill="#181D27" opacity="0.4"/></svg>
+      </div>
+    </div>
+
+    <div class="results-nav">
+      <div class="nav-btn" id="resultsBackBtn">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="#181D27" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="results-nav-title">Your matches</span>
+      <div class="nav-btn" id="resultsCloseBtn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3L13 13M13 3L3 13" stroke="#181D27" stroke-width="1.67" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+
+    <div class="results-scroll" id="resultsScroll">
+      <!-- Injected by JS -->
+    </div>
+
+  </div><!-- /screenResults -->
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 6 — PORTFOLIO HOME
+  ═══════════════════════════════════════ -->
+  <div class="screen" id="screenPortfolio">
+
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-island"></div>
+      <div class="status-icons">
+        <img src="https://www.figma.com/api/mcp/asset/e3781938-e0c0-4995-891f-1f8905478dc7" width="19" height="12" alt="">
+        <img src="https://www.figma.com/api/mcp/asset/94f9f9ba-ed11-430b-975f-bd5d9f38ccae" width="17" height="12" alt="">
+        <img src="https://www.figma.com/api/mcp/asset/a33b024c-4ddb-4845-9fc6-7f600f9020fd" width="27" height="13" alt="">
+      </div>
+    </div>
+
+    <div class="pf-header">
+      <button class="pf-header-pill" id="portfolioBackBtn">
+        <div class="pf-header-pill-avatar">
+          <img src="https://www.figma.com/api/mcp/asset/92f8f916-5701-47cd-9a4a-fd4772090186" alt="">
+        </div>
+        <span class="pf-header-pill-label">All Portfolios</span>
+        <div class="pf-header-pill-chevron">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="#414651" viewBox="0 0 256 256"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+        </div>
+      </button>
+      <div class="pf-header-actions">
+        <div class="pf-header-icon-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="#414651" viewBox="0 0 256 256"><path d="M216,72H180.92c.39-.33.79-.65,1.17-1A29.53,29.53,0,0,0,192,49.57,32.62,32.62,0,0,0,158.44,16,29.53,29.53,0,0,0,137,25.91a54.94,54.94,0,0,0-9,14.48,54.94,54.94,0,0,0-9-14.48A29.53,29.53,0,0,0,97.56,16,32.62,32.62,0,0,0,64,49.57,29.53,29.53,0,0,0,73.91,71c.38.33.78.65,1.17,1H40A16,16,0,0,0,24,88v32a16,16,0,0,0,16,16v64a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V136a16,16,0,0,0,16-16V88A16,16,0,0,0,216,72ZM149,36.51a13.69,13.69,0,0,1,10-4.5h.49A16.62,16.62,0,0,1,176,49.08a13.69,13.69,0,0,1-4.5,10c-9.49,8.4-25.24,11.36-35,12.4C137.7,60.89,141,45.5,149,36.51Zm-64.09.36A16.63,16.63,0,0,1,96.59,32h.49a13.69,13.69,0,0,1,10,4.5c8.39,9.48,11.35,25.2,12.39,34.92-9.72-1-25.44-4-34.92-12.39a13.69,13.69,0,0,1-4.5-10A16.6,16.6,0,0,1,84.87,36.87ZM40,88h80v32H40Zm16,48h64v64H56Zm144,64H136V136h64Zm16-80H136V88h80v32Z"/></svg>
+        </div>
+        <div class="pf-header-icon-btn" style="position:relative;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="#414651" viewBox="0 0 256 256"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"/></svg>
+          <div class="pf-notif-dot"></div>
+        </div>
+        <div class="pf-header-icon-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="#414651" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06Zm-16.1-6.5a73.93,73.93,0,0,1,0,8.68,8,8,0,0,0,1.74,5.48l14.19,17.73a91.57,91.57,0,0,1-6.23,15L187,173.11a8,8,0,0,0-5.1,2.64,74.11,74.11,0,0,1-6.14,6.14,8,8,0,0,0-2.64,5.1l-2.51,22.58a91.32,91.32,0,0,1-15,6.23l-17.74-14.19a8,8,0,0,0-5-1.75h-.48a73.93,73.93,0,0,1-8.68,0,8,8,0,0,0-5.48,1.74L100.45,215.8a91.57,91.57,0,0,1-15-6.23L82.89,187a8,8,0,0,0-2.64-5.1,74.11,74.11,0,0,1-6.14-6.14,8,8,0,0,0-5.1-2.64L46.43,170.6a91.32,91.32,0,0,1-6.23-15l14.19-17.74a8,8,0,0,0,1.74-5.48,73.93,73.93,0,0,1,0-8.68,8,8,0,0,0-1.74-5.48L40.2,100.45a91.57,91.57,0,0,1,6.23-15L69,82.89a8,8,0,0,0,5.1-2.64,74.11,74.11,0,0,1,6.14-6.14A8,8,0,0,0,82.89,69L85.4,46.43a91.32,91.32,0,0,1,15-6.23l17.74,14.19a8,8,0,0,0,5.48,1.74,73.93,73.93,0,0,1,8.68,0,8,8,0,0,0,5.48-1.74L155.55,40.2a91.57,91.57,0,0,1,15,6.23L173.11,69a8,8,0,0,0,2.64,5.1,74.11,74.11,0,0,1,6.14,6.14,8,8,0,0,0,5.1,2.64l22.58,2.51a91.32,91.32,0,0,1,6.23,15l-14.19,17.74A8,8,0,0,0,199.87,123.66Z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-area">
+      <div style="display:flex;flex-direction:column;gap:24px;padding-bottom:16px;">
+
+        <!-- Hero block -->
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <div class="pf-hero">
+            <div class="pf-pro-badge">
+              <div class="pf-pro-badge-bg"><img src="https://www.figma.com/api/mcp/asset/faf3c6dc-3f5c-46a6-973b-62d93788aefa" alt=""></div>
+              <div class="pf-pro-icon"><img src="https://www.figma.com/api/mcp/asset/c23bf9f3-a6fc-4a3e-85e7-c1eb5221906e" alt=""></div>
+              <span class="pf-pro-label">Surmount Pro</span>
+            </div>
+            <div class="pf-value-block">
+              <span class="pf-value">$2,234,678.92</span>
+              <span class="pf-perf">+$633.63 (+2.42%) this week</span>
+            </div>
+          </div>
+
+          <!-- Chart -->
+          <div class="pf-chart-wrap">
+            <img src="https://www.figma.com/api/mcp/asset/3018f2e2-5af1-4f24-b225-c460e5269533" alt=""
+              style="position:absolute;top:13%;left:0;width:100%;height:87%;object-fit:cover;transform:scaleX(-1);">
+            <img src="https://www.figma.com/api/mcp/asset/f1fdc0aa-601c-4d84-b0aa-1256e8b3f932" alt=""
+              style="position:absolute;top:13%;left:0;width:100%;height:47%;object-fit:fill;transform:scaleX(-1);">
+          </div>
+
+          <!-- Time tabs -->
+          <div class="pf-tabs">
+            <div class="pf-tab active">1D</div>
+            <div class="pf-tab">1W</div>
+            <div class="pf-tab">1M</div>
+            <div class="pf-tab">3M</div>
+            <div class="pf-tab">6M</div>
+            <div class="pf-tab">YTD</div>
+            <div class="pf-tab">1Y</div>
+            <div class="pf-tab">All</div>
+          </div>
+        </div>
+
+        <!-- Action tiles -->
+        <div class="pf-actions">
+          <div class="pf-action-tile">
+            <div class="pf-action-tile-icon"><img src="https://www.figma.com/api/mcp/asset/336b41d6-19d2-4500-a62a-dba3ae7d6dd0" alt=""></div>
+            <span class="pf-action-label">Connect accounts</span>
+          </div>
+          <div class="pf-action-tile">
+            <div class="pf-action-tile-icon"><img src="https://www.figma.com/api/mcp/asset/12a037fb-d858-48b8-877b-47cc78ec26ea" alt=""></div>
+            <span class="pf-action-label">Invest in strategies</span>
+          </div>
+        </div>
+
+        <!-- Advisor promo card -->
+        <div class="pf-promo">
+          <div class="pf-promo-top">
+            <div class="pf-promo-text">
+              <span class="pf-promo-title">Looking for an advisor to work with?</span>
+              <span class="pf-promo-subtitle">Browse fee-only advisors who specialize in self-directed portfolios like yours.</span>
+            </div>
+            <div class="pf-promo-close"><img src="https://www.figma.com/api/mcp/asset/77fce4a3-8f1c-4586-b67c-c59944531b82" alt="" width="16" height="16"></div>
+          </div>
+          <div class="pf-promo-avatars">
+            <div class="pf-promo-av" style="left:0;top:0;width:32px;height:32px;"><img src="https://www.figma.com/api/mcp/asset/cbd15bd6-556e-4a9a-9fa4-1532a33b7972" alt=""></div>
+            <div class="pf-promo-av" style="left:48px;top:0;width:32px;height:32px;"><img src="https://www.figma.com/api/mcp/asset/3fe37601-8e3f-4c2f-8f07-c3e09dfd947b" alt=""></div>
+            <div class="pf-promo-av" style="left:22px;top:-2px;width:36px;height:36px;"><img src="https://www.figma.com/api/mcp/asset/72f9bba3-47a0-4191-8c2f-6d1a88637c3c" alt=""></div>
+          </div>
+        </div>
+
+        <!-- Invested strategies -->
+        <div class="pf-section">
+          <div class="pf-section-head">
+            <span class="pf-section-title">Invested strategies</span>
+            <div class="pf-section-sort"><img src="https://www.figma.com/api/mcp/asset/3a06043e-07b3-4d2f-a622-435b8d58e839" alt=""></div>
+          </div>
+          <div>
+            <div class="pf-row">
+              <div class="pf-row-left">
+                <div class="pf-row-avatar"><img src="https://www.figma.com/api/mcp/asset/aafbbecc-c53e-498c-873d-e42a8a84af1c" alt=""></div>
+                <div class="pf-row-labels">
+                  <span class="pf-row-name">Investing in Argentina</span>
+                  <div class="pf-row-sub">
+                    <div class="pf-broker-av"><img src="https://www.figma.com/api/mcp/asset/d4f35b90-15e8-40de-92f9-c46d13837345" alt=""></div>
+                    <span class="pf-row-sub-label">Robinhood</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pf-row-right">
+                <span class="pf-row-val">$87,654.32</span>
+                <span class="pf-row-change up">+ $25.75 (+1.50%)</span>
+              </div>
+            </div>
+            <div class="pf-row">
+              <div class="pf-row-left">
+                <div class="pf-row-avatar"><img src="https://www.figma.com/api/mcp/asset/91d99ce8-eafc-4085-8d4f-91425595d52a" alt=""></div>
+                <div class="pf-row-labels">
+                  <span class="pf-row-name">AAPL GOOG Arb</span>
+                  <div class="pf-row-sub">
+                    <div class="pf-broker-avs">
+                      <div class="pf-broker-av"><img src="https://www.figma.com/api/mcp/asset/d4f35b90-15e8-40de-92f9-c46d13837345" alt=""></div>
+                      <div class="pf-broker-av"><img src="https://www.figma.com/api/mcp/asset/59ce46b5-8da1-49de-b0f0-df13b233a4a2" alt=""></div>
+                      <div class="pf-broker-av"><img src="https://www.figma.com/api/mcp/asset/5d2dc4df-0a24-477f-a765-2460f2d6afb2" alt=""></div>
+                    </div>
+                    <span class="pf-row-sub-label">4 accounts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pf-row-right">
+                <span class="pf-row-val">$172,345.67</span>
+                <span class="pf-row-change up">+ $30.90 (+1.80%)</span>
+              </div>
+            </div>
+            <div class="pf-row" style="border-bottom:none;">
+              <div class="pf-row-left">
+                <div class="pf-row-avatar"><img src="https://www.figma.com/api/mcp/asset/3330e32b-09fb-445e-a619-71042b8c1764" alt=""></div>
+                <div class="pf-row-labels">
+                  <span class="pf-row-name">Future of Consumer Tech</span>
+                  <div class="pf-row-sub">
+                    <div class="pf-broker-avs">
+                      <div class="pf-broker-av"><img src="https://www.figma.com/api/mcp/asset/393be6b3-b342-416f-850b-af2a498bfa2b" alt=""></div>
+                      <div class="pf-broker-av"><img src="https://www.figma.com/api/mcp/asset/13af7dc1-c889-420a-bb35-1d0da59bc69d" alt=""></div>
+                    </div>
+                    <span class="pf-row-sub-label">2 accounts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pf-row-right">
+                <span class="pf-row-val">$162,789.45</span>
+                <span class="pf-row-change up">+ $35.20 (+2.00%)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent activity -->
+        <div class="pf-section">
+          <div class="pf-section-head">
+            <span class="pf-section-title">Recent activity</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:24px;">
+            <div>
+              <span class="pf-activity-date">January 21, 2026</span>
+              <div class="pf-row">
+                <div class="pf-row-left">
+                  <div class="pf-row-avatar"><img src="https://www.figma.com/api/mcp/asset/b16727a2-18c1-44c7-857c-d53874a4caf4" alt="" style="object-fit:contain;"></div>
+                  <div class="pf-row-labels">
+                    <span class="pf-row-name">V</span>
+                    <div class="pf-row-sub">
+                      <div class="pf-broker-av"><img src="https://www.figma.com/api/mcp/asset/5d2dc4df-0a24-477f-a765-2460f2d6afb2" alt=""></div>
+                      <span class="pf-row-sub-label">Kraken</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="pf-row-right">
+                  <span class="pf-row-val">-$130.60</span>
+                  <span class="pf-row-change neutral">Sell</span>
+                </div>
+              </div>
+              <div class="pf-row">
+                <div class="pf-row-left">
+                  <div class="pf-row-avatar"><img src="https://www.figma.com/api/mcp/asset/1dc218b0-ff11-4b7c-aa25-99b72677ea69" alt="" style="object-fit:contain;"></div>
+                  <div class="pf-row-labels">
+                    <span class="pf-row-name">GOOGL</span>
+                    <div class="pf-row-sub">
+                      <div class="pf-broker-av"><img src="https://www.figma.com/api/mcp/asset/393be6b3-b342-416f-850b-af2a498bfa2b" alt=""></div>
+                      <span class="pf-row-sub-label">IBKR</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="pf-row-right">
+                  <span class="pf-row-val">+$124.52</span>
+                  <span class="pf-row-change neutral">Buy</span>
+                </div>
+              </div>
+              <div class="pf-row">
+                <div class="pf-row-left">
+                  <div class="pf-row-avatar" style="background:#F5F5F5;border:0.75px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;">
+                    <img src="https://www.figma.com/api/mcp/asset/2bcc6e39-5158-4ffe-8189-db5590dcf1fd" alt="" style="width:16px;height:16px;object-fit:contain;">
+                  </div>
+                  <div class="pf-row-labels">
+                    <span class="pf-row-name">Portfolio rebalanced</span>
+                    <div class="pf-row-sub">
+                      <div class="pf-broker-av"><img src="https://www.figma.com/api/mcp/asset/5d2dc4df-0a24-477f-a765-2460f2d6afb2" alt=""></div>
+                      <span class="pf-row-sub-label">Kraken</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="pf-row-right">
+                  <span class="pf-row-val">$2,000.00</span>
+                  <span class="pf-row-change neutral">Tax loss harvesting</span>
+                </div>
+              </div>
+              <div class="pf-row">
+                <div class="pf-row-left">
+                  <div class="pf-row-avatar" style="background:#F5F5F5;border:0.75px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;">
+                    <img src="https://www.figma.com/api/mcp/asset/eb585603-e4b8-44ed-abba-4796f2393195" alt="" style="width:16px;height:16px;object-fit:contain;">
+                  </div>
+                  <div class="pf-row-labels">
+                    <span class="pf-row-name">Deposit</span>
+                    <div class="pf-row-sub">
+                      <div class="pf-broker-av"><img src="https://www.figma.com/api/mcp/asset/5069436b-f3d8-4058-9510-97ad00fff2b2" alt=""></div>
+                      <span class="pf-row-sub-label">Surmount</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="pf-row-right">
+                  <span class="pf-row-val">+$2,000.00</span>
+                </div>
+              </div>
+              <div class="pf-row" style="border-bottom:none;">
+                <div class="pf-row-left">
+                  <div class="pf-row-avatar" style="background:#F5F5F5;border:0.75px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;">
+                    <img src="https://www.figma.com/api/mcp/asset/6283185e-f16c-4b11-8111-498166b61fbc" alt="" style="width:16px;height:16px;object-fit:contain;">
+                  </div>
+                  <div class="pf-row-labels">
+                    <span class="pf-row-name">Withdrawal</span>
+                    <div class="pf-row-sub">
+                      <div class="pf-broker-av"><img src="https://www.figma.com/api/mcp/asset/5069436b-f3d8-4058-9510-97ad00fff2b2" alt=""></div>
+                      <span class="pf-row-sub-label">Surmount</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="pf-row-right">
+                  <span class="pf-row-val">-$2,000.00</span>
+                </div>
+              </div>
+            </div>
+            <div class="pf-view-all">View all</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pf-bottom-nav">
+      <!-- Home -->
+      <div class="pf-nav-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="#414651" viewBox="0 0 256 256"><path d="M224,115.55V208a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V168H104v40a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.44,0l.11.11,80,75.48A16,16,0,0,1,224,115.55Z"/></svg>
+      </div>
+      <!-- Strategies (buildings) -->
+      <div class="pf-nav-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="#414651" viewBox="0 0 256 256"><path d="M240,208H224V96a16,16,0,0,0-16-16H144a16,16,0,0,0-16,16v16H48a16,16,0,0,0-16,16V208H16a8,8,0,0,0,0,16H240a8,8,0,0,0,0-16ZM48,128H128v80H48Zm80,80V96h80V208Z"/></svg>
+      </div>
+      <!-- Trade (arrows up-down) -->
+      <div class="pf-nav-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="#414651" viewBox="0 0 256 256"><path d="M229.66,154.34l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L168,177.37V48a8,8,0,0,1,16,0V177.37l34.34-34.35a8,8,0,0,1,11.32,11.32Zm-120-52.68L76,67.31V216a8,8,0,0,1-16,0V67.31L25.66,101.66A8,8,0,0,1,14.34,90.34l48-48a8,8,0,0,1,11.32,0l48,48a8,8,0,0,1-11.32,11.32Z"/></svg>
+      </div>
+      <!-- Profile (user) -->
+      <div class="pf-nav-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="#414651" viewBox="0 0 256 256"><path d="M230.92,212c-15.23-26.33-37.57-45.08-63.39-54.16a72,72,0,1,0-79.06,0C62.65,166.92,40.31,185.67,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/></svg>
+      </div>
+    </div>
+
+  </div><!-- /screenPortfolio -->
+
+</div><!-- /phone -->
+
+<script>
+(function() {
+  var listing   = document.getElementById('screenListing');
+  var profile   = document.getElementById('screenProfile');
+  var schedule  = document.getElementById('screenSchedule');
+  var confirm   = document.getElementById('screenConfirm');
+  var portfolio = document.getElementById('screenPortfolio');
+
+  /* ── Screen 0 → 1: listing → profile ── */
+  function pushToProfile() {
+    listing.classList.add('pushed');
+    profile.classList.add('active');
+  }
+  function popToListing() {
+    profile.classList.remove('active');
+    listing.classList.remove('pushed');
+  }
+
+  /* Tabs — switch panels with fade transition */
+  var switchingTab = false;
+  document.querySelectorAll('.listing-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var target = tab.dataset.tab;
+      if (tab.classList.contains('active') || switchingTab) return;
+      switchingTab = true;
+
+      // update active indicator immediately
+      document.querySelectorAll('.listing-tab').forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+
+      // find current visible panel
+      var current = document.querySelector('.tab-panel:not([hidden])');
+      var next    = document.querySelector('.tab-panel[data-panel="' + target + '"]');
+      if (!next || current === next) { switchingTab = false; return; }
+
+      // 1. exit current
+      current.classList.add('exiting');
+
+      setTimeout(function() {
+        // 2. hide old, show new
+        current.classList.remove('exiting');
+        current.setAttribute('hidden', '');
+
+        next.removeAttribute('hidden');
+        next.classList.add('entering');
+
+        // 3. clean up after animation
+        setTimeout(function() {
+          next.classList.remove('entering');
+          switchingTab = false;
+        }, 250);
+      }, 120);
+    });
+  });
+
+  /* Wire up all advisor cards (including those in non-default tabs) */
+  document.querySelectorAll('.advisor-card').forEach(function(card) {
+    card.addEventListener('click', pushToProfile);
+  });
+
+  /* Profile back button → listing */
+  document.getElementById('profileBackBtn').addEventListener('click', popToListing);
+
+  /* ── Screen navigation ── */
+  function pushToSchedule() {
+    profile.classList.add('pushed');
+    schedule.classList.add('active');
+  }
+  function popToProfile() {
+    profile.classList.remove('pushed');
+    schedule.classList.remove('active');
+  }
+  document.getElementById('scheduleBtn').addEventListener('click', pushToSchedule);
+  document.getElementById('backBtn').addEventListener('click', popToProfile);
+
+  /* ── Card flip ── */
+  (function() {
+    var container = document.getElementById('profileFlip');
+    var inner = container.querySelector('.card-flip-inner');
+    var flipped = false, locked = false;
+    container.addEventListener('click', function() {
+      if (locked) return;
+      locked = true;
+      flipped = !flipped;
+      inner.style.animation = 'none';
+      container.style.animation = 'none';
+      inner.offsetHeight;
+      inner.style.animation = flipped
+        ? 'flipForward 0.72s ease-in-out forwards'
+        : 'flipBackward 0.72s ease-in-out forwards';
+      container.style.animation = 'scalePulse 0.72s ease-in-out forwards';
+      inner.addEventListener('animationend', function onEnd() {
+        inner.removeEventListener('animationend', onEnd);
+        inner.style.animation = '';
+        inner.style.transform = flipped ? 'rotateY(180deg)' : 'rotateY(0deg)';
+        container.style.animation = '';
+        locked = false;
+      });
+    });
+  })();
+
+  /* ── Day selection ── */
+  var selectedDay  = document.querySelector('.day-pill.day-selected');
+  var selectedTime = document.querySelector('.time-slot.time-selected');
+  var label = document.getElementById('selectedLabel');
+
+  function updateLabel() {
+    var d = selectedDay  ? selectedDay.dataset.label  : null;
+    var t = selectedTime ? selectedTime.dataset.time  : null;
+    label.textContent = (d && t) ? d + ' · ' + t : (d || '—');
+  }
+
+  document.querySelectorAll('.day-pill').forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('.day-pill').forEach(function(p){ p.classList.remove('day-selected'); });
+      pill.classList.add('day-selected');
+      selectedDay = pill;
+      updateLabel();
+    });
+  });
+
+  /* ── Time selection ── */
+  document.querySelectorAll('.time-slot:not(.time-unavailable)').forEach(function(slot) {
+    slot.addEventListener('click', function() {
+      document.querySelectorAll('.time-slot').forEach(function(s){ s.classList.remove('time-selected'); });
+      slot.classList.add('time-selected');
+      selectedTime = slot;
+      updateLabel();
+    });
+  });
+
+  /* ── Send request → push to confirm ── */
+  document.getElementById('sendBtn').addEventListener('click', function() {
+    var btn = this;
+    if (btn.classList.contains('sent')) return;
+    btn.classList.add('sent');
+    btn.textContent = 'Request sent ✓';
+
+    // sync selected time label into confirm card
+    var labelEl = document.getElementById('selectedLabel');
+    if (labelEl) {
+      var t = document.getElementById('confirmTime');
+      if (t) t.textContent = labelEl.textContent + ' PT';
+    }
+
+    setTimeout(function() {
+      // slide schedule screen back (push) and bring confirm in
+      schedule.classList.add('pushed');
+      confirm.classList.add('active');
+
+      // stagger entrance animations
+      var icon    = document.getElementById('confirmIcon');
+      var text    = document.getElementById('confirmText');
+      var card    = document.getElementById('confirmCard');
+      var actions = document.getElementById('confirmActions');
+
+      // reset in case screen was shown before
+      [icon, text, card, actions].forEach(function(el){ el.classList.remove('in'); });
+
+      setTimeout(function(){ icon.classList.add('in'); }, 80);
+      setTimeout(function(){ text.classList.add('in'); }, 220);
+      setTimeout(function(){ card.classList.add('in'); }, 340);
+      setTimeout(function(){ actions.classList.add('in'); }, 440);
+
+      // reset send button for potential re-use
+      btn.classList.remove('sent');
+      btn.textContent = 'Send request';
+    }, 600);
+  });
+
+  /* ── Confirm: close (X) → go all the way back to profile ── */
+  document.getElementById('confirmCloseBtn').addEventListener('click', function() {
+    confirm.classList.remove('active');
+    schedule.classList.remove('active');
+    schedule.classList.remove('pushed');
+    profile.classList.remove('pushed');
+    profile.classList.remove('active');
+    listing.classList.remove('pushed');
+    // reset confirm stagger for next open
+    ['confirmIcon','confirmText','confirmCard','confirmActions'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.classList.remove('in');
+    });
+  });
+
+  /* ── Confirm: back to advisors → same as close ── */
+  document.getElementById('backToAdvisorsBtn').addEventListener('click', function() {
+    document.getElementById('confirmCloseBtn').click();
+  });
+
+  /* ══════════════════════════════════════
+     ADVISOR MATCH QUIZ
+  ══════════════════════════════════════ */
+  var quiz    = document.getElementById('screenQuiz');
+  var results = document.getElementById('screenResults');
+
+  var QUESTIONS = [
+    {
+      id:'goal', label:'Your goal',
+      headline:"What's most on your mind?",
+      sub:"Pick the one that feels closest — you can always add context later.",
+      options:[
+        {id:'retirement',   emoji:'🏖️', title:'Planning for retirement',    sub:'401(k), IRAs, long-horizon planning'},
+        {id:'taxes',        emoji:'🧾', title:'Making sense of taxes',       sub:'Tax-smart investing, 1099 support'},
+        {id:'just-starting',emoji:'🌱', title:'Just starting to invest',     sub:'Building habits and confidence'},
+        {id:'not-sure',     emoji:'🤝', title:"I'm not sure yet",            sub:'Help me figure it out'},
+      ]
+    },
+    {
+      id:'stage', label:'Where you are',
+      headline:'Where are you in your journey?',
+      sub:"No wrong answer — this just helps us surface the right fit.",
+      options:[
+        {id:'just-starting',  emoji:'🌿', title:'Just getting started',    sub:'First investment account or close to it'},
+        {id:'building',       emoji:'📈', title:'Building momentum',        sub:'Some savings, starting to think bigger'},
+        {id:'mid-career',     emoji:'🧭', title:'Mid-career check-in',      sub:'Want a second set of eyes on the plan'},
+        {id:'near-retirement',emoji:'🪴', title:'Near or in retirement',    sub:'Making the money last and work for me'},
+      ]
+    },
+    {
+      id:'language', label:'How you like to work',
+      headline:'Any language preference?',
+      sub:"We'll prioritize advisors who speak it fluently.",
+      options:[
+        {id:'no-pref',  emoji:'🌐', title:'No preference',        sub:'Match me on goal and style'},
+        {id:'bilingual',emoji:'🗣️', title:'Bilingual / Spanish',  sub:"I'd like to work in two languages"},
+        {id:'other',    emoji:'✏️', title:'Another language',      sub:"I'll tell you more in the notes"},
+      ]
+    },
+    {
+      id:'vibe', label:'Your vibe',
+      headline:'What kind of conversation sounds right?',
+      sub:"Helps us pick advisors whose communication style fits yours.",
+      options:[
+        {id:'warm',    emoji:'☕', title:'Warm and patient',        sub:'Plenty of time for questions, no rush'},
+        {id:'direct',  emoji:'🎯', title:'Direct and efficient',    sub:'Tell me the plan, skip the pleasantries'},
+        {id:'detailed',emoji:'📊', title:'Detailed and technical',  sub:"I want to understand the 'why' behind each move"},
+      ]
+    },
+  ];
+
+  var ADVISORS = [
+    {
+      id:'noah', name:'Noah Bennett', creds:['CFP','CFA'],
+      subtitle:'Formerly @ Wealth Strategies',
+      photo:'https://www.figma.com/api/mcp/asset/367bed63-3512-4130-a215-ef10b52cceb5',
+      bg:'#DFC2C0', editorialPick:true,
+      goalTags:['retirement','just-starting','taxes'],
+      stageTags:['just-starting','building','mid-career','near-retirement'],
+      bilingual:false, vibeTags:['detailed','direct'],
+      rationale:{
+        goal:{
+          retirement:     {strong:true,  text:'Focuses on first-time retirement accounts and 401(k) rollovers'},
+          taxes:          {strong:true,  text:'RSU & equity tax planning is a core specialty'},
+          'just-starting':{strong:true,  text:'Builds fundamentals from zero — structured and patient'},
+          'not-sure':     {strong:false, text:'Great at scoping goals together in a first conversation'},
+        },
+        stage:{
+          'just-starting':  {strong:true,  text:'Works with clients opening their very first accounts'},
+          building:         {strong:true,  text:'Maps savings into invested capital with a clear plan'},
+          'mid-career':     {strong:true,  text:'Full portfolio review for mid-career professionals'},
+          'near-retirement':{strong:false, text:'Not a primary focus — better suited to earlier stages'},
+        },
+        language:{
+          bilingual: {strong:false, text:'English · Français — not a Spanish match'},
+          'no-pref': {strong:true,  text:'Works entirely in English'},
+          other:     {strong:false, text:'English and French — may not match your language'},
+        },
+        vibe:{
+          detailed:{strong:true,  text:'Numbers-forward — loves walking through the analysis together'},
+          direct:  {strong:true,  text:'Clear and decisive: here is the plan, here is why'},
+          warm:    {strong:false, text:'Thorough and professional — more structured than casual'},
+        }
+      }
+    },
+    {
+      id:'eliot', name:'Eliot Swift', creds:['CFA'],
+      subtitle:'Financial Advisor @ Wealth Strategies',
+      photo:'https://www.figma.com/api/mcp/asset/f6580e4e-8893-4b42-ab1c-d5caa82faf03',
+      bg:'rgba(34,17,10,0.15)', editorialPick:false,
+      goalTags:['just-starting','not-sure'],
+      stageTags:['just-starting','building'],
+      bilingual:true, vibeTags:['warm','direct'],
+      rationale:{
+        goal:{
+          retirement:     {strong:false, text:'Not a primary retirement specialist — basics only'},
+          taxes:          {strong:false, text:'Tax planning not a core focus — partners with CPAs when needed'},
+          'just-starting':{strong:true,  text:'Specializes in first-time investors — building confidence from day one'},
+          'not-sure':     {strong:true,  text:'Thrives in exploratory first conversations — zero pressure, lots of clarity'},
+        },
+        stage:{
+          'just-starting':  {strong:true,  text:'Over 60% of his clients were brand-new to investing when they started'},
+          building:         {strong:true,  text:'Moves clients from saving habits into intentional investing'},
+          'mid-career':     {strong:false, text:'Lighter on mid-career complexity — better fit for earlier stages'},
+          'near-retirement':{strong:false, text:'Not a primary match for near-retirement planning'},
+        },
+        language:{
+          bilingual: {strong:true,  text:'English · Español — fluent in both, many Spanish-speaking clients'},
+          'no-pref': {strong:true,  text:'Works primarily in English'},
+          other:     {strong:false, text:'Bilingual in Spanish — may not match your specific language'},
+        },
+        vibe:{
+          warm:    {strong:true,  text:'"We never make anyone feel behind" — patience is his signature'},
+          direct:  {strong:true,  text:'Adapts to your pace — direct when you need fast answers'},
+          detailed:{strong:false, text:'More intuitive than analytical — less focused on deep-dive numbers'},
+        }
+      }
+    },
+    {
+      id:'maya', name:'Maya Thompson', creds:['CFP','CFA'],
+      subtitle:'Wealth Manager @ Prosperity Partners',
+      photo:'https://www.figma.com/api/mcp/asset/a8151be6-1e87-4931-979d-38d5a2a0c0da',
+      bg:'#b4b8b9', editorialPick:false,
+      goalTags:['taxes','retirement'],
+      stageTags:['building','mid-career','near-retirement'],
+      bilingual:false, vibeTags:['detailed','direct'],
+      rationale:{
+        goal:{
+          retirement:     {strong:true,  text:'RICP-certified — retirement income and drawdown strategy'},
+          taxes:          {strong:true,  text:'Tax-loss harvesting and 1099 optimization are her core focus'},
+          'just-starting':{strong:false, text:'Better fit for clients with existing assets to manage'},
+          'not-sure':     {strong:false, text:'Works best when there is already a portfolio to plan around'},
+        },
+        stage:{
+          'just-starting':  {strong:false, text:'Focused on existing portfolios — early stage not a primary match'},
+          building:         {strong:true,  text:'Excellent at structuring a plan as assets grow'},
+          'mid-career':     {strong:true,  text:'Mid-career portfolio optimization and tax efficiency — her specialty'},
+          'near-retirement':{strong:true,  text:'Drawdown planning and making the money last — exactly her lane'},
+        },
+        language:{
+          bilingual: {strong:false, text:'Bilingual in 普通话 — not a Spanish match'},
+          'no-pref': {strong:true,  text:'Works in English and Mandarin'},
+          other:     {strong:false, text:'Speaks English and 普通话 — may not match your language'},
+        },
+        vibe:{
+          detailed:{strong:true,  text:'Deeply analytical — explains every number behind every decision'},
+          direct:  {strong:true,  text:'Efficient and precise — clear recommendations, no time wasted'},
+          warm:    {strong:false, text:'Professional and thorough — results-driven over conversational'},
+        }
+      }
+    },
+    {
+      id:'sophie', name:'Sophie Reynolds', creds:['CFP','RMA'],
+      subtitle:'Formerly @ Prosperity Partners',
+      photo:'https://www.figma.com/api/mcp/asset/72efa292-b25b-48b2-9d03-23ac453331b7',
+      bg:'#ABDBE7', editorialPick:true,
+      goalTags:['retirement','not-sure'],
+      stageTags:['building','mid-career','near-retirement'],
+      bilingual:false, vibeTags:['warm','detailed'],
+      rationale:{
+        goal:{
+          retirement:     {strong:true,  text:'RMA-certified — retirement management is her entire focus'},
+          taxes:          {strong:false, text:'Handles basic tax considerations — not a tax specialist'},
+          'just-starting':{strong:false, text:'Better suited to clients with savings already to organize'},
+          'not-sure':     {strong:true,  text:'Natural first conversation — helps find the right questions first'},
+        },
+        stage:{
+          'just-starting':  {strong:false, text:'Lighter on foundational setup — best with more to work with'},
+          building:         {strong:true,  text:'Builds toward a long-term retirement goal from mid-accumulation'},
+          'mid-career':     {strong:true,  text:'Mid-career retirement roadmap — exactly her lane'},
+          'near-retirement':{strong:true,  text:'Drawdown, Social Security timing, legacy planning — her specialty'},
+        },
+        language:{
+          bilingual: {strong:false, text:'English only — not a bilingual match'},
+          'no-pref': {strong:true,  text:'Works in English'},
+          other:     {strong:false, text:'English only — may not match your language preference'},
+        },
+        vibe:{
+          warm:    {strong:true,  text:'"I want you to feel confident, not just compliant" — warm and unhurried'},
+          detailed:{strong:true,  text:'Loves walking through projections together — visual and data-forward'},
+          direct:  {strong:false, text:'More conversational than direct — she explores before concluding'},
+        }
+      }
+    },
+    {
+      id:'liam', name:'Liam Carter', creds:['CFP','CFA'],
+      subtitle:'Formerly @ Wealth Strategies',
+      photo:'https://www.figma.com/api/mcp/asset/4ab165eb-2c2b-46ba-865c-22bd8b7926db',
+      bg:'#E6E7E1', editorialPick:false,
+      goalTags:['retirement','taxes','not-sure'],
+      stageTags:['building','mid-career','near-retirement'],
+      bilingual:false, vibeTags:['direct','detailed'],
+      rationale:{
+        goal:{
+          retirement:     {strong:true,  text:'401(k) rollovers and IRA consolidation are his bread and butter'},
+          taxes:          {strong:true,  text:'Capital gains and estate tax planning — 11 years of experience'},
+          'just-starting':{strong:false, text:'More effective with clients who have existing assets to organize'},
+          'not-sure':     {strong:true,  text:'Experienced at helping clients name and prioritize their goals'},
+        },
+        stage:{
+          'just-starting':  {strong:false, text:'More impactful at mid-career and later stages'},
+          building:         {strong:true,  text:'Builds structured plans around growing incomes'},
+          'mid-career':     {strong:true,  text:'Mid-career portfolio and tax optimization — his core client profile'},
+          'near-retirement':{strong:true,  text:'401(k) → IRA rollovers and drawdown planning — his specialty'},
+        },
+        language:{
+          bilingual: {strong:false, text:'English only — not a bilingual match'},
+          'no-pref': {strong:true,  text:'Works in English'},
+          other:     {strong:false, text:'English only — may not match your language preference'},
+        },
+        vibe:{
+          direct:  {strong:true,  text:'"Here is the plan, here is the timeline" — always his opener'},
+          detailed:{strong:true,  text:'Spreadsheet-level detail on request — walks through every assumption'},
+          warm:    {strong:false, text:'Professional and focused — not casual but fully attentive'},
+        }
+      }
+    },
+  ];
+
+  /* ── State ── */
+  var quizAnswers      = {goal:null, stage:null, language:null, vibe:null};
+  var quizCurrentQ     = 0;
+  var quizReturningToQ = -1;
+  var quizTransitioning = false;
+
+  /* ── Scoring ── */
+  function scoreAdvisor(adv, ans) {
+    var s = 0;
+    if (ans.goal     && adv.goalTags.indexOf(ans.goal) >= 0)   s += 3;
+    if (ans.language === 'bilingual' && adv.bilingual)          s += 2;
+    if (ans.stage    && adv.stageTags.indexOf(ans.stage) >= 0)  s += 1;
+    if (adv.editorialPick)                                       s += 0.5;
+    return s;
+  }
+  function isMatch(adv, qId, aId) {
+    if (!aId) return false;
+    if (qId === 'goal')     return adv.goalTags.indexOf(aId) >= 0;
+    if (qId === 'stage')    return adv.stageTags.indexOf(aId) >= 0;
+    if (qId === 'language') {
+      if (aId === 'no-pref') return true;
+      if (aId === 'bilingual') return adv.bilingual;
+      return false;
+    }
+    if (qId === 'vibe') return adv.vibeTags.indexOf(aId) >= 0;
+    return false;
+  }
+
+  /* ── Nav helpers ── */
+  function pushToQuiz() {
+    quizAnswers = {goal:null, stage:null, language:null, vibe:null};
+    quizCurrentQ = 0;
+    quizReturningToQ = -1;
+    renderQuizQuestion(0, null);
+    listing.classList.add('pushed');
+    quiz.classList.add('active');
+  }
+  function pushToResults() {
+    renderResults();
+    quiz.classList.add('pushed');
+    results.classList.add('active');
+  }
+  function popToListingFromQuiz() {
+    quiz.classList.remove('active');
+    listing.classList.remove('pushed');
+  }
+  function popToQuizFromResults() {
+    results.classList.remove('active');
+    quiz.classList.remove('pushed');
+  }
+  function closeAllFromQuiz() {
+    results.classList.remove('active');
+    quiz.classList.remove('active');
+    quiz.classList.remove('pushed');
+    listing.classList.remove('pushed');
+  }
+
+  /* ── Render quiz question ── */
+  function renderQuizQuestion(qIdx, direction) {
+    var q = QUESTIONS[qIdx];
+    var body = document.getElementById('quizBody');
+
+    /* update segmented progress bar */
+    var steps = document.querySelectorAll('#quizProgressBar .quiz-step');
+    steps.forEach(function(s, i) {
+      s.className = 'quiz-step';
+      if (i < qIdx) s.classList.add('filled');
+      else if (i === qIdx) s.classList.add('active');
+    });
+
+    /* build new panel */
+    var optionsHtml = q.options.map(function(opt) {
+      var sel = quizAnswers[q.id] === opt.id ? ' selected' : '';
+      return '<div class="quiz-option' + sel + '" data-qid="' + q.id + '" data-aid="' + opt.id + '">' +
+        '<span class="quiz-option-emoji">' + opt.emoji + '</span>' +
+        '<div class="quiz-option-text">' +
+          '<div class="quiz-option-title">' + opt.title + '</div>' +
+          '<div class="quiz-option-sub">' + opt.sub + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    var newWrap = document.createElement('div');
+    newWrap.className = 'quiz-question-wrap';
+    newWrap.innerHTML =
+      '<div class="quiz-label">' + q.label + '</div>' +
+      '<div class="quiz-headline">' + q.headline + '</div>' +
+      '<div class="quiz-sub">' + q.sub + '</div>' +
+      '<div class="quiz-options">' + optionsHtml + '</div>';
+
+    var oldWrap = body.querySelector('.quiz-question-wrap');
+
+    if (!oldWrap || direction === null) {
+      body.innerHTML = '';
+      body.appendChild(newWrap);
+      quizTransitioning = false;
+    } else {
+      var outCls = direction === 'forward' ? 'slide-out-left'  : 'slide-out-right';
+      var inCls  = direction === 'forward' ? 'slide-in-right'  : 'slide-in-left';
+      oldWrap.classList.add(outCls);
+      newWrap.classList.add(inCls);
+      body.appendChild(newWrap);
+      setTimeout(function() {
+        if (oldWrap.parentNode) oldWrap.parentNode.removeChild(oldWrap);
+        newWrap.classList.remove(inCls);
+        quizTransitioning = false;
+      }, 260);
+    }
+
+    /* wire option taps — auto-advance on selection */
+    newWrap.querySelectorAll('.quiz-option').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        if (quizTransitioning) return;
+        quizAnswers[opt.dataset.qid] = opt.dataset.aid;
+        newWrap.querySelectorAll('.quiz-option').forEach(function(o){ o.classList.remove('selected'); });
+        opt.classList.add('selected');
+        quizTransitioning = true;
+        setTimeout(function() {
+          if (quizReturningToQ >= 0) {
+            quizReturningToQ = -1;
+            pushToResults();
+            quizTransitioning = false;
+          } else if (quizCurrentQ < QUESTIONS.length - 1) {
+            quizCurrentQ++;
+            renderQuizQuestion(quizCurrentQ, 'forward');
+          } else {
+            pushToResults();
+            quizTransitioning = false;
+          }
+        }, 200);
+      });
+    });
+  }
+
+  /* ── Render results ── */
+  function renderResults() {
+    var scored = ADVISORS.map(function(adv) {
+      return {adv:adv, score:scoreAdvisor(adv, quizAnswers)};
+    });
+    scored.sort(function(a, b){ return b.score - a.score; });
+    var top3 = scored.slice(0, 3);
+    var qIds = ['goal','stage','language','vibe'];
+    var rankLabels = ['Best match','2nd match','3rd match'];
+
+    var chipsHtml = QUESTIONS.map(function(q, i) {
+      var opt = q.options.filter(function(o){ return o.id === quizAnswers[q.id]; })[0];
+      return '<div class="answer-chip" data-q="' + i + '">' +
+        '<span class="answer-chip-text">' + (opt ? opt.title : '—') + '</span>' +
+        '<svg class="answer-chip-edit" viewBox="0 0 12 12" fill="none"><path d="M7.5 2L10 4.5L4 10.5H1.5V8L7.5 2Z" stroke="#406AD0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      '</div>';
+    }).join('');
+
+    var cardsHtml = top3.map(function(item, rank) {
+      var adv = item.adv;
+      var rows = qIds.map(function(qId) {
+        var aId = quizAnswers[qId];
+        var q   = QUESTIONS.filter(function(q){ return q.id === qId; })[0];
+        var opt = q.options.filter(function(o){ return o.id === aId; })[0];
+        var rat = adv.rationale[qId] && adv.rationale[qId][aId];
+        return {
+          label: opt ? opt.title : '—',
+          text:  rat  ? rat.text   : '—',
+          strong:rat  ? rat.strong : false
+        };
+      });
+      var dots = qIds.map(function(qId){ return isMatch(adv, qId, quizAnswers[qId]); });
+      var hits = dots.filter(Boolean).length;
+      var matchLabel = hits === 4 ? 'Full match' : hits + ' of 4';
+      var dotsHtml = dots.map(function(h){
+        return '<div class="match-dot' + (h ? ' hit' : '') + '"></div>';
+      }).join('');
+      /* sort: strong matches first, then show top 2 */
+      rows.sort(function(a,b){ return (b.strong ? 1 : 0) - (a.strong ? 1 : 0); });
+      var rowsHtml = rows.slice(0,2).map(function(r){
+        return '<div class="rationale-row">' +
+          '<div class="rationale-indicator ' + (r.strong ? 'strong' : 'partial') + '"></div>' +
+          '<div class="rationale-body">' +
+            '<div class="rationale-said">You said · ' + r.label + '</div>' +
+            '<div class="rationale-text">' + r.text + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+      var credsHtml = adv.creds.map(function(c){ return '<span class="advisor-cred">' + c + '</span>'; }).join('');
+
+      return '<div class="result-advisor-card">' +
+        '<div class="result-advisor-img" style="background:' + adv.bg + ';">' +
+          '<div class="result-advisor-photo-inner">' +
+            '<img src="' + adv.photo + '" alt="' + adv.name + '">' +
+          '</div>' +
+          '<div class="result-rank-badge">' + rankLabels[rank] + '</div>' +
+        '</div>' +
+        '<div class="result-advisor-info">' +
+          '<div class="result-advisor-name-row">' +
+            '<span class="result-advisor-name">' + adv.name + '</span>' +
+            '<svg class="advisor-verified" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" fill="#406AD0"/><path d="M3.5 6L5.2 7.7L8.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            credsHtml +
+          '</div>' +
+          '<div class="result-advisor-subtitle">' + adv.subtitle + '</div>' +
+        '</div>' +
+        '<div class="result-rationale">' + rowsHtml + '</div>' +
+        '<div class="match-dots-row">' +
+          '<div class="match-dots">' + dotsHtml + '</div>' +
+          '<span class="match-strength-label"><b>' + matchLabel + '</b></span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    var scroll = document.getElementById('resultsScroll');
+    scroll.innerHTML =
+      '<div class="answer-chips" id="answerChips">' + chipsHtml + '</div>' +
+      '<div class="results-section-label">Top matches for you</div>' +
+      cardsHtml;
+
+    /* chip tap → go back to that question */
+    scroll.querySelectorAll('.answer-chip').forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        var qIdx = parseInt(chip.dataset.q, 10);
+        quizReturningToQ = qIdx;
+        quizCurrentQ = qIdx;
+        renderQuizQuestion(qIdx, null);
+        popToQuizFromResults();
+      });
+    });
+  }
+
+  /* ── Portfolio ↔ Listing nav ── */
+  function pushToListing() {
+    portfolio.classList.add('pushed');
+    listing.classList.add('active');
+  }
+  function popToPortfolio() {
+    listing.classList.remove('active');
+    portfolio.classList.remove('pushed');
+  }
+  document.getElementById('listingBackBtn').addEventListener('click', popToPortfolio);
+  document.querySelector('#screenPortfolio .pf-promo').addEventListener('click', pushToListing);
+
+  /* ── Wire entry points ── */
+  document.querySelectorAll('.advisor-banner, .fallback-card').forEach(function(el) {
+    el.addEventListener('click', pushToQuiz);
+  });
+
+  /* ── Quiz nav ── */
+  document.getElementById('quizBackBtn').addEventListener('click', function() {
+    if (quizTransitioning) return;
+    if (quizCurrentQ > 0) {
+      quizTransitioning = true;
+      quizCurrentQ--;
+      renderQuizQuestion(quizCurrentQ, 'back');
+    } else {
+      popToListingFromQuiz();
+    }
+  });
+  document.getElementById('quizCloseBtn').addEventListener('click', closeAllFromQuiz);
+
+  /* ── Results nav ── */
+  document.getElementById('resultsBackBtn').addEventListener('click', function() {
+    quizCurrentQ = QUESTIONS.length - 1;
+    renderQuizQuestion(quizCurrentQ, null);
+    popToQuizFromResults();
+  });
+  document.getElementById('resultsCloseBtn').addEventListener('click', closeAllFromQuiz);
+
+})();
+</script>
+
+</body>
+</html>
