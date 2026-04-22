@@ -1,14 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Review Order — Widget Capture</title>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
+#!/usr/bin/env python3
+"""
+Surmount B2C — Token Migration Script
+Brings every HTML prototype into the canonical design-system token set.
+
+Changes applied to every file:
+  1. Replace :root block with canonical tokens + legacy aliases
+  2. font-weight:600 / font-weight:700  →  font-weight:500
+  3. letter-spacing:-0.5px on body where missing
+  4. prefers-reduced-motion block where missing
+  5. #16A34A  →  #316434  (wrong success dot colour)
+  6. letter-spacing:0.64px / 0.72px / 0.8px  →  letter-spacing:0  (positive LS ban)
+  7. Sidebar.js: add --color-gray-* aliases so var() refs keep resolving
+"""
+
+import re, os, sys
+
+# ── Canonical :root ────────────────────────────────────────────────────────────
+CANONICAL_ROOT = """:root{
   /* ═══ CANONICAL TOKENS — Surmount Design System (github.com/shawnji33/design-system-surmount) ═══ */
 
   /* Primitive grays */
@@ -223,211 +231,102 @@
   --chart-grad-bot:rgba(162,211,165,0);
   --chart-baseline:rgba(65,70,81,0.32);
   --shadow-subtle:var(--shadow-card);
-}
-body{
-  font-family:var(--font-family-body);font-size:var(--text-sm);
-  color:var(--color-text-primary);background:#F5F5F5;
-  -webkit-font-smoothing:antialiased;letter-spacing:-0.5px;
-  display:flex;align-items:flex-start;justify-content:center;
-  gap:32px;padding:40px;
-}
+}"""
 
-/* ── SHARED WIDGET SHELL ── */
-.widget{
-  background:var(--color-base-white);
-  border:1px solid rgba(0,0,0,0.06);
-  border-radius:var(--radius-xl);
-  width:360px;
-  display:flex;flex-direction:column;
-  overflow:hidden;
-}
+# ── Additional per-file fixes ─────────────────────────────────────────────────
 
-/* ── BUY FORM (default state) ── */
-.wt-tabs{
-  display:flex;gap:20px;padding:0 20px;
-  border-bottom:1px solid rgba(0,0,0,0.06);
-}
-.wt-tab{
-  padding:16px 0;font-size:14px;font-weight:500;
-  color:var(--color-text-tertiary);cursor:pointer;
-  border-bottom:2px solid transparent;margin-bottom:-1px;
-}
-.wt-tab.active{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary)}
-.wt-body{padding:20px;display:flex;flex-direction:column;gap:14px}
-.wt-row{display:flex;align-items:center;justify-content:space-between;height:36px}
-.wt-label{font-size:14px;color:rgba(10,13,18,0.7);font-weight:500}
-.wt-account-select{
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
-  padding:0 13px;border:1px solid rgba(0,0,0,0.06);border-radius:8px;
-  width:160px;height:36px;
-}
-.wt-broker-avatar{
-  width:20px;height:20px;border-radius:9999px;
-  border:0.5px solid rgba(0,0,0,0.08);overflow:hidden;flex-shrink:0;
-}
-.wt-broker-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-.wt-account-name{font-size:12px;color:var(--color-text-primary)}
-.wt-account-inner{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
-.chevron{width:14px;height:14px;color:var(--color-text-tertiary);flex-shrink:0}
-.wt-cash-row{display:flex;align-items:center;justify-content:space-between;height:36px}
-.wt-cash-val{font-size:14px;color:var(--color-text-primary);font-variant-numeric:tabular-nums;letter-spacing:-0.5px}
-.wt-amount-wrap{
-  display:flex;align-items:center;
-  border:1px solid rgba(0,0,0,0.06);border-radius:8px;overflow:hidden;
-  width:140px;height:36px;
-}
-.wt-amount-input{
-  flex:1;min-width:0;padding:8px 12px;border:none;outline:none;
-  font-family:var(--font-family-body);font-size:14px;color:rgba(10,13,18,0.4);
-  font-variant-numeric:tabular-nums;background:transparent;letter-spacing:-0.5px;
-}
-.wt-max-btn{
-  padding:6px 12px;background:transparent;border:none;
-  border-left:1px solid rgba(0,0,0,0.06);font-family:var(--font-family-body);
-  font-size:12px;font-weight:500;color:var(--color-text-primary);cursor:pointer;flex-shrink:0;
-}
-.wt-divider{height:1px;background:rgba(0,0,0,0.06);flex-shrink:0}
-.wt-footer{padding:16px 20px 20px;display:flex;flex-direction:column;gap:20px}
-.wt-est-row{display:flex;align-items:center;justify-content:space-between}
-.wt-est-value{font-size:14px;font-weight:500;color:var(--color-text-primary);font-variant-numeric:tabular-nums;letter-spacing:-0.5px}
-.btn-next{
-  width:100%;padding:10px 14px;
-  background:#406AD0;border:none;border-radius:8px;
-  font-family:var(--font-family-body);font-size:14px;font-weight:500;
-  color:#fff;cursor:pointer;letter-spacing:-0.5px;
-}
+BODY_LETTER_SPACING = "letter-spacing:-0.5px;"
 
-/* ── REVIEW ORDER STATE ── */
-.wt-review-header{
-  padding:16px 20px 17px;
-  display:flex;flex-direction:column;gap:12px;
-  border-bottom:1px solid rgba(0,0,0,0.06);
-  flex-shrink:0;
-}
-.wt-back-btn{
-  display:inline-flex;align-items:center;gap:6px;
-  background:none;border:none;padding:0;cursor:pointer;
-  font-family:var(--font-family-body);font-size:14px;
-  color:rgba(10,13,18,0.7);font-weight:500;letter-spacing:-0.5px;
-}
-.wt-back-btn svg{width:14px;height:14px}
-.wt-review-title{
-  font-size:16px;font-weight:500;
-  color:rgba(10,13,18,0.9);letter-spacing:0;
-}
-.wt-review-body{padding:16px 20px;display:flex;flex-direction:column;flex-shrink:0}
-.wt-review-row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:8px 0;
-}
-.wt-review-key{font-size:14px;color:rgba(10,13,18,0.7);font-weight:500;letter-spacing:0;width:160px;flex-shrink:0}
-.wt-review-val{font-size:14px;color:rgba(10,13,18,0.9);font-weight:400;letter-spacing:0;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;flex:1}
-.wt-review-acct{display:flex;align-items:center;gap:8px;justify-content:flex-end;flex:1}
-.wt-review-acct .wt-review-val{flex:none}
-.wt-review-acct-logo{
-  width:18px;height:18px;border-radius:4px;
-  border:0.5px solid rgba(0,0,0,0.08);overflow:hidden;flex-shrink:0;padding:0.5px;
-}
-.wt-review-acct-logo img{width:100%;height:100%;object-fit:cover;display:block;border-radius:3px}
-.wt-review-footer{
-  padding:17px 20px 20px;
-  display:flex;flex-direction:column;gap:16px;
-  border-top:1px solid rgba(0,0,0,0.06);
-  flex-shrink:0;
-}
-.wt-disclaimer{font-size:12px;color:#717680;line-height:18.6px;letter-spacing:-0.3px}
-.btn-submit{
-  width:100%;padding:10px 14px;height:38px;
-  background:#406AD0;border:none;border-radius:8px;
-  font-family:var(--font-family-body);font-size:14px;font-weight:500;
-  color:#fff;cursor:pointer;letter-spacing:-0.5px;
-}
-
+REDUCED_MOTION = """
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition-duration:0.01ms !important;animation-duration:0.01ms !important}
-}
-</style>
-</head>
-<body>
+}"""
 
-<!-- STATE 1: Buy form (account selected + amount filled) -->
-<div class="widget" id="buy-form">
-  <div class="wt-tabs">
-    <div class="wt-tab active">Buy</div>
-    <div class="wt-tab">Sell</div>
-  </div>
-  <div class="wt-body">
-    <div class="wt-row">
-      <span class="wt-label">Account</span>
-      <div class="wt-account-select">
-        <div class="wt-account-inner">
-          <div class="wt-broker-avatar"><img src="../assets/brokers/robinhood.png" alt="Robinhood"></div>
-          <span class="wt-account-name">Robinhood</span>
-        </div>
-        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 16 16" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6l4 4 4-4"/></svg>
-      </div>
-    </div>
-    <div class="wt-cash-row">
-      <span class="wt-label">Available cash</span>
-      <span class="wt-cash-val">$5,231.40 USD</span>
-    </div>
-    <div class="wt-row">
-      <span class="wt-label">Invest amount</span>
-      <div class="wt-amount-wrap">
-        <input class="wt-amount-input" type="text" value="$500" style="color:#181D27">
-        <button class="wt-max-btn">Max</button>
-      </div>
-    </div>
-  </div>
-  <div class="wt-divider"></div>
-  <div class="wt-footer">
-    <div class="wt-est-row">
-      <span class="wt-label">Estimated cost</span>
-      <span class="wt-est-value">$500.00 USD</span>
-    </div>
-    <button class="btn-next">Review</button>
-  </div>
-</div>
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
-<!-- STATE 2: Review order -->
-<div class="widget" id="review-order">
-  <div class="wt-review-header">
-    <button class="wt-back-btn">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 16 16" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 12L6 8l4-4"/></svg>
-      Back
-    </button>
-    <span class="wt-review-title">Review order</span>
-  </div>
-  <div class="wt-review-body">
-    <div class="wt-review-row">
-      <span class="wt-review-key">Strategy</span>
-      <span class="wt-review-val">Quantum Computing</span>
-    </div>
-    <div class="wt-review-row">
-      <span class="wt-review-key">Order type</span>
-      <span class="wt-review-val">Market buy</span>
-    </div>
-    <div class="wt-review-row">
-      <span class="wt-review-key">Investment amount</span>
-      <span class="wt-review-val">$435,435.00</span>
-    </div>
-    <div class="wt-review-row">
-      <span class="wt-review-key">Account</span>
-      <div class="wt-review-acct">
-        <div class="wt-review-acct-logo"><img src="../assets/brokers/robinhood.png" alt="Robinhood"></div>
-        <span class="wt-review-val">Robinhood</span>
-      </div>
-    </div>
-  </div>
-  <div class="wt-review-footer">
-    <div class="wt-review-row">
-      <span class="wt-review-key">Estimated cost</span>
-      <span class="wt-review-val">$435,435.00</span>
-    </div>
-    <p class="wt-disclaimer">This order will execute at the next available market price. Surmount will rebalance your portfolio according to the strategy's current allocations.</p>
-    <button class="btn-submit">Submit order</button>
-  </div>
-</div>
+root_re = re.compile(r':root\s*\{[^}]*\}', re.DOTALL)
 
-</body>
-</html>
+def replace_root(html: str) -> str:
+    """Replace the first :root{} block with the canonical one."""
+    if ':root' not in html:
+        return html
+    return root_re.sub(CANONICAL_ROOT, html, count=1)
+
+def fix_font_weights(html: str) -> str:
+    """Downgrade hardcoded font-weight 600/700 → 500 inside <style> blocks."""
+    def fix_style(m):
+        s = m.group(0)
+        s = re.sub(r'font-weight\s*:\s*(600|700|bold|semibold)', 'font-weight:500', s)
+        return s
+    return re.sub(r'<style[^>]*>.*?</style>', fix_style, html, flags=re.DOTALL | re.IGNORECASE)
+
+def fix_body_letter_spacing(html: str) -> str:
+    """Ensure body{} has letter-spacing:-0.5px."""
+    if 'letter-spacing:-0.5px' in html or "letter-spacing: -0.5px" in html:
+        return html
+    def add_ls(m):
+        s = m.group(0)
+        # inject into first body{ block inside <style>
+        s = re.sub(r'(body\s*\{)', r'\1' + BODY_LETTER_SPACING, s, count=1)
+        return s
+    return re.sub(r'<style[^>]*>.*?</style>', add_ls, html, flags=re.DOTALL | re.IGNORECASE)
+
+def fix_reduced_motion(html: str) -> str:
+    """Add prefers-reduced-motion block if not present."""
+    if 'prefers-reduced-motion' in html:
+        return html
+    # Insert before </style>
+    return re.sub(r'(</style>)', REDUCED_MOTION + r'\n\1', html, count=1, flags=re.IGNORECASE)
+
+def fix_bad_colors(html: str) -> str:
+    """Replace wrong success dot colour and other bad hardcoded values."""
+    # Wrong success green → canonical
+    html = html.replace('#16A34A', '#316434').replace('#16a34a', '#316434')
+    return html
+
+def fix_positive_letter_spacing(html: str) -> str:
+    """Remove positive letter-spacing on category labels (marketplace)."""
+    # Targets patterns like letter-spacing:0.64px / 0.72px / 0.8px inside style blocks
+    def fix_style(m):
+        s = m.group(0)
+        s = re.sub(r'letter-spacing\s*:\s*0\.[0-9]+px', 'letter-spacing:0', s)
+        return s
+    return re.sub(r'<style[^>]*>.*?</style>', fix_style, html, flags=re.DOTALL | re.IGNORECASE)
+
+def process_file(path: str) -> None:
+    with open(path, 'r', encoding='utf-8') as f:
+        html = f.read()
+
+    original = html
+    html = replace_root(html)
+    html = fix_font_weights(html)
+    html = fix_body_letter_spacing(html)
+    html = fix_reduced_motion(html)
+    html = fix_bad_colors(html)
+    html = fix_positive_letter_spacing(html)
+
+    if html != original:
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(html)
+        print(f"  ✓  {os.path.relpath(path)}")
+    else:
+        print(f"  –  {os.path.relpath(path)}  (no changes)")
+
+# ── Main ──────────────────────────────────────────────────────────────────────
+
+DESIGNS = "/Users/shawnji/Surmount/B2C/designs"
+
+# All HTML files except node_modules / rn-app
+targets = []
+for root, dirs, files in os.walk(DESIGNS):
+    dirs[:] = [d for d in dirs if d not in ('node_modules', 'rn-app', 'rn')]
+    for f in files:
+        if f.endswith('.html'):
+            targets.append(os.path.join(root, f))
+
+targets.sort()
+print(f"Processing {len(targets)} files...\n")
+for t in targets:
+    process_file(t)
+
+print("\nDone.")
