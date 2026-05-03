@@ -464,6 +464,7 @@ Company logo/
 | `sidebar.js` | `<app-sidebar>` Web Component |
 | `stratey-builder/shell.html` | Shell with sidebar iframe |
 | `index.html` | Hub listing all B2C explorations |
+| `onboarding/` | Account-opening flow — see `onboarding/FLOW.md` for the full 13-step-1 → 2-step-2 → 4-step-3 architecture, progress bar model, validation patterns |
 
 ---
 

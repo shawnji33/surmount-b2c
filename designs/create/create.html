@@ -68,6 +68,7 @@
   --color-fg-quaternary-400:#a3a7ae;
   --color-fg-disabled:#a3a7ae;
   --color-fg-white:#ffffff;
+  --color-text-white:#ffffff;     /* alias used elsewhere in the design system */
   --color-fg-brand-primary-600:#406ad0;
   --color-fg-brand-secondary-500:#5585dc;
   --color-fg-success-primary:#3b7e3f;
@@ -217,6 +218,30 @@
   --border-default:var(--color-border-secondary);
   --surface-bg:var(--color-bg-secondary);
   --surface-secondary:var(--color-bg-tertiary);
+
+  /* ═ create.html legacy short aliases — keep in sync with the design
+   * system tokens above. These were referenced throughout create.html's
+   * CSS but never defined, which silently dropped border-radius and a
+   * lot of fills. ═══════════════════════════════════════════════════ */
+  --rs:var(--radius-sm);    /* 6px */
+  --rm:var(--radius-md);    /* 8px */
+  --rl:var(--radius-lg);    /* 10px */
+  --rxl:var(--radius-xl);   /* 12px */
+  --r2xl:var(--radius-2xl); /* 16px */
+
+  --surface:var(--color-bg-primary);
+
+  --g25:var(--color-gray-lm-25);
+  --g50:var(--color-gray-lm-50);
+  --g100:var(--color-gray-lm-100);
+  --g200:var(--color-gray-lm-200);
+  --g300:var(--color-gray-lm-300);
+  --g400:var(--color-gray-lm-400);
+  --g500:var(--color-gray-lm-500);
+  --g600:var(--color-gray-lm-600);
+  --g700:var(--color-gray-lm-700);
+  --g800:var(--color-gray-lm-800);
+  --g900:var(--color-gray-lm-900);
   /* chart / data vis */
   --chart-line:#3b7e3f;
   --chart-grad-top:rgba(162,211,165,0.9);
@@ -231,7 +256,7 @@ html,body{letter-spacing:-0.5px;height:100%;overflow:hidden;font-family:var(--fo
 @keyframes modalEnter{from{opacity:0;transform:scale(0.96) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes overlayFadeOut{from{opacity:1}to{opacity:0}}
 @keyframes modalLeave{from{opacity:1;transform:scale(1) translateY(0)}to{opacity:0;transform:scale(0.96) translateY(10px)}}
-.modal-overlay{position:fixed;inset:0;background:rgba(10,13,18,.5);backdrop-filter:blur(4px);z-index:900;display:flex;align-items:center;justify-content:center;}
+.modal-overlay{position:fixed;inset:0;background:rgba(10,13,18,.45);z-index:900;display:flex;align-items:center;justify-content:center;}
 .modal-overlay.hidden{display:none;}
 .modal-overlay.entering{animation:overlayFadeIn .18s ease forwards;}
 .modal-overlay.entering .modal{animation:modalEnter .22s cubic-bezier(0.16,1,0.3,1) forwards;}
@@ -266,9 +291,21 @@ html,body{letter-spacing:-0.5px;height:100%;overflow:hidden;font-family:var(--fo
 .modal-footer{display:flex;justify-content:flex-end;gap:var(--space-3);padding:var(--space-5) var(--space-6) var(--space-6);}
 .btn-cancel{background:none;border:1px solid var(--color-border-default);border-radius:var(--rm);padding:8px 16px;font-family:var(--font-family-body);font-size:var(--text-sm);font-weight:500;color:var(--g700);cursor:pointer;transition:all .12s;}
 .btn-cancel:hover{background:var(--g50);border-color:var(--g300);}
-.btn-next{display:flex;align-items:center;gap:6px;background:var(--b600);border:none;border-radius:var(--rm);padding:8px 16px;font-family:var(--font-family-body);font-size:var(--text-sm);font-weight:500;color:#fff;cursor:pointer;transition:background .12s;}
-.btn-next:hover{background:var(--b700);}
-.btn-next svg{width:13px;height:13px;stroke:#fff;}
+/* Primary CTA — design-system dark button (matches /onboarding/* pages):
+ * fg-primary-900 fill, white text, subtle 2px inset white-12% border. */
+.btn-next{
+  display:flex;align-items:center;gap:6px;
+  background:var(--color-fg-primary-900);
+  border:2px solid rgba(255,255,255,0.12);
+  border-radius:var(--rm);
+  padding:8px 14px;
+  font-family:var(--font-family-body);font-size:var(--text-sm);font-weight:500;
+  color:var(--color-fg-white);
+  cursor:pointer;
+  transition:background .12s;
+}
+.btn-next:hover{background:var(--color-fg-secondary-700);}
+.btn-next svg{width:13px;height:13px;stroke:currentColor;}
 
 /* ─── PAGE LOAD ANIMATION ─── */
 @keyframes pageSlideIn{
@@ -291,9 +328,19 @@ html,body{letter-spacing:-0.5px;height:100%;overflow:hidden;font-family:var(--fo
 .page-header{flex-shrink:0;}
 .page-header-top{display:flex;align-items:center;justify-content:space-between;height:40px;}
 .page-title{font-family:var(--font-family-display);font-size:var(--text-xl);font-weight:500;color:var(--color-text-primary);letter-spacing:-.3px;}
-.btn-new-strategy{display:flex;align-items:center;gap:6px;background:var(--b600);border:none;border-radius:var(--rm);padding:10px 16px;font-family:var(--font-family-body);font-size:var(--text-sm);font-weight:500;color:#fff;cursor:pointer;transition:background .12s;}
-.btn-new-strategy:hover{background:var(--b700);}
-.btn-new-strategy svg{width:14px;height:14px;stroke:#fff;fill:none;flex-shrink:0;}
+.btn-new-strategy{
+  display:flex;align-items:center;gap:6px;
+  background:var(--color-fg-primary-900);
+  border:2px solid rgba(255,255,255,0.12);
+  border-radius:var(--rm);
+  padding:10px 14px;
+  font-family:var(--font-family-body);font-size:var(--text-sm);font-weight:500;
+  color:var(--color-fg-white);
+  cursor:pointer;
+  transition:background .12s;
+}
+.btn-new-strategy:hover{background:var(--color-fg-secondary-700);}
+.btn-new-strategy svg{width:14px;height:14px;stroke:currentColor;fill:none;flex-shrink:0;}
 
 /* ─── PAGE TABS ─── */
 .page-tabs{display:flex;gap:0;margin-top:20px;border-bottom:1px solid var(--color-border-default);}

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cash account — Surmount</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../transactions.css?v=4">
+<script src="../sidebar.js"></script>
+<script src="../portfolio-switcher.js"></script>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block}
+
+/* ═══ Surmount Design System — tokens (mirror Figma variable names) ═══ */
+:root{
+  --color-bg-primary:#ffffff;
+  --color-bg-secondary:#fafafa;
+  --color-bg-tertiary:#f5f5f5;
+
+  --color-fg-primary-900:#181d27;
+  --color-fg-secondary-700:#414651;
+  --color-fg-tertiary-600:#535862;
+  --color-fg-quaternary-400:#a3a7ae;
+
+  --color-text-primary-900:rgba(10,13,18,0.9);
+  --color-text-secondary-700:rgba(10,13,18,0.7);
+  --color-text-tertiary-600:rgba(10,13,18,0.6);
+  --color-text-quaternary-500:rgba(10,13,18,0.5);
+  --color-text-placeholder:#717680;
+  --color-text-white:#ffffff;
+
+  /* Border tokens — canonical design-system values from
+   * design-system-surmount/tokens/tokens.css */
+  --color-border-primary:#00000016;
+  --color-border-secondary:#00000010;
+  --color-border-tertiary:#0000000a;
+  --color-border-input:#d5d7da;
+  --color-border-input-secondary:#e9eaeb;
+
+  --color-utility-gray-700:#414651;
+  --color-utility-gray-200:#e9eaeb;
+  --color-alpha-white-70:rgba(255,255,255,0.7);
+  --color-alpha-black-10:rgba(10,13,18,0.1);
+
+  --color-page:#fcfcfc;
+
+  /* Spacing */
+  --spacing-xxs:2px; --spacing-xs:4px;  --spacing-sm:6px;
+  --spacing-md:8px;  --spacing-lg:12px; --spacing-xl:16px;
+  --spacing-2xl:20px; --spacing-3xl:24px; --spacing-4xl:32px;
+  --spacing-5xl:40px; --spacing-6xl:48px;
+
+  /* Radius */
+  --radius-xs:4px; --radius-sm:6px;  --radius-md:8px;
+  --radius-xl:12px; --radius-2xl:16px; --radius-3xl:20px;
+  --radius-full:9999px;
+
+  /* Typography */
+  --font-family-body:'Geist',sans-serif;
+  --font-family-display:'Inter',sans-serif;
+
+  --font-size-text-xxs:10px; --line-height-text-xxs:13px;
+  --font-size-text-xs:12px;  --line-height-text-xs:18px;
+  --font-size-text-sm:14px;  --line-height-text-sm:20px;
+  --font-size-text-md:16px;  --line-height-text-md:24px;
+  --font-size-text-lg:18px;  --line-height-text-lg:28px;
+  --font-size-display-sm:30px; --line-height-display-sm:38px;
+
+  /* Shadows */
+  --shadow-xs:0px 1px 2px rgba(10,13,18,0.05);
+  --shadow-card:0px 2px 12px rgba(10,13,18,0.03);
+  --shadow-card-soft:0px 2px 6px rgba(10,13,18,0.03);
+  --shadow-skeumorphic:0px 1px 2px rgba(10,13,18,0.05),inset 0px -2px 0px 0px rgba(10,13,18,0.05),inset 0px 0px 0px 1px rgba(10,13,18,0.18);
+  --shadow-sidebar:0px 1px 2px rgba(10,13,18,0.05);
+  --shadow-logo-card:0px 1px 1px -0.5px rgba(10,13,18,0.13),0px 1px 3px rgba(10,13,18,0.1),0px 1px 2px rgba(10,13,18,0.06);
+}
+
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);
+  color:var(--color-fg-primary-900);
+  background:var(--color-bg-secondary);
+  letter-spacing:-0.5px;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── Layout ──────────────────────────────────────────────────────────── */
+.dashboard-layout{display:flex;height:100vh;width:100%;overflow:hidden}
+app-sidebar{align-self:stretch;display:flex;flex-shrink:0}
+
+.main-content{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+
+/* Page header — same pattern as homepage.html */
+.page-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--spacing-3xl) var(--spacing-3xl) var(--spacing-2xl);
+  height:76px;flex-shrink:0;
+}
+.greeting{
+  flex:1;
+  font-size:var(--font-size-text-md);
+  font-weight:500;
+  color:var(--color-fg-primary-900);
+  letter-spacing:-0.3px;
+}
+.search-box{
+  display:flex;align-items:center;gap:var(--spacing-md);
+  width:320px;flex-shrink:0;
+  padding:var(--spacing-md) var(--spacing-lg);
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-md);
+  box-shadow:var(--shadow-card);
+  cursor:text;
+  transition:border-color 150ms ease, box-shadow 150ms ease;
+}
+.search-box:hover{border-color:rgba(0,0,0,0.10);box-shadow:0px 2px 12px rgba(10,13,18,0.05)}
+.search-box-inner{display:flex;align-items:center;gap:var(--spacing-md);flex:1;min-width:0}
+.search-icon{width:20px;height:20px;flex-shrink:0;color:var(--color-text-tertiary-600)}
+.search-placeholder{
+  font-size:var(--font-size-text-md);
+  color:var(--color-text-tertiary-600);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.search-shortcut{
+  border:1px solid var(--color-border-secondary);
+  border-radius:var(--radius-xs);
+  padding:1px var(--spacing-xs);
+  font-size:var(--font-size-text-xs);
+  font-weight:500;
+  color:var(--color-text-tertiary-600);
+  white-space:nowrap;
+}
+
+/* Content area */
+.content-area{
+  display:flex;gap:var(--spacing-5xl);
+  padding:var(--spacing-2xl) var(--spacing-3xl) 0;
+  flex:1;overflow:hidden;
+}
+.left-column{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;gap:var(--spacing-5xl);
+  overflow-y:auto;overflow-x:hidden;
+  padding-bottom:var(--spacing-3xl);
+}
+.left-column::-webkit-scrollbar{display:none}
+.left-column{scrollbar-width:none;-ms-overflow-style:none}
+.right-column{
+  width:400px;flex-shrink:0;
+  display:flex;flex-direction:column;gap:var(--spacing-lg);
+  padding-bottom:var(--spacing-3xl);
+  overflow-y:auto;
+}
+.right-column::-webkit-scrollbar{display:none}
+.right-column{scrollbar-width:none;-ms-overflow-style:none}
+
+/* Portfolio block */
+.portfolio-block{display:flex;flex-direction:column;gap:var(--spacing-2xl)}
+.portfolio-row{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.portfolio-title-group{display:flex;align-items:center;gap:var(--spacing-lg)}
+.portfolio-title{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-lg);font-weight:500;
+  color:var(--color-text-primary-900);
+  line-height:var(--line-height-text-lg);
+}
+/* Portfolio switcher styles live in ../portfolio-switcher.js */
+.icon-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-md);
+  color:var(--color-fg-secondary-700);
+  transition:background 120ms ease, border-color 120ms ease;
+}
+.icon-btn:hover{background:var(--color-bg-secondary);border-color:rgba(0,0,0,0.14)}
+.icon-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.67;stroke-linecap:round;stroke-linejoin:round}
+
+.portfolio-value{
+  font-family:var(--font-family-display);
+  font-size:var(--font-size-display-sm);font-weight:500;
+  color:var(--color-text-primary-900);
+  line-height:var(--line-height-display-sm);
+  letter-spacing:-0.6px;
+}
+
+/* Transaction-list styles live in ../transactions.css */
+
+/* ─── Right column: action tiles + interest card + view statements ──── */
+.actions-row{display:flex;align-items:flex-start;gap:var(--spacing-lg);width:100%}
+.action-tile{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;align-items:center;gap:var(--spacing-md);
+}
+.action-tile-icon{
+  width:100%;height:85px;
+  background:var(--color-bg-tertiary);
+  border:1px solid var(--color-border-secondary);
+  border-radius:var(--radius-2xl);
+  box-shadow:var(--shadow-card);
+  display:inline-flex;align-items:center;justify-content:center;
+  color:var(--color-fg-primary-900);
+  transition:background 120ms ease, border-color 120ms ease;
+  cursor:pointer;
+}
+.action-tile-icon:hover{background:#efefef;border-color:rgba(0,0,0,0.10)}
+.action-tile-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.67;stroke-linecap:round;stroke-linejoin:round}
+.action-tile-label{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-xxs);font-weight:600;
+  color:var(--color-text-secondary-700);
+  line-height:var(--line-height-text-xxs);
+}
+
+.interest-card{
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-secondary);
+  border-radius:16px 16px 16px 20px;
+  box-shadow:var(--shadow-card-soft);
+  padding:var(--spacing-xl);
+  display:flex;flex-direction:column;gap:var(--spacing-xl);
+}
+.interest-header{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.interest-label{
+  font-size:var(--font-size-text-sm);font-weight:500;
+  color:var(--color-text-quaternary-500);
+  line-height:var(--line-height-text-sm);
+}
+.interest-badge{
+  display:inline-flex;align-items:center;gap:var(--spacing-sm);
+  padding:var(--spacing-xxs) var(--spacing-sm) var(--spacing-xxs) var(--spacing-md);
+  background:#eaeef7;
+  border:1px solid rgba(3,27,62,0.05);
+  border-radius:var(--radius-full);
+  font-size:var(--font-size-text-xs);font-weight:500;
+  color:#3461a7;
+  line-height:var(--line-height-text-xs);
+}
+.interest-amount{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-lg);font-weight:500;
+  color:var(--color-text-primary-900);
+  line-height:var(--line-height-text-lg);
+}
+
+.view-statements{
+  display:inline-flex;align-items:center;gap:var(--spacing-xs);
+  padding:var(--spacing-md) var(--spacing-lg);
+  border-radius:var(--radius-md);
+  align-self:flex-start;
+  font-size:var(--font-size-text-sm);font-weight:500;
+  color:var(--color-text-tertiary-600);
+  line-height:var(--line-height-text-sm);
+  transition:background 120ms ease;
+}
+.view-statements:hover{background:rgba(10,13,18,0.04)}
+.view-statements svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.67;stroke-linecap:round;stroke-linejoin:round}
+
+/* ─── Entrance animations ─────────────────────────────────────────────── */
+@keyframes fade-up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.content-area > *{
+  opacity:0;transform:translateY(8px);
+  animation:fade-up 420ms cubic-bezier(0.16,1,0.3,1) both;
+}
+.content-area > *:nth-child(1){animation-delay:60ms}
+.content-area > *:nth-child(2){animation-delay:140ms}
+
+@media (prefers-reduced-motion:reduce){
+  .content-area > *{animation:none;opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="dashboard-layout">
+
+  <!-- ═══ Sidebar (shared <app-sidebar> from sidebar.js) ═════════════════ -->
+  <app-sidebar active="home"></app-sidebar>
+
+  <!-- ═══ Main column ═════════════════════════════════════════════════════ -->
+  <main class="main-content">
+
+    <!-- Page header — same pattern as homepage.html -->
+    <header class="page-header">
+      <span class="greeting">Good morning, Logan</span>
+      <div class="search-box">
+        <div class="search-box-inner">
+          <svg class="search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="9" r="6"/><path d="M16.5 16.5l-3.5-3.5"/>
+          </svg>
+          <span class="search-placeholder">Find an investment</span>
+        </div>
+        <span class="search-shortcut">⌘K</span>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <section class="content-area">
+
+      <!-- ── LEFT COLUMN ─────────────────────────────────────────────── -->
+      <div class="left-column">
+
+        <!-- Portfolio header -->
+        <div class="portfolio-block">
+          <div class="portfolio-row">
+            <div class="portfolio-title-group">
+              <span class="portfolio-title">Portfolio</span>
+              <portfolio-switcher selected="cash" assets-base="../assets/brokers" pages-base=".."></portfolio-switcher>
+            </div>
+            <button class="icon-btn" type="button" aria-label="Settings">
+              <svg viewBox="0 0 20 20">
+                <circle cx="10" cy="10" r="2.5"/>
+                <path d="M10 1.7v2.6M10 15.7v2.6M5.6 5.6L3.8 3.8M16.2 16.2l-1.8-1.8M1.7 10h2.6M15.7 10h2.6M5.6 14.4l-1.8 1.8M16.2 3.8l-1.8 1.8"/>
+              </svg>
+            </button>
+          </div>
+          <p class="portfolio-value">$245,235.35</p>
+        </div>
+
+        <!-- Recent transactions -->
+        <section class="tx-section" id="transactions">
+          <div class="tx-section-header">
+            <span class="tx-section-title">Recent transactions</span>
+          </div>
+
+          <!-- Rows + groups are rendered by the script below from TX_DATA -->
+          <div id="tx-root"></div>
+        </section>
+
+      </div>
+
+      <!-- ── RIGHT COLUMN ────────────────────────────────────────────── -->
+      <div class="right-column">
+
+        <div class="actions-row">
+          <button class="action-tile" type="button">
+            <span class="action-tile-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 15V4M7 9l5-5 5 5"/>
+                <path d="M3 16v3a2 2 0 002 2h14a2 2 0 002-2v-3"/>
+              </svg>
+            </span>
+            <span class="action-tile-label">Deposit</span>
+          </button>
+
+          <button class="action-tile" type="button">
+            <span class="action-tile-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 4v11M7 10l5 5 5-5"/>
+                <path d="M3 16v3a2 2 0 002 2h14a2 2 0 002-2v-3"/>
+              </svg>
+            </span>
+            <span class="action-tile-label">Transfer out</span>
+          </button>
+        </div>
+
+        <article class="interest-card">
+          <header class="interest-header">
+            <span class="interest-label">April interest</span>
+            <span class="interest-badge">4.56% interest</span>
+          </header>
+          <p class="interest-amount">$24.35</p>
+        </article>
+
+        <a class="view-statements" href="#">
+          View statements
+          <svg viewBox="0 0 20 20"><path d="M4 10h12M11 5l5 5-5 5"/></svg>
+        </a>
+      </div>
+
+    </section>
+  </main>
+
+</div>
+
+<script>
+(function () {
+  /* ─── Icons ─────────────────────────────────────────────────────────── */
+  const ICONS = {
+    interest: `<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><path d="M11.6 7.5c-.4-.5-1-.8-1.7-.8-1 0-1.7.6-1.7 1.4 0 .7.6 1.1 1.4 1.3l.7.2c.9.2 1.6.7 1.6 1.5 0 .9-.8 1.5-1.9 1.5-.8 0-1.5-.4-1.8-1M10 5.6v.9M10 13.5v.9"/></svg>`,
+    deposit: `<svg viewBox="0 0 20 20"><path d="M10 12.5V3M6.5 7l3.5-3.5L13.5 7"/><path d="M3.5 12v3a1.5 1.5 0 001.5 1.5h10a1.5 1.5 0 001.5-1.5v-3"/></svg>`,
+    'transfer-out': `<svg viewBox="0 0 20 20"><path d="M3 7h12M11.5 4.5L15 7l-3.5 2.5"/><path d="M17 13H5M8.5 10.5L5 13l3.5 2.5"/></svg>`,
+  };
+  const CHEVRON = `<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></svg>`;
+
+  /* ─── Data ──────────────────────────────────────────────────────────── */
+  const TX_DATA = [
+    {
+      date: 'April 26, 2026',
+      items: [
+        {
+          id: 'tx-2026-04-26-1',
+          kind: 'transfer-out',
+          name: 'Transfer out',
+          meta: 'To Robinhood',
+          amount: -500.00,
+          details: {
+            'From':   'Surmount Cash',
+            'To':     'Robinhood · Individual',
+            'Status': 'Completed',
+            'Date':   'April 26, 2026',
+            'Method': 'Standard transfer',
+          },
+        },
+        {
+          id: 'tx-2026-04-26-2',
+          kind: 'deposit',
+          name: 'Deposit',
+          meta: 'From Chase · 360 Checking',
+          amount: 1200.00,
+          details: {
+            'From':   'Chase · 360 Checking',
+            'To':     'Surmount Cash',
+            'Status': 'Completed',
+            'Date':   'April 26, 2026',
+            'Method': 'Direct deposit',
+          },
+        },
+      ],
+    },
+    {
+      date: 'April 1, 2026',
+      items: [
+        {
+          id: 'tx-2026-04-01-1',
+          kind: 'interest',
+          name: 'Interest',
+          meta: 'April monthly accrual',
+          amount: 24.35,
+          details: {
+            'From':   'Surmount Cash',
+            'To':     'Surmount Cash',
+            'Status': 'Completed',
+            'Date':   'April 1, 2026',
+            'APY':    '4.56%',
+          },
+        },
+      ],
+    },
+    {
+      date: 'March 28, 2026',
+      items: [
+        {
+          id: 'tx-2026-03-28-1',
+          kind: 'transfer-out',
+          name: 'Transfer out',
+          meta: 'To Robinhood',
+          amount: -2000.00,
+          details: {
+            'From':   'Surmount Cash',
+            'To':     'Robinhood · Individual',
+            'Status': 'Completed',
+            'Date':   'March 28, 2026',
+            'Method': 'Standard transfer',
+          },
+        },
+        {
+          id: 'tx-2026-03-28-2',
+          kind: 'deposit',
+          name: 'Deposit',
+          meta: 'From Robinhood',
+          amount: 2500.00,
+          details: {
+            'From':   'Robinhood · Individual',
+            'To':     'Surmount Cash',
+            'Status': 'Completed',
+            'Date':   'March 28, 2026',
+            'Method': 'ACH transfer',
+          },
+        },
+      ],
+    },
+    {
+      date: 'March 1, 2026',
+      items: [
+        {
+          id: 'tx-2026-03-01-1',
+          kind: 'interest',
+          name: 'Interest',
+          meta: 'March monthly accrual',
+          amount: 22.18,
+          details: {
+            'From':   'Surmount Cash',
+            'To':     'Surmount Cash',
+            'Status': 'Completed',
+            'Date':   'March 1, 2026',
+            'APY':    '4.54%',
+          },
+        },
+      ],
+    },
+  ];
+
+  /* ─── Helpers ───────────────────────────────────────────────────────── */
+  function formatAmount(n) {
+    const sign = n > 0 ? '+' : n < 0 ? '−' : '';   // proper minus
+    const abs = Math.abs(n).toLocaleString('en-US', {
+      minimumFractionDigits: 2, maximumFractionDigits: 2,
+    });
+    return `${sign}$${abs}`;
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  /* ─── Render ────────────────────────────────────────────────────────── */
+  function renderRow(tx) {
+    const amountClass = tx.amount > 0 ? ' is-positive' : '';
+    const detailsRows = Object.entries(tx.details)
+      .map(([label, value]) => `
+        <div class="tx-detail-row">
+          <span class="tx-detail-label">${escapeHtml(label)}</span>
+          <span class="tx-detail-value">${escapeHtml(value)}</span>
+        </div>`).join('');
+
+    return `
+      <div class="tx-card" data-expanded="false" data-id="${tx.id}">
+        <button class="tx-summary" type="button" aria-expanded="false" aria-controls="${tx.id}-details">
+          <span class="tx-avatar" aria-hidden="true">${ICONS[tx.kind] || ICONS.deposit}</span>
+          <span class="tx-text">
+            <span class="tx-name">${escapeHtml(tx.name)}</span>
+            <span class="tx-meta">${escapeHtml(tx.meta)}</span>
+          </span>
+          <span class="tx-amount${amountClass}">${formatAmount(tx.amount)}</span>
+          <span class="tx-chevron" aria-hidden="true">${CHEVRON}</span>
+        </button>
+        <div class="tx-details-wrap">
+          <div class="tx-details" id="${tx.id}-details" role="region">
+            <div class="tx-details-inner">
+              ${detailsRows}
+              <div class="tx-detail-row is-amount">
+                <span class="tx-detail-label">Amount</span>
+                <span class="tx-detail-value">${formatAmount(tx.amount)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderGroup(group) {
+    return `
+      <div class="tx-group">
+        <span class="tx-date">${escapeHtml(group.date)}</span>
+        <div class="tx-list">
+          ${group.items.map(renderRow).join('')}
+        </div>
+      </div>`;
+  }
+
+  const root = document.getElementById('tx-root');
+  if (root) {
+    root.innerHTML = TX_DATA.map(renderGroup).join('');
+
+    /* Click-to-expand */
+    root.addEventListener('click', (e) => {
+      const summary = e.target.closest('.tx-summary');
+      if (!summary) return;
+      const card = summary.closest('.tx-card');
+      const expanded = card.getAttribute('data-expanded') === 'true';
+      const next = !expanded;
+      card.setAttribute('data-expanded', String(next));
+      summary.setAttribute('aria-expanded', String(next));
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1803,6 +1803,1386 @@ app-sidebar{align-self:stretch;display:flex;flex-shrink:0}
   </div><!-- /main-content -->
 </div>
 
+<!-- ═══ Floating AI prompt — same .ai-prompt-wrap chrome as
+     /create/promptfolio.html, but rendered as a clickable button with
+     a Surmount-logo icon + label and no send button. -->
+<button class="ai-prompt-wrap ai-prompt-wrap--floating no-anim" type="button" id="strategy-ai-prompt" aria-label="Explain this strategy for me">
+  <span class="ai-prompt-trigger">
+    <span class="ai-prompt-icon" aria-hidden="true">
+      <!-- Surmount brand mark — same SVG as sidebar.js -->
+      <svg viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 14.8C3 10.3196 3 8.07937 3.87195 6.36808C4.63893 4.86278 5.86278 3.63893 7.36808 2.87195C9.07937 2 11.3196 2 15.8 2H22.2C26.6804 2 28.9206 2 30.6319 2.87195C32.1372 3.63893 33.3611 4.86278 34.1281 6.36808C35 8.07937 35 10.3196 35 14.8V21.2C35 25.6804 35 27.9206 34.1281 29.6319C33.3611 31.1372 32.1372 32.3611 30.6319 33.1281C28.9206 34 26.6804 34 22.2 34H15.8C11.3196 34 9.07937 34 7.36808 33.1281C5.86278 32.3611 4.63893 31.1372 3.87195 29.6319C3 27.9206 3 25.6804 3 21.2V14.8Z" fill="url(#aip0)"/>
+        <path d="M18.9982 13.1366C18.7314 13.3201 18.4774 13.5264 18.2363 13.7556L17.0473 14.888C16.5042 14.6108 15.9021 14.473 15.3023 14.473C14.3537 14.473 13.4058 14.8171 12.6831 15.5054C11.9844 16.1725 11.5993 17.0568 11.5993 17.9994H9C9 16.3954 9.65481 14.888 10.8462 13.7556C13.064 11.6435 16.537 11.4371 19.0006 13.1366H18.9982Z" fill="url(#aip1)"/>
+        <path d="M23.3671 18.8083L20.9498 21.1103L19.7607 22.2421C19.5196 22.4719 19.2657 22.6782 18.9982 22.8617C17.9016 23.6185 16.6008 23.9981 15.3023 23.9981C13.6884 23.9981 12.0745 23.4122 10.8462 22.2421C9.65481 21.108 9 19.6006 9 17.9972H11.5993C11.5993 18.9392 11.9844 19.8258 12.6831 20.4906C13.916 21.6647 15.8102 21.8357 17.238 21.0039C17.4809 20.8622 17.7109 20.6913 17.9233 20.4906L19.2306 19.2462L21.5279 17.0586H21.5297C22.0376 16.5727 22.8615 16.5727 23.3671 17.0569C23.8751 17.5405 23.8751 18.3242 23.3671 18.8061V18.8083Z" fill="url(#aip2)"/>
+        <path d="M28.9994 17.999H26.4001C26.4001 17.0564 26.015 16.1726 25.3164 15.505C24.5937 14.8173 23.6457 14.4732 22.6971 14.4732C22.0248 14.4732 21.353 14.6464 20.7614 14.9922C20.5185 15.134 20.2886 15.3049 20.0785 15.505L18.7689 16.7523L16.4697 18.9416C16.2158 19.1834 15.8828 19.3046 15.5498 19.3046C15.2169 19.3046 14.8839 19.1834 14.63 18.9416C14.122 18.458 14.122 17.6737 14.63 17.1918L17.0479 14.8899L18.237 13.7581C18.4775 13.5283 18.7314 13.322 18.9988 13.1385C21.4624 11.439 24.9331 11.6454 27.1515 13.7581C28.3423 14.8922 28.9971 16.3996 28.9971 18.0013L28.9994 17.999Z" fill="url(#aip3)"/>
+        <path d="M29 17.9991C29 19.6025 28.3452 21.1099 27.1538 22.2445C25.9255 23.4141 24.3116 24 22.6977 24C21.3992 24 20.0984 23.6204 19.0012 22.8636C19.2686 22.6801 19.5226 22.4738 19.7631 22.2445L20.9521 21.1122C21.4952 21.3894 22.0956 21.5272 22.6977 21.5272C23.6457 21.5272 24.5937 21.183 25.3163 20.4948C26.015 19.8277 26.4007 18.944 26.4007 18.0014H29V17.9991Z" fill="url(#aip4)"/>
+        <defs>
+          <linearGradient id="aip0" x1="3" y1="2" x2="35" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#F5F7FA"/><stop offset="1" stop-color="#C3CFE2"/></linearGradient>
+          <linearGradient id="aip1" x1="9" y1="14.9848" x2="19.0001" y2="15.0677" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#1047D2"/></linearGradient>
+          <linearGradient id="aip2" x1="9" y1="20.3279" x2="23.747" y2="20.476" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#54E3DF"/></linearGradient>
+          <linearGradient id="aip3" x1="14.249" y1="15.6351" x2="28.9983" y2="15.7833" gradientUnits="userSpaceOnUse"><stop stop-color="#54E3DF"/><stop offset="1" stop-color="#34A6ED"/></linearGradient>
+          <linearGradient id="aip4" x1="19.0012" y1="20.9846" x2="28.9996" y2="21.0675" gradientUnits="userSpaceOnUse"><stop stop-color="#1047D2"/><stop offset="1" stop-color="#34A6ED"/></linearGradient>
+        </defs>
+      </svg>
+    </span>
+    <span class="ai-prompt-text">Explain this strategy for me</span>
+  </span>
+</button>
+
+<!-- ═══ AI chat panel — opens when the floating button is clicked ════════ -->
+<aside class="ai-chat-panel" id="ai-chat-panel" data-open="false" data-state="thinking" aria-hidden="true">
+  <header class="ai-chat-topbar">
+    <button class="ai-chat-new-convo" type="button" id="ai-chat-new-convo">
+      <svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg>
+      New conversation
+    </button>
+    <button class="ai-chat-close" type="button" id="ai-chat-close" aria-label="Close">
+      <svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+    </button>
+  </header>
+
+  <div class="ai-chat-body">
+    <div class="ai-chat-messages" id="ai-chat-messages">
+
+      <!-- User question -->
+      <div class="ai-msg ai-msg-user">
+        <span class="ai-msg-bubble">Explain this strategy for me</span>
+      </div>
+
+      <!-- Loading row — text swapped via JS through thinking → fetching → generating -->
+      <div class="ai-msg ai-msg-bot ai-loading" id="ai-loading">
+        <span class="ai-loading-spinner" aria-hidden="true"></span>
+        <span class="ai-loading-text" id="ai-loading-text">Thinking...</span>
+      </div>
+
+      <!-- Final answer — revealed when state="answered" -->
+      <div class="ai-msg ai-msg-bot ai-answer">
+
+        <p class="ai-msg-bot-text">
+          Despite the name, this is a defensive, dividend-focused strategy holding large consumer-staples and utility companies. It's designed for someone who wants steady payouts and lower volatility than the broader market.
+        </p>
+
+        <div class="ai-holdings-card">
+          <div class="ai-holdings-label">Holdings</div>
+
+          <div class="ai-holding-row">
+            <div class="ai-holding-avatar"><img src="../assets/logos/NVDA.webp" alt="" /></div>
+            <div class="ai-holding-info">
+              <span class="ai-holding-ticker">NVDA</span>
+              <span class="ai-holding-name">NVIDIA</span>
+            </div>
+            <span class="ai-holding-pct">22.0%</span>
+          </div>
+          <div class="ai-holding-row">
+            <div class="ai-holding-avatar"><img src="../assets/logos/AAPL.webp" alt="" /></div>
+            <div class="ai-holding-info">
+              <span class="ai-holding-ticker">AAPL</span>
+              <span class="ai-holding-name">Apple Inc.</span>
+            </div>
+            <span class="ai-holding-pct">19.0%</span>
+          </div>
+          <div class="ai-holding-row">
+            <div class="ai-holding-avatar"><img src="../assets/logos/AMZN.webp" alt="" /></div>
+            <div class="ai-holding-info">
+              <span class="ai-holding-ticker">AMZN</span>
+              <span class="ai-holding-name">Amazon.com</span>
+            </div>
+            <span class="ai-holding-pct">18.0%</span>
+          </div>
+          <div class="ai-holding-row">
+            <div class="ai-holding-avatar"><img src="../assets/logos/MA.webp" alt="" /></div>
+            <div class="ai-holding-info">
+              <span class="ai-holding-ticker">MA</span>
+              <span class="ai-holding-name">Mastercard</span>
+            </div>
+            <span class="ai-holding-pct">16.0%</span>
+          </div>
+          <div class="ai-holding-row">
+            <div class="ai-holding-avatar"><img src="../assets/logos/MSFT.webp" alt="" /></div>
+            <div class="ai-holding-info">
+              <span class="ai-holding-ticker">MSFT</span>
+              <span class="ai-holding-name">Microsoft Corp.</span>
+            </div>
+            <span class="ai-holding-pct">15.0%</span>
+          </div>
+        </div>
+
+        <p class="ai-msg-bot-text">
+          The name "Quantum Computing Leaders" reflects this strategy's original 2023 focus. Holdings have since shifted toward consumer staples — the manager hasn't renamed it.
+        </p>
+
+        <!-- Follow-up chips live inside the answer (only shown after state="answered") -->
+        <div class="ai-followups">
+          <button class="ai-followup-chip" type="button" data-question="What's the worst it's done?" data-answer="ai-template-worst">What's the worst it's done?</button>
+          <button class="ai-followup-chip" type="button" data-question="Compare to S&amp;P 500" data-answer="ai-template-vs-snp">Compare to S&amp;P 500</button>
+          <button class="ai-followup-chip" type="button" data-question="Why these companies?" data-answer="ai-template-why-companies">Why these companies?</button>
+          <button class="ai-followup-chip" type="button" data-question="What if I put $1,000 in?" data-answer="ai-template-what-if">What if I put $1,000 in?</button>
+          <button class="ai-followup-chip" type="button" data-question="Show me a similar strategy" data-answer="ai-template-similar">Show me a similar strategy</button>
+        </div>
+
+      </div>
+
+      <!-- ─── Follow-up answer templates ──────────────────────────────── -->
+
+      <template id="ai-template-why-companies">
+        <div class="ai-msg ai-msg-bot ai-answer ai-answer--multicard">
+          <p class="ai-msg-bot-text">The thesis is to pick large companies that sell things people buy in any economy — soda, soap, electricity. They pay dividends, they're boring, they don't crash like tech does. Works best in flat or down markets when investors care more about dividends than growth.</p>
+          <p class="ai-msg-bot-text">When it underperforms: bull markets driven by tech and growth. In 2020 and 2023, this kind of portfolio lagged the S&amp;P 500 by roughly 12–15%. If you're chasing the latest hot sector, this isn't it.</p>
+          <div class="ai-followups">
+            <button class="ai-followup-chip" type="button" data-question="Show 2020 vs S&amp;P" data-answer="ai-template-vs-snp">Show 2020 vs S&amp;P</button>
+            <button class="ai-followup-chip" type="button" data-question="What's the worst it's done?" data-answer="ai-template-worst">What's the worst it's done?</button>
+            <button class="ai-followup-chip" type="button" data-question="Show me a growth version" data-answer="ai-template-growth-version">Show me a growth version</button>
+          </div>
+        </div>
+      </template>
+
+      <template id="ai-template-worst">
+        <div class="ai-msg ai-msg-bot ai-answer ai-answer--multicard">
+          <p class="ai-msg-bot-text">Here's the honest answer — the deepest losses came in early 2020 during the COVID crash.</p>
+          <div class="ai-card ai-card--warning">
+            <div class="ai-stat-label">Worst week</div>
+            <div class="ai-stat-value-large ai-stat-value-large--neg">−9.2%</div>
+            <div class="ai-stat-meta">March 9–13, 2020 (COVID crash)</div>
+          </div>
+          <div class="ai-card">
+            <div class="ai-stat-label">Worst drawdowns on record</div>
+            <div class="ai-drawdown-rows">
+              <div class="ai-drawdown-row">
+                <span class="ai-drawdown-rank">#1</span>
+                <span class="ai-drawdown-pct">−18.4%</span>
+                <span class="ai-drawdown-period">Feb 2020 → Mar 2020</span>
+                <span class="ai-drawdown-recover">recovered in 87d</span>
+              </div>
+              <div class="ai-drawdown-row">
+                <span class="ai-drawdown-rank">#2</span>
+                <span class="ai-drawdown-pct">−12.1%</span>
+                <span class="ai-drawdown-period">Sep 2022 → Oct 2022</span>
+                <span class="ai-drawdown-recover">recovered in 61d</span>
+              </div>
+              <div class="ai-drawdown-row">
+                <span class="ai-drawdown-rank">#3</span>
+                <span class="ai-drawdown-pct">−7.8%</span>
+                <span class="ai-drawdown-period">Jul 2024 → Aug 2024</span>
+                <span class="ai-drawdown-recover">recovered in 22d</span>
+              </div>
+            </div>
+          </div>
+          <div class="ai-card">
+            <div class="ai-stat-label">5-year performance, worst drawdown shaded</div>
+            <svg class="ai-chart-svg" viewBox="0 0 320 80" preserveAspectRatio="none" aria-hidden="true">
+              <rect x="42" y="0" width="38" height="80" fill="rgba(222,91,24,0.12)"/>
+              <path d="M 0 62 L 12 56 L 24 52 L 36 58 L 44 62 L 52 72 L 60 74 L 70 62 L 82 52 L 96 48 L 108 50 L 120 44 L 134 40 L 148 38 L 160 32 L 172 30 L 186 26 L 198 24 L 210 20 L 220 18 L 232 15 L 244 14 L 256 12 L 268 16 L 278 18 L 290 22 L 300 24 L 310 28 L 320 30" fill="none" stroke="var(--color-brand-600, #406ad0)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="ai-followups">
+            <button class="ai-followup-chip" type="button" data-question="What if I'd held through?" data-answer="ai-template-held-through">What if I'd held through?</button>
+            <button class="ai-followup-chip" type="button" data-question="Compare to S&amp;P drawdowns" data-answer="ai-template-vs-snp">Compare to S&amp;P drawdowns</button>
+          </div>
+        </div>
+      </template>
+
+      <template id="ai-template-vs-snp">
+        <div class="ai-msg ai-msg-bot ai-answer ai-answer--multicard">
+          <p class="ai-msg-bot-text">Over the last year, this strategy underperformed the S&amp;P 500 by 3.7 percentage points (+8.5% vs +12.2%) but with about 40% less volatility.</p>
+          <div class="ai-card">
+            <div class="ai-stat-label">1-year, head-to-head</div>
+            <svg class="ai-chart-svg ai-chart-svg--tall" viewBox="0 0 320 100" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="ai-chart-blue-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(64,106,208,0.16)"/>
+                  <stop offset="100%" stop-color="rgba(64,106,208,0)"/>
+                </linearGradient>
+              </defs>
+              <path d="M 0 80 L 20 75 L 40 72 L 60 65 L 80 68 L 100 60 L 120 56 L 140 50 L 160 44 L 180 40 L 200 32 L 220 28 L 240 24 L 260 18 L 280 22 L 300 14 L 320 10 L 320 100 L 0 100 Z" fill="url(#ai-chart-blue-grad)"/>
+              <path d="M 0 80 L 20 75 L 40 72 L 60 65 L 80 68 L 100 60 L 120 56 L 140 50 L 160 44 L 180 40 L 200 32 L 220 28 L 240 24 L 260 18 L 280 22 L 300 14 L 320 10" fill="none" stroke="var(--color-brand-600, #406ad0)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M 0 84 L 20 80 L 40 78 L 60 72 L 80 70 L 100 66 L 120 62 L 140 56 L 160 52 L 180 48 L 200 42 L 220 38 L 240 36 L 260 32 L 280 30 L 300 28 L 320 26" fill="none" stroke="rgba(83,88,98,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="ai-chart-legend">
+              <span class="ai-legend-item"><span class="ai-legend-dash ai-legend-dash--brand"></span>Quantum Computing Leaders</span>
+              <span class="ai-legend-item"><span class="ai-legend-dash ai-legend-dash--gray"></span>S&amp;P 500</span>
+            </div>
+          </div>
+          <div class="ai-card">
+            <div class="ai-stat-label">Head-to-head</div>
+            <table class="ai-h2h-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="ai-h2h-th-brand">Quantum<br/>Computing</th>
+                  <th>S&amp;P 500</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1-year return</td><td class="ai-h2h-val">8.5%</td><td class="ai-h2h-val">12.2%</td></tr>
+                <tr><td>Volatility (ann.)</td><td class="ai-h2h-val">9.4%</td><td class="ai-h2h-val">16.1%</td></tr>
+                <tr><td>Max drawdown</td><td class="ai-h2h-val ai-h2h-val--neg">−18.4%</td><td class="ai-h2h-val ai-h2h-val--neg">−24.5%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="ai-msg-bot-text">Charts show price return. This strategy also pays ~3.1% in dividends on top — the S&amp;P 500 yields ~1.4%.</p>
+          <div class="ai-followups">
+            <button class="ai-followup-chip" type="button" data-question="Show 3 years" data-answer="ai-template-three-year">Show 3 years</button>
+            <button class="ai-followup-chip" type="button" data-question="What if I had held S&amp;P?" data-answer="ai-template-held-snp">What if I had held S&amp;P?</button>
+          </div>
+        </div>
+      </template>
+
+      <template id="ai-template-what-if">
+        <div class="ai-msg ai-msg-bot ai-answer ai-answer--multicard">
+          <p class="ai-msg-bot-text">Drag the slider to try different amounts. Here's how that money would have grown if you'd invested in this strategy.</p>
+
+          <div class="ai-card ai-whatif-card" data-range="1Y">
+            <div class="ai-whatif-top">
+              <div class="ai-stat-label">If you'd invested</div>
+              <div class="ai-whatif-tabs" role="tablist">
+                <button class="ai-whatif-tab is-active" type="button" data-range="1Y">1Y</button>
+                <button class="ai-whatif-tab" type="button" data-range="3Y">3Y</button>
+                <button class="ai-whatif-tab" type="button" data-range="5Y">5Y</button>
+              </div>
+            </div>
+
+            <div class="ai-whatif-hero">
+              <span class="ai-whatif-amount">$1,000</span>
+              <span class="ai-whatif-when">1y ago</span>
+            </div>
+
+            <div class="ai-whatif-slider-wrap">
+              <input type="range" min="100" max="10000" step="100" value="1000" class="ai-whatif-slider" style="--fill:10%" aria-label="Investment amount" />
+            </div>
+
+            <svg class="ai-chart-svg" viewBox="0 0 320 80" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="ai-whatif-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(64,106,208,0.18)"/>
+                  <stop offset="100%" stop-color="rgba(64,106,208,0)"/>
+                </linearGradient>
+              </defs>
+              <path d="M 0 60 L 16 58 L 32 56 L 48 62 L 64 58 L 80 56 L 96 50 L 112 52 L 128 46 L 144 42 L 160 44 L 176 38 L 192 36 L 208 30 L 224 26 L 240 22 L 256 18 L 272 14 L 288 12 L 304 10 L 320 8 L 320 80 L 0 80 Z" fill="url(#ai-whatif-grad)"/>
+              <path d="M 0 60 L 16 58 L 32 56 L 48 62 L 64 58 L 80 56 L 96 50 L 112 52 L 128 46 L 144 42 L 160 44 L 176 38 L 192 36 L 208 30 L 224 26 L 240 22 L 256 18 L 272 14 L 288 12 L 304 10 L 320 8" fill="none" stroke="var(--color-brand-600, #406ad0)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+
+            <div class="ai-whatif-stats">
+              <div class="ai-whatif-stat">
+                <div class="ai-stat-label">Would be worth</div>
+                <div class="ai-whatif-stat-value ai-whatif-stat-value--pos">
+                  <span class="ai-whatif-future">$1,085</span>
+                  <span class="ai-whatif-stat-delta ai-whatif-future-delta">(+$85)</span>
+                </div>
+              </div>
+              <div class="ai-whatif-stat">
+                <div class="ai-stat-label">Worst drawdown</div>
+                <div class="ai-whatif-stat-value ai-whatif-stat-value--neg">
+                  <span class="ai-whatif-dd">−$78</span>
+                  <span class="ai-whatif-stat-delta ai-whatif-dd-pct">(−7.8%)</span>
+                </div>
+              </div>
+            </div>
+
+            <p class="ai-whatif-disclaimer">Historical, not predictive. The future could be very different.</p>
+          </div>
+
+          <button class="ai-whatif-cta" type="button">
+            <span class="ai-whatif-cta-text">Ready to size a real position?</span>
+            <span class="ai-whatif-cta-link">Open buy panel <span aria-hidden="true">→</span></span>
+          </button>
+
+          <div class="ai-followups">
+            <button class="ai-followup-chip" type="button" data-question="How would the worst week have felt?" data-answer="ai-template-worst">How would the worst week have felt?</button>
+            <button class="ai-followup-chip" type="button" data-question="Compare $1,000 vs S&amp;P" data-answer="ai-template-vs-snp">Compare $1,000 vs S&amp;P</button>
+          </div>
+        </div>
+      </template>
+
+      <template id="ai-template-growth-version">
+        <div class="ai-msg ai-msg-bot ai-answer ai-answer--multicard">
+          <p class="ai-msg-bot-text">If you want a growth-tilted version, the manager runs a sister strategy concentrated in AI infrastructure and consumer tech. Same diversification idea, much higher beta.</p>
+
+          <div class="ai-holdings-card">
+            <div class="ai-holdings-label">Holdings — growth version</div>
+            <div class="ai-holding-row">
+              <div class="ai-holding-avatar"><img src="../assets/logos/NVDA.webp" alt="" /></div>
+              <div class="ai-holding-info">
+                <span class="ai-holding-ticker">NVDA</span>
+                <span class="ai-holding-name">NVIDIA</span>
+              </div>
+              <span class="ai-holding-pct">28.0%</span>
+            </div>
+            <div class="ai-holding-row">
+              <div class="ai-holding-avatar"><img src="../assets/logos/AMZN.webp" alt="" /></div>
+              <div class="ai-holding-info">
+                <span class="ai-holding-ticker">AMZN</span>
+                <span class="ai-holding-name">Amazon.com</span>
+              </div>
+              <span class="ai-holding-pct">22.0%</span>
+            </div>
+            <div class="ai-holding-row">
+              <div class="ai-holding-avatar"><img src="../assets/logos/META.webp" alt="" /></div>
+              <div class="ai-holding-info">
+                <span class="ai-holding-ticker">META</span>
+                <span class="ai-holding-name">Meta Platforms</span>
+              </div>
+              <span class="ai-holding-pct">18.0%</span>
+            </div>
+            <div class="ai-holding-row">
+              <div class="ai-holding-avatar"><img src="../assets/logos/GOOG.webp" alt="" /></div>
+              <div class="ai-holding-info">
+                <span class="ai-holding-ticker">GOOG</span>
+                <span class="ai-holding-name">Alphabet</span>
+              </div>
+              <span class="ai-holding-pct">16.0%</span>
+            </div>
+            <div class="ai-holding-row">
+              <div class="ai-holding-avatar"><img src="../assets/logos/TSLA.webp" alt="" /></div>
+              <div class="ai-holding-info">
+                <span class="ai-holding-ticker">TSLA</span>
+                <span class="ai-holding-name">Tesla</span>
+              </div>
+              <span class="ai-holding-pct">16.0%</span>
+            </div>
+          </div>
+
+          <div class="ai-card">
+            <div class="ai-stat-label">How it has done</div>
+            <table class="ai-h2h-table">
+              <thead>
+                <tr><th></th><th class="ai-h2h-th-brand">Growth</th><th>Defensive</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1-year return</td><td class="ai-h2h-val">24.5%</td><td class="ai-h2h-val">8.5%</td></tr>
+                <tr><td>Volatility (ann.)</td><td class="ai-h2h-val">22.4%</td><td class="ai-h2h-val">9.4%</td></tr>
+                <tr><td>Max drawdown</td><td class="ai-h2h-val ai-h2h-val--neg">−34.2%</td><td class="ai-h2h-val ai-h2h-val--neg">−18.4%</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="ai-msg-bot-text">Trade-off: roughly 3× the upside in good years, but the drawdowns are deeper and recoveries can take longer. If you can't stomach a −34% paper loss, this isn't the version for you.</p>
+
+          <div class="ai-followups">
+            <button class="ai-followup-chip" type="button" data-question="What's the worst it's done?" data-answer="ai-template-worst">What's the worst it's done?</button>
+            <button class="ai-followup-chip" type="button" data-question="Compare growth to S&amp;P 500" data-answer="ai-template-vs-snp">Compare growth to S&amp;P 500</button>
+            <button class="ai-followup-chip" type="button" data-question="Back to defensive version" data-answer="ai-template-why-companies">Back to defensive version</button>
+          </div>
+        </div>
+      </template>
+
+      <template id="ai-template-held-through">
+        <div class="ai-msg ai-msg-bot ai-answer ai-answer--multicard">
+          <p class="ai-msg-bot-text">If you'd held through the worst drawdown — the COVID crash in February–March 2020 — here's what would have happened to a $1,000 position.</p>
+
+          <div class="ai-card">
+            <div class="ai-stat-label">Position value, $1,000 invested Feb 2020</div>
+            <svg class="ai-chart-svg ai-chart-svg--tall" viewBox="0 0 320 100" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="ai-held-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(64,106,208,0.18)"/>
+                  <stop offset="100%" stop-color="rgba(64,106,208,0)"/>
+                </linearGradient>
+              </defs>
+              <rect x="14" y="0" width="40" height="100" fill="rgba(222,91,24,0.10)"/>
+              <path d="M 0 30 L 8 32 L 14 36 L 22 60 L 32 78 L 44 84 L 54 70 L 66 62 L 80 56 L 96 48 L 112 42 L 128 38 L 144 36 L 160 32 L 176 28 L 192 24 L 208 22 L 224 18 L 240 16 L 256 14 L 272 12 L 288 10 L 304 8 L 320 6 L 320 100 L 0 100 Z" fill="url(#ai-held-grad)"/>
+              <path d="M 0 30 L 8 32 L 14 36 L 22 60 L 32 78 L 44 84 L 54 70 L 66 62 L 80 56 L 96 48 L 112 42 L 128 38 L 144 36 L 160 32 L 176 28 L 192 24 L 208 22 L 224 18 L 240 16 L 256 14 L 272 12 L 288 10 L 304 8 L 320 6" fill="none" stroke="var(--color-brand-600, #406ad0)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div class="ai-card">
+            <div class="ai-stat-label">Held-through milestones</div>
+            <table class="ai-h2h-table ai-h2h-table--compact">
+              <tbody>
+                <tr><td>At the bottom (Mar 23, 2020)</td><td class="ai-h2h-val ai-h2h-val--neg">−$184</td></tr>
+                <tr><td>Recovered to break-even</td><td class="ai-h2h-val">Jun 18, 2020 · 87 days</td></tr>
+                <tr><td>Today vs cost basis</td><td class="ai-h2h-val" style="color:var(--color-utility-success-700,#316434)">+$423</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="ai-msg-bot-text">Selling at the bottom would have locked in the −$184 loss. Holding returned $423 in profit over the next five years — ~3× what was lost in the panic.</p>
+
+          <div class="ai-followups">
+            <button class="ai-followup-chip" type="button" data-question="What's the worst week looked like?" data-answer="ai-template-worst">What's the worst week looked like?</button>
+            <button class="ai-followup-chip" type="button" data-question="Compare to S&amp;P drawdowns" data-answer="ai-template-vs-snp">Compare to S&amp;P drawdowns</button>
+          </div>
+        </div>
+      </template>
+
+      <template id="ai-template-three-year">
+        <div class="ai-msg ai-msg-bot ai-answer ai-answer--multicard">
+          <p class="ai-msg-bot-text">Over the last 3 years, the gap closes — this strategy held up better during the 2022 bear market and clawed back most of the difference.</p>
+
+          <div class="ai-card">
+            <div class="ai-stat-label">3-year, head-to-head</div>
+            <svg class="ai-chart-svg ai-chart-svg--tall" viewBox="0 0 320 100" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="ai-3y-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(64,106,208,0.16)"/>
+                  <stop offset="100%" stop-color="rgba(64,106,208,0)"/>
+                </linearGradient>
+              </defs>
+              <path d="M 0 70 L 16 66 L 32 60 L 48 64 L 64 70 L 80 76 L 96 70 L 112 60 L 128 50 L 144 44 L 160 40 L 176 38 L 192 32 L 208 28 L 224 22 L 240 20 L 256 18 L 272 14 L 288 12 L 304 10 L 320 8 L 320 100 L 0 100 Z" fill="url(#ai-3y-grad)"/>
+              <path d="M 0 70 L 16 66 L 32 60 L 48 64 L 64 70 L 80 76 L 96 70 L 112 60 L 128 50 L 144 44 L 160 40 L 176 38 L 192 32 L 208 28 L 224 22 L 240 20 L 256 18 L 272 14 L 288 12 L 304 10 L 320 8" fill="none" stroke="var(--color-brand-600, #406ad0)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M 0 72 L 16 68 L 32 60 L 48 56 L 64 62 L 80 78 L 96 86 L 112 80 L 128 70 L 144 60 L 160 52 L 176 46 L 192 40 L 208 34 L 224 28 L 240 24 L 256 20 L 272 16 L 288 12 L 304 6 L 320 4" fill="none" stroke="rgba(83,88,98,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="ai-chart-legend">
+              <span class="ai-legend-item"><span class="ai-legend-dash ai-legend-dash--brand"></span>Quantum Computing Leaders</span>
+              <span class="ai-legend-item"><span class="ai-legend-dash ai-legend-dash--gray"></span>S&amp;P 500</span>
+            </div>
+          </div>
+
+          <div class="ai-card">
+            <div class="ai-stat-label">Head-to-head — 3 years</div>
+            <table class="ai-h2h-table">
+              <thead>
+                <tr><th></th><th class="ai-h2h-th-brand">Quantum<br/>Computing</th><th>S&amp;P 500</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>3-year return</td><td class="ai-h2h-val">24.0%</td><td class="ai-h2h-val">28.5%</td></tr>
+                <tr><td>Volatility (ann.)</td><td class="ai-h2h-val">9.6%</td><td class="ai-h2h-val">17.4%</td></tr>
+                <tr><td>Max drawdown</td><td class="ai-h2h-val ai-h2h-val--neg">−18.4%</td><td class="ai-h2h-val ai-h2h-val--neg">−24.5%</td></tr>
+                <tr><td>Best year</td><td class="ai-h2h-val">+11.2% (2024)</td><td class="ai-h2h-val">+24.1% (2023)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="ai-msg-bot-text">The S&amp;P still leads on absolute return, but you'd have taken roughly half the volatility for ~85% of the upside — a meaningfully smoother ride.</p>
+
+          <div class="ai-followups">
+            <button class="ai-followup-chip" type="button" data-question="Show 5 years" data-answer="ai-template-vs-snp">Show 5 years</button>
+            <button class="ai-followup-chip" type="button" data-question="What if I had held S&amp;P?" data-answer="ai-template-held-snp">What if I had held S&amp;P?</button>
+          </div>
+        </div>
+      </template>
+
+      <template id="ai-template-held-snp">
+        <div class="ai-msg ai-msg-bot ai-answer ai-answer--multicard">
+          <p class="ai-msg-bot-text">If you'd put $1,000 into the S&amp;P 500 instead of this strategy a year ago, here's how the two would have stacked up.</p>
+
+          <div class="ai-card">
+            <div class="ai-stat-label">$1,000 invested · 1 year</div>
+            <table class="ai-h2h-table">
+              <thead>
+                <tr><th></th><th class="ai-h2h-th-brand">Quantum<br/>Computing</th><th>S&amp;P 500</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Ending value</td><td class="ai-h2h-val">$1,085</td><td class="ai-h2h-val">$1,122</td></tr>
+                <tr><td>Profit / loss</td><td class="ai-h2h-val" style="color:var(--color-utility-success-700,#316434)">+$85</td><td class="ai-h2h-val" style="color:var(--color-utility-success-700,#316434)">+$122</td></tr>
+                <tr><td>Worst drawdown</td><td class="ai-h2h-val ai-h2h-val--neg">−$78</td><td class="ai-h2h-val ai-h2h-val--neg">−$245</td></tr>
+                <tr><td>Volatility (ann.)</td><td class="ai-h2h-val">9.4%</td><td class="ai-h2h-val">16.1%</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="ai-msg-bot-text">The S&amp;P delivered $37 more in price return — but you'd have ridden a −$245 drawdown along the way (vs −$78 here). Same dollar in, very different psychological experience.</p>
+
+          <p class="ai-msg-bot-text">For someone hands-off who hates checking their portfolio, the smaller swings are often worth giving up some upside.</p>
+
+          <div class="ai-followups">
+            <button class="ai-followup-chip" type="button" data-question="How risky is the S&amp;P 500?" data-answer="ai-template-vs-snp">How risky is the S&amp;P 500?</button>
+            <button class="ai-followup-chip" type="button" data-question="Show me both over 5 years" data-answer="ai-template-vs-snp">Show me both over 5 years</button>
+          </div>
+        </div>
+      </template>
+
+      <template id="ai-template-similar">
+        <div class="ai-msg ai-msg-bot ai-answer ai-answer--multicard">
+          <p class="ai-msg-bot-text">Here are three strategies with overlapping themes — same large-cap defensive tilt, but each leans differently on growth, dividends, or volatility. Pick one and I'll swap it into your dashboard.</p>
+
+          <div class="ai-strat-card" data-strategy="ai-infrastructure">
+            <div class="ai-strat-hero">
+              <img src="../assets/strategy-covers/AI Innovators.png" alt="" />
+              <div class="ai-strat-hero-grad"></div>
+              <div class="ai-strat-hero-name">AI Infrastructure Leaders</div>
+            </div>
+            <div class="ai-strat-meta">
+              <div class="ai-strat-stat">
+                <div class="ai-strat-label">Top holdings</div>
+                <div class="ai-strat-stack">
+                  <span class="ai-strat-av"><img src="../assets/logos/NVDA.webp" alt=""></span>
+                  <span class="ai-strat-av"><img src="../assets/logos/AAPL.webp" alt=""></span>
+                  <span class="ai-strat-av"><img src="../assets/logos/GOOG.webp" alt=""></span>
+                  <span class="ai-strat-av"><img src="../assets/logos/MSFT.webp" alt=""></span>
+                  <span class="ai-strat-av"><img src="../assets/logos/AMZN.webp" alt=""></span>
+                </div>
+              </div>
+              <div class="ai-strat-divider"></div>
+              <div class="ai-strat-stat">
+                <div class="ai-strat-label">1-Year</div>
+                <div class="ai-strat-value ai-strat-value--pos">+13.25%</div>
+              </div>
+              <div class="ai-strat-divider"></div>
+              <div class="ai-strat-stat">
+                <div class="ai-strat-label">Risk</div>
+                <div class="ai-strat-value"><span class="ai-strat-risk" style="background:#3B7E3F"></span>Low</div>
+              </div>
+            </div>
+            <button class="ai-strat-use" type="button">Use this strategy <span aria-hidden="true">→</span></button>
+          </div>
+
+          <div class="ai-strat-card" data-strategy="semiconductor">
+            <div class="ai-strat-hero">
+              <img src="../assets/strategy-covers/Next-Gen Data Infrastructure.png" alt="" />
+              <div class="ai-strat-hero-grad"></div>
+              <div class="ai-strat-hero-name">Semiconductor Titans</div>
+            </div>
+            <div class="ai-strat-meta">
+              <div class="ai-strat-stat">
+                <div class="ai-strat-label">Top holdings</div>
+                <div class="ai-strat-stack">
+                  <span class="ai-strat-av"><img src="../assets/logos/NVDA.webp" alt=""></span>
+                  <span class="ai-strat-av"><img src="../assets/logos/AMD.webp" alt=""></span>
+                  <span class="ai-strat-av"><img src="../assets/logos/MSFT.webp" alt=""></span>
+                  <span class="ai-strat-av"><img src="../assets/logos/TSLA.webp" alt=""></span>
+                  <span class="ai-strat-av"><img src="../assets/logos/META.webp" alt=""></span>
+                </div>
+              </div>
+              <div class="ai-strat-divider"></div>
+              <div class="ai-strat-stat">
+                <div class="ai-strat-label">1-Year</div>
+                <div class="ai-strat-value ai-strat-value--pos">+45.80%</div>
+              </div>
+              <div class="ai-strat-divider"></div>
+              <div class="ai-strat-stat">
+                <div class="ai-strat-label">Risk</div>
+                <div class="ai-strat-value"><span class="ai-strat-risk" style="background:#E0A03B"></span>Medium</div>
+              </div>
+            </div>
+            <button class="ai-strat-use" type="button">Use this strategy <span aria-hidden="true">→</span></button>
+          </div>
+
+          <div class="ai-strat-card" data-strategy="deep-tech">
+            <div class="ai-strat-hero">
+              <img src="../assets/strategy-covers/Deep Tech.png" alt="" />
+              <div class="ai-strat-hero-grad"></div>
+              <div class="ai-strat-hero-name">Deep Tech Frontiers</div>
+            </div>
+            <div class="ai-strat-meta">
+              <div class="ai-strat-stat">
+                <div class="ai-strat-label">Top holdings</div>
+                <div class="ai-strat-stack">
+                  <span class="ai-strat-av"><img src="../assets/logos/GOOG.webp" alt=""></span>
+                  <span class="ai-strat-av"><img src="../assets/logos/META.webp" alt=""></span>
+                  <span class="ai-strat-av"><img src="../assets/logos/NVDA.webp" alt=""></span>
+                  <span class="ai-strat-av"><img src="../assets/logos/AMZN.webp" alt=""></span>
+                </div>
+              </div>
+              <div class="ai-strat-divider"></div>
+              <div class="ai-strat-stat">
+                <div class="ai-strat-label">1-Year</div>
+                <div class="ai-strat-value ai-strat-value--pos">+22.10%</div>
+              </div>
+              <div class="ai-strat-divider"></div>
+              <div class="ai-strat-stat">
+                <div class="ai-strat-label">Risk</div>
+                <div class="ai-strat-value"><span class="ai-strat-risk" style="background:#98443D"></span>High</div>
+              </div>
+            </div>
+            <button class="ai-strat-use" type="button">Use this strategy <span aria-hidden="true">→</span></button>
+          </div>
+
+          <div class="ai-followups">
+            <button class="ai-followup-chip" type="button" data-question="Show me a better-performing one" data-answer="ai-template-similar">Show me a better-performing one</button>
+            <button class="ai-followup-chip" type="button" data-question="Show me a lower-risk version" data-answer="ai-template-similar">Show me a lower-risk version</button>
+            <button class="ai-followup-chip" type="button" data-question="Compare to S&amp;P 500" data-answer="ai-template-vs-snp">Compare to S&amp;P 500</button>
+          </div>
+        </div>
+      </template>
+
+      <template id="ai-template-generic">
+        <div class="ai-msg ai-msg-bot ai-answer ai-answer--multicard">
+          <p class="ai-msg-bot-text">Based on this strategy's recent positioning and 5-year history, the short answer is that it behaves more like a defensive mega-cap basket than a growth or thematic strategy — steady payouts, modest upside, and lower drawdowns than the broad market.</p>
+          <p class="ai-msg-bot-text">Want me to dig deeper into a specific part — the holdings, the risk profile, or how it stacks up against an index?</p>
+          <div class="ai-followups">
+            <button class="ai-followup-chip" type="button" data-question="Why these companies?" data-answer="ai-template-why-companies">Why these companies?</button>
+            <button class="ai-followup-chip" type="button" data-question="What's the worst it's done?" data-answer="ai-template-worst">What's the worst it's done?</button>
+            <button class="ai-followup-chip" type="button" data-question="Compare to S&amp;P 500" data-answer="ai-template-vs-snp">Compare to S&amp;P 500</button>
+          </div>
+        </div>
+      </template>
+
+    </div>
+
+    <!-- Chat composer — same .ai-prompt-wrap as /create/promptfolio.html -->
+    <div class="ai-chat-input">
+      <div class="ai-prompt-wrap no-anim">
+        <div class="ai-input-row">
+          <input
+            class="ai-input"
+            type="text"
+            placeholder="Ask anything about this strategy…"
+            aria-label="Ask Surmount AI"
+          />
+          <button class="ai-send-btn" type="button" title="Send">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</aside>
+
+<style>
+/* Animatable angle for the rotating conic gradient — same as
+ * .ai-prompt-wrap on /create/promptfolio.html. */
+@property --ba {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes border-spin { to { --ba: 360deg; } }
+
+/* Outer prompt container — copied verbatim from promptfolio.html so
+ * the visual is identical. */
+.ai-prompt-wrap{
+  width:100%;max-width:768px;
+  background:#fff;
+  border:1.5px solid rgba(0,0,0,0.1);
+  border-radius:var(--radius-xl);
+  box-shadow:0px 1px 4px 0px rgba(10,13,18,0.04);
+  position:relative;
+  z-index:0;
+  transition:border-color .45s ease, box-shadow .45s ease;
+}
+.ai-prompt-wrap.no-anim{opacity:1;animation:none;}
+
+/* Gradient ring on outer container */
+.ai-prompt-wrap::before{
+  content:'';
+  position:absolute;
+  inset:-2px;
+  border-radius:calc(var(--radius-xl) + 2px);
+  background:conic-gradient(from var(--ba),
+    rgba(177,224,245,1) 0%,
+    rgba(204,205,233,1) 22%,
+    rgba(231,185,221,1) 45%,
+    rgba(231,208,196,1) 65%,
+    rgba(231,219,184,1) 80%,
+    rgba(177,224,245,1) 100%
+  );
+  z-index:-1;
+  opacity:0;
+  animation:border-spin 3s linear infinite;
+  transition:opacity .45s ease;
+  pointer-events:none;
+}
+/* White fill so only the 2px ring shows */
+.ai-prompt-wrap::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:var(--radius-xl);
+  background:#fff;
+  z-index:-1;
+  pointer-events:none;
+}
+/* Hover / focus: gradient border on, own border off */
+.ai-prompt-wrap:hover,
+.ai-prompt-wrap:focus-within{
+  border-color:transparent;
+  box-shadow:0px 4px 24px 0px rgba(204,185,221,0.18);
+}
+.ai-prompt-wrap:hover::before,
+.ai-prompt-wrap:focus-within::before{ opacity:1; }
+
+/* Input row */
+.ai-input-row{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 14px;
+  position:relative;
+}
+.ai-input{
+  flex:1;min-width:0;background:transparent;border:none;outline:none;
+  font-family:var(--font-body);font-size:14px;
+  color:var(--color-text-primary);line-height:20px;
+  letter-spacing:-0.5px;
+}
+.ai-input::placeholder{color:var(--color-text-placeholder);}
+.ai-send-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;flex-shrink:0;
+  background:transparent;
+  border:1px solid var(--color-border-default);
+  border-radius:var(--radius-sm);
+  cursor:pointer;color:rgba(10,13,18,0.5);
+  transition:background .1s,border-color .1s,color .1s,transform .1s;
+}
+.ai-send-btn:hover{background:var(--color-surface-subtle);border-color:rgba(0,0,0,0.14);color:rgba(10,13,18,0.8);}
+.ai-send-btn:active{transform:scale(0.88);}
+.ai-send-btn svg{width:16px;height:16px;}
+
+/* ═ Floating modifier — strategy detail only ═══════════════════════════
+ * Pin to bottom-right with breathing room, lock width to 400px, and
+ * keep the gradient ring on so it reads as an active AI surface. */
+.ai-prompt-wrap--floating{
+  position:fixed;
+  /* Right edge matches the right-column / buy-sell card (page right
+   * padding is 24px, right column is 400px wide and flush against it). */
+  right:24px;bottom:24px;
+  z-index:300;
+  width:400px;max-width:none;
+  border-color:transparent;
+  box-shadow:0 8px 24px rgba(10,13,18,0.06),0 2px 6px rgba(10,13,18,0.04);
+  animation:strategy-ai-in 520ms cubic-bezier(0.16,1,0.3,1) 240ms both;
+}
+.ai-prompt-wrap--floating::before{ opacity:1; }   /* always-on ring */
+
+/* ═ Trigger variant — wrap renders as a button (icon + label, no input) ═ */
+button.ai-prompt-wrap{
+  /* reset native button chrome so the wrap visuals win */
+  font:inherit;color:inherit;text-align:left;cursor:pointer;
+  padding:0;
+  appearance:none;
+  -webkit-appearance:none;
+}
+.ai-prompt-trigger{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;
+}
+.ai-prompt-icon{
+  width:20px;height:20px;flex-shrink:0;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.ai-prompt-icon svg{width:100%;height:100%;display:block}
+.ai-prompt-text{
+  font-family:var(--font-body);
+  font-size:14px;font-weight:500;line-height:20px;
+  letter-spacing:-0.5px;
+  color:var(--color-fg-primary-900,#181d27);
+}
+button.ai-prompt-wrap:hover{
+  /* Lift slightly on hover; inherits the lavender shadow from focus state */
+  transform:translateY(-1px);
+}
+button.ai-prompt-wrap{
+  transition:transform 200ms cubic-bezier(0.16,1,0.3,1),
+             border-color .45s ease, box-shadow .45s ease;
+}
+button.ai-prompt-wrap:active{transform:translateY(0)}
+
+@keyframes strategy-ai-in{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media (prefers-reduced-motion:reduce){
+  .ai-prompt-wrap--floating{animation:none}
+  .ai-prompt-wrap--floating::before{animation:none}
+}
+
+/* ═══ Floating button + panel coordination ═════════════════════════════ */
+.ai-prompt-wrap--floating{
+  /* Hidden once the panel takes over */
+  visibility:visible;opacity:1;
+  transition:opacity 200ms ease, visibility 0s linear 0s,
+             transform 200ms cubic-bezier(0.16,1,0.3,1),
+             border-color .45s ease, box-shadow .45s ease;
+}
+body[data-ai-chat="open"] .ai-prompt-wrap--floating{
+  opacity:0;visibility:hidden;
+  transition-delay:0s, 200ms;
+  pointer-events:none;
+}
+
+/* ═══ AI chat panel ════════════════════════════════════════════════════ */
+.ai-chat-panel{
+  position:fixed;
+  /* Top aligns with strategy hero card: page-header (~80px) + content-area padding-top (24px) */
+  top:104px;right:24px;bottom:24px;
+  width:400px;max-width:calc(100vw - 48px);
+  background:var(--color-bg-primary,#fff);
+  border:1px solid var(--color-border-secondary,rgba(0,0,0,0.06));
+  border-radius:16px;
+  box-shadow:0 16px 48px rgba(10,13,18,0.12),0 4px 12px rgba(10,13,18,0.06);
+  z-index:310;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  font-family:var(--font-body);
+  letter-spacing:-0.5px;
+  /* Hidden by default */
+  opacity:0;transform:translateY(12px) scale(0.985);
+  transform-origin:bottom right;
+  pointer-events:none;
+  transition:opacity 240ms cubic-bezier(0.16,1,0.3,1),
+             transform 280ms cubic-bezier(0.16,1,0.3,1);
+}
+.ai-chat-panel[data-open="true"]{
+  opacity:1;transform:translateY(0) scale(1);
+  pointer-events:auto;
+}
+
+/* Topbar */
+.ai-chat-topbar{
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px;
+  border-bottom:1px solid var(--color-border-secondary,rgba(0,0,0,0.06));
+}
+.ai-chat-new-convo{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;
+  background:var(--color-bg-primary,#fff);
+  border:1px solid var(--color-border-primary,rgba(0,0,0,0.09));
+  border-radius:9999px;
+  font:500 13px/18px var(--font-body);
+  color:var(--color-fg-secondary-700,#414651);
+  letter-spacing:-0.3px;
+  cursor:pointer;
+  transition:background .12s ease, border-color .12s ease;
+}
+.ai-chat-new-convo:hover{background:var(--color-bg-secondary,#fafafa);border-color:rgba(0,0,0,0.14)}
+.ai-chat-new-convo svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.ai-chat-close{
+  width:32px;height:32px;flex-shrink:0;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--color-bg-secondary,#fafafa);
+  border:none;border-radius:9999px;
+  color:var(--color-fg-secondary-700,#414651);
+  cursor:pointer;
+  transition:background .12s ease;
+}
+.ai-chat-close:hover{background:var(--color-bg-tertiary,#f5f5f5)}
+.ai-chat-close svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Body */
+.ai-chat-body{
+  flex:1;min-height:0;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.ai-chat-messages{
+  flex:1;min-height:0;
+  overflow-y:auto;overflow-x:hidden;
+  padding:24px 20px 16px;
+  display:flex;flex-direction:column;gap:20px;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.ai-chat-messages::-webkit-scrollbar{display:none;width:0;height:0}
+
+/* Messages */
+.ai-msg{display:flex;width:100%;animation:ai-msg-in 360ms cubic-bezier(0.16,1,0.3,1) both}
+.ai-msg-user{justify-content:flex-end}
+.ai-msg-user .ai-msg-bubble{
+  display:inline-block;
+  padding:10px 14px;
+  background:var(--color-bg-tertiary,#f5f5f5);
+  border-radius:9999px;
+  font:400 14px/20px var(--font-body);
+  color:var(--color-fg-primary-900,#181d27);
+  letter-spacing:-0.3px;
+  max-width:80%;
+}
+.ai-msg-bot{flex-direction:column;align-items:flex-start;gap:14px}
+.ai-msg-bot-text{
+  font:400 14px/22px var(--font-body);
+  color:var(--color-fg-primary-900,#181d27);
+  letter-spacing:-0.3px;
+  max-width:100%;
+}
+
+/* Loading row — explicitly row-direction so the spinner sits next to the
+ * label (the parent .ai-msg-bot sets flex-direction:column, which
+ * otherwise stacks them and centres horizontally). */
+.ai-loading{
+  display:flex;flex-direction:row;
+  align-items:center;justify-content:flex-start;
+  gap:10px;
+  font:400 14px/20px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  letter-spacing:-0.3px;
+  align-self:flex-start;
+}
+.ai-loading-spinner{
+  width:16px;height:16px;flex-shrink:0;
+  border:1.5px solid rgba(10,13,18,0.12);
+  border-top-color:var(--color-fg-secondary-700,#414651);
+  border-radius:50%;
+  animation:ai-loading-spin 720ms linear infinite;
+}
+@keyframes ai-loading-spin{to{transform:rotate(360deg)}}
+
+/* Only hide the *original* loading bubble after the first answer reveals.
+ * Follow-up exchanges append their own .ai-loading nodes that must stay visible. */
+.ai-chat-panel[data-state="answered"] #ai-loading{display:none}
+
+/* Answer */
+.ai-answer{display:none;flex-direction:column;gap:16px;width:100%;animation:ai-msg-in 420ms cubic-bezier(0.16,1,0.3,1) both}
+.ai-chat-panel[data-state="answered"] .ai-answer{display:flex}
+/* Multicard answers (cloned from templates) are always visible once mounted */
+.ai-answer--multicard{display:flex;gap:12px}
+
+.ai-answer-title{
+  display:flex;align-items:center;gap:10px;
+  font:500 15px/22px var(--font-body);
+  color:var(--color-fg-primary-900,#181d27);
+  letter-spacing:-0.4px;
+  margin:0;
+}
+.ai-answer-title::before{
+  content:'';
+  width:3px;height:18px;
+  background:var(--color-brand-600,#406ad0);
+  border-radius:9999px;
+  flex-shrink:0;
+}
+
+.ai-answer-honest{
+  display:flex;align-items:center;gap:10px;
+  flex-wrap:wrap;
+}
+.ai-honest-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;
+  background:var(--color-warning-50,#fef7ee);
+  border:1px solid rgba(222,91,24,0.18);
+  border-radius:9999px;
+  font:500 12px/18px var(--font-body);
+  color:var(--color-warning-700,#b84416);
+  letter-spacing:-0.3px;
+}
+.ai-honest-pill::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--color-warning-600,#de5b18);
+}
+.ai-honest-text{
+  font:400 13px/18px var(--font-body);
+  color:var(--color-fg-secondary-700,#414651);
+  letter-spacing:-0.3px;
+}
+
+.ai-holdings-card{
+  background:var(--color-bg-primary,#fff);
+  border:1px solid var(--color-border-secondary,rgba(0,0,0,0.06));
+  border-radius:12px;
+  padding:14px 16px;
+  display:flex;flex-direction:column;gap:10px;
+  align-self:stretch;width:100%;box-sizing:border-box;
+}
+.ai-holdings-label{
+  font:500 11px/14px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  letter-spacing:0.04em;
+  text-transform:none;        /* Surmount: never uppercase */
+}
+.ai-holding-row{
+  display:grid;
+  grid-template-columns:36px 1fr auto;
+  align-items:center;gap:12px;
+  padding:6px 0;
+  font:400 13px/18px var(--font-body);
+  color:var(--color-fg-primary-900,#181d27);
+  letter-spacing:-0.3px;
+}
+.ai-holding-row + .ai-holding-row{
+  border-top:1px solid var(--color-border-secondary,rgba(0,0,0,0.06));
+}
+.ai-holding-avatar{
+  width:36px;height:36px;flex-shrink:0;
+  border-radius:50%;
+  background:var(--color-bg-tertiary,#f5f5f5);
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.ai-holding-avatar img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.ai-holding-avatar span{
+  font:500 10px/1 var(--font-body);
+  letter-spacing:-0.2px;
+  color:#fff;
+}
+.ai-holding-info{
+  display:flex;flex-direction:column;gap:2px;min-width:0;
+}
+.ai-holding-ticker{
+  font:500 14px/18px var(--font-body);
+  color:var(--color-fg-primary-900,#181d27);
+  letter-spacing:-0.3px;
+}
+.ai-holding-name{
+  font:400 12px/16px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  letter-spacing:-0.2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.ai-holding-pct{
+  font:500 14px/18px var(--font-body);
+  color:var(--color-fg-primary-900,#181d27);
+  letter-spacing:-0.3px;
+  font-variant-numeric:tabular-nums;
+}
+
+/* Follow-up chips — inline inside the answer body */
+.ai-followups{
+  display:flex;flex-wrap:wrap;gap:8px;
+  margin-top:4px;
+}
+.ai-followup-chip{
+  display:inline-flex;align-items:center;
+  padding:8px 14px;
+  background:var(--color-bg-primary,#fff);
+  border:1px solid var(--color-border-primary,rgba(0,0,0,0.09));
+  border-radius:9999px;
+  font:500 13px/18px var(--font-body);
+  color:var(--color-fg-secondary-700,#414651);
+  letter-spacing:-0.3px;
+  cursor:pointer;
+  transition:background .12s ease, border-color .12s ease;
+}
+.ai-followup-chip:hover{
+  background:var(--color-bg-secondary,#fafafa);
+  border-color:rgba(0,0,0,0.14);
+}
+.ai-followup-chip.is-spent{
+  opacity:.5;cursor:default;
+}
+.ai-followup-chip.is-spent:hover{
+  background:var(--color-bg-primary,#fff);
+  border-color:var(--color-border-primary,rgba(0,0,0,0.09));
+}
+
+/* ─── Multicard answer pieces (used by follow-up answers) ────────────── */
+.ai-card{
+  background:var(--color-bg-primary,#fff);
+  border:1px solid var(--color-border-secondary,rgba(0,0,0,0.06));
+  border-radius:12px;
+  padding:14px 16px;
+  display:flex;flex-direction:column;gap:10px;
+  align-self:stretch;width:100%;box-sizing:border-box;
+}
+.ai-card--warning{
+  border-color:rgba(222,91,24,0.30);
+  background:var(--color-warning-50,#fef7ee);
+}
+.ai-card-text{
+  font:400 14px/22px var(--font-body);
+  color:var(--color-fg-primary-900,#181d27);
+  letter-spacing:-0.3px;
+  margin:0;
+}
+.ai-stat-label{
+  font:500 11px/14px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  letter-spacing:0.04em;
+  text-transform:none;
+}
+.ai-stat-value-large{
+  font:500 28px/32px var(--font-body);
+  letter-spacing:-1px;
+  color:var(--color-fg-primary-900,#181d27);
+}
+.ai-stat-value-large--neg{color:var(--color-warning-700,#b84416)}
+.ai-stat-meta{
+  font:400 12px/16px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  letter-spacing:-0.2px;
+}
+
+/* Drawdown rows */
+.ai-drawdown-rows{display:flex;flex-direction:column;gap:6px}
+.ai-drawdown-row{
+  display:grid;
+  grid-template-columns:24px 56px 1fr auto;
+  align-items:center;gap:10px;
+  font:400 13px/18px var(--font-body);
+  color:var(--color-fg-primary-900,#181d27);
+  letter-spacing:-0.3px;
+  font-variant-numeric:tabular-nums;
+}
+.ai-drawdown-rank{color:var(--color-fg-tertiary-600,#535862)}
+.ai-drawdown-pct{color:var(--color-warning-700,#b84416);font-weight:500}
+.ai-drawdown-period{color:var(--color-fg-secondary-700,#414651)}
+.ai-drawdown-recover{
+  color:var(--color-fg-tertiary-600,#535862);
+  font-size:12px;
+}
+
+/* Charts */
+.ai-chart-svg{width:100%;height:80px;display:block}
+.ai-chart-svg--tall{height:104px}
+.ai-chart-legend{
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  font:400 12px/16px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  letter-spacing:-0.2px;
+}
+.ai-legend-item{display:inline-flex;align-items:center;gap:6px}
+.ai-legend-dash{width:14px;height:2px;border-radius:1px;display:inline-block;flex-shrink:0}
+.ai-legend-dash--brand{background:var(--color-brand-600,#406ad0)}
+.ai-legend-dash--gray{background:rgba(83,88,98,0.7)}
+
+/* Head-to-head table */
+.ai-h2h-table{
+  width:100%;border-collapse:collapse;
+  font:400 13px/18px var(--font-body);
+  color:var(--color-fg-primary-900,#181d27);
+  letter-spacing:-0.3px;
+  font-variant-numeric:tabular-nums;
+}
+.ai-h2h-table th,
+.ai-h2h-table td{
+  padding:10px 0;
+  text-align:right;
+  vertical-align:middle;
+  border-bottom:1px solid var(--color-border-secondary,rgba(0,0,0,0.06));
+}
+.ai-h2h-table tr:last-child th,
+.ai-h2h-table tr:last-child td{border-bottom:none}
+.ai-h2h-table th:first-child,
+.ai-h2h-table td:first-child{
+  text-align:left;
+  color:var(--color-fg-secondary-700,#414651);
+  font-weight:400;
+}
+.ai-h2h-table thead th{
+  font:400 12px/14px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  padding-bottom:10px;
+  letter-spacing:-0.2px;
+}
+.ai-h2h-th-brand{color:var(--color-brand-600,#406ad0) !important}
+.ai-h2h-val{font-weight:500}
+.ai-h2h-val--neg{color:var(--color-warning-700,#b84416)}
+
+/* ─── "What if I put $X in" card ─────────────────────────────────── */
+.ai-whatif-top{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.ai-whatif-tabs{
+  display:inline-flex;gap:2px;
+  background:transparent;
+}
+.ai-whatif-tab{
+  padding:4px 10px;
+  background:transparent;
+  border:none;
+  border-radius:9999px;
+  font:500 12px/16px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  letter-spacing:-0.2px;
+  cursor:pointer;
+  transition:background .12s ease, color .12s ease;
+}
+.ai-whatif-tab:hover{background:var(--color-bg-secondary,#fafafa)}
+.ai-whatif-tab.is-active{
+  background:var(--color-fg-primary-900,#181d27);
+  color:#fff;
+}
+.ai-whatif-hero{
+  display:flex;align-items:baseline;gap:10px;
+  margin-top:2px;
+}
+.ai-whatif-amount{
+  font:500 28px/32px var(--font-body);
+  letter-spacing:-1px;
+  color:var(--color-fg-primary-900,#181d27);
+  font-variant-numeric:tabular-nums;
+}
+.ai-whatif-when{
+  font:400 12px/16px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  letter-spacing:-0.2px;
+}
+.ai-whatif-slider-wrap{padding:6px 0 2px}
+.ai-whatif-slider{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  height:4px;
+  background:linear-gradient(to right,
+    var(--color-brand-600,#406ad0) 0%,
+    var(--color-brand-600,#406ad0) var(--fill,10%),
+    var(--color-bg-tertiary,#f5f5f5) var(--fill,10%),
+    var(--color-bg-tertiary,#f5f5f5) 100%);
+  border-radius:9999px;
+  outline:none;
+  cursor:pointer;
+}
+.ai-whatif-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  appearance:none;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--color-brand-600,#406ad0);
+  border:2px solid #fff;
+  box-shadow:0 1px 4px rgba(64,106,208,0.40);
+  cursor:grab;
+}
+.ai-whatif-slider:active::-webkit-slider-thumb{cursor:grabbing}
+.ai-whatif-slider::-moz-range-thumb{
+  width:18px;height:18px;border-radius:50%;
+  background:var(--color-brand-600,#406ad0);
+  border:2px solid #fff;
+  box-shadow:0 1px 4px rgba(64,106,208,0.40);
+  cursor:grab;
+}
+.ai-whatif-stats{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  padding-top:4px;
+}
+.ai-whatif-stat{display:flex;flex-direction:column;gap:4px}
+.ai-whatif-stat-value{
+  font:500 18px/22px var(--font-body);
+  letter-spacing:-0.4px;
+  font-variant-numeric:tabular-nums;
+  display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;
+}
+.ai-whatif-stat-value--pos{color:var(--color-utility-success-700,#316434)}
+.ai-whatif-stat-value--neg{color:var(--color-warning-700,#b84416)}
+.ai-whatif-stat-delta{
+  font:400 12px/16px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  letter-spacing:-0.2px;
+}
+.ai-whatif-disclaimer{
+  font:400 12px/16px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  letter-spacing:-0.2px;
+  margin:0;
+}
+
+/* CTA — soft brand-tinted action card */
+.ai-whatif-cta{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  width:100%;
+  padding:12px 14px;
+  background:rgba(64,106,208,0.06);
+  border:1px solid rgba(64,106,208,0.16);
+  border-radius:12px;
+  cursor:pointer;
+  text-align:left;
+  font-family:var(--font-body);
+  letter-spacing:-0.3px;
+  transition:background .12s ease, border-color .12s ease;
+}
+.ai-whatif-cta:hover{
+  background:rgba(64,106,208,0.10);
+  border-color:rgba(64,106,208,0.24);
+}
+.ai-whatif-cta-text{
+  font:400 13px/18px var(--font-body);
+  color:var(--color-fg-primary-900,#181d27);
+}
+.ai-whatif-cta-link{
+  font:500 13px/18px var(--font-body);
+  color:var(--color-brand-600,#406ad0);
+  display:inline-flex;align-items:center;gap:4px;flex-shrink:0;
+}
+
+/* ─── Compact strategy cards (similar-strategies answer) ─────────── */
+.ai-strat-card{
+  width:100%;align-self:stretch;box-sizing:border-box;
+  background:var(--color-bg-primary,#fff);
+  border:1px solid var(--color-border-secondary,rgba(0,0,0,0.06));
+  border-radius:14px;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.ai-strat-card:hover{
+  border-color:rgba(0,0,0,0.10);
+  box-shadow:0 2px 8px rgba(10,13,18,0.05);
+}
+.ai-strat-hero{
+  position:relative;height:96px;overflow:hidden;
+}
+.ai-strat-hero img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+}
+.ai-strat-hero-grad{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(47,27,0,0) 4%,rgba(47,27,0,0.85) 100%);
+}
+.ai-strat-hero-name{
+  position:absolute;left:14px;right:14px;bottom:10px;z-index:2;
+  font:500 15px/1.25 var(--font-display, 'Inter', sans-serif);
+  color:#fff;letter-spacing:-0.3px;
+}
+.ai-strat-meta{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;
+}
+.ai-strat-stat{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.ai-strat-label{
+  font:400 11px/14px var(--font-body);
+  color:var(--color-fg-tertiary-600,#535862);
+  letter-spacing:-0.2px;
+}
+.ai-strat-value{
+  font:500 13px/16px var(--font-body);
+  color:var(--color-fg-primary-900,#181d27);
+  letter-spacing:-0.3px;
+  font-variant-numeric:tabular-nums;
+  display:inline-flex;align-items:center;
+}
+.ai-strat-value--pos{color:var(--color-utility-success-700,#316434)}
+.ai-strat-divider{width:1px;height:22px;background:rgba(0,0,0,0.06);flex-shrink:0}
+.ai-strat-risk{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  margin-right:6px;flex-shrink:0;
+}
+.ai-strat-stack{display:inline-flex}
+.ai-strat-av{
+  width:18px;height:18px;border-radius:50%;
+  border:1.5px solid #fff;
+  overflow:hidden;display:inline-block;
+  background:var(--color-bg-tertiary,#f5f5f5);
+}
+.ai-strat-av + .ai-strat-av{margin-left:-6px}
+.ai-strat-av img{width:100%;height:100%;object-fit:cover;display:block}
+
+.ai-strat-use{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;
+  margin:0;padding:10px 14px;
+  background:var(--color-bg-secondary,#fafafa);
+  border:none;border-top:1px solid var(--color-border-secondary,rgba(0,0,0,0.06));
+  font:500 13px/18px var(--font-body);
+  color:var(--color-brand-600,#406ad0);
+  letter-spacing:-0.3px;
+  cursor:pointer;
+  transition:background .12s ease, color .12s ease;
+}
+.ai-strat-use:hover{
+  background:rgba(64,106,208,0.06);
+  color:var(--color-bg-brand-solid-hover,#3757be);
+}
+.ai-strat-use[disabled]{
+  cursor:default;opacity:.7;
+  background:var(--color-bg-secondary,#fafafa);
+  color:var(--color-fg-tertiary-600,#535862);
+}
+
+/* Chat composer — pinned to the bottom of the panel. Reuses the same
+ * .ai-prompt-wrap chrome as the promptfolio page. The ring is always
+ * on inside the panel (rather than toggling on focus) — looks cleaner
+ * given the panel's `overflow:hidden` clipping context, and matches
+ * the always-on ring on the floating launcher chip. */
+.ai-chat-input{
+  flex-shrink:0;
+  padding:12px 16px 16px;
+  background:var(--color-bg-primary,#fff);
+}
+.ai-chat-input .ai-prompt-wrap{
+  width:100%;max-width:none;
+  border-color:transparent;        /* hide the static 1.5px black border */
+  box-shadow:0px 4px 24px 0px rgba(204,185,221,0.18);
+}
+.ai-chat-input .ai-prompt-wrap::before{
+  opacity:1;                       /* always-on gradient ring */
+}
+
+@keyframes ai-msg-in{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes ai-holding-grow{
+  from{transform:scaleX(0)}
+  to{transform:scaleX(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  .ai-chat-panel,.ai-msg,.ai-answer,.ai-holding-bar-fill,.ai-loading-spinner{animation:none;transition:none}
+}
+</style>
+
 <script>
 // Time selector
 document.querySelectorAll('.time-btn').forEach(btn => {
@@ -2125,6 +3505,283 @@ document.querySelectorAll('.strat-card').forEach(card => {
     document.addEventListener('DOMContentLoaded', mountStrategyChart);
   } else {
     mountStrategyChart();
+  }
+})();
+</script>
+
+<script>
+/* ═══ AI chat panel — open + thinking sequence ═════════════════════════ */
+(function () {
+  const trigger = document.getElementById('strategy-ai-prompt');
+  const panel   = document.getElementById('ai-chat-panel');
+  const closeBtn = document.getElementById('ai-chat-close');
+  const newConvoBtn = document.getElementById('ai-chat-new-convo');
+  const loadingText = document.getElementById('ai-loading-text');
+  const messages = document.getElementById('ai-chat-messages');
+  if (!trigger || !panel) return;
+
+  let timers = [];
+  function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+
+  function setState(s) {
+    panel.dataset.state = s;
+  }
+
+  function runThinkingSequence() {
+    clearTimers();
+    setState('thinking');
+    if (loadingText) loadingText.textContent = 'Thinking…';
+    timers.push(setTimeout(() => {
+      if (loadingText) loadingText.textContent = 'Fetching data of the strategy…';
+      setState('fetching');
+    }, 1300));
+    timers.push(setTimeout(() => {
+      if (loadingText) loadingText.textContent = 'Generating answers…';
+      setState('generating');
+    }, 2900));
+    timers.push(setTimeout(() => {
+      setState('answered');
+      // scroll the new content into view
+      if (messages) messages.scrollTop = messages.scrollHeight;
+    }, 4500));
+  }
+
+  function alignPanelTop() {
+    // Measure actual top of the right column (where the strategy/buy-sell card sits)
+    // so the panel's top edge lines up exactly with the top of the card.
+    const rightCol = document.querySelector('.right-column');
+    if (!rightCol) return;
+    const top = Math.round(rightCol.getBoundingClientRect().top);
+    if (top > 0) panel.style.top = top + 'px';
+  }
+
+  function openPanel() {
+    document.body.dataset.aiChat = 'open';
+    alignPanelTop();
+    panel.dataset.open = 'true';
+    panel.setAttribute('aria-hidden', 'false');
+    runThinkingSequence();
+  }
+
+  window.addEventListener('resize', () => {
+    if (panel.dataset.open === 'true') alignPanelTop();
+  });
+
+  function closePanel() {
+    document.body.removeAttribute('data-ai-chat');
+    panel.dataset.open = 'false';
+    panel.setAttribute('aria-hidden', 'true');
+    clearTimers();
+  }
+
+  trigger.addEventListener('click', (e) => {
+    // Suppress any side effects (e.g. cross-doc nav) and open the panel.
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    openPanel();
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', closePanel);
+
+  if (newConvoBtn) newConvoBtn.addEventListener('click', () => {
+    // Wipe appended follow-up exchanges and re-run the original sequence.
+    if (messages) {
+      // Keep only the original three children: user msg, loading, and the original answer.
+      const originalAnswer = messages.querySelector('.ai-answer:not(.ai-answer--multicard)');
+      Array.from(messages.children).forEach(child => {
+        if (
+          child.classList.contains('ai-msg-user') &&
+          messages.querySelector('.ai-msg-user') === child
+        ) return; // keep first user msg
+        if (child.id === 'ai-loading') return;       // keep original loading
+        if (child === originalAnswer) return;        // keep original answer
+        if (child.tagName === 'TEMPLATE') return;    // keep templates
+        child.remove();
+      });
+      // Re-enable chips inside the original answer
+      messages.querySelectorAll('.ai-followup-chip').forEach(c => {
+        c.disabled = false;
+        c.classList.remove('is-spent');
+      });
+    }
+    runThinkingSequence();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && panel.dataset.open === 'true') closePanel();
+  });
+
+  // ── Follow-up chip handling: append a new exchange ──────────────────
+  function scrollToBottom() {
+    if (!messages) return;
+    requestAnimationFrame(() => { messages.scrollTop = messages.scrollHeight; });
+  }
+
+  function makeUserBubble(text) {
+    const wrap = document.createElement('div');
+    wrap.className = 'ai-msg ai-msg-user';
+    const bubble = document.createElement('span');
+    bubble.className = 'ai-msg-bubble';
+    bubble.textContent = text;
+    wrap.appendChild(bubble);
+    return wrap;
+  }
+
+  function makeLoadingBubble() {
+    const wrap = document.createElement('div');
+    wrap.className = 'ai-msg ai-msg-bot ai-loading';
+    const spinner = document.createElement('span');
+    spinner.className = 'ai-loading-spinner';
+    spinner.setAttribute('aria-hidden', 'true');
+    const label = document.createElement('span');
+    label.className = 'ai-loading-text';
+    label.textContent = 'Thinking…';
+    wrap.appendChild(spinner);
+    wrap.appendChild(label);
+    return wrap;
+  }
+
+  function runFollowupExchange(question, templateId) {
+    const tpl = document.getElementById(templateId);
+    if (!tpl || !messages) return;
+
+    // Disable previously rendered followup chips so only the latest set is active.
+    messages.querySelectorAll('.ai-followup-chip').forEach(c => {
+      c.disabled = true;
+      c.classList.add('is-spent');
+    });
+
+    // 1) User bubble
+    messages.appendChild(makeUserBubble(question));
+    scrollToBottom();
+
+    // 2) Loading bubble — local timers so they don't stomp on the main sequence
+    const loading = makeLoadingBubble();
+    messages.appendChild(loading);
+    scrollToBottom();
+    const labelEl = loading.querySelector('.ai-loading-text');
+
+    const t1 = setTimeout(() => { if (labelEl) labelEl.textContent = 'Fetching data of the strategy…'; }, 1300);
+    const t2 = setTimeout(() => { if (labelEl) labelEl.textContent = 'Generating answers…'; }, 2900);
+    const t3 = setTimeout(() => {
+      // 3) Replace loading with cloned template
+      const node = tpl.content.cloneNode(true);
+      loading.replaceWith(node);
+      scrollToBottom();
+    }, 4500);
+
+    // Track timers on the panel so closePanel can clear them too.
+    timers.push(t1, t2, t3);
+  }
+
+  if (messages) {
+    messages.addEventListener('click', (e) => {
+      const chip = e.target.closest('.ai-followup-chip');
+      if (!chip || chip.disabled) return;
+      const question = chip.dataset.question || chip.textContent.trim();
+      const answerId = chip.dataset.answer;
+      if (!answerId) return;
+      runFollowupExchange(question, answerId);
+    });
+  }
+
+  // ── Free-text input: typed questions also go through loading + answer ──
+  function pickTemplateForQuestion(q) {
+    const lower = q.toLowerCase();
+    // Most specific routes first
+    if (/(similar|alternative|other\s*strateg|like\s*this|better\s*strateg|lower\s*risk\s*version|better[- ]performing)/.test(lower)) return 'ai-template-similar';
+    if (/(growth\s*version|growth\s*tilt|growth\s*alternative|aggressive\s*version)/.test(lower)) return 'ai-template-growth-version';
+    if (/(held\s*through|stuck\s*with|didn'?t\s*sell|kept\s*holding|stayed\s*invested)/.test(lower)) return 'ai-template-held-through';
+    if (/(held\s*s&p|held\s*the\s*s|instead\s*of\s*s&p|if\s*i\s*had\s*held\s*s|put.*s&p)/.test(lower)) return 'ai-template-held-snp';
+    if (/(3\s*year|three\s*year|3y\b)/.test(lower)) return 'ai-template-three-year';
+    if (/(what\s*if|put\s*\$|invest|grew|grow|put\s+\d+)/.test(lower)) return 'ai-template-what-if';
+    if (/(worst|drawdown|crash|loss|down)/.test(lower)) return 'ai-template-worst';
+    if (/(s&p|s\s*&\s*p|sp\s*500|index|compare|benchmark|spy)/.test(lower)) return 'ai-template-vs-snp';
+    if (/(why|company|companies|holdings|pick|reason|thesis)/.test(lower)) return 'ai-template-why-companies';
+    return 'ai-template-generic';
+  }
+
+  // ── What-if card interactivity (slider + 1Y/3Y/5Y tabs) ──
+  const RANGE_DATA = {
+    '1Y': { ret: 0.085, dd: -0.078, when: '1y ago' },
+    '3Y': { ret: 0.240, dd: -0.184, when: '3y ago' },
+    '5Y': { ret: 0.420, dd: -0.220, when: '5y ago' },
+  };
+  function fmtMoney(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+  function updateWhatIf(card){
+    if (!card) return;
+    const slider = card.querySelector('.ai-whatif-slider');
+    const range = card.dataset.range || '1Y';
+    const stats = RANGE_DATA[range];
+    const amount = parseInt(slider.value, 10) || 0;
+    const future = amount * (1 + stats.ret);
+    const delta  = future - amount;
+    const ddDol  = amount * stats.dd;
+    const set = (sel, val) => { const el = card.querySelector(sel); if (el) el.textContent = val; };
+    set('.ai-whatif-amount',       fmtMoney(amount));
+    set('.ai-whatif-when',         stats.when);
+    set('.ai-whatif-future',       fmtMoney(future));
+    set('.ai-whatif-future-delta', '(+' + fmtMoney(delta) + ')');
+    set('.ai-whatif-dd',           '−' + fmtMoney(Math.abs(ddDol)));
+    set('.ai-whatif-dd-pct',       '(' + (stats.dd * 100).toFixed(1) + '%)');
+    const min = parseInt(slider.min, 10);
+    const max = parseInt(slider.max, 10);
+    const pct = ((amount - min) / (max - min)) * 100;
+    slider.style.setProperty('--fill', pct + '%');
+  }
+  if (messages) {
+    messages.addEventListener('input', (e) => {
+      const slider = e.target.closest('.ai-whatif-slider');
+      if (!slider) return;
+      updateWhatIf(slider.closest('.ai-whatif-card'));
+    });
+    messages.addEventListener('click', (e) => {
+      const tab = e.target.closest('.ai-whatif-tab');
+      if (tab) {
+        const card = tab.closest('.ai-whatif-card');
+        if (!card) return;
+        card.querySelectorAll('.ai-whatif-tab').forEach(t => t.classList.remove('is-active'));
+        tab.classList.add('is-active');
+        card.dataset.range = tab.dataset.range || '1Y';
+        updateWhatIf(card);
+        return;
+      }
+
+      // "Use this strategy" → swap-confirmation feedback (prototype only)
+      const useBtn = e.target.closest('.ai-strat-use');
+      if (useBtn && !useBtn.disabled) {
+        const card = useBtn.closest('.ai-strat-card');
+        const name = card && card.querySelector('.ai-strat-hero-name');
+        useBtn.disabled = true;
+        useBtn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' +
+          (name ? 'Switched to ' + name.textContent : 'Switched') + '</span>';
+        return;
+      }
+    });
+  }
+
+  const inputEl = panel.querySelector('.ai-input');
+  const sendBtn = panel.querySelector('.ai-send-btn');
+
+  function submitTypedQuestion() {
+    if (!inputEl) return;
+    const q = inputEl.value.trim();
+    if (!q) return;
+    inputEl.value = '';
+    const tplId = pickTemplateForQuestion(q);
+    runFollowupExchange(q, tplId);
+  }
+
+  if (inputEl) {
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitTypedQuestion();
+      }
+    });
+  }
+  if (sendBtn) {
+    sendBtn.addEventListener('click', submitTypedQuestion);
   }
 })();
 </script>
