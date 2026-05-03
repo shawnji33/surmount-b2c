@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onboarding scenarios — Surmount B2C</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+a{color:inherit;text-decoration:none}
+
+:root{
+  --color-bg:#fafafa;
+  --color-bg-card:#ffffff;
+  --color-fg-primary:#181d27;
+  --color-fg-secondary:rgba(10,13,18,0.6);
+  --color-fg-tertiary:rgba(10,13,18,0.4);
+  --color-border:rgba(0,0,0,0.06);
+  --color-border-hover:rgba(0,0,0,0.1);
+  --color-brand-600:#406ad0;
+  --color-brand-50:#f1f6fd;
+  --font-body:'Geist',system-ui,sans-serif;
+  --font-display:'Inter',sans-serif;
+  --radius-xl:12px;--radius-2xl:16px;--radius-full:9999px;
+}
+
+html,body{min-height:100vh;background:var(--color-bg);font-family:var(--font-body);color:var(--color-fg-primary);-webkit-font-smoothing:antialiased}
+
+/* ── Top bar ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 40px;
+  border-bottom:1px solid var(--color-border);
+  background:var(--color-bg-card);
+}
+.topbar-left{display:flex;align-items:center;gap:10px;}
+.topbar-eyebrow{font-size:12px;font-weight:400;color:var(--color-fg-tertiary);letter-spacing:-0.1px;}
+.topbar-sep{width:1px;height:14px;background:var(--color-border);}
+.topbar-title{font-size:14px;font-weight:500;color:var(--color-fg-primary);letter-spacing:-0.2px;}
+.topbar-hub{
+  font-size:13px;font-weight:400;color:var(--color-fg-secondary);
+  letter-spacing:-0.2px;
+  padding:6px 12px;border:1px solid var(--color-border);
+  border-radius:8px;transition:background 0.12s ease,border-color 0.12s ease;
+}
+.topbar-hub:hover{background:var(--color-bg);border-color:var(--color-border-hover);}
+
+/* ── Main layout ── */
+.main{max-width:900px;margin:0 auto;padding:48px 40px 80px;}
+
+.page-heading{
+  font-family:var(--font-display);
+  font-size:24px;font-weight:500;letter-spacing:-0.5px;
+  color:var(--color-fg-primary);margin-bottom:8px;
+}
+.page-sub{
+  font-size:14px;font-weight:400;
+  color:var(--color-fg-secondary);letter-spacing:-0.2px;
+  line-height:20px;margin-bottom:40px;max-width:520px;
+}
+
+/* ── Section ── */
+.section{margin-bottom:48px;}
+.section-label{
+  font-size:11px;font-weight:500;letter-spacing:0.02em;
+  color:var(--color-fg-tertiary);
+  text-transform:none;
+  margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1px solid var(--color-border);
+}
+.scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* ── Scenario card ── */
+.scenario-card{
+  background:var(--color-bg-card);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-xl);
+  padding:20px;
+  display:flex;flex-direction:column;gap:12px;
+  transition:border-color 0.12s ease,box-shadow 0.12s ease;
+  cursor:pointer;
+  text-decoration:none;color:inherit;
+}
+.scenario-card:hover{
+  border-color:var(--color-border-hover);
+  box-shadow:0 2px 12px rgba(10,13,18,0.04);
+}
+.scenario-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.scenario-tag{
+  display:inline-flex;align-items:center;
+  padding:2px 8px;border-radius:var(--radius-full);
+  font-size:11px;font-weight:500;letter-spacing:-0.1px;
+  background:var(--color-brand-50);color:var(--color-brand-600);
+  border:1px solid rgba(64,106,208,0.15);
+  white-space:nowrap;flex-shrink:0;
+}
+.scenario-tag.complete{background:#eef7ee;color:#316434;border-color:rgba(49,100,52,0.15);}
+.scenario-tag.pending{background:#fef7ee;color:#b84a12;border-color:rgba(184,74,18,0.15);}
+.scenario-arrow{color:var(--color-fg-tertiary);flex-shrink:0;margin-top:1px;}
+
+.scenario-name{
+  font-size:14px;font-weight:500;letter-spacing:-0.2px;
+  color:var(--color-fg-primary);line-height:20px;
+}
+.scenario-desc{
+  font-size:13px;font-weight:400;
+  color:var(--color-fg-secondary);letter-spacing:-0.1px;
+  line-height:18px;
+}
+
+/* Progress mini-preview */
+.scenario-progress{display:flex;gap:4px;align-items:center;}
+.prog-seg{flex:1;height:3px;border-radius:9999px;background:rgba(0,0,0,0.08);}
+.prog-seg.active-orange{background:linear-gradient(to right,#de5b18,#f19246);}
+.prog-seg.active-blue{background:linear-gradient(to right,#3757be,#406ad0);}
+.prog-seg.active-green{background:linear-gradient(to right,#316434,#4d9a51);}
+
+/* ── Info box ── */
+.info-box{
+  background:var(--color-bg-card);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-xl);
+  padding:16px 20px;
+  font-size:13px;font-weight:400;
+  color:var(--color-fg-secondary);letter-spacing:-0.1px;line-height:18px;
+}
+.info-box strong{color:var(--color-fg-primary);font-weight:500;}
+.info-box code{
+  background:rgba(0,0,0,0.05);padding:1px 5px;border-radius:4px;
+  font-family:monospace;font-size:12px;color:var(--color-fg-primary);
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-eyebrow">Surmount B2C</span>
+    <div class="topbar-sep"></div>
+    <span class="topbar-title">Onboarding scenarios</span>
+  </div>
+  <a class="topbar-hub" href="../index.html">← Design hub</a>
+</header>
+
+<main class="main">
+  <h1 class="page-heading">Onboarding scenarios</h1>
+  <p class="page-sub">Each card below previews a different user state on the homepage. The source of truth is always <strong>home/homepage.html</strong> — these scenarios just patch the onboarding banner via <code>?scenario=</code> URL param. No duplicate files.</p>
+
+  <div class="section">
+    <p class="section-label">Investing account — onboarding states</p>
+    <div class="scenario-grid">
+
+      <a class="scenario-card" href="../home/homepage.html?scenario=new-user">
+        <div class="scenario-card-top">
+          <span class="scenario-tag pending">Onboarding · Step 1</span>
+          <svg class="scenario-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+        </div>
+        <p class="scenario-name">New user — verify identity</p>
+        <p class="scenario-desc">First-time user who has submitted their application and needs to verify their identity.</p>
+        <div class="scenario-progress">
+          <div class="prog-seg active-orange"></div>
+          <div class="prog-seg"></div>
+          <div class="prog-seg"></div>
+          <div class="prog-seg"></div>
+        </div>
+      </a>
+
+      <a class="scenario-card" href="../home/homepage.html?scenario=docs-submitted">
+        <div class="scenario-card-top">
+          <span class="scenario-tag">Onboarding · Step 2</span>
+          <svg class="scenario-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+        </div>
+        <p class="scenario-name">Documents submitted — under review</p>
+        <p class="scenario-desc">User uploaded their identity documents and is waiting for the compliance team to review.</p>
+        <div class="scenario-progress">
+          <div class="prog-seg active-blue"></div>
+          <div class="prog-seg active-blue"></div>
+          <div class="prog-seg"></div>
+          <div class="prog-seg"></div>
+        </div>
+      </a>
+
+      <a class="scenario-card" href="../home/homepage.html?scenario=identity-approved">
+        <div class="scenario-card-top">
+          <span class="scenario-tag">Onboarding · Step 3</span>
+          <svg class="scenario-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+        </div>
+        <p class="scenario-name">Identity approved — make first deposit</p>
+        <p class="scenario-desc">Identity verified. Next step is adding funds to the investing account before trading.</p>
+        <div class="scenario-progress">
+          <div class="prog-seg active-blue"></div>
+          <div class="prog-seg active-blue"></div>
+          <div class="prog-seg active-blue"></div>
+          <div class="prog-seg"></div>
+        </div>
+      </a>
+
+      <a class="scenario-card" href="../home/homepage.html?scenario=needs-strategy">
+        <div class="scenario-card-top">
+          <span class="scenario-tag">Onboarding · Step 4</span>
+          <svg class="scenario-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+        </div>
+        <p class="scenario-name">Funded — pick first strategy</p>
+        <p class="scenario-desc">Account funded. User needs to pick their first investment strategy to activate trading.</p>
+        <div class="scenario-progress">
+          <div class="prog-seg active-blue"></div>
+          <div class="prog-seg active-blue"></div>
+          <div class="prog-seg active-blue"></div>
+          <div class="prog-seg active-blue"></div>
+        </div>
+      </a>
+
+      <a class="scenario-card" href="../home/homepage.html?scenario=account-ready">
+        <div class="scenario-card-top">
+          <span class="scenario-tag complete">Onboarding · Complete</span>
+          <svg class="scenario-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+        </div>
+        <p class="scenario-name">Fully onboarded — full dashboard</p>
+        <p class="scenario-desc">User has completed all onboarding steps. No banner shown, full dashboard experience.</p>
+        <div class="scenario-progress">
+          <div class="prog-seg active-green"></div>
+          <div class="prog-seg active-green"></div>
+          <div class="prog-seg active-green"></div>
+          <div class="prog-seg active-green"></div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>How to add a new scenario:</strong> Open <code>scenarios/scenarios.js</code> and add a new entry to the <code>SCENARIOS</code> object, then add a card above linking to <code>homepage.html?scenario=your-id</code>. No other files need to change.
+  </div>
+</main>
+
+</body>
+</html>
