@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What's your employment status? — Surmount</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link rel="stylesheet" href="./transitions.css?v=44">
+<script src="./transitions.js?v=44" defer></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block}
+input{font-family:inherit;border:none;outline:none;background:none;color:inherit}
+
+/* ═══ Surmount Design System — tokens (mirror Figma variable names) ═══ */
+:root{
+  --color-bg-primary:#ffffff;
+  --color-bg-primary-hover:#fafafa;
+  --color-bg-secondary:#fafafa;
+
+  --color-fg-primary-900:#181d27;
+  --color-fg-secondary-700:#414651;
+  --color-fg-secondary-hover:#252b37;
+  --color-fg-tertiary-600:#535862;
+  --color-fg-quaternary-400:#a4a7ae;
+  --color-fg-disabled:#a4a7ae;
+  --color-fg-disabled-subtle:#d5d7da;
+
+  --color-text-primary-900:#181d27;
+  --color-text-secondary-700:rgba(10,13,18,0.7);
+  --color-text-secondary-hover:rgba(10,13,18,0.8);
+  --color-text-tertiary-600:#535861;
+  --color-text-placeholder:rgba(10,13,18,0.4);
+  --color-text-white:#ffffff;
+
+  --color-border-primary:#00000017;
+  --color-border-focus:#0a0d123d;
+
+  --color-utility-gray-50:#fafafa;
+
+  --spacing-xxs:2px; --spacing-xs:4px; --spacing-sm:6px;
+  --spacing-md:8px;  --spacing-lg:12px; --spacing-xl:16px;
+  --spacing-2xl:20px; --spacing-3xl:24px; --spacing-4xl:32px;
+  --spacing-5xl:40px; --spacing-6xl:48px; --spacing-7xl:64px;
+
+  --radius-md:8px; --radius-xl:12px; --radius-2xl:16px; --radius-3xl:20px; --radius-full:9999px;
+
+  --font-family-body:'Geist',sans-serif;
+  --font-family-display:'Inter',sans-serif;
+  --font-size-text-xs:12px;  --line-height-text-xs:18px;
+  --font-size-text-sm:14px;  --line-height-text-sm:20px;
+  --font-size-text-md:16px;  --line-height-text-md:24px;
+  --font-size-text-lg:18px;  --line-height-text-lg:28px;
+  --font-size-text-xl:20px;  --line-height-text-xl:30px;
+  --font-size-display-xs:24px; --line-height-display-xs:32px;
+  --font-size-display-sm:30px; --line-height-display-sm:38px;
+}
+
+html,body{height:100%}
+body{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);
+  color:var(--color-fg-primary-900);
+  background:var(--color-utility-gray-50);
+  letter-spacing:-0.5px;
+  -webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh;
+}
+
+/* ─── Topbar ──────────────────────────────────────────────────────────── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--spacing-xl) var(--spacing-3xl);
+  background:var(--color-utility-gray-50);
+}
+/* Buttons/Button — Size=lg, Hierarchy=Secondary */
+.topbar-back,.topbar-close{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-sm);
+  padding:10px var(--spacing-xl);
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-md);
+  color:var(--color-text-secondary-700);
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);font-weight:500;
+  line-height:var(--line-height-text-md);letter-spacing:0;
+  transition:background 150ms ease,color 150ms ease;
+}
+.topbar-back:hover,.topbar-close:hover{background:var(--color-bg-primary-hover);color:var(--color-text-secondary-hover)}
+.topbar-back:active,.topbar-close:active{transform:scale(0.97)}
+.topbar-back svg,.topbar-close svg{width:20px;height:20px;flex-shrink:0}
+.topbar-brand{
+  display:flex;align-items:center;gap:var(--spacing-md);
+  color:var(--color-fg-primary-900);
+}
+.topbar-brand svg{width:28px;height:28px;display:block}
+.topbar-brand-name{
+  font-family:var(--font-family-display);
+  font-size:20px;font-weight:500;letter-spacing:-0.4px;
+}
+
+/* ─── Main ────────────────────────────────────────────────────────────── */
+main{
+  flex:1;display:grid;place-items:center;
+  padding:var(--spacing-3xl);
+  min-height:0;
+}
+.stack{
+  display:flex;flex-direction:column;align-items:center;
+  gap:var(--spacing-5xl);
+  width:100%;max-width:520px;
+}
+
+/* ─── Hero ────────────────────────────────────────────────────────────── */
+.hero{
+  display:flex;flex-direction:column;align-items:center;gap:var(--spacing-md);
+  text-align:center;width:100%;
+}
+.title{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-display-sm);font-weight:500;
+  line-height:var(--line-height-display-sm);letter-spacing:-0.8px;
+  color:var(--color-fg-primary-900);
+}
+.subtitle{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);font-weight:400;
+  line-height:var(--line-height-text-md);letter-spacing:-0.3px;
+  color:var(--color-fg-tertiary-600);
+  max-width:440px;
+}
+
+/* ─── Radio group (neutral Selection-card pattern) ───────────────────── */
+.radio-group{
+  display:flex;flex-direction:column;gap:var(--spacing-lg);width:100%;
+  border:0;padding:0;margin:0;          /* reset native <fieldset> chrome */
+}
+.radio-row{
+  display:flex;align-items:center;gap:var(--spacing-lg);
+  padding:var(--spacing-xl) var(--spacing-xl);min-height:60px;
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-xl);
+  cursor:pointer;
+  transition:background 150ms ease,border-color 150ms ease,box-shadow 150ms ease;
+}
+.radio-row:hover{background:var(--color-bg-primary-hover)}
+/* Selected — persistent choice. Bg fill + filled dot are the signal. No ring, no dark border. */
+.radio-row:has(input[type="radio"]:checked){
+  background:var(--color-bg-secondary);
+}
+/* Focus-visible — keyboard-only ring. Independent of selection. */
+.radio-row:has(input[type="radio"]:focus-visible){
+  border-color:var(--color-border-focus);
+  box-shadow:0 0 0 3px rgba(10,13,18,0.08);
+}
+.radio-row input[type="radio"]{
+  -webkit-appearance:none;appearance:none;
+  flex:none;
+  width:20px;height:20px;
+  border:1.5px solid var(--color-border-primary);
+  border-radius:50%;
+  background:var(--color-bg-primary);
+  display:inline-grid;place-items:center;cursor:pointer;
+  transition:border-color 150ms ease;
+  outline:none;  /* ring lives on the row via :has(:focus-visible), not here */
+}
+.radio-row input[type="radio"]:checked{
+  border-color:var(--color-fg-primary-900);
+}
+.radio-row input[type="radio"]:checked::after{
+  content:"";
+  width:10px;height:10px;border-radius:50%;
+  background:var(--color-fg-primary-900);
+}
+.radio-label{
+  flex:1;
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);font-weight:500;
+  line-height:var(--line-height-text-md);letter-spacing:0;
+  color:var(--color-fg-primary-900);
+}
+
+/* ─── Primary Button (Size=lg, Hierarchy=Primary) ─────────────────────── */
+.cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-sm);
+  padding:10px var(--spacing-xl);
+  background:var(--color-fg-primary-900);
+  color:var(--color-text-white);
+  border:2px solid rgba(255,255,255,0.12);
+  border-radius:var(--radius-md);
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);font-weight:500;
+  line-height:var(--line-height-text-md);letter-spacing:-0.2px;
+  transition:background 150ms ease,transform 120ms ease;
+  min-width:160px;
+}
+.cta:hover{background:var(--color-fg-secondary-hover)}
+.cta:active{transform:scale(0.99)}
+.cta svg{width:20px;height:20px}
+
+/* ─── Exit confirmation modal (stacked full-width pills) ──────────────── */
+.modal-root{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:var(--spacing-xl)}
+.modal-root[hidden]{display:none}
+.modal-backdrop{position:absolute;inset:0;background:rgba(10,13,18,0.55);animation:modalFade 180ms ease-out}
+.modal-card{position:relative;background:var(--color-bg-primary);border-radius:20px;box-shadow:0 24px 48px -8px rgba(10,13,18,0.22);width:100%;max-width:420px;padding:var(--spacing-4xl);display:flex;flex-direction:column;gap:var(--spacing-3xl);animation:modalIn 220ms cubic-bezier(.22,.61,.36,1)}
+.modal-dismiss{position:absolute;top:var(--spacing-xl);right:var(--spacing-xl);width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-md);color:var(--color-fg-tertiary-600);transition:background 150ms ease,color 150ms ease}
+.modal-dismiss:hover{background:var(--color-bg-primary-hover);color:var(--color-fg-primary-900)}
+.modal-dismiss svg{width:18px;height:18px}
+.modal-body{display:flex;flex-direction:column;gap:var(--spacing-md);padding-right:var(--spacing-4xl)}
+.modal-title{font-family:var(--font-family-body);font-size:20px;font-weight:500;line-height:30px;letter-spacing:-0.4px;color:var(--color-fg-primary-900)}
+.modal-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-sm);font-weight:400;line-height:var(--line-height-text-sm);letter-spacing:0;color:var(--color-fg-tertiary-600)}
+.modal-actions{display:flex;flex-direction:column;gap:var(--spacing-md)}
+.btn-primary-full{display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-sm);padding:10px var(--spacing-xl);width:100%;background:var(--color-fg-primary-900);color:var(--color-text-white);border:2px solid rgba(255,255,255,0.12);border-radius:var(--radius-md);font-family:var(--font-family-body);font-size:var(--font-size-text-md);font-weight:500;line-height:var(--line-height-text-md);letter-spacing:0;transition:background 150ms ease,transform 120ms ease}
+.btn-primary-full:hover{background:var(--color-fg-secondary-hover)}
+.btn-primary-full:active{transform:scale(0.99)}
+.btn-secondary-full{display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-sm);padding:10px var(--spacing-xl);width:100%;background:var(--color-bg-primary);color:var(--color-text-secondary-700);border:1px solid var(--color-border-primary);border-radius:var(--radius-md);font-family:var(--font-family-body);font-size:var(--font-size-text-md);font-weight:500;line-height:var(--line-height-text-md);letter-spacing:0;transition:background 150ms ease,color 150ms ease,transform 120ms ease}
+.btn-secondary-full:hover{background:var(--color-bg-primary-hover);color:var(--color-text-secondary-hover)}
+.btn-secondary-full:active{transform:scale(0.99)}
+@keyframes modalFade{from{opacity:0}to{opacity:1}}
+@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:0.01ms !important;animation-duration:0.01ms !important}
+  .modal-backdrop,.modal-card{animation:none !important}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="topbar-back" type="button" onclick="history.length>1?history.back():location.href='./verify-phone.html'">
+    <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="256" height="256" fill="none"/><line x1="216" y1="128" x2="40" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="112 56 40 128 112 200" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+    <span>Back</span>
+  </button>
+  <div class="topbar-brand">
+    <svg width="28" height="28" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 14.8C3 10.3196 3 8.07937 3.87195 6.36808C4.63893 4.86278 5.86278 3.63893 7.36808 2.87195C9.07937 2 11.3196 2 15.8 2H22.2C26.6804 2 28.9206 2 30.6319 2.87195C32.1372 3.63893 33.3611 4.86278 34.1281 6.36808C35 8.07937 35 10.3196 35 14.8V21.2C35 25.6804 35 27.9206 34.1281 29.6319C33.3611 31.1372 32.1372 32.3611 30.6319 33.1281C28.9206 34 26.6804 34 22.2 34H15.8C11.3196 34 9.07937 34 7.36808 33.1281C5.86278 32.3611 4.63893 31.1372 3.87195 29.6319C3 27.9206 3 25.6804 3 21.2V14.8Z" fill="url(#p0)"/><path d="M18.9982 13.1366C18.7314 13.3201 18.4774 13.5264 18.2363 13.7556L17.0473 14.888C16.5042 14.6108 15.9021 14.473 15.3023 14.473C14.3537 14.473 13.4058 14.8171 12.6831 15.5054C11.9844 16.1725 11.5993 17.0568 11.5993 17.9994H9C9 16.3954 9.65481 14.888 10.8462 13.7556C13.064 11.6435 16.537 11.4371 19.0006 13.1366H18.9982Z" fill="url(#p1)"/><path d="M23.3671 18.8083L20.9498 21.1103L19.7607 22.2421C19.5196 22.4719 19.2657 22.6782 18.9982 22.8617C17.9016 23.6185 16.6008 23.9981 15.3023 23.9981C13.6884 23.9981 12.0745 23.4122 10.8462 22.2421C9.65481 21.108 9 19.6006 9 17.9972H11.5993C11.5993 18.9392 11.9844 19.8258 12.6831 20.4906C13.916 21.6647 15.8102 21.8357 17.238 21.0039C17.4809 20.8622 17.7109 20.6913 17.9233 20.4906L19.2306 19.2462L21.5279 17.0586H21.5297C22.0376 16.5727 22.8615 16.5727 23.3671 17.0569C23.8751 17.5405 23.8751 18.3242 23.3671 18.8061V18.8083Z" fill="url(#p2)"/><path d="M28.9994 17.999H26.4001C26.4001 17.0564 26.015 16.1726 25.3164 15.505C24.5937 14.8173 23.6457 14.4732 22.6971 14.4732C22.0248 14.4732 21.353 14.6464 20.7614 14.9922C20.5185 15.134 20.2886 15.3049 20.0785 15.505L18.7689 16.7523L16.4697 18.9416C16.2158 19.1834 15.8828 19.3046 15.5498 19.3046C15.2169 19.3046 14.8839 19.1834 14.63 18.9416C14.122 18.458 14.122 17.6737 14.63 17.1918L17.0479 14.8899L18.237 13.7581C18.4775 13.5283 18.7314 13.322 18.9988 13.1385C21.4624 11.439 24.9331 11.6454 27.1515 13.7581C28.3423 14.8922 28.9971 16.3996 28.9971 18.0013L28.9994 17.999Z" fill="url(#p3)"/><path d="M29 17.9991C29 19.6025 28.3452 21.1099 27.1538 22.2445C25.9255 23.4141 24.3116 24 22.6977 24C21.3992 24 20.0984 23.6204 19.0012 22.8636C19.2686 22.6801 19.5226 22.4738 19.7631 22.2445L20.9521 21.1122C21.4952 21.3894 22.0956 21.5272 22.6977 21.5272C23.6457 21.5272 24.5937 21.183 25.3163 20.4948C26.015 19.8277 26.4007 18.944 26.4007 18.0014H29V17.9991Z" fill="url(#p4)"/><defs><linearGradient id="p0" x1="3" y1="2" x2="35" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#F5F7FA"/><stop offset="1" stop-color="#C3CFE2"/></linearGradient><linearGradient id="p1" x1="9" y1="14.9848" x2="19.0001" y2="15.0677" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#1047D2"/></linearGradient><linearGradient id="p2" x1="9" y1="20.3279" x2="23.747" y2="20.476" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#54E3DF"/></linearGradient><linearGradient id="p3" x1="14.249" y1="15.6351" x2="28.9983" y2="15.7833" gradientUnits="userSpaceOnUse"><stop stop-color="#54E3DF"/><stop offset="1" stop-color="#34A6ED"/></linearGradient><linearGradient id="p4" x1="19.0012" y1="20.9846" x2="28.9996" y2="21.0675" gradientUnits="userSpaceOnUse"><stop stop-color="#1047D2"/><stop offset="1" stop-color="#34A6ED"/></linearGradient></defs></svg>
+    <span class="topbar-brand-name">Surmount</span>
+  </div>
+  <button class="topbar-close" type="button">
+    <span>Close</span>
+    <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="256" height="256" fill="none"/><line x1="200" y1="56" x2="56" y2="200" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="200" y1="200" x2="56" y2="56" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+  </button>
+</header>
+
+<!-- Exit confirmation modal -->
+<div class="modal-root" id="exit-modal" role="dialog" aria-modal="true" aria-labelledby="exit-modal-title" hidden>
+  <div class="modal-backdrop" data-modal-dismiss></div>
+  <div class="modal-card">
+    <button class="modal-dismiss" type="button" aria-label="Close dialog" data-modal-dismiss>
+      <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="256" height="256" fill="none"/><line x1="200" y1="56" x2="56" y2="200" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="200" y1="200" x2="56" y2="56" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+    </button>
+    <div class="modal-body">
+      <h2 id="exit-modal-title" class="modal-title">Exit account opening?</h2>
+      <p class="modal-desc">We'll save your progress so you can continue later from this same spot.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary-full" type="button" onclick="location.href='../home/homepage.html'">Exit account opening</button>
+      <button class="btn-secondary-full" type="button" data-modal-dismiss>Continue opening</button>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="stack">
+    <div class="hero">
+      <h1 class="title">What's your employment status?</h1>
+      <p class="subtitle">We're required by law to collect this info, and it will help us expedite your account setup.</p>
+    </div>
+
+    <fieldset class="radio-group" aria-label="Employment status">
+      <label class="radio-row">
+        <input type="radio" name="employment" value="employed">
+        <span class="radio-label">Employed</span>
+      </label>
+      <label class="radio-row">
+        <input type="radio" name="employment" value="self-employed">
+        <span class="radio-label">Self-employed</span>
+      </label>
+      <label class="radio-row">
+        <input type="radio" name="employment" value="retired">
+        <span class="radio-label">Retired</span>
+      </label>
+      <label class="radio-row">
+        <input type="radio" name="employment" value="student">
+        <span class="radio-label">Student</span>
+      </label>
+      <label class="radio-row">
+        <input type="radio" name="employment" value="unemployed">
+        <span class="radio-label">Unemployed</span>
+      </label>
+    </fieldset>
+
+    <button class="cta" type="button" onclick="location.href='./occupation.html'">
+      <span>Next</span>
+      <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="256" height="256" fill="none"/><line x1="40" y1="128" x2="216" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="144 56 216 128 144 200" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+    </button>
+  </div>
+</main>
+
+<script>
+(function(){
+  const modal = document.getElementById('exit-modal');
+  const closeBtn = document.querySelector('.topbar-close');
+  if (!modal || !closeBtn) return;
+  const open = () => { modal.hidden = false; document.body.style.overflow = 'hidden'; };
+  const dismiss = () => { modal.hidden = true; document.body.style.overflow = ''; };
+  closeBtn.addEventListener('click', e => { e.preventDefault(); open(); });
+  modal.addEventListener('click', e => { if (e.target.closest('[data-modal-dismiss]')) dismiss(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) dismiss(); });
+})();
+</script>
+
+</body>
+</html>

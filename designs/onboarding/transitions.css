@@ -1,0 +1,125 @@
+/* ═══ Linear-style page transitions + modal exit animation ═════════════
+ * Works for both same-document SPA nav (within /onboarding/) and
+ * cross-document nav (e.g. homepage → cash-account) via the View
+ * Transitions API.
+ * ──────────────────────────────────────────────────────────────────── */
+
+/* Cross-document view transitions are intentionally OFF.
+ * Earlier versions used `@view-transition { navigation: auto }` which
+ * snapshots the viewport and interpolates between old/new — when the
+ * pages had different layouts that interpolation read as a zoom.
+ *
+ * Removing the directive means a plain hard-cut navigation: no fade,
+ * no scale, no translate. Same-document SPA nav inside /onboarding/
+ * (driven by transitions.js) is unaffected; that path no longer wraps
+ * its swap in startViewTransition either. */
+
+/* Belt-and-braces: explicitly kill any view-transition pseudo if a
+ * browser still triggers one. */
+::view-transition-old(*),
+::view-transition-new(*){
+  animation: none !important;
+}
+
+/* ───────────────────── modal dismissal (reverse-in) ──────────────── */
+.modal-root.closing .modal-backdrop{
+  animation: surm-modal-fade-out 200ms ease-in both !important;
+}
+.modal-root.closing .modal-card{
+  animation: surm-modal-out 220ms cubic-bezier(0.4, 0, 0.2, 1) both !important;
+}
+@keyframes surm-modal-fade-out{
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes surm-modal-out{
+  from { opacity: 1; transform: translateY(0)    scale(1);    }
+  to   { opacity: 0; transform: translateY(8px)  scale(0.97); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .modal-root.closing .modal-backdrop,
+  .modal-root.closing .modal-card{
+    animation-duration: 120ms !important;
+  }
+}
+
+/* ─── Flow progress bar (3 phases) ───────────────────────────────────
+ * Three equal-width segments separated by a small gap. Each segment
+ * fills based on the user's progress within that phase. The fill
+ * width is driven by the --progress CSS custom property, set per
+ * navigation by transitions.js. */
+.flow-progress{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-shrink:0;
+  height:2px;
+  width:100%;
+  /* No outer padding — the segments visually align edge-to-edge with
+   * the topbar's content box. */
+}
+.flow-progress-seg{
+  flex:1;
+  position:relative;
+  height:100%;
+  background:rgba(10,13,18,0.08);
+  border-radius:9999px;
+  overflow:hidden;
+}
+.flow-progress-fill{
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:var(--progress, 0%);
+  background:var(--color-fg-primary-900, #181d27);
+  border-radius:9999px;
+  transition:width 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Suppress transition for one frame so JS can paint the previous
+ * pcts without animating from 0. */
+.flow-progress--no-anim .flow-progress-fill{ transition:none !important; }
+@media (prefers-reduced-motion: reduce){
+  .flow-progress-fill{ transition:none; }
+}
+
+/* ─── Page-to-page <main> transition ─────────────────────────────────
+ * Wrap each onboarding step in a quick fade + slight horizontal slide
+ * so navigation reads as a forward/back motion. Driven by classes
+ * added by transitions.js right before swapping the body. */
+main{
+  /* Default settled state; transitions.js toggles classes to drive
+   * leave/enter sequences. The transition properties are scoped here
+   * so unrelated transforms don't get tweened. */
+  transition:transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+             opacity   200ms ease;
+  will-change:transform, opacity;
+}
+.flow-leave{ pointer-events:none; }
+.flow-leave--forward{
+  opacity:0;
+  transform:translateX(-16px);
+}
+.flow-leave--backward{
+  opacity:0;
+  transform:translateX(16px);
+}
+.flow-enter{ pointer-events:none; }
+/* Initial off-screen state for the new <main>; .flow-enter--forward
+ * means we're moving forward so the new page enters from the right. */
+.flow-enter--forward{
+  opacity:0;
+  transform:translateX(16px);
+  transition:none;
+}
+.flow-enter--backward{
+  opacity:0;
+  transform:translateX(-16px);
+  transition:none;
+}
+@media (prefers-reduced-motion: reduce){
+  main{ transition:none; }
+  .flow-leave--forward, .flow-leave--backward,
+  .flow-enter--forward, .flow-enter--backward{
+    opacity:1; transform:none;
+  }
+}

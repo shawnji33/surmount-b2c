@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You're almost ready to invest — Surmount</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block}
+ul,ol{list-style:none;padding:0;margin:0}
+
+:root{
+  --color-bg-primary:#ffffff;
+  --color-bg-secondary:#fafafa;
+  --color-fg-primary-900:#181d27;
+  --color-fg-secondary-700:#414651;
+  --color-fg-tertiary-600:#535862;
+  --color-fg-quaternary-400:#a4a7ae;
+  --color-fg-white:#ffffff;
+  --color-fg-disabled:rgba(10,13,18,0.4);
+
+  --color-text-secondary:rgba(10,13,18,0.7);
+
+  --color-border-primary:rgba(0,0,0,0.086);
+  --color-border-secondary:rgba(0,0,0,0.06);
+  --color-border-card:rgba(0,0,0,0.09);
+  --color-border-tertiary:rgba(0,0,0,0.039);
+
+  --color-utility-gray-50:#fafafa;
+  --color-utility-brand-600:#406ad0;
+  --color-utility-brand-700:#3757be;
+  --color-utility-brand-200:#c8dbf5;
+
+  --color-utility-success-700:#316434;
+  --color-utility-success-200:#cbe7cc;
+  --color-utility-success-50:#eef7ee;
+
+  --color-utility-warning-400:#f19246;
+  --color-utility-warning-600:#de5b18;
+
+  --color-step-icon-done:#535862;
+
+  --spacing-xxs:2px; --spacing-xs:4px; --spacing-sm:6px;
+  --spacing-md:8px;  --spacing-lg:12px; --spacing-xl:16px;
+  --spacing-2xl:20px; --spacing-3xl:24px; --spacing-4xl:32px;
+  --spacing-5xl:40px; --spacing-6xl:48px;
+
+  --radius-sm:6px; --radius-md:8px; --radius-xl:12px;
+  --radius-2xl:16px; --radius-full:9999px;
+
+  --shadow-card:0px 2px 12px rgba(10,13,18,0.03);
+  --shadow-card-sm:0px 2px 6px rgba(10,13,18,0.03);
+  --shadow-lift:0px 4px 16px rgba(10,13,18,0.07);
+
+  --font-family-body:'Geist',sans-serif;
+  --font-family-display:'Inter',sans-serif;
+  --font-size-text-xs:12px;  --line-height-text-xs:18px;
+  --font-size-text-sm:14px;  --line-height-text-sm:20px;
+  --font-size-text-md:16px;  --line-height-text-md:24px;
+  --font-size-text-lg:18px;  --line-height-text-lg:28px;
+  --font-size-display-md:36px; --line-height-display-md:44px;
+}
+
+html{height:100%}
+body{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);
+  color:var(--color-fg-primary-900);
+  background:var(--color-utility-gray-50);
+  letter-spacing:-0.5px;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ─── Topbar ──────────────────────────────────────────────────────── */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--spacing-xl) var(--spacing-3xl);
+  background:var(--color-utility-gray-50);
+  border-bottom:1px solid var(--color-border-secondary);
+}
+.topbar-ghost{width:103px;flex-shrink:0}
+
+.topbar-brand{
+  display:inline-flex;align-items:center;gap:var(--spacing-md);
+  text-decoration:none;
+}
+.topbar-brand svg{width:28px;height:28px;display:block;flex-shrink:0}
+.topbar-brand-name{
+  font-family:var(--font-family-display);
+  font-size:20px;font-weight:500;
+  letter-spacing:-0.4px;
+  color:var(--color-fg-primary-900);
+}
+
+.topbar-close{
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:var(--spacing-sm);
+  padding:11px var(--spacing-xl);
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-card);
+  border-radius:var(--radius-md);
+  color:var(--color-text-secondary);
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);font-weight:500;
+  line-height:var(--line-height-text-md);letter-spacing:0;
+  text-decoration:none;
+  transition:border-color .12s ease, background .12s ease, box-shadow .12s ease;
+  white-space:nowrap;flex-shrink:0;
+}
+.topbar-close:hover{
+  border-color:rgba(0,0,0,0.15);
+  background:var(--color-bg-secondary);
+  box-shadow:0 1px 4px rgba(10,13,18,0.05);
+}
+.topbar-close svg{width:20px;height:20px;flex-shrink:0}
+
+/* ─── Main ────────────────────────────────────────────────────────── */
+main{
+  flex:1;
+  padding:var(--spacing-5xl) var(--spacing-3xl);
+}
+
+.content{
+  max-width:860px;
+  margin:0 auto;
+  display:flex;flex-direction:column;
+  gap:var(--spacing-4xl);
+}
+
+/* ─── Hero ────────────────────────────────────────────────────────── */
+.hero{display:flex;flex-direction:column;gap:var(--spacing-md)}
+
+.hero-title{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-display-md);
+  font-weight:500;
+  line-height:var(--line-height-display-md);
+  letter-spacing:-1px;
+  color:var(--color-fg-primary-900);
+}
+
+.hero-subtitle{
+  font-size:var(--font-size-text-md);
+  font-weight:400;
+  line-height:var(--line-height-text-md);
+  letter-spacing:-0.3px;
+  color:var(--color-fg-tertiary-600);
+}
+
+/* ─── Two-column layout ───────────────────────────────────────────── */
+.layout{
+  display:flex;
+  align-items:flex-start;
+  gap:var(--spacing-5xl);
+}
+
+.steps-col{
+  flex:0 0 560px;
+  display:flex;flex-direction:column;
+  gap:var(--spacing-2xl);
+}
+
+.sidebar-col{
+  flex:0 0 260px;
+  display:flex;flex-direction:column;
+  gap:var(--spacing-2xl);
+}
+
+/* ─── Step card base ─────────────────────────────────────────────── */
+.step-card{
+  width:100%;
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-card);
+  border-radius:var(--radius-2xl);
+  padding:21px;
+  transition:background .15s ease, border-color .15s ease;
+}
+.step-card:hover{
+  background:var(--color-utility-gray-50);
+  border-color:rgba(0,0,0,0.1);
+}
+
+/* ─── Step 1: Completed ──────────────────────────────────────────── */
+.step-completed{
+  display:flex;align-items:center;gap:var(--spacing-xl);
+}
+
+.step-icon-base{
+  flex-shrink:0;
+  width:24px;height:24px;
+  border-radius:var(--radius-full);
+  display:flex;align-items:center;justify-content:center;
+}
+
+.step-icon-done{
+  background:var(--color-step-icon-done);
+  color:var(--color-fg-white);
+}
+.step-icon-done svg{width:12px;height:12px}
+
+.step-label-done{
+  flex:1;min-width:0;
+  font-size:var(--font-size-text-md);font-weight:500;
+  line-height:var(--line-height-text-md);
+  color:var(--color-fg-disabled);
+}
+
+.badge-completed{
+  flex-shrink:0;
+  display:inline-flex;align-items:center;
+  padding:var(--spacing-xxs) var(--spacing-md);
+  background:var(--color-utility-success-50);
+  border:1px solid var(--color-utility-success-200);
+  border-radius:var(--radius-full);
+  font-size:var(--font-size-text-xs);font-weight:500;
+  line-height:var(--line-height-text-xs);
+  color:var(--color-utility-success-700);
+  white-space:nowrap;
+  letter-spacing:0;
+}
+
+/* ─── Step 2: Active (Verify Identity) ──────────────────────────── */
+.step-active{
+  background:linear-gradient(111.95deg, rgb(250,248,247) 2.49%, rgb(250,247,245) 99.18%);
+  display:flex;align-items:flex-start;gap:var(--spacing-xl);
+}
+
+.step-icon-alert{
+  flex-shrink:0;
+  width:24px;height:24px;
+  color:var(--color-utility-warning-600);
+  display:flex;align-items:center;justify-content:center;
+}
+.step-icon-alert svg{width:24px;height:24px}
+
+.step-body{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;
+  gap:var(--spacing-xl);
+}
+
+.step-heading{
+  display:flex;flex-direction:column;gap:var(--spacing-xs);
+}
+
+.step-title{
+  font-size:var(--font-size-text-md);font-weight:500;
+  line-height:var(--line-height-text-md);
+  color:var(--color-fg-primary-900);
+}
+
+.step-desc{
+  font-size:var(--font-size-text-sm);font-weight:400;
+  line-height:var(--line-height-text-sm);
+  letter-spacing:-0.2px;
+  color:var(--color-fg-tertiary-600);
+}
+
+.step-checklist{
+  display:flex;flex-direction:column;gap:var(--spacing-md);
+}
+
+.step-check-item{
+  display:flex;align-items:center;gap:var(--spacing-md);
+  font-size:var(--font-size-text-sm);font-weight:400;
+  line-height:var(--line-height-text-sm);
+  color:var(--color-fg-secondary-700);
+}
+.step-check-item svg{
+  width:16px;height:16px;flex-shrink:0;
+  color:var(--color-fg-tertiary-600);
+}
+
+.btn-upload{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:var(--spacing-md) var(--spacing-lg);
+  background:var(--color-fg-primary-900);
+  border:2px solid rgba(255,255,255,0.12);
+  border-radius:var(--radius-md);
+  color:var(--color-fg-white);
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-sm);font-weight:500;
+  line-height:var(--line-height-text-sm);
+  letter-spacing:-0.2px;
+  text-decoration:none;
+  transition:background .12s ease, transform .1s ease;
+  white-space:nowrap;
+  cursor:pointer;
+  align-self:flex-start;
+}
+.btn-upload:hover{
+  background:var(--color-gray-lm-800);
+}
+.btn-upload:active{
+  transform:scale(0.97);
+}
+
+/* ─── Steps 3 & 4: Future ────────────────────────────────────────── */
+.step-future{
+  display:flex;align-items:center;gap:var(--spacing-xl);
+  cursor:default;
+}
+
+.step-icon-num{
+  flex-shrink:0;
+  width:24px;height:24px;
+  border-radius:var(--radius-full);
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-secondary);
+  display:flex;align-items:center;justify-content:center;
+  font-size:var(--font-size-text-xs);font-weight:500;
+  line-height:1;
+  color:var(--color-text-secondary);
+  letter-spacing:0;
+}
+
+.step-future-body{
+  flex:1;min-width:0;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:var(--spacing-xl);
+}
+
+.step-future-title{
+  font-size:var(--font-size-text-md);font-weight:500;
+  line-height:var(--line-height-text-md);
+  color:var(--color-fg-primary-900);
+}
+
+.step-chevron{
+  flex-shrink:0;width:24px;height:24px;
+  color:var(--color-fg-quaternary-400);
+  transition:color .12s ease, transform .18s cubic-bezier(0.34,1.56,0.64,1);
+}
+.step-future:hover .step-chevron{
+  color:var(--color-fg-secondary-700);
+}
+
+/* ─── Sidebar: Timeline card ─────────────────────────────────────── */
+.timeline-card{
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-card);
+  border-radius:var(--radius-2xl);
+  box-shadow:var(--shadow-card-sm);
+  padding:21px;
+  display:flex;flex-direction:column;gap:var(--spacing-xl);
+}
+
+.timeline-card-label{
+  font-size:var(--font-size-text-sm);font-weight:400;
+  line-height:var(--line-height-text-sm);
+  color:var(--color-text-secondary);
+}
+
+/* Timeline */
+.timeline{display:flex;flex-direction:column}
+
+.tl-item{display:flex;gap:var(--spacing-lg);position:relative}
+
+.tl-track{
+  display:flex;flex-direction:column;align-items:center;
+  flex-shrink:0;width:14px;
+}
+
+.tl-dot{
+  width:12px;height:12px;
+  border-radius:var(--radius-full);
+  flex-shrink:0;margin-top:4px;
+}
+.tl-dot-done{background:var(--color-utility-brand-600)}
+.tl-dot-active{
+  background:var(--color-bg-primary);
+  border:2.5px solid var(--color-utility-brand-600);
+}
+.tl-dot-warning{
+  width:12px;height:12px;
+  flex-shrink:0;margin-top:4px;
+  color:#b84a12;
+  display:flex;align-items:center;justify-content:center;
+}
+.tl-step-title.warning{color:#b84a12}
+.tl-step-sub.warning{color:#c75a1e}
+.tl-dot-future{
+  background:var(--color-bg-primary);
+  border:1.5px dashed var(--color-fg-quaternary-400);
+}
+
+.tl-line{
+  flex:1;width:1.5px;
+  background:var(--color-border-secondary);
+  margin:3px 0;
+  min-height:16px;
+}
+
+.tl-content{
+  padding-bottom:18px;
+  display:flex;flex-direction:column;gap:2px;
+}
+.tl-item:last-child .tl-content{padding-bottom:0}
+
+.tl-step-title{
+  font-size:var(--font-size-text-sm);font-weight:500;
+  line-height:var(--line-height-text-sm);
+  color:var(--color-fg-primary-900);
+}
+.tl-step-title.muted{color:var(--color-fg-quaternary-400)}
+
+.tl-step-sub{
+  font-size:var(--font-size-text-xs);font-weight:400;
+  line-height:var(--line-height-text-xs);
+  color:var(--color-fg-tertiary-600);
+}
+.tl-step-sub.muted{color:var(--color-fg-quaternary-400)}
+
+/* ─── Questions link ─────────────────────────────────────────────── */
+.questions{
+  font-size:var(--font-size-text-sm);font-weight:400;
+  letter-spacing:-0.2px;
+  line-height:var(--line-height-text-sm);
+  color:var(--color-fg-tertiary-600);
+}
+.questions a{
+  color:var(--color-fg-primary-900);
+  text-decoration:underline;
+  text-decoration-color:rgba(10,13,18,0.2);
+  text-underline-offset:2px;
+  transition:text-decoration-color .12s ease;
+}
+.questions a:hover{text-decoration-color:rgba(10,13,18,0.6)}
+
+/* ─── Page enter animation ───────────────────────────────────────── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.content{
+  animation:fadeUp 260ms cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .content{animation:none}
+  .btn-upload,.topbar-close,.step-card,.step-chevron,.questions a{transition:none}
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media(max-width:960px){
+  .layout{flex-direction:column}
+  .steps-col{flex:1 1 auto;width:100%}
+  .sidebar-col{flex:1 1 auto;width:100%;flex-direction:row;flex-wrap:wrap;align-items:flex-start}
+  .timeline-card{flex:1}
+}
+</style>
+</head>
+<body>
+
+<!-- ── Topbar ──────────────────────────────────────────────────────── -->
+<header class="topbar">
+  <div class="topbar-ghost"></div>
+
+  <a class="topbar-brand" href="../home/homepage.html">
+    <!-- Surmount brand mark (same as onboarding pages) -->
+    <svg width="28" height="28" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 14.8C3 10.3196 3 8.07937 3.87195 6.36808C4.63893 4.86278 5.86278 3.63893 7.36808 2.87195C9.07937 2 11.3196 2 15.8 2H22.2C26.6804 2 28.9206 2 30.6319 2.87195C32.1372 3.63893 33.3611 4.86278 34.1281 6.36808C35 8.07937 35 10.3196 35 14.8V21.2C35 25.6804 35 27.9206 34.1281 29.6319C33.3611 31.1372 32.1372 32.3611 30.6319 33.1281C28.9206 34 26.6804 34 22.2 34H15.8C11.3196 34 9.07937 34 7.36808 33.1281C5.86278 32.3611 4.63893 31.1372 3.87195 29.6319C3 27.9206 3 25.6804 3 21.2V14.8Z" fill="url(#as_p0)"/><path d="M18.9982 13.1366C18.7314 13.3201 18.4774 13.5264 18.2363 13.7556L17.0473 14.888C16.5042 14.6108 15.9021 14.473 15.3023 14.473C14.3537 14.473 13.4058 14.8171 12.6831 15.5054C11.9844 16.1725 11.5993 17.0568 11.5993 17.9994H9C9 16.3954 9.65481 14.888 10.8462 13.7556C13.064 11.6435 16.537 11.4371 19.0006 13.1366H18.9982Z" fill="url(#as_p1)"/><path d="M23.3671 18.8083L20.9498 21.1103L19.7607 22.2421C19.5196 22.4719 19.2657 22.6782 18.9982 22.8617C17.9016 23.6185 16.6008 23.9981 15.3023 23.9981C13.6884 23.9981 12.0745 23.4122 10.8462 22.2421C9.65481 21.108 9 19.6006 9 17.9972H11.5993C11.5993 18.9392 11.9844 19.8258 12.6831 20.4906C13.916 21.6647 15.8102 21.8357 17.238 21.0039C17.4809 20.8622 17.7109 20.6913 17.9233 20.4906L19.2306 19.2462L21.5279 17.0586H21.5297C22.0376 16.5727 22.8615 16.5727 23.3671 17.0569C23.8751 17.5405 23.8751 18.3242 23.3671 18.8061V18.8083Z" fill="url(#as_p2)"/><path d="M28.9994 17.999H26.4001C26.4001 17.0564 26.015 16.1726 25.3164 15.505C24.5937 14.8173 23.6457 14.4732 22.6971 14.4732C22.0248 14.4732 21.353 14.6464 20.7614 14.9922C20.5185 15.134 20.2886 15.3049 20.0785 15.505L18.7689 16.7523L16.4697 18.9416C16.2158 19.1834 15.8828 19.3046 15.5498 19.3046C15.2169 19.3046 14.8839 19.1834 14.63 18.9416C14.122 18.458 14.122 17.6737 14.63 17.1918L17.0479 14.8899L18.237 13.7581C18.4775 13.5283 18.7314 13.322 18.9988 13.1385C21.4624 11.439 24.9331 11.6454 27.1515 13.7581C28.3423 14.8922 28.9971 16.3996 28.9971 18.0013L28.9994 17.999Z" fill="url(#as_p3)"/><path d="M29 17.9991C29 19.6025 28.3452 21.1099 27.1538 22.2445C25.9255 23.4141 24.3116 24 22.6977 24C21.3992 24 20.0984 23.6204 19.0012 22.8636C19.2686 22.6801 19.5226 22.4738 19.7631 22.2445L20.9521 21.1122C21.4952 21.3894 22.0956 21.5272 22.6977 21.5272C23.6457 21.5272 24.5937 21.183 25.3163 20.4948C26.015 19.8277 26.4007 18.944 26.4007 18.0014H29V17.9991Z" fill="url(#as_p4)"/><defs><linearGradient id="as_p0" x1="3" y1="2" x2="35" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#F5F7FA"/><stop offset="1" stop-color="#C3CFE2"/></linearGradient><linearGradient id="as_p1" x1="9" y1="14.9848" x2="19.0001" y2="15.0677" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#1047D2"/></linearGradient><linearGradient id="as_p2" x1="9" y1="20.3279" x2="23.747" y2="20.476" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#54E3DF"/></linearGradient><linearGradient id="as_p3" x1="14.249" y1="15.6351" x2="28.9983" y2="15.7833" gradientUnits="userSpaceOnUse"><stop stop-color="#54E3DF"/><stop offset="1" stop-color="#34A6ED"/></linearGradient><linearGradient id="as_p4" x1="19.0012" y1="20.9846" x2="28.9996" y2="21.0675" gradientUnits="userSpaceOnUse"><stop stop-color="#1047D2"/><stop offset="1" stop-color="#34A6ED"/></linearGradient></defs></svg>
+    <span class="topbar-brand-name">Surmount</span>
+  </a>
+
+  <a class="topbar-close" href="../home/homepage.html">
+    Close
+    <!-- Phosphor X Regular -->
+    <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round">
+      <line x1="200" y1="56" x2="56" y2="200"/>
+      <line x1="56" y1="56" x2="200" y2="200"/>
+    </svg>
+  </a>
+</header>
+
+<!-- ── Main ─────────────────────────────────────────────────────────── -->
+<main>
+  <div class="content">
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1 class="hero-title">You're almost ready to invest</h1>
+      <p class="hero-subtitle">Complete the steps below to activate your account</p>
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="layout">
+
+      <!-- ── Left: Steps ─────────────────────────────────────────── -->
+      <div class="steps-col">
+
+        <!-- Step 1: Completed -->
+        <div class="step-card step-completed">
+          <div class="step-icon-base step-icon-done" aria-hidden="true">
+            <!-- Phosphor Check Regular -->
+            <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="40 144 96 200 224 72"/>
+            </svg>
+          </div>
+          <span class="step-label-done">Submit your application</span>
+          <span class="badge-completed">Completed</span>
+        </div>
+
+        <!-- Step 2: Verify Identity (active) -->
+        <div class="step-card step-active">
+          <div class="step-icon-alert" aria-hidden="true">
+            <!-- Phosphor WarningCircle Regular -->
+            <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V104a8,8,0,0,1,16,0v32a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z"/>
+            </svg>
+          </div>
+          <div class="step-body">
+            <div class="step-heading">
+              <h3 class="step-title">Verify your identity</h3>
+              <p class="step-desc">To comply with financial regulations, we need two documents to verify your identity.</p>
+            </div>
+            <ul class="step-checklist">
+              <li class="step-check-item">
+                <!-- Phosphor Check Regular -->
+                <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="40 144 96 200 224 72"/>
+                </svg>
+                Government-issued photo ID
+              </li>
+              <li class="step-check-item">
+                <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="40 144 96 200 224 72"/>
+                </svg>
+                Proof of current address
+              </li>
+            </ul>
+            <a class="btn-upload" href="verify-documents.html">Upload documents</a>
+          </div>
+        </div>
+
+        <!-- Step 3: Make first deposit (future) -->
+        <div class="step-card step-future">
+          <div class="step-icon-base step-icon-num" aria-hidden="true">2</div>
+          <div class="step-future-body">
+            <span class="step-future-title">Make your first deposit</span>
+            <!-- Phosphor ChevronDown Regular -->
+            <svg class="step-chevron" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="208 96 128 176 48 96"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Step 4: Pick first strategy (future) -->
+        <div class="step-card step-future">
+          <div class="step-icon-base step-icon-num" aria-hidden="true">3</div>
+          <div class="step-future-body">
+            <span class="step-future-title">Pick your first strategy</span>
+            <svg class="step-chevron" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="208 96 128 176 48 96"/>
+            </svg>
+          </div>
+        </div>
+
+      </div><!-- /steps-col -->
+
+      <!-- ── Right: Sidebar ──────────────────────────────────────── -->
+      <div class="sidebar-col">
+
+        <!-- Application timeline card -->
+        <div class="timeline-card">
+          <p class="timeline-card-label">Application timeline</p>
+          <div class="timeline">
+
+            <!-- Stage 1: Done -->
+            <div class="tl-item">
+              <div class="tl-track">
+                <div class="tl-dot tl-dot-done"></div>
+                <div class="tl-line"></div>
+              </div>
+              <div class="tl-content">
+                <span class="tl-step-title">Application submitted</span>
+                <span class="tl-step-sub">Jan 28, 2026</span>
+              </div>
+            </div>
+
+            <!-- Stage 2: Active -->
+            <div class="tl-item">
+              <div class="tl-track">
+                <div class="tl-dot tl-dot-warning">
+                  <!-- Phosphor WarningCircle Regular -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 256 256" fill="currentColor">
+                    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V104a8,8,0,0,1,16,0v32a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z"/>
+                  </svg>
+                </div>
+                <div class="tl-line"></div>
+              </div>
+              <div class="tl-content">
+                <span class="tl-step-title warning">Identity verification</span>
+                <span class="tl-step-sub warning">Action needed</span>
+              </div>
+            </div>
+
+            <!-- Stage 3: Future -->
+            <div class="tl-item">
+              <div class="tl-track">
+                <div class="tl-dot tl-dot-future"></div>
+              </div>
+              <div class="tl-content">
+                <span class="tl-step-title muted">Account ready</span>
+                <span class="tl-step-sub muted">After verification</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <p class="questions">Questions? <a href="mailto:support@surmount.ai">support@surmount.ai</a></p>
+
+      </div><!-- /sidebar-col -->
+
+    </div><!-- /layout -->
+
+  </div><!-- /content -->
+</main>
+
+</body>
+</html>
