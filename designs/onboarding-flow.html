@@ -10,14 +10,14 @@
 a{color:inherit;text-decoration:none}
 
 :root{
-  --bg:#f7f8fa;
+  --bg:#f4f5f8;
   --card:#ffffff;
   --border:rgba(0,0,0,0.09);
-  --border-hover:rgba(0,0,0,0.18);
+  --border-hover:rgba(0,0,0,0.2);
   --fg:#1a1f2e;
   --fg2:rgba(10,13,18,0.5);
   --fg3:rgba(10,13,18,0.32);
-  --line:#d0d5de;
+  --line:#cdd2db;
   --font:'Geist',system-ui,sans-serif;
   --font-d:'Inter',sans-serif;
 }
@@ -44,190 +44,153 @@ html,body{
 
 /* canvas */
 .canvas{padding:48px 52px 100px;overflow-x:auto}
-.page-title{font-family:var(--font-d);font-size:20px;font-weight:500;letter-spacing:-0.4px;margin-bottom:4px}
-.page-sub{font-size:13px;color:var(--fg2);letter-spacing:-0.15px;margin-bottom:44px;line-height:19px}
+.page-title{font-family:var(--font-d);font-size:22px;font-weight:500;letter-spacing:-0.5px;margin-bottom:6px}
+.page-sub{font-size:13px;color:var(--fg2);letter-spacing:-0.15px;margin-bottom:48px;line-height:19px}
 
 /* track label */
 .track-label{
-  font-size:11px;font-weight:500;color:var(--fg3);
-  letter-spacing:0.04em;
-  margin-bottom:14px;
+  font-size:12px;font-weight:500;color:var(--fg2);
+  letter-spacing:-0.1px;
+  margin-bottom:18px;
 }
 
 /* ── NODE ── */
 .node{
   flex-shrink:0;
-  width:148px;
+  width:160px;
   background:var(--card);
   border:1px solid var(--border);
-  border-radius:10px;
-  padding:13px 14px 14px;
-  display:flex;flex-direction:column;gap:7px;
+  border-radius:12px;
+  padding:14px 16px 16px;
+  display:flex;flex-direction:column;gap:6px;
   cursor:pointer;
   text-decoration:none;color:inherit;
-  transition:border-color .13s, box-shadow .13s;
+  transition:border-color .15s, box-shadow .15s, transform .15s;
   position:relative;
+  box-shadow:0 1px 4px rgba(10,13,18,0.05);
 }
 .node:hover{
   border-color:var(--border-hover);
-  box-shadow:0 3px 12px rgba(10,13,18,0.08);
+  box-shadow:0 5px 18px rgba(10,13,18,0.1);
+  transform:translateY(-1px);
 }
 .node:hover .node-preview{opacity:1}
 
+/* Path-tinted nodes */
+.node-success{background:#f6fdf7;border-color:rgba(49,100,52,0.22)}
+.node-success:hover{border-color:rgba(49,100,52,0.45)!important}
+.node-pending{background:#fffbf6;border-color:rgba(220,116,68,0.25)}
+.node-pending:hover{border-color:rgba(220,116,68,0.5)!important}
+.node-rejected{background:#fff8f8;border-color:rgba(194,100,96,0.25)}
+.node-rejected:hover{border-color:rgba(194,100,96,0.5)!important}
+
 .node-top{display:flex;align-items:center;gap:7px}
-.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .dot-gray  {background:#b0b5bf}
 .dot-orange{background:#e27444}
 .dot-blue  {background:#4f79d4}
-.dot-green {background:#5aaa5e}
+.dot-green {background:#4c9e52}
 .dot-red   {background:#c26460}
 
 .node-name{
-  font-size:13px;font-weight:500;letter-spacing:-0.2px;
-  line-height:17px;color:var(--fg);
+  font-size:14px;font-weight:500;letter-spacing:-0.25px;
+  line-height:18px;color:var(--fg);
 }
 .node-sub{
-  font-size:11px;color:var(--fg2);letter-spacing:-0.1px;
-  line-height:15px;
+  font-size:12px;color:var(--fg2);letter-spacing:-0.1px;
+  line-height:16px;
 }
 .node-preview{
   font-size:11px;color:#406ad0;
   opacity:0;transition:opacity .13s;
-  margin-top:1px;
+  margin-top:2px;
 }
 
 /* ghost node (out of scope) */
 .node.ghost{
   border-style:dashed;border-color:rgba(0,0,0,0.1);
-  background:transparent;opacity:0.5;pointer-events:none;
+  background:transparent;opacity:0.4;pointer-events:none;
 }
 
 /* ── HORIZONTAL CONNECTOR ── */
 .hcon{
   flex-shrink:0;
   display:flex;flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
+  align-items:center;justify-content:center;
+  gap:8px;
   width:116px;
   padding-top:2px;
 }
 .hcon-label{
   font-size:11px;font-weight:500;
   color:#535861;
-  letter-spacing:-0.15px;
+  letter-spacing:-0.1px;
   white-space:nowrap;line-height:1;
   background:#fff;
-  padding:3px 9px;
-  border:1px solid rgba(0,0,0,0.11);
+  padding:4px 10px;
+  border:1px solid rgba(0,0,0,0.1);
   border-radius:9999px;
-  box-shadow:0 1px 3px rgba(10,13,18,0.05);
+  box-shadow:0 1px 4px rgba(10,13,18,0.06);
 }
-.hcon-line-wrap{
-  display:flex;align-items:center;width:100%;
-}
+.hcon-line-wrap{display:flex;align-items:center;width:100%}
 .hcon-line{flex:1;height:1.5px;background:var(--line)}
-.hcon-arrowhead{
-  width:0;height:0;
-  border-top:5px solid transparent;
-  border-bottom:5px solid transparent;
-  border-left:7px solid var(--line);
-  flex-shrink:0;
-}
+.hcon-line-green{flex:1;height:1.5px;background:#aed6b0}
+.hcon-arrowhead{width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--line);flex-shrink:0}
+.hcon-arrowhead-green{border-left-color:#aed6b0}
 
 /* ── HORIZONTAL TRACK ── */
-.track{
-  display:flex;align-items:center;
-  gap:0;
-  min-width:max-content;
-}
+.track{display:flex;align-items:center;gap:0;min-width:max-content}
 
-/* ── VERTICAL DROP (for rejection branch) ── */
-.vdrop{
-  display:flex;flex-direction:column;align-items:center;
-  flex-shrink:0;
-}
+/* ── VERTICAL DROP ── */
+.vdrop{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
 .vdrop-line{width:1.5px;background:var(--line)}
+.vdrop-arrowhead{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--line);flex-shrink:0}
+
+/* Generic vdrop connector label (e.g. Docs submitted) */
 .vdrop-label{
-  font-size:11px;font-weight:500;
-  color:#535861;
-  letter-spacing:-0.15px;
-  white-space:nowrap;
-  margin:6px 0;
-  background:#fff;
-  padding:3px 9px;
-  border:1px solid rgba(0,0,0,0.11);
-  border-radius:9999px;
+  font-size:11px;font-weight:500;color:#535861;
+  letter-spacing:-0.1px;white-space:nowrap;margin:6px 0;
+  background:#fff;padding:3px 9px;
+  border:1px solid rgba(0,0,0,0.1);border-radius:9999px;
   box-shadow:0 1px 3px rgba(10,13,18,0.05);
 }
-.vdrop-arrowhead{
-  width:0;height:0;
-  border-left:5px solid transparent;
-  border-right:5px solid transparent;
-  border-top:7px solid var(--line);
-  flex-shrink:0;
+
+/* ── OUTCOME BADGES (big, colored) ── */
+.ob{
+  display:inline-flex;align-items:center;
+  font-size:12px;font-weight:500;
+  letter-spacing:-0.1px;white-space:nowrap;
+  padding:5px 13px;
+  border:1.5px solid;border-radius:9999px;
+  box-shadow:0 1px 5px rgba(10,13,18,0.1);
+  line-height:1;
 }
+.ob-approved{background:#ebf7ec;color:#1f5c24;border-color:rgba(49,100,52,0.4)}
+.ob-pending {background:#fef3e6;color:#7a3e0d;border-color:rgba(180,83,9,0.4)}
+.ob-rejected{background:#feecec;color:#7a2d2a;border-color:rgba(152,68,61,0.4)}
 
 /* ── DECISION DIAMOND ── */
 .diamond{
   flex-shrink:0;
-  width:40px;height:40px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:4px;
+  width:46px;height:46px;
+  background:#fff;
+  border:1.5px solid rgba(0,0,0,0.16);
+  border-radius:5px;
   transform:rotate(45deg);
-  display:flex;align-items:center;justify-content:center;
-}
-
-/* ── FORK (entry splits to two paths) ── */
-.fork-wrap{
-  display:flex;flex-direction:column;
-  gap:0;
-}
-.fork-entry{
-  display:flex;align-items:center;gap:0;
-  min-width:max-content;
-}
-
-/* Vertical bridge connecting the two path start-points */
-.fork-bridge{
-  position:relative;
-  margin-left:74px; /* aligns with end of first node + half connector */
-}
-.fork-bridge-line{
-  width:1.5px;background:var(--line);
-}
-.fork-branch-row{
-  display:flex;align-items:flex-start;gap:0;
-}
-.fork-branch-arm{
-  display:flex;align-items:center;
-  flex-shrink:0;
-}
-.fork-branch-arm-line{height:1.5px;background:var(--line)}
-.fork-branch-arm-arrow{
-  width:0;height:0;
-  border-top:4.5px solid transparent;
-  border-bottom:4.5px solid transparent;
-  border-left:6px solid var(--line);
-  flex-shrink:0;
-}
-.fork-branch-label{
-  font-size:10px;color:var(--fg3);
-  white-space:nowrap;margin-bottom:5px;
+  box-shadow:0 2px 10px rgba(10,13,18,0.09);
 }
 
 /* ── DIVIDER ── */
 .section-div{
-  margin:48px 0 28px;
+  margin:56px 0 28px;
   border-top:1px solid var(--border);
   padding-top:28px;
 }
 
-/* ── ANNOTATION inside flow ── */
+/* ── ANNOTATION ── */
 .flow-note{
   font-size:11px;color:var(--fg3);letter-spacing:-0.1px;
-  margin-top:8px;margin-left:2px;
+  margin-top:8px;
 }
 </style>
 </head>
@@ -253,7 +216,7 @@ html,body{
 
   <div style="display:flex;flex-direction:column;align-items:flex-start">
 
-    <!-- Main track: success path -->
+    <!-- ── MAIN TRACK: success (Approved) path ── -->
     <div class="track">
 
       <!-- 1. User lands -->
@@ -269,9 +232,9 @@ html,body{
         <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
       </div>
 
-      <!-- Review outcome diamond (3 outcomes: approved / pending / rejected) -->
-      <div style="display:flex;flex-direction:column;align-items:center;width:116px;gap:6px;padding-top:2px">
-        <span class="hcon-label">Review outcome</span>
+      <!-- Review outcome diamond -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:116px;gap:8px;padding-top:2px">
+        <span class="hcon-label" style="font-size:11.5px">Review outcome</span>
         <div style="display:flex;align-items:center;width:100%">
           <div class="hcon-line" style="flex:1"></div>
           <div class="diamond"></div>
@@ -280,8 +243,14 @@ html,body{
         </div>
       </div>
 
-      <!-- 2. Make deposit — success / approved path -->
-      <a class="node" href="home/homepage.html?scenario=identity-approved" target="_blank">
+      <!-- Approved outcome connector -->
+      <div class="hcon">
+        <span class="ob ob-approved">Approved</span>
+        <div class="hcon-line-wrap"><div class="hcon-line-green"></div><div class="hcon-arrowhead hcon-arrowhead-green"></div></div>
+      </div>
+
+      <!-- 2. Make deposit -->
+      <a class="node node-success" href="home/homepage.html?scenario=identity-approved" target="_blank">
         <div class="node-top"><span class="dot dot-green"></span></div>
         <p class="node-name">Make deposit</p>
         <p class="node-sub">Step 2 of 3 · Links bank account</p>
@@ -290,11 +259,11 @@ html,body{
 
       <div class="hcon">
         <span class="hcon-label">Deposit confirmed</span>
-        <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
+        <div class="hcon-line-wrap"><div class="hcon-line-green"></div><div class="hcon-arrowhead hcon-arrowhead-green"></div></div>
       </div>
 
       <!-- 3. Pick strategy -->
-      <a class="node" href="home/homepage.html?scenario=needs-strategy" target="_blank">
+      <a class="node node-success" href="home/homepage.html?scenario=needs-strategy" target="_blank">
         <div class="node-top"><span class="dot dot-green"></span></div>
         <p class="node-name">Pick strategy</p>
         <p class="node-sub">Step 3 of 3 · Activates trading</p>
@@ -303,11 +272,11 @@ html,body{
 
       <div class="hcon">
         <span class="hcon-label">Strategy activated</span>
-        <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
+        <div class="hcon-line-wrap"><div class="hcon-line-green"></div><div class="hcon-arrowhead hcon-arrowhead-green"></div></div>
       </div>
 
       <!-- 4. Active -->
-      <a class="node" href="home/homepage.html?scenario=account-ready" target="_blank">
+      <a class="node node-success" href="home/homepage.html?scenario=account-ready" target="_blank">
         <div class="node-top"><span class="dot dot-green"></span></div>
         <p class="node-name">Active dashboard</p>
         <p class="node-sub">Onboarding complete</p>
@@ -316,30 +285,34 @@ html,body{
 
     </div><!-- end main track -->
 
-    <!-- T-connector branches from diamond -->
-    <!-- Diamond center x = 148 (node) + 116 (connector) + 38 (half hcon after arrowhead math) + 20 = 322px -->
-    <!-- T-bar spans Pending center (236px) → Rejected center (408px), width 172px, center at 322px ✓ -->
+    <!-- ── BRANCHES FROM DIAMOND ──
+         Diamond center x = 160 (User lands) + 116 (hcon) + 58 (half diamond-hcon: (116-46)/2 + 23) = 334px
+         Two 160px cols + 28px gap = 348px wide, center at 174px
+         Branch spacer = 334 - 174 = 160px
+         T-bar: 348px wide starting at 160px, center at 160+174 = 334px ✓
+         Trunk: at 333px (334 - 0.75)
+    ── -->
 
-    <!-- Trunk: single line down from diamond center -->
+    <!-- Trunk line down from diamond center -->
     <div style="display:flex">
-      <div style="width:321px;flex-shrink:0"></div>
-      <div style="width:1.5px;height:20px;background:var(--line);flex-shrink:0"></div>
+      <div style="width:333px;flex-shrink:0"></div>
+      <div style="width:1.5px;height:22px;background:var(--line);flex-shrink:0"></div>
     </div>
 
-    <!-- T-bar + two branch columns -->
+    <!-- T-bar + branch columns -->
     <div style="display:flex">
-      <div style="width:162px;flex-shrink:0"></div>
+      <div style="width:160px;flex-shrink:0"></div>
 
-      <!-- The border-top here IS the horizontal T-bar (162px → 162+148+24+148=482px, center 322px) -->
-      <div style="display:flex;align-items:flex-start;gap:24px;border-top:1.5px solid var(--line)">
+      <!-- border-top IS the T-bar: spans 160→508px, center 334px ✓ -->
+      <div style="display:flex;align-items:flex-start;gap:28px;border-top:1.5px solid var(--line)">
 
-        <!-- PENDING column (center at 162+74=236px) -->
-        <div style="width:148px;display:flex;flex-direction:column;align-items:center">
-          <div style="width:1.5px;height:12px;background:var(--line)"></div>
+        <!-- PENDING column (center at 160+80=240px) -->
+        <div style="width:160px;display:flex;flex-direction:column;align-items:center">
+          <div style="width:1.5px;height:14px;background:var(--line)"></div>
           <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--line);flex-shrink:0"></div>
-          <span class="vdrop-label" style="margin:5px 0 8px">Pending</span>
+          <span class="ob ob-pending" style="margin:8px 0 12px">Pending</span>
 
-          <a class="node" href="home/homepage.html?scenario=new-user" target="_blank">
+          <a class="node node-pending" href="home/homepage.html?scenario=new-user" target="_blank">
             <div class="node-top"><span class="dot dot-orange"></span></div>
             <p class="node-name">Verify identity</p>
             <p class="node-sub">Uploads additional ID docs</p>
@@ -353,7 +326,7 @@ html,body{
             <div class="vdrop-arrowhead"></div>
           </div>
 
-          <a class="node" href="home/homepage.html?scenario=docs-submitted" target="_blank">
+          <a class="node node-pending" href="home/homepage.html?scenario=docs-submitted" target="_blank">
             <div class="node-top"><span class="dot dot-blue"></span></div>
             <p class="node-name">Under review</p>
             <p class="node-sub">1–2 business days</p>
@@ -363,13 +336,13 @@ html,body{
           <p class="flow-note" style="text-align:center;margin-top:10px">↑ Re-enters review queue</p>
         </div>
 
-        <!-- REJECTED column (center at 162+148+24+74=408px) -->
-        <div style="width:148px;display:flex;flex-direction:column;align-items:center">
-          <div style="width:1.5px;height:12px;background:var(--line)"></div>
+        <!-- REJECTED column (center at 160+160+28+80=428px) -->
+        <div style="width:160px;display:flex;flex-direction:column;align-items:center">
+          <div style="width:1.5px;height:14px;background:var(--line)"></div>
           <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--line);flex-shrink:0"></div>
-          <span class="vdrop-label" style="margin:5px 0 8px">Rejected</span>
+          <span class="ob ob-rejected" style="margin:8px 0 12px">Rejected</span>
 
-          <a class="node" href="home/homepage.html?scenario=account-rejected" target="_blank">
+          <a class="node node-rejected" href="home/homepage.html?scenario=account-rejected" target="_blank">
             <div class="node-top"><span class="dot dot-red"></span></div>
             <p class="node-name">Unable to approve</p>
             <p class="node-sub">Dismissable card · Contact support</p>
@@ -415,7 +388,7 @@ html,body{
         <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
       </div>
 
-      <a class="node" href="home/homepage.html?scenario=account-ready" target="_blank">
+      <a class="node node-success" href="home/homepage.html?scenario=account-ready" target="_blank">
         <div class="node-top"><span class="dot dot-green"></span></div>
         <p class="node-name">Active dashboard</p>
         <p class="node-sub">Onboarding complete</p>
