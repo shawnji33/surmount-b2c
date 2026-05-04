@@ -316,23 +316,28 @@ html,body{
 
     </div><!-- end main track -->
 
-    <!-- Two branches drop from diamond: Pending (left) + Rejected (right) -->
-    <!-- Diamond center x ≈ 148 (node) + 116 (connector) + 55 (half diamond-connector) = 319px -->
-    <!-- Two cols: 148 + 24 gap + 148 = 320px wide, center at 160px → spacer = 319 - 160 = 159px -->
-    <div style="display:flex;align-items:flex-start;margin-top:0">
+    <!-- T-connector branches from diamond -->
+    <!-- Diamond center x = 148 (node) + 116 (connector) + 38 (half hcon after arrowhead math) + 20 = 322px -->
+    <!-- T-bar spans Pending center (236px) → Rejected center (408px), width 172px, center at 322px ✓ -->
 
-      <div style="width:159px;flex-shrink:0"></div>
+    <!-- Trunk: single line down from diamond center -->
+    <div style="display:flex">
+      <div style="width:321px;flex-shrink:0"></div>
+      <div style="width:1.5px;height:20px;background:var(--line);flex-shrink:0"></div>
+    </div>
 
-      <div style="display:flex;align-items:flex-start;gap:24px">
+    <!-- T-bar + two branch columns -->
+    <div style="display:flex">
+      <div style="width:162px;flex-shrink:0"></div>
 
-        <!-- PENDING branch: needs to verify identity, then under review -->
-        <div style="display:flex;flex-direction:column;align-items:center;width:148px">
-          <div class="vdrop">
-            <div class="vdrop-line" style="height:16px"></div>
-            <span class="vdrop-label">Pending</span>
-            <div class="vdrop-line" style="height:12px"></div>
-            <div class="vdrop-arrowhead"></div>
-          </div>
+      <!-- The border-top here IS the horizontal T-bar (162px → 162+148+24+148=482px, center 322px) -->
+      <div style="display:flex;align-items:flex-start;gap:24px;border-top:1.5px solid var(--line)">
+
+        <!-- PENDING column (center at 162+74=236px) -->
+        <div style="width:148px;display:flex;flex-direction:column;align-items:center">
+          <div style="width:1.5px;height:12px;background:var(--line)"></div>
+          <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--line);flex-shrink:0"></div>
+          <span class="vdrop-label" style="margin:5px 0 8px">Pending</span>
 
           <a class="node" href="home/homepage.html?scenario=new-user" target="_blank">
             <div class="node-top"><span class="dot dot-orange"></span></div>
@@ -358,14 +363,11 @@ html,body{
           <p class="flow-note" style="text-align:center;margin-top:10px">↑ Re-enters review queue</p>
         </div>
 
-        <!-- REJECTED branch: unable to approve, contact support -->
-        <div style="display:flex;flex-direction:column;align-items:center;width:148px">
-          <div class="vdrop">
-            <div class="vdrop-line" style="height:16px"></div>
-            <span class="vdrop-label">Rejected</span>
-            <div class="vdrop-line" style="height:12px"></div>
-            <div class="vdrop-arrowhead"></div>
-          </div>
+        <!-- REJECTED column (center at 162+148+24+74=408px) -->
+        <div style="width:148px;display:flex;flex-direction:column;align-items:center">
+          <div style="width:1.5px;height:12px;background:var(--line)"></div>
+          <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--line);flex-shrink:0"></div>
+          <span class="vdrop-label" style="margin:5px 0 8px">Rejected</span>
 
           <a class="node" href="home/homepage.html?scenario=account-rejected" target="_blank">
             <div class="node-top"><span class="dot dot-red"></span></div>
