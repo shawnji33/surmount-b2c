@@ -244,19 +244,19 @@ html,body{
 
 <main class="canvas">
   <h1 class="page-title">Onboarding user flow</h1>
-  <p class="page-sub">Hover any node to preview. Two entry paths — investing account (full KYC) and linked broker (no KYC).</p>
+  <p class="page-sub">Hover any node to preview. Two entry paths — investing account (KYC review) and linked broker (no KYC).</p>
 
   <!-- ══════════════════════════════════
        PATH A — Investing account (KYC)
   ══════════════════════════════════ -->
   <p class="track-label">Path A — Create a Surmount investing account</p>
 
-  <!-- ROW 1: main happy path -->
   <div style="display:flex;flex-direction:column;align-items:flex-start">
 
+    <!-- Main track: success path -->
     <div class="track">
 
-      <!-- 1. Entry -->
+      <!-- 1. User lands -->
       <a class="node" href="home/homepage-empty.html" target="_blank">
         <div class="node-top"><span class="dot dot-gray"></span></div>
         <p class="node-name">User lands</p>
@@ -269,28 +269,7 @@ html,body{
         <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
       </div>
 
-      <!-- 2. Verify identity -->
-      <a class="node" href="home/homepage.html?scenario=new-user" target="_blank">
-        <div class="node-top"><span class="dot dot-orange"></span></div>
-        <p class="node-name">Verify identity</p>
-        <p class="node-sub">Step 1 of 3 · Uploads ID docs</p>
-        <span class="node-preview">Preview ↗</span>
-      </a>
-
-      <div class="hcon">
-        <span class="hcon-label">Docs submitted</span>
-        <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
-      </div>
-
-      <!-- 3. Under review -->
-      <a class="node" href="home/homepage.html?scenario=docs-submitted" target="_blank">
-        <div class="node-top"><span class="dot dot-blue"></span></div>
-        <p class="node-name">Under review</p>
-        <p class="node-sub">Step 1 of 3 · 1–2 business days</p>
-        <span class="node-preview">Preview ↗</span>
-      </a>
-
-      <!-- Decision point -->
+      <!-- Review outcome diamond (3 outcomes: approved / pending / rejected) -->
       <div style="display:flex;flex-direction:column;align-items:center;width:116px;gap:6px;padding-top:2px">
         <span class="hcon-label">Review outcome</span>
         <div style="display:flex;align-items:center;width:100%">
@@ -301,9 +280,9 @@ html,body{
         </div>
       </div>
 
-      <!-- 4. Deposit -->
+      <!-- 2. Make deposit — success / approved path -->
       <a class="node" href="home/homepage.html?scenario=identity-approved" target="_blank">
-        <div class="node-top"><span class="dot dot-blue"></span></div>
+        <div class="node-top"><span class="dot dot-green"></span></div>
         <p class="node-name">Make deposit</p>
         <p class="node-sub">Step 2 of 3 · Links bank account</p>
         <span class="node-preview">Preview ↗</span>
@@ -314,9 +293,9 @@ html,body{
         <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
       </div>
 
-      <!-- 5. Pick strategy -->
+      <!-- 3. Pick strategy -->
       <a class="node" href="home/homepage.html?scenario=needs-strategy" target="_blank">
-        <div class="node-top"><span class="dot dot-blue"></span></div>
+        <div class="node-top"><span class="dot dot-green"></span></div>
         <p class="node-name">Pick strategy</p>
         <p class="node-sub">Step 3 of 3 · Activates trading</p>
         <span class="node-preview">Preview ↗</span>
@@ -327,7 +306,7 @@ html,body{
         <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
       </div>
 
-      <!-- 6. Active -->
+      <!-- 4. Active -->
       <a class="node" href="home/homepage.html?scenario=account-ready" target="_blank">
         <div class="node-top"><span class="dot dot-green"></span></div>
         <p class="node-name">Active dashboard</p>
@@ -335,47 +314,70 @@ html,body{
         <span class="node-preview">Preview ↗</span>
       </a>
 
-    </div><!-- end track -->
+    </div><!-- end main track -->
 
-    <!-- Rejection branch drops down from the diamond -->
-    <!-- Positioned to align under the diamond (approx 3 nodes + 3 connectors in) -->
-    <div style="display:flex;align-items:flex-start;gap:0;margin-top:0">
+    <!-- Two branches drop from diamond: Pending (left) + Rejected (right) -->
+    <!-- Diamond center x ≈ 148 (node) + 116 (connector) + 55 (half diamond-connector) = 319px -->
+    <!-- Two cols: 148 + 24 gap + 148 = 320px wide, center at 160px → spacer = 319 - 160 = 159px -->
+    <div style="display:flex;align-items:flex-start;margin-top:0">
 
-      <!-- Spacer to align under the diamond center -->
-      <!-- 3 nodes×148 + 2 connectors×116 + 58(half-connector) = 444+232+58 = 734px -->
-      <div style="width:734px;flex-shrink:0"></div>
+      <div style="width:159px;flex-shrink:0"></div>
 
-      <!-- Drop -->
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div class="vdrop">
-          <div class="vdrop-line" style="height:16px"></div>
-          <span class="vdrop-label">Rejected</span>
-          <div class="vdrop-line" style="height:12px"></div>
-          <div class="vdrop-arrowhead"></div>
+      <div style="display:flex;align-items:flex-start;gap:24px">
+
+        <!-- PENDING branch: needs to verify identity, then under review -->
+        <div style="display:flex;flex-direction:column;align-items:center;width:148px">
+          <div class="vdrop">
+            <div class="vdrop-line" style="height:16px"></div>
+            <span class="vdrop-label">Pending</span>
+            <div class="vdrop-line" style="height:12px"></div>
+            <div class="vdrop-arrowhead"></div>
+          </div>
+
+          <a class="node" href="home/homepage.html?scenario=new-user" target="_blank">
+            <div class="node-top"><span class="dot dot-orange"></span></div>
+            <p class="node-name">Verify identity</p>
+            <p class="node-sub">Uploads additional ID docs</p>
+            <span class="node-preview">Preview ↗</span>
+          </a>
+
+          <div class="vdrop">
+            <div class="vdrop-line" style="height:14px"></div>
+            <span class="vdrop-label">Docs submitted</span>
+            <div class="vdrop-line" style="height:10px"></div>
+            <div class="vdrop-arrowhead"></div>
+          </div>
+
+          <a class="node" href="home/homepage.html?scenario=docs-submitted" target="_blank">
+            <div class="node-top"><span class="dot dot-blue"></span></div>
+            <p class="node-name">Under review</p>
+            <p class="node-sub">1–2 business days</p>
+            <span class="node-preview">Preview ↗</span>
+          </a>
+
+          <p class="flow-note" style="text-align:center;margin-top:10px">↑ Re-enters review queue</p>
         </div>
 
-        <a class="node" href="home/homepage.html?scenario=account-rejected" target="_blank">
-          <div class="node-top"><span class="dot dot-red"></span></div>
-          <p class="node-name">Unable to approve</p>
-          <p class="node-sub">Error state · Dismissable card</p>
-          <span class="node-preview">Preview ↗</span>
-        </a>
+        <!-- REJECTED branch: unable to approve, contact support -->
+        <div style="display:flex;flex-direction:column;align-items:center;width:148px">
+          <div class="vdrop">
+            <div class="vdrop-line" style="height:16px"></div>
+            <span class="vdrop-label">Rejected</span>
+            <div class="vdrop-line" style="height:12px"></div>
+            <div class="vdrop-arrowhead"></div>
+          </div>
 
-        <div class="vdrop">
-          <div class="vdrop-line" style="height:16px"></div>
-          <span class="vdrop-label">Contacts support</span>
-          <div class="vdrop-line" style="height:12px"></div>
-          <div class="vdrop-arrowhead"></div>
+          <a class="node" href="home/homepage.html?scenario=account-rejected" target="_blank">
+            <div class="node-top"><span class="dot dot-red"></span></div>
+            <p class="node-name">Unable to approve</p>
+            <p class="node-sub">Dismissable card · Contact support</p>
+            <span class="node-preview">Preview ↗</span>
+          </a>
         </div>
 
-        <div class="node ghost">
-          <div class="node-top"><span class="dot dot-gray"></span></div>
-          <p class="node-name">Manual review</p>
-          <p class="node-sub">Out of scope</p>
-        </div>
       </div>
-
     </div>
+
   </div><!-- end path A -->
 
 
