@@ -204,40 +204,77 @@ main{flex:1;padding:var(--spacing-5xl) var(--spacing-3xl)}
   line-height:var(--line-height-text-sm);letter-spacing:-0.2px;
   color:var(--color-fg-tertiary-600);
 }
-/* ─── Bank connect box ───────────────────────────────────────────── */
-.bank-connect-box{
-  background:var(--color-bg-secondary);
-  border:1.5px dashed rgba(10,13,18,0.12);
+/* ─── Bank row (connected state) ─────────────────────────────────── */
+.bank-row-box{
+  background:var(--color-bg-tertiary,#f5f5f5);
   border-radius:var(--radius-xl);
-  padding:17.5px;
+  padding:var(--spacing-xl);
   width:100%;
 }
-.bank-connect-inner{
-  display:flex;align-items:center;gap:var(--spacing-lg);
-}
-.bank-connect-icon{
-  flex-shrink:0;
-  width:36px;height:36px;
+.bank-row-inner{display:flex;align-items:center;gap:var(--spacing-lg)}
+.bank-logo-circle{
+  flex-shrink:0;width:36px;height:36px;
   border-radius:var(--radius-full);
-  background:rgba(24,29,39,0.1);
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
+  background:rgba(17,122,202,0.1);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
 }
-.bank-connect-icon img{width:20px;height:20px;display:block}
-.bank-connect-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.bank-connect-title{
+.bank-logo-circle img{width:20px;height:20px;display:block}
+.bank-row-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.bank-row-name-line{display:flex;align-items:center;gap:4px}
+.bank-row-name{
   font-size:var(--font-size-text-sm);font-weight:500;
   line-height:var(--line-height-text-sm);
   color:var(--color-fg-primary-900);
 }
-.bank-connect-sub{
+.bank-row-dot{width:6px;height:6px;border-radius:var(--radius-full);background:#12b76a;flex-shrink:0}
+.bank-row-sub{
   font-size:var(--font-size-text-xs);font-weight:400;
   line-height:var(--line-height-text-xs);
   color:var(--color-fg-tertiary-600);
 }
-.btn-plaid{
-  flex-shrink:0;
-  display:inline-flex;align-items:center;gap:var(--spacing-sm);
+.bank-row-menu-wrap{position:relative;flex-shrink:0}
+.bank-row-menu{
+  width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius-md);
+  color:var(--color-fg-quaternary-400);cursor:pointer;
+  transition:background .1s ease;border:none;background:none;
+  font-family:inherit;
+}
+.bank-row-menu:hover{background:rgba(0,0,0,0.06)}
+.bank-row-menu svg{width:18px;height:18px}
+.bank-row-dropdown{
+  position:absolute;top:calc(100% + 6px);right:0;
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-xl);
+  padding:var(--spacing-xs);
+  min-width:190px;
+  box-shadow:0 8px 24px rgba(10,13,18,0.12);
+  z-index:50;
+  opacity:0;pointer-events:none;transform:translateY(-4px) scale(0.97);
+  transform-origin:top right;
+  transition:opacity .13s ease,transform .13s cubic-bezier(0.16,1,0.3,1);
+}
+.bank-row-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0) scale(1)}
+.dd-item{
+  display:flex;align-items:center;gap:var(--spacing-md);
+  padding:var(--spacing-md) var(--spacing-lg);
+  border-radius:var(--radius-md);
+  font-size:var(--font-size-text-sm);font-weight:400;
+  line-height:var(--line-height-text-sm);
+  color:var(--color-fg-primary-900);
+  cursor:pointer;text-decoration:none;
+  transition:background .1s ease;
+}
+.dd-item:hover{background:rgba(0,0,0,0.04)}
+.dd-item svg{width:16px;height:16px;flex-shrink:0;color:var(--color-fg-tertiary-600)}
+.dd-item.danger{color:#98443d}
+.dd-item.danger svg{color:#98443d}
+.dd-sep{height:1px;background:var(--color-border-secondary);margin:var(--spacing-xs) 0}
+
+.btn-action{
+  display:inline-flex;align-items:center;justify-content:center;
   padding:10px var(--spacing-xl);
   background:var(--color-fg-primary-900);
   border:2px solid rgba(255,255,255,0.12);
@@ -246,12 +283,11 @@ main{flex:1;padding:var(--spacing-5xl) var(--spacing-3xl)}
   font-family:var(--font-family-body);
   font-size:var(--font-size-text-md);font-weight:500;
   line-height:var(--line-height-text-md);letter-spacing:0;
-  text-decoration:none;cursor:pointer;white-space:nowrap;
-  transition:background 150ms ease,transform 120ms ease;
+  text-decoration:none;cursor:pointer;align-self:flex-start;
+  transition:background 150ms ease,transform 120ms ease;white-space:nowrap;
 }
-.btn-plaid:hover{background:var(--color-fg-secondary-hover)}
-.btn-plaid:active{transform:scale(0.99)}
-.btn-plaid img{height:16px;width:auto;display:block}
+.btn-action:hover{background:var(--color-fg-secondary-hover)}
+.btn-action:active{transform:scale(0.99)}
 
 /* ─── Step 3: Future ─────────────────────────────────────────────── */
 .step-future{display:flex;align-items:center;gap:var(--spacing-xl)}
@@ -393,22 +429,47 @@ main{flex:1;padding:var(--spacing-5xl) var(--spacing-3xl)}
               <h3 class="step-title">Make your first deposit</h3>
               <p class="step-desc">Fund your account and start investing. Connect your bank account to transfer funds securely.</p>
             </div>
-            <!-- Bank connect box -->
-            <div class="bank-connect-box">
-              <div class="bank-connect-inner">
-                <div class="bank-connect-icon" aria-hidden="true">
-                  <img src="../assets/illustrations/bank-icon.svg" alt="">
+            <!-- Bank connected row -->
+            <div class="bank-row-box">
+              <div class="bank-row-inner">
+                <div class="bank-logo-circle" aria-hidden="true">
+                  <img src="../assets/illustrations/bank-chase.png" alt="Chase">
                 </div>
-                <div class="bank-connect-text">
-                  <span class="bank-connect-title">No bank account connected</span>
-                  <span class="bank-connect-sub">Securely connect via Plaid</span>
+                <div class="bank-row-info">
+                  <div class="bank-row-name-line">
+                    <span class="bank-row-name">Chase</span>
+                    <span class="bank-row-dot"></span>
+                  </div>
+                  <span class="bank-row-sub">Checking · ••1234</span>
                 </div>
-                <a class="btn-plaid" href="link-bank.html">
-                  Connect with
-                  <img src="../assets/illustrations/plaid-logo-white.png" alt="Plaid">
-                </a>
+                <div class="bank-row-menu-wrap">
+                  <button class="bank-row-menu" id="bankRowMenuBtn" aria-label="Account options" aria-expanded="false" aria-haspopup="menu">
+                    <!-- Phosphor DotsThreeVertical Regular -->
+                    <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                      <path d="M112,60a16,16,0,1,1,16,16A16,16,0,0,1,112,60Zm16,52a16,16,0,1,0,16,16A16,16,0,0,0,128,112Zm0,68a16,16,0,1,0,16,16A16,16,0,0,0,128,180Z"/>
+                    </svg>
+                  </button>
+                  <div class="bank-row-dropdown" id="bankRowDropdown" role="menu">
+                    <a class="dd-item" href="link-bank.html" role="menuitem">
+                      <!-- Phosphor ArrowsClockwise Regular -->
+                      <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                        <path d="M240,56v48a8,8,0,0,1-8,8H184a8,8,0,0,1,0-16h28.69L195.88,79.06a88,88,0,1,0,2.22,126.51,8,8,0,1,1,11.09,11.52A104,104,0,1,1,195.73,52.63L216,72V56a8,8,0,1,1,16,0Z"/>
+                      </svg>
+                      Change account
+                    </a>
+                    <div class="dd-sep" role="separator"></div>
+                    <button class="dd-item danger" role="menuitem">
+                      <!-- Phosphor Trash Regular -->
+                      <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                        <path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"/>
+                      </svg>
+                      Disconnect bank
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
+            <a class="btn-action" href="fund-deposit.html">Make deposit</a>
           </div>
         </div>
 
@@ -468,6 +529,18 @@ main{flex:1;padding:var(--spacing-5xl) var(--spacing-3xl)}
 
   </div><!-- /content -->
 </main>
+
+<script>
+(function(){
+  const btn = document.getElementById('bankRowMenuBtn');
+  const dropdown = document.getElementById('bankRowDropdown');
+  if(!btn || !dropdown) return;
+  function close(){ dropdown.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+  btn.addEventListener('click', function(e){ e.stopPropagation(); const isOpen = dropdown.classList.toggle('open'); btn.setAttribute('aria-expanded', isOpen); });
+  document.addEventListener('click', close);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+})();
+</script>
 
 </body>
 </html>

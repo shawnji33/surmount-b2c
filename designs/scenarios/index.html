@@ -115,6 +115,32 @@ html,body{min-height:100vh;background:var(--color-bg);font-family:var(--font-bod
 .prog-seg.active-blue{background:linear-gradient(to right,#3757be,#406ad0);}
 .prog-seg.active-green{background:linear-gradient(to right,#316434,#4d9a51);}
 
+/* Empty state card — tinted bg preview */
+.scenario-card.empty-state{
+  background:linear-gradient(135deg,#edf4f8 0%,#f0e8f6 100%);
+  border-color:rgba(0,0,0,0.05);
+  grid-column:1 / -1; /* full width */
+}
+.scenario-card.empty-state:hover{
+  border-color:rgba(0,0,0,0.09);
+}
+.scenario-tag.zero{background:#f5f5f5;color:#535861;border-color:rgba(0,0,0,0.08);}
+.scenario-tag.error{background:#fdf2f2;color:#98443d;border-color:rgba(152,68,61,0.15);}
+
+/* Broker chip mini-preview */
+.broker-chip-strip{
+  display:flex;align-items:center;gap:6px;margin-top:2px;
+}
+.bcs-avatar{
+  width:20px;height:20px;border-radius:50%;
+  border:0.5px solid rgba(0,0,0,0.08);overflow:hidden;flex-shrink:0;
+}
+.bcs-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.bcs-more{
+  font-size:11px;font-weight:500;color:rgba(10,13,18,0.4);
+  white-space:nowrap;
+}
+
 /* ── Info box ── */
 .info-box{
   background:var(--color-bg-card);
@@ -146,6 +172,31 @@ html,body{min-height:100vh;background:var(--color-bg);font-family:var(--font-bod
   <h1 class="page-heading">Onboarding scenarios</h1>
   <p class="page-sub">Each card below previews a different user state on the homepage. The source of truth is always <strong>home/homepage.html</strong> — these scenarios just patch the onboarding banner via <code>?scenario=</code> URL param. No duplicate files.</p>
 
+  <!-- Empty state section -->
+  <div class="section">
+    <p class="section-label">Pre-account — no accounts connected</p>
+    <div class="scenario-grid">
+
+      <a class="scenario-card empty-state" href="../home/homepage-empty.html">
+        <div class="scenario-card-top">
+          <span class="scenario-tag zero">Empty state</span>
+          <svg class="scenario-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+        </div>
+        <p class="scenario-name">No accounts connected — zero state dashboard</p>
+        <p class="scenario-desc">Brand-new user who hasn't created a Surmount account or linked any broker. Portfolio and Active strategies sections show empty state CTAs. No dividend card or verify banner in the sidebar.</p>
+        <div class="broker-chip-strip">
+          <div class="bcs-avatar"><img src="../assets/brokers/surmount.png" alt="Surmount"></div>
+          <div class="bcs-avatar"><img src="../assets/brokers/coinbase.png" alt="Coinbase"></div>
+          <div class="bcs-avatar"><img src="../assets/brokers/robinhood.png" alt="Robinhood"></div>
+          <div class="bcs-avatar"><img src="../assets/brokers/kraken.png" alt="Kraken"></div>
+          <div class="bcs-avatar"><img src="../assets/brokers/ibkr.png" alt="IBKR"></div>
+          <span class="bcs-more">+10 brokers supported</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
   <div class="section">
     <p class="section-label">Investing account — onboarding states</p>
     <div class="scenario-grid">
@@ -161,19 +212,17 @@ html,body{min-height:100vh;background:var(--color-bg);font-family:var(--font-bod
           <div class="prog-seg active-orange"></div>
           <div class="prog-seg"></div>
           <div class="prog-seg"></div>
-          <div class="prog-seg"></div>
         </div>
       </a>
 
       <a class="scenario-card" href="../home/homepage.html?scenario=docs-submitted">
         <div class="scenario-card-top">
-          <span class="scenario-tag">Onboarding · Step 2</span>
+          <span class="scenario-tag">Onboarding · Step 1</span>
           <svg class="scenario-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
         </div>
         <p class="scenario-name">Documents submitted — under review</p>
         <p class="scenario-desc">User uploaded their identity documents and is waiting for the compliance team to review.</p>
         <div class="scenario-progress">
-          <div class="prog-seg active-blue"></div>
           <div class="prog-seg active-blue"></div>
           <div class="prog-seg"></div>
           <div class="prog-seg"></div>
@@ -182,13 +231,12 @@ html,body{min-height:100vh;background:var(--color-bg);font-family:var(--font-bod
 
       <a class="scenario-card" href="../home/homepage.html?scenario=identity-approved">
         <div class="scenario-card-top">
-          <span class="scenario-tag">Onboarding · Step 3</span>
+          <span class="scenario-tag">Onboarding · Step 2</span>
           <svg class="scenario-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
         </div>
         <p class="scenario-name">Identity approved — make first deposit</p>
         <p class="scenario-desc">Identity verified. Next step is adding funds to the investing account before trading.</p>
         <div class="scenario-progress">
-          <div class="prog-seg active-blue"></div>
           <div class="prog-seg active-blue"></div>
           <div class="prog-seg active-blue"></div>
           <div class="prog-seg"></div>
@@ -197,13 +245,12 @@ html,body{min-height:100vh;background:var(--color-bg);font-family:var(--font-bod
 
       <a class="scenario-card" href="../home/homepage.html?scenario=needs-strategy">
         <div class="scenario-card-top">
-          <span class="scenario-tag">Onboarding · Step 4</span>
+          <span class="scenario-tag">Onboarding · Step 3</span>
           <svg class="scenario-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
         </div>
         <p class="scenario-name">Funded — pick first strategy</p>
         <p class="scenario-desc">Account funded. User needs to pick their first investment strategy to activate trading.</p>
         <div class="scenario-progress">
-          <div class="prog-seg active-blue"></div>
           <div class="prog-seg active-blue"></div>
           <div class="prog-seg active-blue"></div>
           <div class="prog-seg active-blue"></div>
@@ -221,7 +268,20 @@ html,body{min-height:100vh;background:var(--color-bg);font-family:var(--font-bod
           <div class="prog-seg active-green"></div>
           <div class="prog-seg active-green"></div>
           <div class="prog-seg active-green"></div>
-          <div class="prog-seg active-green"></div>
+        </div>
+      </a>
+
+      <a class="scenario-card" href="../home/homepage.html?scenario=account-rejected">
+        <div class="scenario-card-top">
+          <span class="scenario-tag error">Onboarding · Error</span>
+          <svg class="scenario-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+        </div>
+        <p class="scenario-name">Application rejected — unable to approve</p>
+        <p class="scenario-desc">System was unable to approve the user's application. Dismissable rejection card with support contact info replaces the onboarding card.</p>
+        <div class="scenario-progress">
+          <div class="prog-seg" style="background:rgba(152,68,61,0.18)"></div>
+          <div class="prog-seg" style="background:rgba(152,68,61,0.18)"></div>
+          <div class="prog-seg" style="background:rgba(152,68,61,0.18)"></div>
         </div>
       </a>
 

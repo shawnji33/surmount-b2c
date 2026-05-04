@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onboarding user flow — Surmount B2C</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+a{color:inherit;text-decoration:none}
+
+:root{
+  --bg:#f7f8fa;
+  --card:#ffffff;
+  --border:rgba(0,0,0,0.09);
+  --border-hover:rgba(0,0,0,0.18);
+  --fg:#1a1f2e;
+  --fg2:rgba(10,13,18,0.5);
+  --fg3:rgba(10,13,18,0.32);
+  --line:#d0d5de;
+  --font:'Geist',system-ui,sans-serif;
+  --font-d:'Inter',sans-serif;
+}
+
+html,body{
+  min-height:100vh;background:var(--bg);
+  font-family:var(--font);color:var(--fg);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* topbar */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 40px;background:var(--card);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+.tb-left{display:flex;align-items:center;gap:10px}
+.tb-eye{font-size:12px;color:var(--fg3)}
+.tb-sep{width:1px;height:14px;background:var(--border)}
+.tb-title{font-size:14px;font-weight:500;letter-spacing:-0.2px}
+.tb-back{font-size:13px;color:var(--fg2);padding:6px 12px;border:1px solid var(--border);border-radius:8px}
+.tb-back:hover{background:var(--bg)}
+
+/* canvas */
+.canvas{padding:48px 52px 100px;overflow-x:auto}
+.page-title{font-family:var(--font-d);font-size:20px;font-weight:500;letter-spacing:-0.4px;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--fg2);letter-spacing:-0.15px;margin-bottom:44px;line-height:19px}
+
+/* track label */
+.track-label{
+  font-size:11px;font-weight:500;color:var(--fg3);
+  letter-spacing:0.04em;
+  margin-bottom:14px;
+}
+
+/* ── NODE ── */
+.node{
+  flex-shrink:0;
+  width:148px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:13px 14px 14px;
+  display:flex;flex-direction:column;gap:7px;
+  cursor:pointer;
+  text-decoration:none;color:inherit;
+  transition:border-color .13s, box-shadow .13s;
+  position:relative;
+}
+.node:hover{
+  border-color:var(--border-hover);
+  box-shadow:0 3px 12px rgba(10,13,18,0.08);
+}
+.node:hover .node-preview{opacity:1}
+
+.node-top{display:flex;align-items:center;gap:7px}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot-gray  {background:#b0b5bf}
+.dot-orange{background:#e27444}
+.dot-blue  {background:#4f79d4}
+.dot-green {background:#5aaa5e}
+.dot-red   {background:#c26460}
+
+.node-name{
+  font-size:13px;font-weight:500;letter-spacing:-0.2px;
+  line-height:17px;color:var(--fg);
+}
+.node-sub{
+  font-size:11px;color:var(--fg2);letter-spacing:-0.1px;
+  line-height:15px;
+}
+.node-preview{
+  font-size:11px;color:#406ad0;
+  opacity:0;transition:opacity .13s;
+  margin-top:1px;
+}
+
+/* ghost node (out of scope) */
+.node.ghost{
+  border-style:dashed;border-color:rgba(0,0,0,0.1);
+  background:transparent;opacity:0.5;pointer-events:none;
+}
+
+/* ── HORIZONTAL CONNECTOR ── */
+.hcon{
+  flex-shrink:0;
+  display:flex;flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  width:116px;
+  padding-top:2px;
+}
+.hcon-label{
+  font-size:11px;font-weight:500;
+  color:#535861;
+  letter-spacing:-0.15px;
+  white-space:nowrap;line-height:1;
+  background:#fff;
+  padding:3px 9px;
+  border:1px solid rgba(0,0,0,0.11);
+  border-radius:9999px;
+  box-shadow:0 1px 3px rgba(10,13,18,0.05);
+}
+.hcon-line-wrap{
+  display:flex;align-items:center;width:100%;
+}
+.hcon-line{flex:1;height:1.5px;background:var(--line)}
+.hcon-arrowhead{
+  width:0;height:0;
+  border-top:5px solid transparent;
+  border-bottom:5px solid transparent;
+  border-left:7px solid var(--line);
+  flex-shrink:0;
+}
+
+/* ── HORIZONTAL TRACK ── */
+.track{
+  display:flex;align-items:center;
+  gap:0;
+  min-width:max-content;
+}
+
+/* ── VERTICAL DROP (for rejection branch) ── */
+.vdrop{
+  display:flex;flex-direction:column;align-items:center;
+  flex-shrink:0;
+}
+.vdrop-line{width:1.5px;background:var(--line)}
+.vdrop-label{
+  font-size:11px;font-weight:500;
+  color:#535861;
+  letter-spacing:-0.15px;
+  white-space:nowrap;
+  margin:6px 0;
+  background:#fff;
+  padding:3px 9px;
+  border:1px solid rgba(0,0,0,0.11);
+  border-radius:9999px;
+  box-shadow:0 1px 3px rgba(10,13,18,0.05);
+}
+.vdrop-arrowhead{
+  width:0;height:0;
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-top:7px solid var(--line);
+  flex-shrink:0;
+}
+
+/* ── DECISION DIAMOND ── */
+.diamond{
+  flex-shrink:0;
+  width:40px;height:40px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:4px;
+  transform:rotate(45deg);
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── FORK (entry splits to two paths) ── */
+.fork-wrap{
+  display:flex;flex-direction:column;
+  gap:0;
+}
+.fork-entry{
+  display:flex;align-items:center;gap:0;
+  min-width:max-content;
+}
+
+/* Vertical bridge connecting the two path start-points */
+.fork-bridge{
+  position:relative;
+  margin-left:74px; /* aligns with end of first node + half connector */
+}
+.fork-bridge-line{
+  width:1.5px;background:var(--line);
+}
+.fork-branch-row{
+  display:flex;align-items:flex-start;gap:0;
+}
+.fork-branch-arm{
+  display:flex;align-items:center;
+  flex-shrink:0;
+}
+.fork-branch-arm-line{height:1.5px;background:var(--line)}
+.fork-branch-arm-arrow{
+  width:0;height:0;
+  border-top:4.5px solid transparent;
+  border-bottom:4.5px solid transparent;
+  border-left:6px solid var(--line);
+  flex-shrink:0;
+}
+.fork-branch-label{
+  font-size:10px;color:var(--fg3);
+  white-space:nowrap;margin-bottom:5px;
+}
+
+/* ── DIVIDER ── */
+.section-div{
+  margin:48px 0 28px;
+  border-top:1px solid var(--border);
+  padding-top:28px;
+}
+
+/* ── ANNOTATION inside flow ── */
+.flow-note{
+  font-size:11px;color:var(--fg3);letter-spacing:-0.1px;
+  margin-top:8px;margin-left:2px;
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tb-left">
+    <span class="tb-eye">Surmount B2C</span>
+    <div class="tb-sep"></div>
+    <span class="tb-title">Onboarding user flow</span>
+  </div>
+  <a class="tb-back" href="index.html">← Design hub</a>
+</header>
+
+<main class="canvas">
+  <h1 class="page-title">Onboarding user flow</h1>
+  <p class="page-sub">Hover any node to preview. Two entry paths — investing account (full KYC) and linked broker (no KYC).</p>
+
+  <!-- ══════════════════════════════════
+       PATH A — Investing account (KYC)
+  ══════════════════════════════════ -->
+  <p class="track-label">Path A — Create a Surmount investing account</p>
+
+  <!-- ROW 1: main happy path -->
+  <div style="display:flex;flex-direction:column;align-items:flex-start">
+
+    <div class="track">
+
+      <!-- 1. Entry -->
+      <a class="node" href="home/homepage-empty.html" target="_blank">
+        <div class="node-top"><span class="dot dot-gray"></span></div>
+        <p class="node-name">User lands</p>
+        <p class="node-sub">Empty dashboard, no account</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+      <div class="hcon">
+        <span class="hcon-label">Creates account</span>
+        <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
+      </div>
+
+      <!-- 2. Verify identity -->
+      <a class="node" href="home/homepage.html?scenario=new-user" target="_blank">
+        <div class="node-top"><span class="dot dot-orange"></span></div>
+        <p class="node-name">Verify identity</p>
+        <p class="node-sub">Step 1 of 3 · Uploads ID docs</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+      <div class="hcon">
+        <span class="hcon-label">Docs submitted</span>
+        <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
+      </div>
+
+      <!-- 3. Under review -->
+      <a class="node" href="home/homepage.html?scenario=docs-submitted" target="_blank">
+        <div class="node-top"><span class="dot dot-blue"></span></div>
+        <p class="node-name">Under review</p>
+        <p class="node-sub">Step 1 of 3 · 1–2 business days</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+      <!-- Decision point -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:116px;gap:6px;padding-top:2px">
+        <span class="hcon-label">Review outcome</span>
+        <div style="display:flex;align-items:center;width:100%">
+          <div class="hcon-line" style="flex:1"></div>
+          <div class="diamond"></div>
+          <div class="hcon-line" style="flex:1"></div>
+          <div class="hcon-arrowhead"></div>
+        </div>
+      </div>
+
+      <!-- 4. Deposit -->
+      <a class="node" href="home/homepage.html?scenario=identity-approved" target="_blank">
+        <div class="node-top"><span class="dot dot-blue"></span></div>
+        <p class="node-name">Make deposit</p>
+        <p class="node-sub">Step 2 of 3 · Links bank account</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+      <div class="hcon">
+        <span class="hcon-label">Deposit confirmed</span>
+        <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
+      </div>
+
+      <!-- 5. Pick strategy -->
+      <a class="node" href="home/homepage.html?scenario=needs-strategy" target="_blank">
+        <div class="node-top"><span class="dot dot-blue"></span></div>
+        <p class="node-name">Pick strategy</p>
+        <p class="node-sub">Step 3 of 3 · Activates trading</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+      <div class="hcon">
+        <span class="hcon-label">Strategy activated</span>
+        <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
+      </div>
+
+      <!-- 6. Active -->
+      <a class="node" href="home/homepage.html?scenario=account-ready" target="_blank">
+        <div class="node-top"><span class="dot dot-green"></span></div>
+        <p class="node-name">Active dashboard</p>
+        <p class="node-sub">Onboarding complete</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+    </div><!-- end track -->
+
+    <!-- Rejection branch drops down from the diamond -->
+    <!-- Positioned to align under the diamond (approx 3 nodes + 3 connectors in) -->
+    <div style="display:flex;align-items:flex-start;gap:0;margin-top:0">
+
+      <!-- Spacer to align under the diamond center -->
+      <!-- 3 nodes×148 + 2 connectors×116 + 58(half-connector) = 444+232+58 = 734px -->
+      <div style="width:734px;flex-shrink:0"></div>
+
+      <!-- Drop -->
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div class="vdrop">
+          <div class="vdrop-line" style="height:16px"></div>
+          <span class="vdrop-label">Rejected</span>
+          <div class="vdrop-line" style="height:12px"></div>
+          <div class="vdrop-arrowhead"></div>
+        </div>
+
+        <a class="node" href="home/homepage.html?scenario=account-rejected" target="_blank">
+          <div class="node-top"><span class="dot dot-red"></span></div>
+          <p class="node-name">Unable to approve</p>
+          <p class="node-sub">Error state · Dismissable card</p>
+          <span class="node-preview">Preview ↗</span>
+        </a>
+
+        <div class="vdrop">
+          <div class="vdrop-line" style="height:16px"></div>
+          <span class="vdrop-label">Contacts support</span>
+          <div class="vdrop-line" style="height:12px"></div>
+          <div class="vdrop-arrowhead"></div>
+        </div>
+
+        <div class="node ghost">
+          <div class="node-top"><span class="dot dot-gray"></span></div>
+          <p class="node-name">Manual review</p>
+          <p class="node-sub">Out of scope</p>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- end path A -->
+
+
+  <!-- ══════════════════════════════════
+       PATH B — Link existing broker
+  ══════════════════════════════════ -->
+  <div class="section-div">
+    <p class="track-label">Path B — Link an existing broker account</p>
+
+    <div class="track">
+
+      <a class="node" href="home/homepage-empty.html" target="_blank">
+        <div class="node-top"><span class="dot dot-gray"></span></div>
+        <p class="node-name">User lands</p>
+        <p class="node-sub">Empty dashboard, no account</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+      <div class="hcon">
+        <span class="hcon-label">Connects broker</span>
+        <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
+      </div>
+
+      <a class="node" href="home/homepage.html?scenario=needs-strategy" target="_blank">
+        <div class="node-top"><span class="dot dot-blue"></span></div>
+        <p class="node-name">Pick strategy</p>
+        <p class="node-sub">No KYC · Goes straight here</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+      <div class="hcon">
+        <span class="hcon-label">Strategy activated</span>
+        <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
+      </div>
+
+      <a class="node" href="home/homepage.html?scenario=account-ready" target="_blank">
+        <div class="node-top"><span class="dot dot-green"></span></div>
+        <p class="node-name">Active dashboard</p>
+        <p class="node-sub">Onboarding complete</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════
+       STRATEGY SELECTION
+  ══════════════════════════════════ -->
+  <div class="section-div">
+    <p class="track-label">Strategy selection — both paths</p>
+
+    <div class="track">
+
+      <a class="node" href="onboarding/strategy-quiz.html" target="_blank">
+        <div class="node-top"><span class="dot dot-blue"></span></div>
+        <p class="node-name">Strategy quiz</p>
+        <p class="node-sub">5 questions · Goals + risk</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+      <div class="hcon">
+        <span class="hcon-label">Quiz complete</span>
+        <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
+      </div>
+
+      <a class="node" href="onboarding/strategy-results.html" target="_blank">
+        <div class="node-top"><span class="dot dot-blue"></span></div>
+        <p class="node-name">Results</p>
+        <p class="node-sub">AI-matched strategies</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+      <div class="hcon">
+        <span class="hcon-label">Selects a strategy</span>
+        <div class="hcon-line-wrap"><div class="hcon-line"></div><div class="hcon-arrowhead"></div></div>
+      </div>
+
+      <a class="node" href="home/strategy-detail.html" target="_blank">
+        <div class="node-top"><span class="dot dot-green"></span></div>
+        <p class="node-name">Strategy detail</p>
+        <p class="node-sub">Performance · One-tap activate</p>
+        <span class="node-preview">Preview ↗</span>
+      </a>
+
+    </div>
+  </div>
+
+</main>
+</body>
+</html>

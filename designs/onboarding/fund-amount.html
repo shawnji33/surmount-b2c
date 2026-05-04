@@ -244,6 +244,95 @@ main{
 .starts-label{font-size:14px;font-weight:400;color:var(--color-fg-secondary-700);line-height:20px}
 .starts-row svg{width:16px;height:16px;stroke:rgba(10,13,18,0.4);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;cursor:pointer}
 
+/* ─── Frequency dropdown ─────────────────────────────────────────────── */
+.freq-wrap{position:relative}
+.freq-dropdown{
+  position:absolute;top:calc(100% + 6px);right:0;
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-xl);
+  padding:var(--spacing-xs);
+  min-width:150px;
+  box-shadow:0 8px 24px rgba(10,13,18,0.12);
+  z-index:50;
+  opacity:0;pointer-events:none;transform:translateY(-4px) scale(0.97);
+  transform-origin:top right;
+  transition:opacity .13s ease,transform .13s cubic-bezier(0.16,1,0.3,1);
+}
+.freq-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0) scale(1)}
+.freq-option{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-xl);
+  padding:var(--spacing-md) var(--spacing-lg);
+  border-radius:var(--radius-md);
+  font-size:var(--font-size-text-sm);font-weight:400;
+  line-height:var(--line-height-text-sm);
+  color:var(--color-fg-primary-900);
+  cursor:pointer;background:none;border:none;
+  font-family:inherit;width:100%;text-align:left;
+  transition:background .1s ease;
+}
+.freq-option:hover{background:rgba(0,0,0,0.04)}
+.freq-option.selected{font-weight:500}
+.freq-check{width:14px;height:14px;flex-shrink:0;color:var(--color-fg-primary-900);visibility:hidden}
+.freq-option.selected .freq-check{visibility:visible}
+
+/* ─── Starts date picker ─────────────────────────────────────────────── */
+.date-picker-wrap{position:relative;display:inline-flex}
+.starts-trigger{
+  display:inline-flex;align-items:center;gap:var(--spacing-sm);
+  background:none;border:none;padding:0;cursor:pointer;font-family:inherit;
+}
+.starts-trigger .starts-label{
+  font-size:14px;font-weight:400;color:var(--color-fg-secondary-700);line-height:20px;
+  transition:color .1s;
+}
+.starts-trigger:hover .starts-label{color:var(--color-fg-primary-900)}
+.starts-trigger svg{width:16px;height:16px;stroke:rgba(10,13,18,0.35);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+.dp-popover{
+  position:fixed;left:0;top:0; /* overridden by JS on open */
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-xl);
+  padding:var(--spacing-xl);
+  width:296px;
+  box-shadow:0 8px 32px rgba(10,13,18,0.14);
+  z-index:200;
+  opacity:0;pointer-events:none;transform:translateY(-4px) scale(0.97);
+  transform-origin:top right;
+  transition:opacity .15s ease,transform .15s cubic-bezier(0.16,1,0.3,1);
+}
+.dp-popover.open{opacity:1;pointer-events:all;transform:translateY(0) scale(1)}
+.dp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--spacing-lg)}
+.dp-month-label{font-size:var(--font-size-text-sm);font-weight:500;line-height:var(--line-height-text-sm);color:var(--color-fg-primary-900)}
+.dp-nav{
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius-md);color:var(--color-fg-tertiary-600);
+  cursor:pointer;transition:background .1s;border:none;background:none;font-family:inherit;
+}
+.dp-nav:hover{background:rgba(0,0,0,0.06)}
+.dp-nav svg{width:16px;height:16px}
+.dp-weekdays{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:var(--spacing-xs)}
+.dp-weekday{text-align:center;font-size:11px;font-weight:500;color:var(--color-fg-quaternary-400);padding:var(--spacing-xs) 0}
+.dp-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.dp-day{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius-md);font-size:13px;font-weight:400;
+  color:var(--color-fg-primary-900);cursor:pointer;
+  transition:background .08s;border:none;background:none;
+  font-family:var(--font-family-body);position:relative;
+}
+.dp-day:hover:not([disabled]):not(.dp-empty):not(.dp-selected){background:rgba(0,0,0,0.06)}
+.dp-day.dp-today{font-weight:500}
+.dp-day.dp-today:not(.dp-selected)::after{
+  content:'';display:block;width:3px;height:3px;
+  background:var(--color-fg-primary-900);border-radius:50%;
+  position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+}
+.dp-day.dp-selected{background:var(--color-fg-primary-900);color:#fff;font-weight:500}
+.dp-day[disabled]{color:var(--color-fg-disabled);cursor:default}
+.dp-day.dp-empty{pointer-events:none}
+
 /* ─── Pay with ───────────────────────────────────────────────────────── */
 .pay-with{display:flex;flex-direction:column;gap:10px}
 .pay-with-label{font-size:14px;font-weight:500;color:var(--color-fg-quaternary-400);line-height:20px}
@@ -393,14 +482,35 @@ main{
             <span class="toggle-knob"></span>
           </button>
         </div>
-        <button class="freq-pill" id="freq-pill" type="button">
-          <span>Monthly</span>
-          <svg viewBox="0 0 14 14"><polyline points="3 5 7 9 11 5"/></svg>
-        </button>
+        <div class="freq-wrap" id="freq-wrap">
+          <button class="freq-pill" id="freq-pill" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span id="freq-label">Monthly</span>
+            <svg viewBox="0 0 14 14"><polyline points="3 5 7 9 11 5"/></svg>
+          </button>
+          <div class="freq-dropdown" id="freq-dropdown" role="listbox">
+            <button class="freq-option selected" data-value="Monthly" type="button" role="option">
+              Monthly
+              <svg class="freq-check" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
+            </button>
+            <button class="freq-option" data-value="Bi-weekly" type="button" role="option">
+              Bi-weekly
+              <svg class="freq-check" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
+            </button>
+            <button class="freq-option" data-value="Weekly" type="button" role="option">
+              Weekly
+              <svg class="freq-check" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
       <div class="starts-row" id="starts-row">
-        <span class="starts-label">Starts today</span>
-        <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        <div class="date-picker-wrap">
+          <button class="starts-trigger" id="starts-trigger" type="button">
+            <span class="starts-label" id="starts-label">Starts today</span>
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <div class="dp-popover" id="dp-popover"></div>
+        </div>
       </div>
     </div>
 
@@ -512,6 +622,109 @@ main{
     toggleEl.setAttribute('aria-pressed', String(repeatOn));
     freqPill.classList.toggle('visible', repeatOn);
     startsRow.classList.toggle('visible', repeatOn);
+  });
+
+  /* ─── Frequency dropdown ─── */
+  const freqDropdown = document.getElementById('freq-dropdown');
+  const freqLabel    = document.getElementById('freq-label');
+  if (freqPill && freqDropdown) {
+    freqPill.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const open = freqDropdown.classList.toggle('open');
+      freqPill.setAttribute('aria-expanded', open);
+    });
+    freqDropdown.querySelectorAll('.freq-option').forEach(function(opt) {
+      opt.addEventListener('click', function(e) {
+        e.stopPropagation();
+        freqDropdown.querySelectorAll('.freq-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        freqLabel.textContent = opt.dataset.value;
+        freqDropdown.classList.remove('open');
+        freqPill.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  /* ─── Date picker ─── */
+  const startsTrigger = document.getElementById('starts-trigger');
+  const startsLabel   = document.getElementById('starts-label');
+  const dpPopover     = document.getElementById('dp-popover');
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  let dpYear = today.getFullYear(), dpMonth = today.getMonth();
+  let selectedDate = null;
+
+  function sameDay(a,b){ return a&&b&&a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
+
+  function renderCalendar() {
+    const firstDow = new Date(dpYear, dpMonth, 1).getDay();
+    const daysInMonth = new Date(dpYear, dpMonth+1, 0).getDate();
+    let html = `<div class="dp-header">
+      <button class="dp-nav" id="dp-prev" type="button" aria-label="Previous month">
+        <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="160 208 80 128 160 48"/></svg>
+      </button>
+      <span class="dp-month-label">${MONTHS[dpMonth]} ${dpYear}</span>
+      <button class="dp-nav" id="dp-next" type="button" aria-label="Next month">
+        <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="96 48 176 128 96 208"/></svg>
+      </button>
+    </div>
+    <div class="dp-weekdays">${['Su','Mo','Tu','We','Th','Fr','Sa'].map(d=>`<div class="dp-weekday">${d}</div>`).join('')}</div>
+    <div class="dp-days">`;
+    for(let i=0;i<firstDow;i++) html+=`<button class="dp-day dp-empty" type="button" tabindex="-1"></button>`;
+    for(let d=1;d<=daysInMonth;d++){
+      const dt = new Date(dpYear,dpMonth,d); dt.setHours(0,0,0,0);
+      const isPast = dt < today;
+      const isToday = sameDay(dt,today);
+      const isSel = selectedDate ? sameDay(dt,selectedDate) : isToday;
+      let cls='dp-day';
+      if(isToday) cls+=' dp-today';
+      if(isSel) cls+=' dp-selected';
+      html+=`<button class="${cls}" type="button" data-y="${dpYear}" data-m="${dpMonth}" data-d="${d}"${isPast?' disabled':''} aria-label="${MONTHS[dpMonth]} ${d}, ${dpYear}">${d}</button>`;
+    }
+    html+=`</div>`;
+    dpPopover.innerHTML = html;
+    document.getElementById('dp-prev').addEventListener('click', function(e){ e.stopPropagation(); dpMonth--; if(dpMonth<0){dpMonth=11;dpYear--;} renderCalendar(); });
+    document.getElementById('dp-next').addEventListener('click', function(e){ e.stopPropagation(); dpMonth++; if(dpMonth>11){dpMonth=0;dpYear++;} renderCalendar(); });
+    dpPopover.querySelectorAll('.dp-day:not(.dp-empty)').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        selectedDate = new Date(+btn.dataset.y, +btn.dataset.m, +btn.dataset.d); selectedDate.setHours(0,0,0,0);
+        startsLabel.textContent = sameDay(selectedDate,today) ? 'Starts today' : 'Starts '+MONTH_SHORT[selectedDate.getMonth()]+' '+selectedDate.getDate();
+        dpPopover.classList.remove('open');
+      });
+    });
+  }
+
+  function positionDp() {
+    const rect = startsTrigger.getBoundingClientRect();
+    const popW = 296;
+    let left = rect.right - popW;
+    if (left < 8) left = 8;
+    dpPopover.style.top   = (rect.bottom + 8) + 'px';
+    dpPopover.style.left  = left + 'px';
+    dpPopover.style.right = 'auto';
+  }
+
+  if(startsTrigger && dpPopover){
+    startsTrigger.addEventListener('click', function(e){
+      e.stopPropagation();
+      const open = dpPopover.classList.toggle('open');
+      if(open){ dpYear=today.getFullYear(); dpMonth=today.getMonth(); positionDp(); renderCalendar(); }
+    });
+  }
+
+  /* ─── Close all on outside click / Escape ─── */
+  document.addEventListener('click', function(){
+    if(freqDropdown) freqDropdown.classList.remove('open');
+    if(dpPopover) dpPopover.classList.remove('open');
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape'){
+      if(freqDropdown) freqDropdown.classList.remove('open');
+      if(dpPopover) dpPopover.classList.remove('open');
+    }
   });
 })();
 </script>

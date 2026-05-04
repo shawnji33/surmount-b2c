@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surmount — Home (Empty state)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist:wght@300;400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
+<script src="../sidebar.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --color-gray-lm-25:#fcfcfc;  --color-gray-lm-50:#fafafa;
+  --color-gray-lm-100:#f5f5f5; --color-gray-lm-200:#e9e9eb;
+  --color-gray-lm-300:#d5d6d9; --color-gray-lm-400:#a3a7ae;
+  --color-gray-lm-500:#717680; --color-gray-lm-600:#535861;
+  --color-gray-lm-700:#414651; --color-gray-lm-800:#252b37;
+  --color-gray-lm-900:#181d27;
+  --color-brand-50:#f1f6fd;  --color-brand-200:#c8dbf5;
+  --color-brand-600:#406ad0; --color-brand-700:#3757be;
+  --color-bg-primary:#ffffff; --color-bg-secondary:#fafafa;
+  --color-bg-tertiary:#f5f5f5;
+  --color-bg-brand-solid:#406ad0; --color-bg-brand-solid-hover:#3757be;
+  --color-fg-primary-900:#181d27; --color-fg-secondary-700:#414651;
+  --color-fg-tertiary-600:#535861; --color-fg-quaternary-400:#a3a7ae;
+  --color-fg-brand-primary-600:#406ad0;
+  --color-border-primary:#00000016; --color-border-secondary:#00000010;
+  --color-border-tertiary:#0000000a;
+  --color-utility-brand-50:#f1f6fd; --color-utility-brand-200:#c8dbf5;
+  --font-family-display:'Inter',sans-serif;
+  --font-family-body:'Geist',system-ui,sans-serif;
+  --font-size-text-xs:12px; --font-size-text-sm:14px;
+  --font-size-text-md:16px; --font-size-text-lg:18px;
+  --font-size-text-xl:20px; --font-size-display-xs:24px;
+  --line-height-text-sm:20px; --line-height-text-md:24px;
+  --spacing-xxs:2px; --spacing-xs:4px; --spacing-sm:6px;
+  --spacing-md:8px; --spacing-lg:12px; --spacing-xl:16px;
+  --spacing-2xl:20px; --spacing-3xl:24px; --spacing-4xl:32px;
+  --spacing-5xl:40px;
+  --radius-xs:4px; --radius-sm:6px; --radius-md:8px; --radius-lg:10px;
+  --radius-xl:12px; --radius-2xl:16px; --radius-full:9999px;
+  --shadow-card:0px 2px 12px rgba(10,13,18,0.03);
+  --shadow-xs:0px 1px 2px rgba(10,13,18,0.05);
+  /* legacy aliases */
+  --text-xs:12px; --text-sm:14px; --text-md:16px;
+  --text-lg:18px; --text-xl:20px; --text-2xl:24px;
+  --font-weight-regular:400; --font-weight-medium:500;
+  --font-weight-semibold:500; --font-weight-bold:500;
+  --space-1:4px; --space-1-5:6px; --space-2:8px; --space-2-5:10px;
+  --space-3:12px; --space-4:16px; --space-5:20px; --space-6:24px;
+  --space-8:32px; --space-10:40px;
+  --color-white:#ffffff; --color-base-white:#ffffff;
+  --color-gray-50:#fafafa; --color-gray-100:#f5f5f5;
+  --color-gray-200:#e9e9eb; --color-gray-300:#d5d6d9;
+  --color-gray-400:#a3a7ae; --color-gray-500:#717680;
+  --color-gray-600:#535861; --color-gray-700:#414651;
+  --color-gray-900:#181d27;
+  --color-surface:var(--color-bg-primary);
+  --color-surface-default:var(--color-bg-primary);
+  --color-surface-subtle:var(--color-bg-secondary);
+  --color-text-primary:var(--color-fg-primary-900);
+  --color-text-secondary:var(--color-fg-secondary-700);
+  --color-text-tertiary:var(--color-gray-lm-500);
+  --color-border-default:var(--color-border-secondary);
+  --color-border-container:var(--color-border-primary);
+  --font-display:var(--font-family-display);
+  --font-body:var(--font-family-body);
+}
+
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--font-family-body);
+  font-size:var(--text-sm);
+  color:var(--color-text-primary);
+  background-color:var(--color-surface-subtle);
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.5px;
+}
+
+/* ─── LAYOUT ─────────────────────────────────────────────────────────────── */
+.dashboard-layout{display:flex;height:100vh;width:100%;overflow:hidden}
+app-sidebar{align-self:stretch;display:flex;flex-shrink:0}
+.main-content{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+
+/* ─── PAGE HEADER ─────────────────────────────────────────────────────────── */
+.page-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--space-6) var(--space-6) var(--space-5);
+  height:76px;flex-shrink:0;
+}
+.greeting{
+  font-size:var(--text-md);font-weight:var(--font-weight-semibold);
+  color:var(--color-text-primary);flex:1;letter-spacing:-0.3px;
+}
+.search-box{
+  display:flex;align-items:center;gap:var(--space-2);
+  width:320px;padding:var(--space-2) var(--space-3);
+  background:var(--color-base-white);
+  border:1px solid var(--color-border-container);
+  border-radius:var(--radius-md);box-shadow:var(--shadow-card);
+  cursor:text;flex-shrink:0;
+  transition:border-color 150ms ease, box-shadow 150ms ease;
+}
+.search-box:hover{border-color:rgba(0,0,0,0.1);box-shadow:0px 2px 12px rgba(10,13,18,0.05)}
+.search-box-inner{display:flex;align-items:center;gap:var(--space-2);flex:1;min-width:0}
+.search-icon{width:20px;height:20px;flex-shrink:0;color:var(--color-text-tertiary)}
+.search-placeholder{font-size:var(--text-md);color:var(--color-text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-shortcut{
+  border:1px solid var(--color-border-default);border-radius:var(--radius-xs);
+  padding:1px var(--space-1);font-size:var(--text-xs);font-weight:var(--font-weight-medium);
+  color:var(--color-text-tertiary);white-space:nowrap;
+}
+
+/* ─── CONTENT AREA ───────────────────────────────────────────────────────── */
+.content-area{
+  display:flex;gap:var(--space-10);
+  padding:var(--space-5) var(--space-6) 0;
+  flex:1;overflow:hidden;
+}
+
+/* ─── LEFT COLUMN ─────────────────────────────────────────────────────────── */
+.left-column{
+  display:flex;flex-direction:column;gap:var(--space-10);
+  flex:1;min-width:0;
+  overflow-y:auto;overflow-x:hidden;
+  padding-bottom:var(--space-6);
+}
+.left-column::-webkit-scrollbar{display:none}
+.left-column{scrollbar-width:none}
+
+.left-section{display:flex;flex-direction:column;gap:var(--space-5)}
+
+.section-header{display:flex;align-items:center;justify-content:space-between}
+.section-title{
+  font-size:var(--text-xl);font-weight:var(--font-weight-medium);
+  color:var(--color-text-primary);white-space:nowrap;
+}
+
+/* ─── EMPTY STATE CARDS ───────────────────────────────────────────────────── */
+.empty-card{
+  width:100%;
+  border:1px solid rgba(0,0,0,0.06);
+  border-radius:var(--radius-xl);
+  overflow:hidden;
+  position:relative;
+}
+
+.empty-content{
+  display:flex;flex-direction:column;align-items:center;
+  gap:20px;
+  padding:40px 56px 0;
+  text-align:center;
+}
+
+.empty-title{
+  font-family:'Instrument Serif', Georgia, serif;
+  font-size:32px;font-weight:400;
+  color:var(--color-fg-primary-900);
+  line-height:1.15;letter-spacing:-0.3px;
+}
+
+.empty-sub{
+  font-size:var(--font-size-text-sm);font-weight:400;
+  color:var(--color-fg-tertiary-600);
+  max-width:380px;
+  line-height:var(--line-height-text-sm);
+  margin-top:-8px;
+}
+
+.empty-ctas{
+  display:flex;gap:16px;flex-wrap:wrap;justify-content:center;
+}
+
+.btn-brand{
+  display:flex;align-items:center;justify-content:center;
+  padding:10px 16px;
+  background:var(--color-bg-brand-solid);
+  border:2px solid rgba(255,255,255,0.12);
+  border-radius:var(--radius-md);
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);font-weight:500;
+  color:#ffffff;cursor:pointer;white-space:nowrap;
+  text-decoration:none;
+  transition:background 150ms ease, transform 100ms ease;
+}
+.btn-brand:hover{background:var(--color-bg-brand-solid-hover)}
+.btn-brand:active{transform:scale(0.98)}
+
+.btn-light{
+  display:flex;align-items:center;justify-content:center;
+  padding:10px 16px;
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-md);
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);font-weight:500;
+  color:rgba(10,13,18,0.7);cursor:pointer;white-space:nowrap;
+  text-decoration:none;
+  transition:background 150ms ease;
+}
+.btn-light:hover{background:var(--color-bg-secondary)}
+
+/* ─── BROKER CHIPS ────────────────────────────────────────────────────────── */
+.broker-chips-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.broker-chip{
+  flex:none;
+  width:153px;
+  margin-right:-52px; /* overlap: visible width ≈ 101px each */
+  padding:12px 80px 24px 12px; /* right-padding is the hidden zone behind next chip */
+  background:rgba(255,255,255,0.76);
+  border:1px solid rgba(10,13,18,0.07);
+  border-radius:var(--radius-xl);
+  box-shadow:0px 1px 12px 0px rgba(10,13,18,0.03);
+  display:flex;flex-direction:column;gap:10px; /* gap:10px → 12+32+10+20+24 = 98px total height */
+  position:relative;
+  cursor:pointer;
+  overflow:clip;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  /* Hover lift spring */
+  transition:transform 300ms cubic-bezier(0.34,1.56,0.64,1),
+             box-shadow 300ms cubic-bezier(0.34,1.56,0.64,1);
+}
+.broker-chip:hover{
+  transform:translateY(-5px);
+  box-shadow:0px 8px 20px rgba(10,13,18,0.10);
+  z-index:20 !important;
+}
+/* Last chip on top — z-index ascends left-to-right */
+.broker-chip:nth-child(1){z-index:1}
+.broker-chip:nth-child(2){z-index:2}
+.broker-chip:nth-child(3){z-index:3}
+.broker-chip:nth-child(4){z-index:4}
+.broker-chip:nth-child(5){z-index:5}
+.broker-chip:nth-child(6){z-index:6;margin-right:0;padding:12px 24px 24px 12px;justify-content:flex-end}
+
+.broker-chip-top{display:flex;align-items:center;gap:6px}
+
+.broker-avatar{
+  width:32px;height:32px;border-radius:50%;
+  border:0.5px solid rgba(0,0,0,0.08);
+  overflow:hidden;flex-shrink:0;
+}
+.broker-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+
+.broker-new-badge{
+  display:inline-flex;align-items:center;
+  padding:2px 8px;
+  background:var(--color-utility-brand-50);
+  border:1px solid var(--color-utility-brand-200);
+  border-radius:var(--radius-full);
+  font-size:10px;font-weight:500;
+  color:var(--color-brand-700);
+  letter-spacing:0;
+}
+
+.broker-chip-name{
+  font-size:var(--font-size-text-sm);font-weight:400;
+  color:var(--color-fg-secondary-700);
+  white-space:nowrap;
+}
+
+.broker-overflow{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--color-gray-100);
+  border:0.5px solid rgba(0,0,0,0.06);
+  display:flex;align-items:center;justify-content:center;
+  font-size:var(--font-size-text-xs);font-weight:500;
+  color:rgba(10,13,18,0.5);
+  flex-shrink:0;
+}
+
+/* ─── MARKETPLACE PREVIEW ────────────────────────────────────────────────── */
+.mp-wrap{
+  width:100%;
+  padding:0 40px 32px;
+  overflow:hidden;
+}
+.mp-card{
+  background:rgba(255,255,255,0.76);
+  border:1px solid rgba(10,13,18,0.07);
+  border-radius:var(--radius-xl);
+  box-shadow:0px 1px 12px 0px rgba(10,13,18,0.03);
+  overflow:hidden;
+  padding:14px;
+}
+.mp-header{
+  font-size:var(--font-size-text-sm);font-weight:500;
+  color:var(--color-fg-primary-900);
+  margin-bottom:10px;
+  letter-spacing:-0.2px;
+}
+.mp-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+.mp-thumb{
+  width:100%;height:66px;
+  border-radius:var(--radius-md);
+  object-fit:cover;object-position:center;
+  display:block;
+}
+
+/* ─── RIGHT COLUMN ────────────────────────────────────────────────────────── */
+.right-column{
+  width:400px;flex-shrink:0;display:flex;flex-direction:column;gap:var(--space-10);
+  overflow:hidden;align-self:stretch;padding-bottom:var(--space-6);
+}
+
+.section-heading-row{display:flex;align-items:center;justify-content:space-between;height:28px}
+.section-heading{font-size:var(--text-lg);font-weight:var(--font-weight-medium);color:var(--color-text-primary);white-space:nowrap}
+
+/* Carousel */
+.carousel-header{display:flex;align-items:center;justify-content:space-between;height:28px}
+.carousel-counter{font-size:var(--text-lg);font-weight:var(--font-weight-medium);color:var(--color-text-primary)}
+.carousel-controls{display:flex;align-items:center;gap:var(--space-4)}
+.carousel-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border:1px solid var(--color-border-container);
+  border-radius:var(--radius-sm);cursor:pointer;background:var(--color-surface-default);
+  color:var(--color-text-secondary);
+  transition:background 150ms ease, transform 100ms ease;
+}
+.carousel-btn svg{width:16px;height:16px}
+.carousel-btn:hover{background:var(--color-gray-50)}
+.carousel-btn:active{transform:scale(0.93)}
+.carousel-viewport{overflow:hidden;height:248px;position:relative}
+.carousel-track{
+  display:flex;height:100%;gap:16px;
+  transition:transform 520ms cubic-bezier(.22,.61,.36,1);
+  will-change:transform;
+}
+.carousel-slide{
+  width:100%;height:100%;flex-shrink:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:var(--space-3);
+  padding:var(--space-6);
+  text-align:center;
+  border-radius:var(--radius-xl);overflow:hidden;
+}
+.carousel-slide.promo-card-slide{
+  background:#f9f6eb;
+  padding:var(--space-4) 0 var(--space-4) var(--space-5);
+  gap:var(--space-4);
+  flex-direction:column;align-items:flex-start;justify-content:flex-start;
+  text-align:left;text-decoration:none;color:inherit;
+  position:relative;
+  border-radius:var(--radius-2xl);
+}
+.promo-card-slide-text{
+  display:flex;flex-direction:column;gap:var(--space-2);
+  width:294px;flex:1 1 0;min-height:0;position:relative;z-index:1;
+}
+.promo-card-slide-title{
+  font-family:var(--font-family-body);
+  font-size:var(--text-lg);font-weight:var(--font-weight-medium);
+  line-height:28px;letter-spacing:0;color:var(--color-fg-primary-900);
+}
+.promo-card-slide-sub{
+  font-family:var(--font-family-body);
+  font-size:var(--text-sm);font-weight:var(--font-weight-regular);
+  line-height:20px;letter-spacing:0;color:var(--color-fg-tertiary-600);
+}
+.promo-card-slide-arrow{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:var(--space-2);background:var(--color-base-white);
+  border:1px solid var(--color-border-container);border-radius:var(--radius-md);
+  color:#414651;cursor:pointer;flex-shrink:0;position:relative;z-index:1;
+  transition:background 180ms ease,border-color 180ms ease,transform 180ms ease;
+}
+.promo-card-slide-arrow:hover{background:var(--color-gray-50);transform:translateX(2px)}
+.promo-card-slide-arrow svg{width:20px;height:20px;display:block}
+.promo-card-slide-illo{
+  position:absolute;right:11px;top:115px;
+  width:131px;height:131px;overflow:hidden;pointer-events:none;z-index:0;
+}
+.promo-card-slide-illo img{
+  position:absolute;width:142.86%;height:142.86%;left:-21.43%;top:-22.67%;
+  max-width:none;display:block;
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:0.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="dashboard-layout">
+
+  <app-sidebar active="home"></app-sidebar>
+
+  <main class="main-content">
+
+    <!-- Page header -->
+    <header class="page-header">
+      <span class="greeting">Good morning, Logan</span>
+      <div class="search-box">
+        <div class="search-box-inner">
+          <svg class="search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="9" r="6"/><path d="M16.5 16.5l-3.5-3.5"/>
+          </svg>
+          <span class="search-placeholder">Find an investment</span>
+        </div>
+        <span class="search-shortcut">⌘K</span>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content-area">
+
+      <!-- ── LEFT COLUMN ── -->
+      <div class="left-column">
+
+        <!-- Portfolio — empty state -->
+        <div class="left-section">
+          <div class="section-header">
+            <span class="section-title">Portfolio</span>
+          </div>
+
+          <div class="empty-card" style="background:#d8e9f2;padding-bottom:0">
+            <!-- Heading + CTAs -->
+            <div class="empty-content">
+              <h2 class="empty-title">Start with an account</h2>
+              <p class="empty-sub">Create a Surmount account or link your broker accounts and manage all your investments in one dashboard.</p>
+              <div class="empty-ctas">
+                <a class="btn-brand" href="../onboarding/investing-account.html">Create a Surmount account</a>
+                <button class="btn-light" onclick="document.getElementById('ca-modal-backdrop').classList.add('open')">Connect accounts</button>
+              </div>
+            </div>
+
+            <!-- Broker chips row -->
+            <div style="height:44px"></div>
+            <div class="broker-chips-row">
+              <!-- Surmount -->
+              <div class="broker-chip">
+                <div class="broker-chip-top">
+                  <div class="broker-avatar"><img src="../assets/brokers/surmount.png" alt="Surmount"></div>
+                  <span class="broker-new-badge">New</span>
+                </div>
+                <span class="broker-chip-name">Surmount</span>
+              </div>
+              <!-- Coinbase -->
+              <div class="broker-chip">
+                <div class="broker-avatar"><img src="../assets/brokers/coinbase.png" alt="Coinbase"></div>
+                <span class="broker-chip-name">Coinbase</span>
+              </div>
+              <!-- Robinhood -->
+              <div class="broker-chip">
+                <div class="broker-avatar"><img src="../assets/brokers/robinhood.png" alt="Robinhood"></div>
+                <span class="broker-chip-name">Robinhood</span>
+              </div>
+              <!-- Kraken -->
+              <div class="broker-chip">
+                <div class="broker-avatar"><img src="../assets/brokers/kraken.png" alt="Kraken"></div>
+                <span class="broker-chip-name">Kraken</span>
+              </div>
+              <!-- IBKR -->
+              <div class="broker-chip">
+                <div class="broker-avatar"><img src="../assets/brokers/ibkr.png" alt="IBKR"></div>
+                <span class="broker-chip-name">IBKR</span>
+              </div>
+              <!-- +10 more -->
+              <div class="broker-chip">
+                <div class="broker-overflow">+10</div>
+                <span class="broker-chip-name">And more</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active strategies — empty state -->
+        <div class="left-section">
+          <div class="section-header">
+            <span class="section-title">Active strategies</span>
+          </div>
+
+          <div class="empty-card" style="background:#e8d8f2">
+            <!-- Heading + CTA -->
+            <div class="empty-content">
+              <h2 class="empty-title">Invest in your future</h2>
+              <p class="empty-sub">Explore 50+ pre-built portfolios and begin your investment journey.</p>
+              <div class="empty-ctas">
+                <a class="btn-light" href="../home/homepage.html?scenario=account-ready">Explore strategies</a>
+              </div>
+            </div>
+
+            <!-- Marketplace preview -->
+            <div style="height:24px"></div>
+            <div class="mp-wrap">
+              <div class="mp-card">
+                <div class="mp-header">Surmount Market Place</div>
+                <div class="mp-grid">
+                  <img class="mp-thumb" src="../assets/strategy-covers/Quantum Computing Leaders.png" alt="Quantum Computing Leaders">
+                  <img class="mp-thumb" src="../assets/strategy-covers/AI Innovators.png" alt="AI Innovators">
+                  <img class="mp-thumb" src="../assets/strategy-covers/Biotech Breakthroughs.png" alt="Biotech Breakthroughs">
+                  <img class="mp-thumb" src="../assets/strategy-covers/Deep Tech.png" alt="Deep Tech">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /left-column -->
+
+      <!-- ── RIGHT COLUMN ── -->
+      <div class="right-column">
+
+        <!-- Carousel: 2 slides, no dividend / verify card -->
+        <div>
+          <div class="carousel-header">
+            <span class="carousel-counter">1 of 2</span>
+            <div class="carousel-controls">
+              <button class="carousel-btn">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4L6 8l4 4"/></svg>
+              </button>
+              <button class="carousel-btn">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l4 4-4 4"/></svg>
+              </button>
+            </div>
+          </div>
+          <div style="height:var(--space-6)"></div>
+          <div class="carousel-viewport">
+            <div class="carousel-track">
+              <!-- Slide 1: High Yield Cash promo -->
+              <a class="carousel-slide promo-card-slide" href="../onboarding/cash-account.html">
+                <div class="promo-card-slide-text">
+                  <h3 class="promo-card-slide-title">Boost your savings with our top-notch 4.35% APY</h3>
+                  <p class="promo-card-slide-sub">Make the most of your uninvested funds with our high-yield options.</p>
+                </div>
+                <span class="promo-card-slide-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="256" height="256" fill="none"/>
+                    <line x1="40" y1="128" x2="216" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
+                    <polyline points="144 56 216 128 144 200" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
+                  </svg>
+                </span>
+                <div class="promo-card-slide-illo" aria-hidden="true">
+                  <img src="../assets/illustrations/wallet-coin.png" alt="">
+                </div>
+              </a>
+              <!-- Slide 2: Start with a Surmount account -->
+              <a class="carousel-slide" href="../onboarding/investing-account.html" style="padding:0;background:none;display:block;">
+                <img src="../assets/card-start-surmount.png" alt="Start with a Surmount account" style="width:100%;height:100%;object-fit:cover;display:block;">
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /right-column -->
+
+    </div><!-- /content-area -->
+  </main>
+</div>
+
+<!-- ── Connect Accounts Modal (reused from homepage) ── -->
+<style>
+.ca-backdrop{
+  position:fixed;inset:0;background:rgba(10,13,18,0.4);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  z-index:900;display:flex;align-items:center;justify-content:center;
+  padding:var(--spacing-4xl,32px);
+  opacity:0;pointer-events:none;transition:opacity 0.2s ease;
+}
+.ca-backdrop.open{opacity:1;pointer-events:all}
+.ca-modal{
+  background:var(--color-bg-primary);border-radius:20px;
+  box-shadow:0px 24px 48px rgba(10,13,18,0.22),0 0 0 1px rgba(10,13,18,0.05);
+  width:100%;max-width:640px;max-height:88vh;
+  display:flex;flex-direction:column;overflow:hidden;
+  transform:translateY(10px) scale(0.985);
+  transition:transform 0.22s ease,opacity 0.22s ease;opacity:0;
+}
+.ca-backdrop.open .ca-modal{transform:translateY(0) scale(1);opacity:1}
+.ca-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:24px 24px 0;flex-shrink:0;
+}
+.ca-title{
+  font-family:var(--font-family-display);
+  font-size:var(--font-size-text-md,16px);font-weight:500;
+  color:var(--color-fg-primary-900);letter-spacing:-0.3px;
+}
+.ca-close{
+  display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:var(--radius-md);
+  background:none;border:none;cursor:pointer;
+  color:var(--color-fg-tertiary-600);transition:background 0.12s ease;
+}
+.ca-close:hover{background:rgba(0,0,0,0.05)}
+.ca-close svg{width:16px;height:16px}
+.ca-body{padding:16px 24px 24px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:12px}
+.ca-broker-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ca-broker-tile{
+  display:flex;align-items:center;gap:12px;padding:14px;
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);border-radius:var(--radius-xl);
+  cursor:pointer;text-decoration:none;color:inherit;
+  transition:background 0.12s ease,border-color 0.12s ease;
+}
+.ca-broker-tile:hover{background:var(--color-bg-secondary);border-color:rgba(0,0,0,0.12)}
+.ca-broker-logo{width:36px;height:36px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;border:0.5px solid rgba(0,0,0,0.07)}
+.ca-broker-logo img{width:100%;height:100%;object-fit:cover;display:block}
+.ca-broker-name{font-size:var(--font-size-text-sm,14px);font-weight:500;color:var(--color-fg-primary-900)}
+.ca-divider{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.ca-divider::before,.ca-divider::after{content:'';flex:1;height:1px;background:var(--color-border-primary)}
+.ca-divider span{font-size:12px;color:var(--color-fg-quaternary-400);white-space:nowrap}
+.ca-surmount-card{
+  display:flex;align-items:stretch;justify-content:space-between;
+  padding:20px;
+  background:linear-gradient(113.97deg,rgb(247,248,250) 2.49%,rgb(245,247,250) 99.18%);
+  border:1px solid rgba(0,0,0,0.06);border-radius:var(--radius-xl);
+  text-decoration:none;color:inherit;cursor:pointer;flex-shrink:0;
+  transition:border-color 0.12s ease;
+}
+.ca-surmount-card:hover{border-color:rgba(0,0,0,0.1)}
+.ca-surmount-left{display:flex;flex-direction:column;gap:12px}
+.ca-badge{
+  display:inline-flex;align-items:center;
+  padding:2px 8px;background:var(--color-utility-brand-50);
+  border:1px solid var(--color-utility-brand-200);border-radius:var(--radius-full);
+  font-size:12px;font-weight:500;color:var(--color-fg-brand-primary-600);
+  width:fit-content;
+}
+.ca-card-title{
+  font-size:var(--font-size-text-lg,18px);font-weight:500;
+  line-height:1.4;color:rgba(10,13,18,0.9);letter-spacing:-0.3px;
+}
+.ca-features{list-style:none;display:flex;flex-direction:column;gap:8px}
+.ca-feature{display:flex;align-items:center;gap:10px}
+.ca-feature svg{flex-shrink:0;width:16px;height:16px;color:var(--color-fg-tertiary-600)}
+.ca-feature span{font-size:14px;font-weight:400;color:rgba(10,13,18,0.7)}
+.ca-cta{
+  display:flex;align-items:center;gap:6px;margin-top:2px;
+  font-size:14px;font-weight:500;color:var(--color-fg-brand-primary-600);
+}
+.ca-cta svg{width:14px;height:14px}
+.ca-vault{flex-shrink:0;display:flex;align-items:center;justify-content:center;padding-left:16px}
+.ca-vault img{width:120px;height:120px;object-fit:contain}
+</style>
+
+<div class="ca-backdrop" id="ca-modal-backdrop">
+  <div class="ca-modal">
+    <div class="ca-hd">
+      <span class="ca-title">Connect your accounts</span>
+      <button class="ca-close" onclick="document.getElementById('ca-modal-backdrop').classList.remove('open')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </button>
+    </div>
+    <div class="ca-body">
+      <!-- Surmount investing account card -->
+      <a class="ca-surmount-card" href="../onboarding/investing-account.html">
+        <div class="ca-surmount-left">
+          <span class="ca-badge">Recommended</span>
+          <span class="ca-card-title">Open a Surmount investing account</span>
+          <ul class="ca-features">
+            <li class="ca-feature">
+              <svg viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
+              <span>Commission-free automated investing</span>
+            </li>
+            <li class="ca-feature">
+              <svg viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
+              <span>Access to 50+ pre-built strategies</span>
+            </li>
+            <li class="ca-feature">
+              <svg viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
+              <span>SIPC-insured up to $500,000</span>
+            </li>
+          </ul>
+          <div class="ca-cta">
+            Get started
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
+          </div>
+        </div>
+        <div class="ca-vault">
+          <img src="../assets/illustrations/wallet-coin.png" alt="">
+        </div>
+      </a>
+
+      <div class="ca-divider"><span>Or link an existing broker</span></div>
+
+      <!-- Broker grid -->
+      <div class="ca-broker-grid">
+        <div class="ca-broker-tile">
+          <div class="ca-broker-logo"><img src="../assets/brokers/robinhood.png" alt="Robinhood"></div>
+          <span class="ca-broker-name">Robinhood</span>
+        </div>
+        <div class="ca-broker-tile">
+          <div class="ca-broker-logo"><img src="../assets/brokers/coinbase.png" alt="Coinbase"></div>
+          <span class="ca-broker-name">Coinbase</span>
+        </div>
+        <div class="ca-broker-tile">
+          <div class="ca-broker-logo"><img src="../assets/brokers/schwab.png" alt="Schwab"></div>
+          <span class="ca-broker-name">Charles Schwab</span>
+        </div>
+        <div class="ca-broker-tile">
+          <div class="ca-broker-logo"><img src="../assets/brokers/ibkr.png" alt="IBKR"></div>
+          <span class="ca-broker-name">IBKR</span>
+        </div>
+        <div class="ca-broker-tile">
+          <div class="ca-broker-logo"><img src="../assets/brokers/webull.png" alt="Webull"></div>
+          <span class="ca-broker-name">Webull</span>
+        </div>
+        <div class="ca-broker-tile">
+          <div class="ca-broker-logo"><img src="../assets/brokers/kraken.png" alt="Kraken"></div>
+          <span class="ca-broker-name">Kraken</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const track = document.querySelector('.carousel-track');
+  if (!track) return;
+  const slides = track.children;
+  const total = slides.length;
+  const counter = document.querySelector('.carousel-counter');
+  const btns = document.querySelectorAll('.carousel-controls .carousel-btn');
+  const prevBtn = btns[0], nextBtn = btns[1];
+  const GAP = 16;
+  let idx = 0;
+  function render() {
+    const step = slides[0].getBoundingClientRect().width + GAP;
+    track.style.transform = 'translateX(' + (-idx * step) + 'px)';
+    if (counter) counter.textContent = (idx + 1) + ' of ' + total;
+  }
+  prevBtn.addEventListener('click', () => { idx = (idx - 1 + total) % total; render(); });
+  nextBtn.addEventListener('click', () => { idx = (idx + 1) % total; render(); });
+  window.addEventListener('resize', render);
+  render();
+  /* Close modal on backdrop click */
+  document.getElementById('ca-modal-backdrop').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+})();
+</script>
+</body>
+</html>

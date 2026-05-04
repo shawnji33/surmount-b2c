@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategy quiz — Surmount</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block}
+input{font-family:inherit;border:none;outline:none;background:none;color:inherit}
+
+:root{
+  --color-bg-primary:#ffffff;
+  --color-bg-primary-hover:#fafafa;
+  --color-bg-secondary:#fafafa;
+
+  --color-fg-primary-900:#181d27;
+  --color-fg-secondary-700:#414651;
+  --color-fg-secondary-hover:#252b37;
+  --color-fg-tertiary-600:#535862;
+  --color-fg-quaternary-400:#a4a7ae;
+  --color-fg-disabled:#a4a7ae;
+  --color-fg-disabled-subtle:#d5d7da;
+
+  --color-text-primary-900:#181d27;
+  --color-text-secondary-700:rgba(10,13,18,0.7);
+  --color-text-secondary-hover:rgba(10,13,18,0.8);
+  --color-text-tertiary-600:#535861;
+  --color-text-white:#ffffff;
+
+  --color-border-primary:#00000017;
+  --color-border-focus:#0a0d123d;
+
+  --color-utility-gray-50:#fafafa;
+
+  --spacing-xxs:2px; --spacing-xs:4px; --spacing-sm:6px;
+  --spacing-md:8px;  --spacing-lg:12px; --spacing-xl:16px;
+  --spacing-2xl:20px; --spacing-3xl:24px; --spacing-4xl:32px;
+  --spacing-5xl:40px; --spacing-6xl:48px; --spacing-7xl:64px;
+
+  --radius-md:8px; --radius-xl:12px; --radius-2xl:16px; --radius-full:9999px;
+
+  --font-family-body:'Geist',sans-serif;
+  --font-family-display:'Inter',sans-serif;
+  --font-size-text-xs:12px;  --line-height-text-xs:18px;
+  --font-size-text-sm:14px;  --line-height-text-sm:20px;
+  --font-size-text-md:16px;  --line-height-text-md:24px;
+  --font-size-display-sm:30px; --line-height-display-sm:38px;
+}
+
+html,body{height:100%}
+body{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);
+  color:var(--color-fg-primary-900);
+  background:var(--color-utility-gray-50);
+  letter-spacing:-0.5px;
+  -webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh;
+}
+
+/* ─── Topbar ──────────────────────────────────────────────────────────── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--spacing-xl) var(--spacing-3xl);
+  background:var(--color-utility-gray-50);
+}
+.topbar-back,.topbar-close{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-sm);
+  padding:10px var(--spacing-xl);
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-md);
+  color:var(--color-text-secondary-700);
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);font-weight:500;
+  line-height:var(--line-height-text-md);letter-spacing:0;
+  transition:background 150ms ease,color 150ms ease;
+}
+.topbar-back:hover,.topbar-close:hover{background:var(--color-bg-primary-hover);color:var(--color-text-secondary-hover)}
+.topbar-back:active,.topbar-close:active{transform:scale(0.97)}
+.topbar-back svg,.topbar-close svg{width:20px;height:20px;flex-shrink:0}
+.topbar-brand{display:flex;align-items:center;gap:var(--spacing-md);color:var(--color-fg-primary-900)}
+.topbar-brand svg{width:28px;height:28px;display:block}
+.topbar-brand-name{font-family:var(--font-family-display);font-size:20px;font-weight:500;letter-spacing:-0.4px}
+
+/* ─── 3-segment flow progress bar ────────────────────────────────────── */
+.flow-progress{
+  display:flex;align-items:center;gap:12px;
+  flex-shrink:0;height:2px;width:100%;
+  padding:0 var(--spacing-3xl);
+}
+.flow-progress-seg{
+  flex:1;position:relative;height:100%;
+  background:rgba(10,13,18,0.08);
+  border-radius:9999px;overflow:hidden;
+}
+.flow-progress-fill{
+  position:absolute;left:0;top:0;bottom:0;
+  width:0%;
+  background:var(--color-fg-primary-900);
+  border-radius:9999px;
+  transition:width 500ms cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ─── Main ────────────────────────────────────────────────────────────── */
+main{
+  flex:1;display:grid;place-items:center;
+  padding:var(--spacing-3xl);
+  min-height:0;
+  transition:transform 260ms cubic-bezier(0.16,1,0.3,1), opacity 200ms ease;
+  will-change:transform,opacity;
+}
+.stack{
+  display:flex;flex-direction:column;align-items:center;
+  gap:var(--spacing-5xl);
+  width:100%;max-width:520px;
+}
+.hero{
+  display:flex;flex-direction:column;align-items:center;gap:var(--spacing-md);
+  text-align:center;width:100%;
+}
+.title{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-display-sm);font-weight:500;
+  line-height:var(--line-height-display-sm);letter-spacing:-0.8px;
+  color:var(--color-fg-primary-900);
+}
+.subtitle{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);font-weight:400;
+  line-height:var(--line-height-text-md);letter-spacing:-0.3px;
+  color:var(--color-fg-tertiary-600);
+  max-width:440px;
+}
+
+/* ─── Radio group (single-select) ────────────────────────────────────── */
+.radio-group{
+  display:flex;flex-direction:column;gap:var(--spacing-lg);
+  width:100%;border:0;padding:0;margin:0;
+}
+.radio-row{
+  display:flex;align-items:center;gap:var(--spacing-lg);
+  padding:var(--spacing-xl) var(--spacing-xl);min-height:60px;
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-xl);
+  cursor:pointer;
+  transition:background 150ms ease,border-color 150ms ease,box-shadow 150ms ease;
+}
+.radio-row:hover{background:var(--color-bg-primary-hover)}
+.radio-row:has(input:checked){background:var(--color-bg-secondary)}
+.radio-row:has(input:focus-visible){
+  border-color:var(--color-border-focus);
+  box-shadow:0 0 0 3px rgba(10,13,18,0.08);
+}
+.radio-row input[type="radio"]{
+  -webkit-appearance:none;appearance:none;
+  flex:none;width:20px;height:20px;
+  border:1.5px solid var(--color-border-primary);
+  border-radius:50%;
+  background:var(--color-bg-primary);
+  display:inline-grid;place-items:center;cursor:pointer;
+  transition:border-color 150ms ease;
+  outline:none;flex-shrink:0;
+}
+.radio-row input[type="radio"]:checked{border-color:var(--color-fg-primary-900)}
+.radio-row input[type="radio"]:checked::after{
+  content:"";width:10px;height:10px;border-radius:50%;
+  background:var(--color-fg-primary-900);
+}
+
+/* ─── Checkbox group (multi-select) ──────────────────────────────────── */
+.checkbox-group{
+  display:flex;flex-direction:column;gap:var(--spacing-lg);
+  width:100%;
+}
+.checkbox-row{
+  display:flex;align-items:center;gap:var(--spacing-lg);
+  padding:var(--spacing-xl) var(--spacing-xl);min-height:60px;
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-xl);
+  cursor:pointer;
+  transition:background 150ms ease,border-color 150ms ease,box-shadow 150ms ease;
+}
+.checkbox-row:hover{background:var(--color-bg-primary-hover)}
+.checkbox-row:has(input:checked){background:var(--color-bg-secondary)}
+.checkbox-row:has(input:focus-visible){
+  border-color:var(--color-border-focus);
+  box-shadow:0 0 0 3px rgba(10,13,18,0.08);
+}
+.checkbox-row input[type="checkbox"]{
+  -webkit-appearance:none;appearance:none;
+  flex:none;width:18px;height:18px;
+  border:1.5px solid var(--color-border-primary);
+  border-radius:4px;
+  background:var(--color-bg-primary);
+  display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:border-color 150ms ease,background 150ms ease;
+  outline:none;flex-shrink:0;position:relative;
+}
+.checkbox-row input[type="checkbox"]:checked{
+  border-color:var(--color-fg-primary-900);
+  background:var(--color-fg-primary-900);
+}
+.checkbox-row input[type="checkbox"]:checked::after{
+  content:"";
+  position:absolute;
+  width:10px;height:7px;
+  border-left:2px solid #fff;
+  border-bottom:2px solid #fff;
+  transform:rotate(-45deg) translate(1px,-1px);
+}
+
+/* ─── Option label styles ─────────────────────────────────────────────── */
+.radio-label,.check-label{
+  flex:1;
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);font-weight:500;
+  line-height:var(--line-height-text-md);letter-spacing:0;
+  color:var(--color-fg-primary-900);
+}
+.radio-sublabel,.check-sublabel{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-sm);font-weight:400;
+  line-height:var(--line-height-text-sm);letter-spacing:-0.2px;
+  color:var(--color-fg-tertiary-600);
+  margin-top:1px;
+}
+
+/* ─── Option label with sub (two-line) ─────────────────────────────── */
+.radio-label-group,.check-label-group{
+  flex:1;display:flex;flex-direction:column;gap:2px;
+}
+
+/* ─── Horizon bar (Q2) — full-width colored capsule ─────────────────── */
+.horizon-tag{
+  display:block;
+  width:100%;
+  padding:5px 12px;
+  border-radius:var(--radius-full);
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-sm);font-weight:500;
+  line-height:var(--line-height-text-sm);letter-spacing:0;
+  margin-bottom:var(--spacing-sm);
+}
+
+/* ─── Experience bars (Q4) ───────────────────────────────────────────── */
+.exp-bars{
+  display:flex;align-items:flex-end;gap:3px;
+  height:16px;flex-shrink:0;
+  margin-right:2px;
+}
+.exp-bar{width:5px;border-radius:2px;flex-shrink:0}
+
+/* ─── Strategy count (Q5) ────────────────────────────────────────────── */
+.strategy-count{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-xs);font-weight:400;
+  line-height:var(--line-height-text-xs);letter-spacing:0;
+  color:var(--color-fg-quaternary-400);
+}
+
+/* ─── CTA button ──────────────────────────────────────────────────────── */
+.cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-sm);
+  padding:10px var(--spacing-xl);
+  background:var(--color-fg-primary-900);
+  color:var(--color-text-white);
+  border:2px solid rgba(255,255,255,0.12);
+  border-radius:var(--radius-md);
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-md);font-weight:500;
+  line-height:var(--line-height-text-md);letter-spacing:-0.2px;
+  transition:background 150ms ease,transform 120ms ease;
+  min-width:160px;cursor:pointer;
+}
+.cta:hover{background:var(--color-fg-secondary-hover)}
+.cta:active{transform:scale(0.99)}
+.cta svg{width:20px;height:20px}
+.cta[disabled]{
+  background:var(--color-fg-disabled-subtle);
+  color:var(--color-fg-disabled);
+  border-color:rgba(255,255,255,0.12);
+  cursor:not-allowed;pointer-events:none;
+}
+
+/* ─── Transition states ───────────────────────────────────────────────── */
+main.leave-forward{ opacity:0;transform:translateX(-16px); pointer-events:none; }
+main.leave-backward{ opacity:0;transform:translateX(16px); pointer-events:none; }
+main.enter-forward{ opacity:0;transform:translateX(16px); transition:none; pointer-events:none; }
+main.enter-backward{ opacity:0;transform:translateX(-16px); transition:none; pointer-events:none; }
+
+/* ─── Exit modal ──────────────────────────────────────────────────────── */
+.modal-root{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:var(--spacing-xl)}
+.modal-root[hidden]{display:none}
+.modal-backdrop{position:absolute;inset:0;background:rgba(10,13,18,0.55);animation:modalFade 180ms ease-out}
+.modal-card{position:relative;background:var(--color-bg-primary);border-radius:20px;box-shadow:0 24px 48px -8px rgba(10,13,18,0.22);width:100%;max-width:420px;padding:var(--spacing-4xl);display:flex;flex-direction:column;gap:var(--spacing-3xl);animation:modalIn 220ms cubic-bezier(.22,.61,.36,1)}
+.modal-dismiss{position:absolute;top:var(--spacing-xl);right:var(--spacing-xl);width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-md);color:var(--color-fg-tertiary-600);transition:background 150ms ease,color 150ms ease}
+.modal-dismiss:hover{background:var(--color-bg-primary-hover);color:var(--color-fg-primary-900)}
+.modal-dismiss svg{width:18px;height:18px}
+.modal-body{display:flex;flex-direction:column;gap:var(--spacing-md);padding-right:var(--spacing-4xl)}
+.modal-title{font-family:var(--font-family-body);font-size:20px;font-weight:500;line-height:30px;letter-spacing:-0.4px;color:var(--color-fg-primary-900)}
+.modal-desc{font-family:var(--font-family-body);font-size:var(--font-size-text-sm);font-weight:400;line-height:var(--line-height-text-sm);letter-spacing:0;color:var(--color-fg-tertiary-600)}
+.modal-actions{display:flex;flex-direction:column;gap:var(--spacing-md)}
+.btn-primary-full{display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-sm);padding:10px var(--spacing-xl);width:100%;background:var(--color-fg-primary-900);color:var(--color-text-white);border:2px solid rgba(255,255,255,0.12);border-radius:var(--radius-md);font-family:var(--font-family-body);font-size:var(--font-size-text-md);font-weight:500;line-height:var(--line-height-text-md);letter-spacing:0;transition:background 150ms ease,transform 120ms ease;cursor:pointer}
+.btn-primary-full:hover{background:var(--color-fg-secondary-hover)}
+.btn-secondary-full{display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-sm);padding:10px var(--spacing-xl);width:100%;background:var(--color-bg-primary);color:var(--color-text-secondary-700);border:1px solid var(--color-border-primary);border-radius:var(--radius-md);font-family:var(--font-family-body);font-size:var(--font-size-text-md);font-weight:500;line-height:var(--line-height-text-md);letter-spacing:0;transition:background 150ms ease,color 150ms ease;cursor:pointer}
+.btn-secondary-full:hover{background:var(--color-bg-primary-hover);color:var(--color-text-secondary-hover)}
+@keyframes modalFade{from{opacity:0}to{opacity:1}}
+@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* ─── Loading screen ──────────────────────────────────────────────────── */
+.loading-screen{
+  position:fixed;inset:0;
+  background:var(--color-utility-gray-50);
+  display:flex;align-items:center;justify-content:center;
+  z-index:200;
+  opacity:0;pointer-events:none;
+  transition:opacity 300ms ease;
+}
+.loading-screen.visible{opacity:1;pointer-events:auto}
+.loading-inner{
+  display:flex;flex-direction:column;align-items:center;
+  gap:var(--spacing-3xl);text-align:center;
+}
+.loading-brand{display:flex;align-items:center;gap:var(--spacing-md);color:var(--color-fg-primary-900)}
+.loading-brand svg{width:28px;height:28px;display:block}
+.loading-brand-name{font-family:var(--font-family-display);font-size:20px;font-weight:500;letter-spacing:-0.4px}
+.loading-text{display:flex;flex-direction:column;gap:var(--spacing-sm)}
+.loading-title{font-family:var(--font-family-body);font-size:var(--font-size-display-sm);font-weight:500;line-height:var(--line-height-display-sm);letter-spacing:-0.8px;color:var(--color-fg-primary-900)}
+.loading-sub{font-family:var(--font-family-body);font-size:var(--font-size-text-md);font-weight:400;line-height:var(--line-height-text-md);letter-spacing:-0.3px;color:var(--color-fg-tertiary-600);transition:opacity 200ms ease}
+.loading-bar-track{width:200px;height:3px;background:rgba(10,13,18,0.08);border-radius:9999px;overflow:hidden}
+.loading-bar-fill{height:100%;background:var(--color-fg-primary-900);border-radius:9999px;width:0%;transition:width 2000ms cubic-bezier(0.25,0.1,0.25,1)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:0.01ms !important;animation-duration:0.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<!-- ── Topbar ──────────────────────────────────────────────────────────── -->
+<header class="topbar">
+  <button class="topbar-back" id="btnBack" type="button">
+    <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="256" height="256" fill="none"/><line x1="216" y1="128" x2="40" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="112 56 40 128 112 200" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+    <span>Back</span>
+  </button>
+  <div class="topbar-brand">
+    <svg width="28" height="28" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 14.8C3 10.3196 3 8.07937 3.87195 6.36808C4.63893 4.86278 5.86278 3.63893 7.36808 2.87195C9.07937 2 11.3196 2 15.8 2H22.2C26.6804 2 28.9206 2 30.6319 2.87195C32.1372 3.63893 33.3611 4.86278 34.1281 6.36808C35 8.07937 35 10.3196 35 14.8V21.2C35 25.6804 35 27.9206 34.1281 29.6319C33.3611 31.1372 32.1372 32.3611 30.6319 33.1281C28.9206 34 26.6804 34 22.2 34H15.8C11.3196 34 9.07937 34 7.36808 33.1281C5.86278 32.3611 4.63893 31.1372 3.87195 29.6319C3 27.9206 3 25.6804 3 21.2V14.8Z" fill="url(#b0)"/><path d="M18.9982 13.1366C18.7314 13.3201 18.4774 13.5264 18.2363 13.7556L17.0473 14.888C16.5042 14.6108 15.9021 14.473 15.3023 14.473C14.3537 14.473 13.4058 14.8171 12.6831 15.5054C11.9844 16.1725 11.5993 17.0568 11.5993 17.9994H9C9 16.3954 9.65481 14.888 10.8462 13.7556C13.064 11.6435 16.537 11.4371 19.0006 13.1366H18.9982Z" fill="url(#b1)"/><path d="M23.3671 18.8083L20.9498 21.1103L19.7607 22.2421C19.5196 22.4719 19.2657 22.6782 18.9982 22.8617C17.9016 23.6185 16.6008 23.9981 15.3023 23.9981C13.6884 23.9981 12.0745 23.4122 10.8462 22.2421C9.65481 21.108 9 19.6006 9 17.9972H11.5993C11.5993 18.9392 11.9844 19.8258 12.6831 20.4906C13.916 21.6647 15.8102 21.8357 17.238 21.0039C17.4809 20.8622 17.7109 20.6913 17.9233 20.4906L19.2306 19.2462L21.5279 17.0586H21.5297C22.0376 16.5727 22.8615 16.5727 23.3671 17.0569C23.8751 17.5405 23.8751 18.3242 23.3671 18.8061V18.8083Z" fill="url(#b2)"/><path d="M28.9994 17.999H26.4001C26.4001 17.0564 26.015 16.1726 25.3164 15.505C24.5937 14.8173 23.6457 14.4732 22.6971 14.4732C22.0248 14.4732 21.353 14.6464 20.7614 14.9922C20.5185 15.134 20.2886 15.3049 20.0785 15.505L18.7689 16.7523L16.4697 18.9416C16.2158 19.1834 15.8828 19.3046 15.5498 19.3046C15.2169 19.3046 14.8839 19.1834 14.63 18.9416C14.122 18.458 14.122 17.6737 14.63 17.1918L17.0479 14.8899L18.237 13.7581C18.4775 13.5283 18.7314 13.322 18.9988 13.1385C21.4624 11.439 24.9331 11.6454 27.1515 13.7581C28.3423 14.8922 28.9971 16.3996 28.9971 18.0013L28.9994 17.999Z" fill="url(#b3)"/><path d="M29 17.9991C29 19.6025 28.3452 21.1099 27.1538 22.2445C25.9255 23.4141 24.3116 24 22.6977 24C21.3992 24 20.0984 23.6204 19.0012 22.8636C19.2686 22.6801 19.5226 22.4738 19.7631 22.2445L20.9521 21.1122C21.4952 21.3894 22.0956 21.5272 22.6977 21.5272C23.6457 21.5272 24.5937 21.183 25.3163 20.4948C26.015 19.8277 26.4007 18.944 26.4007 18.0014H29V17.9991Z" fill="url(#b4)"/><defs><linearGradient id="b0" x1="3" y1="2" x2="35" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#F5F7FA"/><stop offset="1" stop-color="#C3CFE2"/></linearGradient><linearGradient id="b1" x1="9" y1="14.9848" x2="19.0001" y2="15.0677" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#1047D2"/></linearGradient><linearGradient id="b2" x1="9" y1="20.3279" x2="23.747" y2="20.476" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#54E3DF"/></linearGradient><linearGradient id="b3" x1="14.249" y1="15.6351" x2="28.9983" y2="15.7833" gradientUnits="userSpaceOnUse"><stop stop-color="#54E3DF"/><stop offset="1" stop-color="#34A6ED"/></linearGradient><linearGradient id="b4" x1="19.0012" y1="20.9846" x2="28.9996" y2="21.0675" gradientUnits="userSpaceOnUse"><stop stop-color="#1047D2"/><stop offset="1" stop-color="#34A6ED"/></linearGradient></defs></svg>
+    <span class="topbar-brand-name">Surmount</span>
+  </div>
+  <button class="topbar-close" id="btnClose" type="button">
+    <span>Close</span>
+    <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="256" height="256" fill="none"/><line x1="200" y1="56" x2="56" y2="200" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="200" y1="200" x2="56" y2="56" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+  </button>
+</header>
+
+<!-- ── 3-segment progress bar ──────────────────────────────────────────── -->
+<div class="flow-progress" aria-hidden="true">
+  <div class="flow-progress-seg"><div class="flow-progress-fill" id="seg1"></div></div>
+  <div class="flow-progress-seg"><div class="flow-progress-fill" id="seg2"></div></div>
+  <div class="flow-progress-seg"><div class="flow-progress-fill" id="seg3"></div></div>
+</div>
+
+<!-- ── Quiz main ───────────────────────────────────────────────────────── -->
+<main id="quizMain">
+  <div class="stack" id="quizStack">
+    <!-- content rendered by JS -->
+  </div>
+</main>
+
+<!-- ── Exit modal ──────────────────────────────────────────────────────── -->
+<div class="modal-root" id="exit-modal" role="dialog" aria-modal="true" aria-labelledby="exit-modal-title" hidden>
+  <div class="modal-backdrop" data-modal-dismiss></div>
+  <div class="modal-card">
+    <button class="modal-dismiss" type="button" data-modal-dismiss aria-label="Close">
+      <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="256" height="256" fill="none"/><line x1="200" y1="56" x2="56" y2="200" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><line x1="200" y1="200" x2="56" y2="56" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+    </button>
+    <div class="modal-body">
+      <h2 id="exit-modal-title" class="modal-title">Exit quiz?</h2>
+      <p class="modal-desc">Your answers won't be saved. You can retake the quiz anytime from the strategy picker.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary-full" type="button" onclick="location.href='../home/homepage.html?scenario=needs-strategy'">Exit quiz</button>
+      <button class="btn-secondary-full" type="button" data-modal-dismiss>Keep going</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Loading screen ──────────────────────────────────────────────────── -->
+<div id="loadingScreen" class="loading-screen" aria-hidden="true">
+  <div class="loading-inner">
+    <div class="loading-brand">
+      <svg width="28" height="28" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 14.8C3 10.3196 3 8.07937 3.87195 6.36808C4.63893 4.86278 5.86278 3.63893 7.36808 2.87195C9.07937 2 11.3196 2 15.8 2H22.2C26.6804 2 28.9206 2 30.6319 2.87195C32.1372 3.63893 33.3611 4.86278 34.1281 6.36808C35 8.07937 35 10.3196 35 14.8V21.2C35 25.6804 35 27.9206 34.1281 29.6319C33.3611 31.1372 32.1372 32.3611 30.6319 33.1281C28.9206 34 26.6804 34 22.2 34H15.8C11.3196 34 9.07937 34 7.36808 33.1281C5.86278 32.3611 4.63893 31.1372 3.87195 29.6319C3 27.9206 3 25.6804 3 21.2V14.8Z" fill="url(#ls0)"/><path d="M18.9982 13.1366C18.7314 13.3201 18.4774 13.5264 18.2363 13.7556L17.0473 14.888C16.5042 14.6108 15.9021 14.473 15.3023 14.473C14.3537 14.473 13.4058 14.8171 12.6831 15.5054C11.9844 16.1725 11.5993 17.0568 11.5993 17.9994H9C9 16.3954 9.65481 14.888 10.8462 13.7556C13.064 11.6435 16.537 11.4371 19.0006 13.1366H18.9982Z" fill="url(#ls1)"/><path d="M23.3671 18.8083L20.9498 21.1103L19.7607 22.2421C19.5196 22.4719 19.2657 22.6782 18.9982 22.8617C17.9016 23.6185 16.6008 23.9981 15.3023 23.9981C13.6884 23.9981 12.0745 23.4122 10.8462 22.2421C9.65481 21.108 9 19.6006 9 17.9972H11.5993C11.5993 18.9392 11.9844 19.8258 12.6831 20.4906C13.916 21.6647 15.8102 21.8357 17.238 21.0039C17.4809 20.8622 17.7109 20.6913 17.9233 20.4906L19.2306 19.2462L21.5279 17.0586H21.5297C22.0376 16.5727 22.8615 16.5727 23.3671 17.0569C23.8751 17.5405 23.8751 18.3242 23.3671 18.8061V18.8083Z" fill="url(#ls2)"/><path d="M28.9994 17.999H26.4001C26.4001 17.0564 26.015 16.1726 25.3164 15.505C24.5937 14.8173 23.6457 14.4732 22.6971 14.4732C22.0248 14.4732 21.353 14.6464 20.7614 14.9922C20.5185 15.134 20.2886 15.3049 20.0785 15.505L18.7689 16.7523L16.4697 18.9416C16.2158 19.1834 15.8828 19.3046 15.5498 19.3046C15.2169 19.3046 14.8839 19.1834 14.63 18.9416C14.122 18.458 14.122 17.6737 14.63 17.1918L17.0479 14.8899L18.237 13.7581C18.4775 13.5283 18.7314 13.322 18.9988 13.1385C21.4624 11.439 24.9331 11.6454 27.1515 13.7581C28.3423 14.8922 28.9971 16.3996 28.9971 18.0013L28.9994 17.999Z" fill="url(#ls3)"/><path d="M29 17.9991C29 19.6025 28.3452 21.1099 27.1538 22.2445C25.9255 23.4141 24.3116 24 22.6977 24C21.3992 24 20.0984 23.6204 19.0012 22.8636C19.2686 22.6801 19.5226 22.4738 19.7631 22.2445L20.9521 21.1122C21.4952 21.3894 22.0956 21.5272 22.6977 21.5272C23.6457 21.5272 24.5937 21.183 25.3163 20.4948C26.015 19.8277 26.4007 18.944 26.4007 18.0014H29V17.9991Z" fill="url(#ls4)"/><defs><linearGradient id="ls0" x1="3" y1="2" x2="35" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#F5F7FA"/><stop offset="1" stop-color="#C3CFE2"/></linearGradient><linearGradient id="ls1" x1="9" y1="14.9848" x2="19.0001" y2="15.0677" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#1047D2"/></linearGradient><linearGradient id="ls2" x1="9" y1="20.3279" x2="23.747" y2="20.476" gradientUnits="userSpaceOnUse"><stop stop-color="#34A6ED"/><stop offset="1" stop-color="#54E3DF"/></linearGradient><linearGradient id="ls3" x1="14.249" y1="15.6351" x2="28.9983" y2="15.7833" gradientUnits="userSpaceOnUse"><stop stop-color="#54E3DF"/><stop offset="1" stop-color="#34A6ED"/></linearGradient><linearGradient id="ls4" x1="19.0012" y1="20.9846" x2="28.9996" y2="21.0675" gradientUnits="userSpaceOnUse"><stop stop-color="#1047D2"/><stop offset="1" stop-color="#34A6ED"/></linearGradient></defs></svg>
+      <span class="loading-brand-name">Surmount</span>
+    </div>
+    <div class="loading-text">
+      <p class="loading-title">Finding strategies for you</p>
+      <p class="loading-sub" id="loadingSub">Analyzing your answers...</p>
+    </div>
+    <div class="loading-bar-track">
+      <div class="loading-bar-fill" id="loadingBarFill"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Questions ───────────────────────────────────────────────────────── */
+const QUESTIONS = [
+  {
+    id: 'goal',
+    q: 'What are you investing for?',
+    type: 'single',
+    options: [
+      { label: 'Long-term wealth growth',  sub: 'Building wealth over many years' },
+      { label: 'Retirement',               sub: 'Saving for life after work' },
+      { label: 'A major purchase',         sub: 'A house, education, or other big goal' },
+      { label: 'Just getting started',     sub: 'Exploring investing without a specific goal yet' },
+    ]
+  },
+  {
+    id: 'horizon',
+    q: 'When will you need this money?',
+    type: 'single',
+    options: [
+      { label: 'Within 2 years' },
+      { label: '2 to 5 years'  },
+      { label: '5 to 10 years' },
+      { label: '10+ years'     },
+    ]
+  },
+  {
+    id: 'risk',
+    q: 'Imagine your portfolio drops 20% in a month. What do you do?',
+    type: 'single',
+    options: [
+      { label: 'Sell everything',           sub: 'Preserve what I have left' },
+      { label: 'Sell some to reduce risk',  sub: 'Cut exposure, wait and see' },
+      { label: 'Stay the course',           sub: "Hold steady — it'll recover" },
+      { label: 'Buy more',                  sub: "It's a discount — buy the dip" },
+    ]
+  },
+  {
+    id: 'experience',
+    q: 'How would you describe your investing experience?',
+    type: 'single',
+    options: [
+      { label: 'First-time investor',   sub: 'New to investing',                      bars: 1 },
+      { label: 'Some experience',       sub: "I've bought stocks or ETFs before",      bars: 2 },
+      { label: 'Experienced investor',  sub: 'Comfortable managing a portfolio',       bars: 3 },
+    ]
+  },
+  {
+    id: 'themes',
+    q: 'What themes interest you?',
+    sub: 'Pick as many as you like',
+    type: 'multi',
+    options: [
+      { label: 'AI & Tech',           count: 8 },
+      { label: 'Sustainability',      count: 4 },
+      { label: 'Healthcare',          count: 3 },
+      { label: 'Real Estate',         count: 2 },
+      { label: 'Income & Dividends',  count: 3 },
+      { label: 'Diversified',         count: 4 },
+    ]
+  },
+];
+
+/* ── Progress mapping: 5 questions → 3 segments (2/2/1) ─────────────── */
+const PROGRESS = [
+  [50,  0,  0],
+  [100, 0,  0],
+  [100, 50, 0],
+  [100, 100,0],
+  [100, 100,50],
+];
+
+/* ── State ───────────────────────────────────────────────────────────── */
+let step = 0;
+const answers = {};
+
+const seg1 = document.getElementById('seg1');
+const seg2 = document.getElementById('seg2');
+const seg3 = document.getElementById('seg3');
+const quizMain  = document.getElementById('quizMain');
+const quizStack = document.getElementById('quizStack');
+const loadingScreen  = document.getElementById('loadingScreen');
+const loadingBarFill = document.getElementById('loadingBarFill');
+const loadingSub     = document.getElementById('loadingSub');
+const exitModal      = document.getElementById('exit-modal');
+
+/* ── Exit modal ──────────────────────────────────────────────────────── */
+document.getElementById('btnClose').addEventListener('click', () => {
+  exitModal.hidden = false;
+  document.body.style.overflow = 'hidden';
+});
+exitModal.addEventListener('click', e => {
+  if (e.target.closest('[data-modal-dismiss]')){
+    exitModal.hidden = true;
+    document.body.style.overflow = '';
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !exitModal.hidden){
+    exitModal.hidden = true;
+    document.body.style.overflow = '';
+  }
+});
+
+/* ── Progress bar ────────────────────────────────────────────────────── */
+function setProgress(s) {
+  const [p1,p2,p3] = PROGRESS[s] || [100,100,100];
+  seg1.style.width = p1 + '%';
+  seg2.style.width = p2 + '%';
+  seg3.style.width = p3 + '%';
+}
+
+/* ── Exp bars SVG ────────────────────────────────────────────────────── */
+function expBarsSVG(level) {
+  const heights = [7, 11, 16];
+  const bars = heights.map((h, i) => {
+    const active = i < level;
+    const y = 16 - h;
+    const color = active ? 'rgba(24,29,39,0.9)' : 'rgba(24,29,39,0.12)';
+    return `<rect x="${i * 8}" y="${y}" width="5" height="${h}" rx="1.5" fill="${color}"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 21 16" width="21" height="16" fill="none" style="display:block;flex-shrink:0">${bars}</svg>`;
+}
+
+/* ── Build question HTML ─────────────────────────────────────────────── */
+function buildHTML(q) {
+  const subHTML = q.sub
+    ? `<p class="subtitle">${q.sub}</p>`
+    : '';
+
+  let optionsHTML = '';
+  const inputType = q.type === 'multi' ? 'checkbox' : 'radio';
+  const rowClass  = q.type === 'multi' ? 'checkbox-row' : 'radio-row';
+  const groupClass = q.type === 'multi' ? 'checkbox-group' : 'radio-group';
+
+  optionsHTML = q.options.map((opt, i) => {
+    const barsHTML = opt.bars
+      ? `<span style="display:flex;align-items:center;margin-right:4px">${expBarsSVG(opt.bars)}</span>`
+      : '';
+
+    const tagHTML = opt.tag
+      ? `<span class="horizon-tag" style="color:${opt.tagColor};background:${opt.tagBg}">${opt.tag}</span>`
+      : '';
+
+    const hasDetails = opt.sub || tagHTML;
+    const labelInner = hasDetails
+      ? `<div class="${q.type === 'multi' ? 'check-label-group' : 'radio-label-group'}">
+           ${tagHTML}
+           <span class="${q.type === 'multi' ? 'check-label' : 'radio-label'}">${opt.label}</span>
+           ${opt.sub ? `<span class="${q.type === 'multi' ? 'check-sublabel' : 'radio-sublabel'}">${opt.sub}</span>` : ''}
+         </div>`
+      : `<span class="${q.type === 'multi' ? 'check-label' : 'radio-label'}">${opt.label}</span>`;
+
+    return `<label class="${rowClass}">
+      <input type="${inputType}" name="${q.id}" value="${i}">
+      ${barsHTML}
+      ${labelInner}
+    </label>`;
+  }).join('');
+
+  const ctaHTML = q.type === 'multi'
+    ? `<button class="cta" id="btnNext" type="button" disabled>
+         <span>See my strategies</span>
+         <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="256" height="256" fill="none"/><line x1="40" y1="128" x2="216" y2="128" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/><polyline points="144 56 216 128 144 200" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/></svg>
+       </button>`
+    : '';
+
+  return `
+    <div class="hero">
+      <h1 class="title">${q.q}</h1>
+      ${subHTML}
+    </div>
+    <${q.type === 'multi' ? 'div' : 'fieldset'} class="${groupClass}" aria-label="${q.q}">
+      ${optionsHTML}
+    </${q.type === 'multi' ? 'div' : 'fieldset'}>
+    ${ctaHTML}`;
+}
+
+/* ── Show question (with transition) ────────────────────────────────── */
+function showQuestion(idx, dir) {
+  step = idx;
+  setProgress(step);
+
+  const enterClass = dir > 0 ? 'enter-forward' : (dir < 0 ? 'enter-backward' : '');
+  const leaveClass = dir > 0 ? 'leave-forward' : 'leave-backward';
+
+  function render() {
+    quizStack.innerHTML = buildHTML(QUESTIONS[idx]);
+    attachListeners(QUESTIONS[idx]);
+
+    if (enterClass) {
+      quizMain.classList.add(enterClass);
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        quizMain.classList.remove('enter-forward', 'enter-backward', 'leave-forward', 'leave-backward');
+      });
+    });
+  }
+
+  if (dir === 0) {
+    render();
+    return;
+  }
+
+  quizMain.classList.add(leaveClass);
+  setTimeout(() => {
+    render();
+  }, 200);
+}
+
+/* ── Attach change listeners ─────────────────────────────────────────── */
+function attachListeners(q) {
+  if (q.type === 'single') {
+    quizStack.querySelectorAll('input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        answers[q.id] = parseInt(radio.value, 10);
+        setTimeout(advance, 280);
+      });
+    });
+  } else {
+    const btnNext = document.getElementById('btnNext');
+    quizStack.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (!answers[q.id]) answers[q.id] = new Set();
+        if (cb.checked) answers[q.id].add(parseInt(cb.value, 10));
+        else answers[q.id].delete(parseInt(cb.value, 10));
+        if (btnNext) {
+          const hasAny = answers[q.id] && answers[q.id].size > 0;
+          if (hasAny) btnNext.removeAttribute('disabled');
+          else btnNext.setAttribute('disabled', '');
+        }
+      });
+    });
+    if (btnNext) btnNext.addEventListener('click', advance);
+  }
+}
+
+/* ── Navigate ────────────────────────────────────────────────────────── */
+function advance() {
+  if (step < QUESTIONS.length - 1) {
+    showQuestion(step + 1, 1);
+  } else {
+    startLoading();
+  }
+}
+
+document.getElementById('btnBack').addEventListener('click', () => {
+  if (step > 0) {
+    showQuestion(step - 1, -1);
+  } else {
+    if (history.length > 1) history.back();
+    else location.href = './pick-strategy.html';
+  }
+});
+
+/* ── Loading screen ──────────────────────────────────────────────────── */
+function startLoading() {
+  seg1.style.width = '100%';
+  seg2.style.width = '100%';
+  seg3.style.width = '100%';
+
+  loadingScreen.removeAttribute('aria-hidden');
+  loadingScreen.classList.add('visible');
+
+  requestAnimationFrame(() => { loadingBarFill.style.width = '100%'; });
+
+  setTimeout(() => { loadingSub.textContent = 'Finding your best matches...'; }, 1100);
+  setTimeout(() => { location.href = './strategy-results.html'; }, 2500);
+}
+
+/* ── Init ────────────────────────────────────────────────────────────── */
+showQuestion(0, 0);
+</script>
+</body>
+</html>
