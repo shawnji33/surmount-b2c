@@ -1,7 +1,7 @@
 .dashboardLayout {
   display: flex;
   min-height: 100vh;
-  background: var(--color-bg-secondary, #fafafa);
+  background: var(--color-bg-primary);
 }
 
 .mainWrapper {
