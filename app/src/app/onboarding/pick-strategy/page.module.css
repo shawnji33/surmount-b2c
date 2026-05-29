@@ -1,0 +1,342 @@
+/* Step cards */
+.stepCard {
+  background: var(--color-bg-primary);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: var(--radius-2xl, 16px);
+  padding: 21px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.stepCardActive {
+  align-items: flex-start;
+}
+
+/* Step icon — completed */
+.stepIconDone {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #535862;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.stepIconDone svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+/* Step icon — active (numbered) */
+.stepIconActive {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-bg-primary);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stepIconActive span {
+  font-family: var(--font-family-body);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: rgba(10, 13, 18, 0.7);
+}
+
+/* Completed step label */
+.stepLabelDone {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-family-body);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: rgba(10, 13, 18, 0.4);
+}
+
+/* Completed badge */
+.badgeDone {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: #eef7ee;
+  border: 1px solid #cbe7cc;
+  border-radius: 9999px;
+  font-family: var(--font-family-body);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #316434;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Recommended badge */
+.badgeRecommended {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  background: #f1f6fd;
+  border: 1px solid #c8dbf5;
+  border-radius: var(--radius-sm, 6px);
+  font-family: var(--font-family-body);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 13px;
+  color: #3757be;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Active step body */
+.stepBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stepTitle {
+  font-family: var(--font-family-body);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--color-fg-primary-900);
+}
+
+.stepDesc {
+  font-family: var(--font-family-body);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600);
+}
+
+/* Quiz sub-card */
+.quizCard {
+  background: var(--color-bg-secondary, #fafafa);
+  border-radius: var(--radius-xl, 12px);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.quizInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.quizTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.quizTitle {
+  font-family: var(--font-family-body);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--color-fg-primary-900);
+  white-space: nowrap;
+}
+
+.quizSub {
+  font-family: var(--font-family-body);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--color-fg-tertiary-600);
+}
+
+/* Start button */
+.btnStart {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 10px;
+  background: var(--color-fg-primary-900);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md, 8px);
+  font-family: var(--font-family-body);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+.btnStart:hover {
+  background: #252b37;
+}
+.btnStart svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Browse all strategies row */
+.browseRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.browseRowText {
+  font-family: var(--font-family-body);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--color-fg-tertiary-600);
+  white-space: nowrap;
+}
+
+.browseLink {
+  font-family: var(--font-family-body);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  color: rgba(10, 13, 18, 0.9);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+.browseLink:hover {
+  color: var(--color-fg-primary-900);
+}
+
+/* Timeline sidebar card */
+.timelineCard {
+  background: var(--color-bg-primary);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: var(--radius-2xl, 16px);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 2px 3px rgba(10, 13, 18, 0.03);
+}
+
+.timelineLabel {
+  font-family: var(--font-family-body);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.5px;
+  color: rgba(10, 13, 18, 0.7);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.tlItem {
+  display: flex;
+  gap: 12px;
+}
+
+.tlTrack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 14px;
+}
+
+.tlDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.tlDotDone {
+  background: #535862;
+}
+
+@keyframes dotBreath {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(64, 106, 208, 0.35); }
+  50%       { box-shadow: 0 0 0 4px rgba(64, 106, 208, 0); }
+}
+.tlDotBlue {
+  background: #406ad0;
+  animation: dotBreath 2.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tlDotBlue { animation: none; }
+}
+
+.tlLine {
+  flex: 1;
+  width: 2px;
+  margin: 3px 0;
+  min-height: 16px;
+}
+.tlLineDone {
+  background: #535862;
+}
+
+.tlContent {
+  padding-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tlItem:last-child .tlContent {
+  padding-bottom: 0;
+}
+
+.tlTitle {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--color-fg-primary-900);
+  letter-spacing: -0.5px;
+}
+.tlTitleActive {
+  color: #3757be;
+}
+.tlSub {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--color-fg-tertiary-600);
+  letter-spacing: -0.5px;
+}
+
+/* Support text */
+.supportText {
+  font-family: var(--font-family-body);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600);
+}
+.supportText a {
+  color: var(--color-fg-primary-900);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.supportText a:hover {
+  color: #252b37;
+}

@@ -1,0 +1,100 @@
+@keyframes amountIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+.amountAnimate {
+  animation: amountIn 240ms cubic-bezier(0, 0, 0.2, 1) both;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+.popover {
+  animation: popIn 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: top right;
+}
+.popoverLeft {
+  animation: popIn 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: top left;
+}
+
+@keyframes popOut {
+  from { opacity: 1; transform: translateY(0)    scale(1);    }
+  to   { opacity: 0; transform: translateY(-4px) scale(0.97); }
+}
+.popoverExit {
+  animation: popOut 110ms cubic-bezier(0.4, 0, 1, 1) both;
+  transform-origin: top right;
+}
+.popoverLeftExit {
+  animation: popOut 110ms cubic-bezier(0.4, 0, 1, 1) both;
+  transform-origin: top left;
+}
+
+/* ── Calendar ────────────────────────────────────────────────────── */
+.cal { display: flex; flex-direction: column; gap: 8px; }
+.calHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.calMonthLabel {
+  font-size: 14px; font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+  line-height: 20px;
+}
+.calNav {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  color: var(--color-fg-tertiary-600, #535862);
+  cursor: pointer;
+  transition: background 100ms;
+  border: none; background: none; font-family: inherit;
+}
+.calNav:hover { background: rgba(0,0,0,0.06); }
+.calNav:disabled { opacity: 0.3; cursor: default; }
+.calNav svg { width: 16px; height: 16px; }
+
+.calWeekdays {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 2px;
+}
+.calWeekday {
+  text-align: center;
+  font-size: 11px; font-weight: 500;
+  color: var(--color-fg-quaternary-400, #a4a7ae);
+  padding: 4px 0;
+}
+.calWeekday.weekend { color: var(--color-fg-disabled-subtle, #d5d7da); }
+
+.calDays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.calDay {
+  aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 400;
+  color: var(--color-fg-primary-900, #181d27);
+  cursor: pointer;
+  transition: background 80ms;
+  border: none; background: none;
+  font-family: inherit;
+  position: relative;
+}
+.calDay:hover:not(:disabled):not(.calDayEmpty) { background: rgba(0,0,0,0.06); }
+.calDay:disabled { color: var(--color-fg-disabled-subtle, #d5d7da); cursor: default; }
+.calDay.calDayEmpty { pointer-events: none; }
+.calDay.calDayToday { font-weight: 500; }
+.calDay.calDayToday:not(.calDaySelected)::after {
+  content: '';
+  display: block; width: 3px; height: 3px;
+  background: var(--color-fg-primary-900, #181d27);
+  border-radius: 50%;
+  position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+}
+.calDay.calDaySelected {
+  background: var(--color-fg-primary-900, #181d27) !important;
+  color: #fff;
+  font-weight: 500;
+}
+.calDay.weekend:not(.calDaySelected) { color: var(--color-fg-disabled-subtle, #d5d7da); }

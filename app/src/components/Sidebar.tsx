@@ -1,12 +1,16 @@
 'use client';
 
+import { GearSix, SignOut } from '@phosphor-icons/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { ActivityNavItem } from './sidebar/ActivityNavItem';
 import s from './Sidebar.module.css';
 
 function SurmountIcon() {
   return (
-    <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="32" height="32" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g filter="url(#sb_f0)">
         <path d="M3 14.8C3 10.3196 3 8.07937 3.87195 6.36808C4.63893 4.86278 5.86278 3.63893 7.36808 2.87195C9.07937 2 11.3196 2 15.8 2H22.2C26.6804 2 28.9206 2 30.6319 2.87195C32.1372 3.63893 33.3611 4.86278 34.1281 6.36808C35 8.07937 35 10.3196 35 14.8V21.2C35 25.6804 35 27.9206 34.1281 29.6319C33.3611 31.1372 32.1372 32.3611 30.6319 33.1281C28.9206 34 26.6804 34 22.2 34H15.8C11.3196 34 9.07937 34 7.36808 33.1281C5.86278 32.3611 4.63893 31.1372 3.87195 29.6319C3 27.9206 3 25.6804 3 21.2V14.8Z" fill="url(#sb_p0)"/>
         <path d="M18.9982 13.1366C18.7314 13.3201 18.4774 13.5264 18.2363 13.7556L17.0473 14.888C16.5042 14.6108 15.9021 14.473 15.3023 14.473C14.3537 14.473 13.4058 14.8171 12.6831 15.5054C11.9844 16.1725 11.5993 17.0568 11.5993 17.9994H9C9 16.3954 9.65481 14.888 10.8462 13.7556C13.064 11.6435 16.537 11.4371 19.0006 13.1366H18.9982Z" fill="url(#sb_p1)"/>
@@ -49,20 +53,41 @@ function SurmountIcon() {
   );
 }
 
+const SAVINGS_HREF = '/home/saving';
+
 const NAV_ITEMS = [
   {
-    key: 'home',
-    label: 'Home',
+    key: 'investing',
+    label: 'Investing',
+    tooltip: 'Go to Investing',
     href: '/home',
     icon: (
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M8.65487 1.84268C8.42065 1.66051 8.30354 1.56943 8.17423 1.53442C8.06013 1.50352 7.93987 1.50352 7.82577 1.53442C7.69646 1.56943 7.57935 1.66051 7.34513 1.84268L2.82359 5.35943C2.52135 5.59451 2.37022 5.71205 2.26135 5.85925C2.16491 5.98964 2.09307 6.13654 2.04935 6.29272C2 6.46903 2 6.66048 2 7.04338V11.8667C2 12.6134 2 12.9868 2.14532 13.272C2.27316 13.5229 2.47713 13.7268 2.72801 13.8547C3.01323 14 3.3866 14 4.13333 14H5.46667C5.65335 14 5.74669 14 5.818 13.9637C5.88072 13.9317 5.93171 13.8807 5.96367 13.818C6 13.7467 6 13.6534 6 13.4667V9.06667C6 8.6933 6 8.50662 6.07266 8.36401C6.13658 8.23857 6.23857 8.13658 6.36401 8.07267C6.50661 8 6.6933 8 7.06667 8H8.93333C9.3067 8 9.49339 8 9.63599 8.07267C9.76144 8.13658 9.86342 8.23857 9.92734 8.36401C10 8.50662 10 8.6933 10 9.06667V13.4667C10 13.6534 10 13.7467 10.0363 13.818C10.0683 13.8807 10.1193 13.9317 10.182 13.9637C10.2533 14 10.3466 14 10.5333 14H11.8667C12.6134 14 12.9868 14 13.272 13.8547C13.5229 13.7268 13.7268 13.5229 13.8547 13.272C14 12.9868 14 12.6134 14 11.8667V7.04338C14 6.66048 14 6.46903 13.9506 6.29272C13.9069 6.13654 13.8351 5.98964 13.7386 5.85925C13.6298 5.71205 13.4787 5.59451 13.1764 5.35943L8.65487 1.84268Z" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M2.25 12.75H13.75" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
+        <path d="M3.25 11.25V4.5" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
+        <path d="M3.25 10.25L6.15 7.35L8.45 9.65L12.75 5.35" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M10.25 5.35H12.75V7.85" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    key: 'saving',
+    label: 'Saving',
+    tooltip: 'Go to Saving',
+    href: SAVINGS_HREF,
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M5.25 9.5C3.45 9.5 2 8.79 2 7.92V5.58C2 4.71 3.45 4 5.25 4C7.05 4 8.5 4.71 8.5 5.58V7.92C8.5 8.79 7.05 9.5 5.25 9.5Z" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M2 5.58C2 6.45 3.45 7.17 5.25 7.17C7.05 7.17 8.5 6.45 8.5 5.58" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M7.5 8.33C8.08 8.02 8.43 7.58 8.5 7.08C8.87 6.99 9.29 6.94 9.75 6.94C11.55 6.94 13 7.65 13 8.52V10.86C13 11.73 11.55 12.44 9.75 12.44C8.1 12.44 6.74 11.84 6.53 11.07" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M6.5 8.75V11.06C6.5 11.94 7.95 12.65 9.75 12.65" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
   },
   {
     key: 'marketplace',
-    label: 'Marketplace',
+    label: 'Market',
+    tooltip: 'Go to Market',
     href: '/home/marketplace',
     icon: (
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -72,7 +97,8 @@ const NAV_ITEMS = [
   },
   {
     key: 'builder',
-    label: 'Strategy Builder',
+    label: 'Create',
+    tooltip: 'Go to Create',
     href: '/home/builder',
     icon: (
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -85,12 +111,101 @@ const NAV_ITEMS = [
   },
 ] as const;
 
-type NavKey = typeof NAV_ITEMS[number]['key'];
+type NavKey = typeof NAV_ITEMS[number]['key'] | 'activity';
 
 function activeKey(pathname: string): NavKey {
+  if (pathname.startsWith('/activity')) return 'activity';
+  if (pathname.startsWith(SAVINGS_HREF)) return 'saving';
   if (pathname.startsWith('/home/marketplace')) return 'marketplace';
   if (pathname.startsWith('/home/builder')) return 'builder';
-  return 'home';
+  return 'investing';
+}
+
+function AccountMenu() {
+  const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [pos, setPos] = useState<{ bottom: number; left: number } | null>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  const openMenu = useCallback(() => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPos({ bottom: window.innerHeight - rect.top + 8, left: rect.right + 10 });
+    }
+    setOpen(true);
+  }, []);
+
+  const closeMenu = useCallback(() => {
+    setOpen(false);
+    setPos(null);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const handlePointerDown = (e: MouseEvent) => {
+      const t = e.target as Node;
+      if (!triggerRef.current?.contains(t) && !menuRef.current?.contains(t)) closeMenu();
+    };
+    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') closeMenu(); };
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [closeMenu, open]);
+
+  const menu = (
+    <div
+      ref={menuRef}
+      className={s.accountMenu}
+      style={{ bottom: pos?.bottom, left: pos?.left }}
+      role="menu"
+      aria-label="Account menu"
+    >
+      <div className={s.accountMenuHeader}>
+        <div className={s.accountMenuAvatar}>
+          <div className={s.avatarInner}>L</div>
+        </div>
+        <div className={s.accountMenuUser}>
+          <span className={s.accountMenuName}>Logan</span>
+          <span className={s.accountMenuEmail}>logan@surmount.com</span>
+        </div>
+      </div>
+
+      <div className={s.accountMenuDivider} role="separator" />
+
+      <button type="button" className={s.accountMenuItem} role="menuitem" onClick={closeMenu}>
+        <GearSix className={s.accountMenuIcon} weight="regular" aria-hidden="true" />
+        <span>Settings</span>
+      </button>
+
+      <button type="button" className={[s.accountMenuItem, s.accountMenuItemDanger].join(' ')} role="menuitem" onClick={closeMenu}>
+        <SignOut className={s.accountMenuIcon} weight="regular" aria-hidden="true" />
+        <span>Log out</span>
+      </button>
+    </div>
+  );
+
+  return (
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        className={[s.avatar, open ? s.avatarOpen : ''].filter(Boolean).join(' ')}
+        onClick={() => (open ? closeMenu() : openMenu())}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label="Account menu"
+      >
+        <div className={s.avatarInner}>L</div>
+      </button>
+      {mounted && open && pos && createPortal(menu, document.body)}
+    </>
+  );
 }
 
 export function Sidebar() {
@@ -106,7 +221,7 @@ export function Sidebar() {
 
         <nav aria-label="Main navigation">
           <ul className={s.navList}>
-            {NAV_ITEMS.map(({ key, label, href, icon }) => (
+            {NAV_ITEMS.map(({ key, label, tooltip, href, icon }) => (
               <li key={key} className={s.navItem}>
                 <Link
                   href={href}
@@ -116,16 +231,27 @@ export function Sidebar() {
                 >
                   {icon}
                 </Link>
-                <div className={s.tooltip} role="tooltip">{label}</div>
+                <div className={s.tooltip} role="tooltip">{tooltip}</div>
               </li>
             ))}
+            <ActivityNavItem active={active === 'activity'} />
+            <li className={s.navItem}>
+              <Link
+                href="/activity?filter=pending"
+                className={s.pendingBtn}
+                aria-label="View 5 pending orders"
+              >
+                <span className={s.pendingDot} aria-hidden="true" />
+                <span className={s.pendingCount}>5</span>
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>
 
-      <button type="button" className={s.avatar} aria-label="Account menu">
-        <div className={s.avatarInner}>L</div>
-      </button>
+      <div className={s.bottom}>
+        <AccountMenu />
+      </div>
     </aside>
   );
 }
