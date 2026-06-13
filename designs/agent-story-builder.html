@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Investing Agent · Story Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+:root{
+  --bg-primary:#ffffff; --bg-secondary:#fafafa; --bg-tertiary:#f5f5f5; --bg-quaternary:#e9e9eb;
+  --fg-900:#181d27; --fg-700:#414651; --fg-600:#535861; --fg-500:#717680; --fg-400:#a3a7ae;
+  --text-900:#0a0d12e5; --text-700:#0a0d12b2; --text-600:#0a0d1299; --text-disabled:#0a0d1266;
+  --border:#00000016; --border-2:#00000010; --border-strong:#00000024; --white:#fff;
+  --brand-600:#406ad0; --brand-700:#3757be; --brand-500:#5585dc; --brand-secondary:#e0eaf9; --brand-bg:#f1f6fd;
+  --green-600:#3b7e3f; --green-700:#316434; --green-secondary:#e4f4e5; --green-bg:#eef7ee;
+  --amber-600:#de5b18; --amber-secondary:#fdedd7;
+  --purple-600:#6838ee; --purple-700:#5925db; --red-600:#b6544c;
+  --font-body:'Geist',-apple-system,sans-serif; --font-display:'Inter',-apple-system,sans-serif;
+  --shadow-card:0 1px 2px rgba(10,13,18,.04),0 1px 3px rgba(10,13,18,.06);
+  --shadow-pop:0 8px 24px rgba(10,13,18,.10),0 2px 6px rgba(10,13,18,.06);
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);letter-spacing:-0.5px;color:var(--text-900);background:var(--bg-primary);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.45;overflow:hidden}
+button{font-family:inherit;letter-spacing:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea{font-family:inherit;letter-spacing:inherit}
+svg{display:block}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* ── Top bar ───────────────────────────────────────────────────────────────*/
+.top{height:54px;flex:0 0 54px;display:flex;align-items:center;border-bottom:1px solid var(--border);background:var(--bg-primary);z-index:30}
+.top-left{width:260px;display:flex;align-items:center;gap:10px;padding:0 14px;flex:0 0 260px}
+.logo{width:30px;height:30px;border-radius:8px;background:var(--fg-900);display:grid;place-items:center;flex:0 0 30px}
+.seg{display:flex;background:var(--bg-tertiary);border-radius:8px;padding:3px}
+.seg button{font-size:12.5px;font-weight:500;color:var(--fg-500);padding:5px 12px;border-radius:6px;transition:all .12s var(--ease)}
+.seg button.on{background:var(--bg-primary);color:var(--fg-900);box-shadow:var(--shadow-card)}
+.top-center{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;color:var(--fg-600)}
+.top-center .crumb{color:var(--fg-500)}
+.top-center .cur{display:flex;align-items:center;gap:7px;color:var(--fg-900);font-weight:500}
+.top-center .heart{font-size:13px}
+.caret{color:var(--fg-500)}
+.top-right{display:flex;align-items:center;gap:6px;padding:0 14px}
+.ava{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--purple-600),var(--brand-600));color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:500}
+.ico-btn{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--fg-600);transition:background .12s var(--ease)}
+.ico-btn:hover{background:var(--bg-tertiary)}
+.branch{position:relative}
+.branch .badge{position:absolute;top:-2px;right:-2px;width:14px;height:14px;border-radius:50%;background:var(--purple-600);color:#fff;display:grid;place-items:center;font-size:9px}
+
+.body{flex:1;display:flex;min-height:0}
+
+/* ── Palette ───────────────────────────────────────────────────────────────*/
+.palette{flex:0 0 260px;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--bg-primary)}
+.tile-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:22px 10px;border-right:1px solid var(--border-2);border-bottom:1px solid var(--border-2);cursor:grab;transition:background .12s var(--ease);position:relative}
+.tile:nth-child(2n){border-right:none}
+.tile:hover{background:var(--bg-secondary)}
+.tile .tic{width:24px;height:24px;display:grid;place-items:center}
+.tile .tl{font-size:12.5px;color:var(--fg-700);font-weight:500}
+.tile.dim{opacity:.45}
+.pal-spacer{flex:1}
+.pal-nav{padding:8px;border-top:1px solid var(--border-2)}
+.pal-item{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:9px;color:var(--fg-700);transition:background .12s var(--ease)}
+.pal-item:hover{background:var(--bg-secondary)}
+.pal-item .pi{color:var(--fg-500);display:grid;place-items:center}
+.pal-item .pt{flex:1;font-size:13px;font-weight:500}
+.pal-item .chev{color:var(--fg-400)}
+
+/* ── Canvas ────────────────────────────────────────────────────────────────*/
+.canvas{flex:1;position:relative;overflow:auto;background:
+  radial-gradient(circle, rgba(10,13,18,.08) 1px, transparent 1.6px) 0 0 / 16px 16px, #f3f3f4;}
+.canvas-content{position:relative;width:1040px;height:820px;margin:0 auto}
+
+.note{position:absolute;background:rgba(255,255,255,.55);border:1px solid var(--border);border-radius:14px;padding:20px;backdrop-filter:blur(2px)}
+.note .nt{font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--fg-900);letter-spacing:-0.3px;line-height:1.35}
+.note .nd{font-size:12.5px;color:var(--fg-600);line-height:1.55;margin-top:14px}
+.note.big{left:110px;top:120px;width:280px}
+.note.small{left:110px;top:560px;width:280px}
+.note .visual{margin:20px auto;width:120px;height:120px;display:grid;place-items:center}
+.note .vlabel{text-align:center;font-family:var(--font-display);font-size:18px;font-weight:500;color:var(--fg-700);margin-top:-6px}
+
+.tcard{position:absolute;background:var(--bg-primary);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-card);overflow:hidden}
+.tcard.preview{left:470px;top:120px;width:300px;padding:14px}
+.tcard .ph{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--fg-900);margin-bottom:12px}
+.tcard .ph .mini{width:22px;height:22px;border-radius:6px;background:var(--bg-tertiary);display:grid;place-items:center;color:var(--fg-600)}
+.preview-body{background:var(--bg-secondary);border:1px solid var(--border-2);border-radius:10px;padding:14px}
+.pv-brand{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.pv-brand .sq{width:22px;height:22px;border-radius:6px;background:var(--fg-900)}
+.pv-brand .nm{font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--fg-900)}
+.spark{width:100%;height:64px}
+.pv-row{height:7px;border-radius:4px;background:var(--bg-quaternary);margin-top:8px}
+.pv-row.w70{width:70%}.pv-row.w50{width:50%}
+
+/* node cards (stacked) */
+.node{position:absolute;width:268px;background:var(--bg-primary);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:13px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:box-shadow .14s var(--ease),border-color .14s var(--ease)}
+.node:hover{box-shadow:0 4px 14px rgba(10,13,18,.08),0 1px 3px rgba(10,13,18,.06)}
+.node.sel{border-color:var(--brand-500);box-shadow:0 0 0 3px rgba(85,133,220,.22),var(--shadow-card)}
+.node .nic{width:38px;height:38px;border-radius:10px;flex:0 0 38px;display:grid;place-items:center}
+.node .ntt .lab{font-size:11px;color:var(--brand-600);font-weight:500}
+.node .ntt .ti{font-size:13.5px;color:var(--fg-900);font-weight:500;margin-top:1px}
+.node.cond{left:500px;top:452px}
+.node.act{left:520px;top:566px}
+
+/* connectors */
+.conn{position:absolute;background:var(--brand-500);opacity:.7;border-radius:2px}
+.dot{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--brand-500);border:2px solid var(--bg-primary)}
+
+/* ── Properties panel ──────────────────────────────────────────────────────*/
+.props{flex:0 0 330px;border-left:1px solid var(--border);background:var(--bg-primary);overflow-y:auto;padding:22px 22px 40px}
+.prop{margin-bottom:22px}
+.prop > .lbl{font-size:13px;font-weight:500;color:var(--fg-900);display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.prop > .lbl .collapse{color:var(--fg-400)}
+.status-row{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:10px;padding:11px 13px}
+.status-row .en{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--fg-900);font-weight:500}
+.status-row .en .d{width:9px;height:9px;border-radius:50%;background:var(--green-600);box-shadow:0 0 0 3px var(--green-secondary)}
+.status-row .dis{font-size:13px;color:var(--fg-500)}
+.inp{width:100%;border:1px solid var(--border-strong);border-radius:9px;padding:10px 12px;font-size:13.5px;color:var(--fg-900);background:var(--bg-primary);transition:border-color .12s var(--ease)}
+.inp:focus{outline:none;border-color:var(--brand-500);box-shadow:0 0 0 3px rgba(85,133,220,.16)}
+textarea.inp{resize:none;line-height:1.5}
+.tags{display:flex;flex-wrap:wrap;gap:7px}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--fg-700);background:var(--bg-tertiary);border:1px solid var(--border-2);border-radius:7px;padding:5px 9px}
+.tag .x{color:var(--fg-400);font-size:13px;line-height:1}
+.tag.beginner{color:var(--green-700);background:var(--green-secondary);border-color:transparent}
+.tag.brand{color:var(--brand-700);background:var(--brand-secondary);border-color:transparent}
+.tag.purple{color:var(--purple-700);background:rgba(104,56,238,.12);border-color:transparent}
+.empty-line{height:1px;background:var(--border-2);margin-top:6px}
+.check-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--fg-700)}
+.checkbox{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border-strong)}
+.mono-email{display:flex;align-items:center;gap:8px;margin-top:12px}
+.mono-email .inp{flex:1}
+.add-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border-strong);display:grid;place-items:center;color:var(--fg-600);flex:0 0 34px;transition:background .12s var(--ease)}
+.add-btn:hover{background:var(--bg-tertiary)}
+.time-row{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--fg-900);font-weight:500}
+.time-row .h{font-size:14px}
+.toggle{width:36px;height:21px;border-radius:999px;background:var(--bg-quaternary);position:relative;flex:0 0 36px;transition:background .16s var(--ease);cursor:pointer}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .18s var(--ease)}
+.toggle.on{background:var(--green-600)}.toggle.on::after{transform:translateX(15px)}
+.row-between{display:flex;align-items:center;justify-content:space-between}
+.collapse-bar{position:absolute;left:14px;bottom:14px;width:30px;height:30px;border-radius:8px;background:var(--bg-primary);border:1px solid var(--border);display:grid;place-items:center;color:var(--fg-500);box-shadow:var(--shadow-card);z-index:10}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Top bar -->
+  <header class="top">
+    <div class="top-left">
+      <div class="logo"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="#fff" stroke-width="18" stroke-linecap="round"><line x1="40" y1="72" x2="216" y2="72"/><line x1="40" y1="128" x2="216" y2="128"/><line x1="40" y1="184" x2="216" y2="184"/></svg></div>
+      <div class="seg"><button class="on">Story</button><button>Story runs</button></div>
+    </div>
+    <div class="top-center">
+      <span class="crumb">Your portfolio</span><span class="crumb">/</span>
+      <span class="cur"><span class="heart">💜</span> Buy the NVIDIA dip <svg class="caret" width="13" height="13" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></span>
+    </div>
+    <div class="top-right">
+      <div class="ava">J</div>
+      <button class="ico-btn"><svg width="17" height="17" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><circle cx="116" cy="116" r="84"/><line x1="175" y1="175" x2="224" y2="224"/></svg></button>
+      <button class="ico-btn branch"><svg width="17" height="17" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><circle cx="64" cy="64" r="28"/><circle cx="64" cy="192" r="28"/><circle cx="192" cy="96" r="28"/><path d="M192 124a72 72 0 0 1-72 72H64"/><line x1="64" y1="92" x2="64" y2="164"/></svg><span class="badge">+</span></button>
+      <button class="ico-btn"><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor"><circle cx="128" cy="64" r="16"/><circle cx="128" cy="128" r="16"/><circle cx="128" cy="192" r="16"/></svg></button>
+    </div>
+  </header>
+
+  <div class="body">
+    <!-- Palette -->
+    <aside class="palette">
+      <div class="tile-grid">
+        <div class="tile"><span class="tic"><svg width="22" height="22" viewBox="0 0 256 256" fill="none" stroke="var(--brand-600)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="20"/><path d="M94 94a48 48 0 0 0 0 68M162 162a48 48 0 0 0 0-68M70 70a82 82 0 0 0 0 116M186 186a82 82 0 0 0 0-116"/></svg></span><span class="tl">Price trigger</span></div>
+        <div class="tile"><span class="tic"><svg width="22" height="22" viewBox="0 0 256 256" fill="none" stroke="var(--purple-600)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="96"/><polyline points="128 72 128 128 168 152"/></svg></span><span class="tl">Schedule</span></div>
+        <div class="tile"><span class="tic"><svg width="22" height="22" viewBox="0 0 256 256" fill="none" stroke="var(--red-600)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="64" cy="80" r="24"/><circle cx="64" cy="176" r="24"/><circle cx="192" cy="176" r="24"/><path d="M64 104v8a24 24 0 0 0 24 24h80"/><line x1="192" y1="80" x2="192" y2="152"/></svg></span><span class="tl">Condition</span></div>
+        <div class="tile"><span class="tic"><svg width="22" height="22" viewBox="0 0 256 256" fill="none" stroke="var(--amber-600)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><line x1="40" y1="128" x2="88" y2="128"/><line x1="168" y1="128" x2="216" y2="128"/><circle cx="128" cy="128" r="40"/></svg></span><span class="tl">Indicator</span></div>
+        <div class="tile"><span class="tic"><svg width="22" height="22" viewBox="0 0 256 256" fill="none" stroke="var(--green-700)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="224 56 144 136 104 96 32 168"/><polyline points="168 56 224 56 224 112"/></svg></span><span class="tl">Buy order</span></div>
+        <div class="tile"><span class="tic"><svg width="22" height="22" viewBox="0 0 256 256" fill="none" stroke="var(--red-600)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="224 200 144 120 104 160 32 88"/><polyline points="224 144 224 200 168 200"/></svg></span><span class="tl">Sell order</span></div>
+        <div class="tile"><span class="tic"><svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="var(--brand-600)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M56 104a72 72 0 0 1 144 0c0 35.8 8.3 56.6 14.9 68A8 8 0 0 1 208 184H48a8 8 0 0 1-6.9-12C47.7 160.6 56 139.8 56 104Z"/><path d="M96 184a32 32 0 0 0 64 0"/></svg></span><span class="tl">Notify</span></div>
+        <div class="tile"><span class="tic"><svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="var(--fg-600)" stroke-width="16" stroke-linecap="round"><line x1="40" y1="128" x2="216" y2="128"/><line x1="128" y1="40" x2="128" y2="216"/></svg></span><span class="tl">Tools</span></div>
+      </div>
+      <div class="pal-spacer"></div>
+      <div class="pal-nav">
+        <div class="pal-item"><span class="pi"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><rect x="32" y="48" width="80" height="80" rx="8"/><rect x="144" y="48" width="80" height="80" rx="8"/><rect x="32" y="160" width="80" height="48" rx="8"/><rect x="144" y="160" width="80" height="48" rx="8"/></svg></span><span class="pt">Templates</span><span class="chev"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="96 48 176 128 96 208"/></svg></span></div>
+        <div class="pal-item"><span class="pi"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M32 64a32 32 0 0 1 32-32h40a32 32 0 0 1 32 32"/><rect x="32" y="64" width="72" height="160" rx="8"/><rect x="104" y="64" width="72" height="160" rx="8"/><path d="m176 96 40-12 32 152-72 20"/></svg></span><span class="pt">Story library</span><span class="chev"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="96 48 176 128 96 208"/></svg></span></div>
+        <div class="pal-item"><span class="pi"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="96"/><path d="M100 100a28 28 0 1 1 40 24c-8 5-12 10-12 20"/><circle cx="128" cy="172" r="2" fill="currentColor"/></svg></span><span class="pt">Help and support</span></div>
+      </div>
+    </aside>
+
+    <!-- Canvas -->
+    <main class="canvas">
+      <div class="canvas-content">
+        <!-- big note -->
+        <div class="note big">
+          <div class="nt">Buy the NVIDIA dip — automated</div>
+          <div class="visual">
+            <svg width="120" height="120" viewBox="0 0 120 120"><rect x="14" y="14" width="92" height="92" rx="20" fill="#76b900"/><path d="M40 78V52l18 14 18-22v34" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="vlabel">NVIDIA · NVDA</div>
+          <div class="nd">To start, the agent watches NVDA for a meaningful pullback, then checks momentum and your buying power before placing the order automatically.</div>
+        </div>
+
+        <!-- trigger preview card -->
+        <div class="tcard preview">
+          <div class="ph"><span class="mini"><svg width="13" height="13" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="224 200 144 120 104 160 32 88"/><polyline points="224 144 224 200 168 200"/></svg></span>Price trigger</div>
+          <div class="preview-body">
+            <div class="pv-brand"><span class="sq"></span><span class="nm">NVDA · $118.40</span></div>
+            <svg class="spark" viewBox="0 0 240 64" preserveAspectRatio="none"><polyline points="0,18 30,14 60,24 90,16 120,30 150,46 180,40 210,52 240,50" fill="none" stroke="var(--red-600)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="150" cy="46" r="3.5" fill="var(--red-600)"/></svg>
+            <div class="pv-row w70"></div>
+            <div class="pv-row w50"></div>
+          </div>
+        </div>
+
+        <!-- connectors -->
+        <div class="conn" style="left:619px;top:382px;width:2px;height:70px"></div>
+        <div class="dot" style="left:615px;top:378px"></div>
+        <div class="conn" style="left:619px;top:520px;width:2px;height:46px"></div>
+
+        <!-- condition node -->
+        <div class="node cond">
+          <div class="nic" style="background:rgba(104,56,238,.10);color:var(--purple-600)"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="64" cy="80" r="24"/><circle cx="64" cy="176" r="24"/><circle cx="192" cy="176" r="24"/><path d="M64 104v8a24 24 0 0 0 24 24h80"/><line x1="192" y1="80" x2="192" y2="152"/></svg></div>
+          <div class="ntt"><div class="lab" style="color:var(--purple-600)">Condition</div><div class="ti">RSI oversold &amp; cash ≥ $500</div></div>
+        </div>
+
+        <!-- action node (selected) -->
+        <div class="node act sel">
+          <div class="nic" style="background:var(--green-secondary);color:var(--green-700)"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="224 56 144 136 104 96 32 168"/><polyline points="168 56 224 56 224 112"/></svg></div>
+          <div class="ntt"><div class="lab" style="color:var(--green-700)">Buy order</div><div class="ti">Buy $500 of NVDA at market</div></div>
+        </div>
+
+        <!-- small note -->
+        <div class="note small">
+          <div class="nd">Checks RSI(14) and your available cash before placing the order. The buy only runs when both pass — so it never buys into a falling knife.</div>
+        </div>
+      </div>
+      <button class="collapse-bar"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><line x1="200" y1="64" x2="200" y2="192"/><polyline points="120 80 72 128 120 176"/><line x1="72" y1="128" x2="168" y2="128"/></svg></button>
+    </main>
+
+    <!-- Properties -->
+    <aside class="props">
+      <div class="prop">
+        <div class="lbl">Status</div>
+        <div class="status-row"><span class="en"><span class="d"></span>Enabled</span><span class="dis">Disable</span></div>
+      </div>
+      <div class="prop">
+        <div class="lbl">Name</div>
+        <input class="inp" value="Buy the NVIDIA dip" />
+      </div>
+      <div class="prop">
+        <div class="lbl">Description <span class="collapse"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 144 128 64 48 144"/></svg></span></div>
+        <textarea class="inp" rows="2">Buy $500 of NVDA whenever it dips ≥5%, if momentum is oversold and cash is available.</textarea>
+      </div>
+      <div class="prop">
+        <div class="lbl">Tags</div>
+        <div class="tags">
+          <span class="tag beginner">Beginner <span class="x">×</span></span>
+          <span class="tag brand">Dip-buying <span class="x">×</span></span>
+          <span class="tag">NVDA <span class="x">×</span></span>
+          <span class="tag purple">New <span class="x">×</span></span>
+        </div>
+      </div>
+      <div class="prop">
+        <div class="lbl">Records</div>
+        <div class="empty-line"></div>
+      </div>
+      <div class="prop">
+        <div class="lbl">Monitoring <span class="collapse"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 144 128 64 48 144"/></svg></span></div>
+        <div class="check-row"><span class="checkbox"></span>Notify when any action fails</div>
+        <div class="mono-email"><input class="inp" value="shawn@surmount.ai" /><button class="add-btn"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="40" y1="128" x2="216" y2="128"/><line x1="128" y1="40" x2="128" y2="216"/></svg></button></div>
+      </div>
+      <div class="prop">
+        <div class="lbl">Time saved <span class="collapse"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 144 128 64 48 144"/></svg></span></div>
+        <div class="time-row"><span class="h">💜</span> Buy the NVIDIA dip</div>
+      </div>
+      <div class="prop">
+        <div class="lbl row-between" style="margin-bottom:0">Enable webhook API responses <span class="toggle"></span></div>
+      </div>
+      <div class="prop">
+        <div class="lbl">Send to Story</div>
+        <div class="empty-line"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('.toggle').forEach(t=>t.onclick=()=>t.classList.toggle('on'));
+  document.querySelectorAll('.node').forEach(n=>n.onclick=()=>{document.querySelectorAll('.node').forEach(x=>x.classList.remove('sel'));n.classList.add('sel');});
+</script>
+</body>
+</html>

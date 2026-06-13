@@ -8,7 +8,7 @@
 ## Product Overview
 
 - **Audience**: Retail investors / consumers
-- **Figma file**: TBD
+- **Figma file**: `vnL70Jo9LWTOXta9eyJnkO` → https://www.figma.com/design/vnL70Jo9LWTOXta9eyJnkO
 - **Dev server**: port `7778` → `~/Surmount/B2C/designs/`
 - **Status**: Homepage + strategy detail built; no-code builder exists
 

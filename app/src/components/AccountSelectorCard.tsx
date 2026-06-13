@@ -14,6 +14,7 @@ export interface SelectableAccount {
 export interface AccountGroup {
   label: string;
   accounts: SelectableAccount[];
+  headerAction?: { label: string; onClick?: () => void };
 }
 
 interface AccountSelectorCardProps {
@@ -96,6 +97,11 @@ export function AccountSelectorCard({
         <div key={group.label}>
           <div className={s.sectionRow}>
             <span className={s.sectionLabel}>{group.label}</span>
+            {group.headerAction && (
+              <button type="button" className={s.updateBtn} onClick={group.headerAction.onClick}>
+                {group.headerAction.label}
+              </button>
+            )}
           </div>
           {group.accounts.map(account => (
             <button

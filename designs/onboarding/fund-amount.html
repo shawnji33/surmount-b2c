@@ -290,7 +290,7 @@ main{
 .starts-trigger svg{width:16px;height:16px;stroke:rgba(10,13,18,0.35);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
 .dp-popover{
-  position:fixed;left:0;top:0; /* overridden by JS on open */
+  position:absolute;top:calc(100% + 6px);right:0;
   background:var(--color-bg-primary);
   border:1px solid var(--color-border-primary);
   border-radius:var(--radius-xl);
@@ -362,6 +362,41 @@ main{
   font-size:14px;font-weight:400;color:var(--color-fg-quaternary-400);
   font-family:var(--font-family-display);white-space:nowrap;
 }
+
+/* ─── Broker dropdown ────────────────────────────────────────────────── */
+.broker-select-wrap{position:relative}
+.broker-dropdown{
+  position:absolute;top:calc(100% + 6px);left:0;z-index:50;
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-secondary);
+  border-radius:var(--radius-xl);
+  box-shadow:0 8px 24px rgba(10,13,18,0.10);
+  min-width:220px;padding:6px;
+  opacity:0;pointer-events:none;
+  transform:translateY(-4px) scale(0.98);
+  transform-origin:top left;
+  transition:opacity .15s ease, transform .15s ease;
+}
+.broker-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0) scale(1)}
+.broker-option{
+  display:flex;align-items:center;gap:var(--spacing-md);
+  padding:9px var(--spacing-md);
+  border-radius:var(--radius-md);
+  cursor:pointer;
+  transition:background .1s ease;
+}
+.broker-option:hover{background:var(--color-bg-secondary)}
+.broker-option.selected{background:var(--color-bg-secondary)}
+.broker-option-avatar{
+  width:24px;height:24px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  border:0.5px solid rgba(0,0,0,0.08);
+}
+.broker-option-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.broker-option-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.broker-option-name{font-size:14px;font-weight:400;color:rgba(10,13,18,0.9);line-height:20px}
+.broker-option-balance{font-size:12px;font-weight:400;color:var(--color-fg-quaternary-400);line-height:16px}
+.broker-option-check{width:16px;height:16px;flex-shrink:0;color:var(--color-fg-primary-900);opacity:0}
+.broker-option.selected .broker-option-check{opacity:1}
 
 /* ─── Review button ──────────────────────────────────────────────────── */
 .review-btn{
@@ -518,14 +553,42 @@ main{
     <div class="pay-with">
       <span class="pay-with-label">Pay with</span>
       <div class="pay-with-row">
-        <button class="broker-select" type="button">
-          <span class="broker-avatar"><img src="../assets/brokers/robinhood.png" alt="Robinhood"></span>
-          <span class="broker-name">Robinhood</span>
-          <span class="broker-chevron">
-            <svg viewBox="0 0 16 16"><polyline points="4 6 8 10 12 6"/></svg>
-          </span>
-        </button>
-        <span class="available-text">$323,412.42 available</span>
+        <div class="broker-select-wrap">
+          <button class="broker-select" type="button" id="broker-select-btn" aria-haspopup="listbox" aria-expanded="false">
+            <span class="broker-avatar" id="broker-avatar"><img src="../assets/brokers/robinhood.png" alt="Robinhood" id="broker-avatar-img"></span>
+            <span class="broker-name" id="broker-name">Robinhood</span>
+            <span class="broker-chevron">
+              <svg viewBox="0 0 16 16"><polyline points="4 6 8 10 12 6"/></svg>
+            </span>
+          </button>
+          <div class="broker-dropdown" id="broker-dropdown" role="listbox">
+            <div class="broker-option selected" role="option" data-name="Robinhood" data-balance="323412.42" data-img="../assets/brokers/robinhood.png">
+              <span class="broker-option-avatar"><img src="../assets/brokers/robinhood.png" alt="Robinhood"></span>
+              <span class="broker-option-info">
+                <span class="broker-option-name">Robinhood</span>
+                <span class="broker-option-balance">$323,412.42</span>
+              </span>
+              <svg class="broker-option-check" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"><polyline points="40 144 96 200 224 72"/></svg>
+            </div>
+            <div class="broker-option" role="option" data-name="Schwab" data-balance="45231.18" data-img="../assets/brokers/schwab.png">
+              <span class="broker-option-avatar"><img src="../assets/brokers/schwab.png" alt="Schwab"></span>
+              <span class="broker-option-info">
+                <span class="broker-option-name">Schwab</span>
+                <span class="broker-option-balance">$45,231.18</span>
+              </span>
+              <svg class="broker-option-check" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"><polyline points="40 144 96 200 224 72"/></svg>
+            </div>
+            <div class="broker-option" role="option" data-name="IBKR" data-balance="87500.00" data-img="../assets/brokers/ibkr.png">
+              <span class="broker-option-avatar"><img src="../assets/brokers/ibkr.png" alt="IBKR"></span>
+              <span class="broker-option-info">
+                <span class="broker-option-name">IBKR</span>
+                <span class="broker-option-balance">$87,500.00</span>
+              </span>
+              <svg class="broker-option-check" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"><polyline points="40 144 96 200 224 72"/></svg>
+            </div>
+          </div>
+        </div>
+        <span class="available-text" id="available-text">$323,412.42 Available</span>
       </div>
     </div>
 
@@ -697,21 +760,11 @@ main{
     });
   }
 
-  function positionDp() {
-    const rect = startsTrigger.getBoundingClientRect();
-    const popW = 296;
-    let left = rect.right - popW;
-    if (left < 8) left = 8;
-    dpPopover.style.top   = (rect.bottom + 8) + 'px';
-    dpPopover.style.left  = left + 'px';
-    dpPopover.style.right = 'auto';
-  }
-
   if(startsTrigger && dpPopover){
     startsTrigger.addEventListener('click', function(e){
       e.stopPropagation();
       const open = dpPopover.classList.toggle('open');
-      if(open){ dpYear=today.getFullYear(); dpMonth=today.getMonth(); positionDp(); renderCalendar(); }
+      if(open){ dpYear=today.getFullYear(); dpMonth=today.getMonth(); renderCalendar(); }
     });
   }
 
@@ -719,13 +772,49 @@ main{
   document.addEventListener('click', function(){
     if(freqDropdown) freqDropdown.classList.remove('open');
     if(dpPopover) dpPopover.classList.remove('open');
+    const bd = document.getElementById('broker-dropdown');
+    if(bd) bd.classList.remove('open');
   });
   document.addEventListener('keydown', function(e){
     if(e.key==='Escape'){
       if(freqDropdown) freqDropdown.classList.remove('open');
       if(dpPopover) dpPopover.classList.remove('open');
+      const bd = document.getElementById('broker-dropdown');
+      if(bd) bd.classList.remove('open');
     }
   });
+
+  /* ─── Broker dropdown ─── */
+  const brokerBtn       = document.getElementById('broker-select-btn');
+  const brokerDropdown  = document.getElementById('broker-dropdown');
+  const brokerNameEl    = document.getElementById('broker-name');
+  const brokerAvatarImg = document.getElementById('broker-avatar-img');
+  const availableEl     = document.getElementById('available-text');
+
+  function formatBalance(num) {
+    return '$' + num.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' Available';
+  }
+
+  if (brokerBtn && brokerDropdown) {
+    brokerBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const open = brokerDropdown.classList.toggle('open');
+      brokerBtn.setAttribute('aria-expanded', String(open));
+    });
+    brokerDropdown.querySelectorAll('.broker-option').forEach(function(opt) {
+      opt.addEventListener('click', function(e) {
+        e.stopPropagation();
+        brokerDropdown.querySelectorAll('.broker-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        brokerNameEl.textContent   = opt.dataset.name;
+        brokerAvatarImg.src        = opt.dataset.img;
+        brokerAvatarImg.alt        = opt.dataset.name;
+        availableEl.textContent    = formatBalance(parseFloat(opt.dataset.balance));
+        brokerDropdown.classList.remove('open');
+        brokerBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
 })();
 </script>
 

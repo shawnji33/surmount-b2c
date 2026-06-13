@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account switcher — exploration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Tokens ── */
+:root {
+  --bg: #f0f0f2;
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-tertiary: #f5f5f5;
+  --fg: #181d27;
+  --fg-2: #414651;
+  --fg-3: #535862;
+  --fg-4: #717680;
+  --border: rgba(0,0,0,0.086);
+  --border-2: rgba(0,0,0,0.06);
+  --success: #3b7e3f;
+  --success-dark: #2d6e31;
+  --font: 'Geist', system-ui, sans-serif;
+  --font-d: 'Inter', system-ui, sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100vh;background:var(--bg);font-family:var(--font);-webkit-font-smoothing:antialiased;color:var(--fg)}
+
+/* ── Playground shell ── */
+.pg{padding:40px 40px 80px;max-width:1900px;margin:0 auto}
+.pg-head{margin-bottom:40px}
+.pg-title{font-size:18px;font-weight:500;letter-spacing:-0.5px;color:var(--fg);margin-bottom:4px}
+.pg-sub{font-size:13px;color:rgba(10,13,18,0.45);letter-spacing:-0.2px}
+.directions{display:flex;gap:28px;overflow-x:auto;padding-bottom:20px;align-items:flex-start}
+.dir{flex-shrink:0;width:390px}
+.dir-num{font-size:10px;font-weight:500;letter-spacing:0.6px;color:rgba(10,13,18,0.35);margin-bottom:6px;text-transform:uppercase}
+.dir-title{font-size:15px;font-weight:500;letter-spacing:-0.4px;color:var(--fg);margin-bottom:4px}
+.dir-desc{font-size:12px;color:rgba(10,13,18,0.5);letter-spacing:-0.2px;line-height:1.6;margin-bottom:14px}
+
+/* ── Phone frame ── */
+.phone{width:390px;height:780px;border-radius:44px;background:var(--bg-secondary);overflow:hidden;position:relative;
+  box-shadow:0 32px 80px rgba(0,0,0,0.18),0 0 0 1px rgba(0,0,0,0.08),inset 0 0 0 1px rgba(255,255,255,0.14)}
+/* Dynamic Island */
+.phone::before{content:'';position:absolute;top:14px;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#000;border-radius:18px;z-index:200}
+
+/* ── Scroll body ── */
+.phone-scroll{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.phone-scroll::-webkit-scrollbar{display:none}
+.body{padding:0 16px 96px}
+
+/* ── Liquid Glass ── */
+.glass-pill{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:9999px;position:relative;overflow:hidden;
+  backdrop-filter:blur(40px) saturate(107%);-webkit-backdrop-filter:blur(40px) saturate(107%);
+  box-shadow:0 8px 28px rgba(0,0,0,0.14),inset 0 0 0 0.5px rgba(255,255,255,0.60);
+  cursor:pointer;user-select:none;transition:transform 0.12s cubic-bezier(.2,.8,.2,1)}
+.glass-pill:active{transform:scale(0.95)}
+.glass-pill .g1{position:absolute;inset:0;border-radius:9999px;background:rgba(255,255,255,0.16);pointer-events:none}
+.glass-pill .g2{position:absolute;inset:0;border-radius:9999px;background:linear-gradient(315deg,rgba(255,255,255,0.80) 0%,rgba(255,255,255,0) 55%);pointer-events:none}
+.glass-pill .g3{position:absolute;inset:0;border-radius:9999px;background:rgba(200,200,212,0.08);mix-blend-mode:color-burn;pointer-events:none}
+.glass-pill .pc{display:flex;align-items:center;gap:8px;position:relative;z-index:1}
+
+.glass-icons{display:flex;align-items:center;gap:2px;padding:8px 10px;border-radius:9999px;position:relative;overflow:hidden;
+  backdrop-filter:blur(40px) saturate(107%);-webkit-backdrop-filter:blur(40px) saturate(107%);
+  box-shadow:0 8px 28px rgba(0,0,0,0.14),inset 0 0 0 0.5px rgba(255,255,255,0.60)}
+.glass-icons .g1,.glass-icons .g2{position:absolute;inset:0;border-radius:9999px;pointer-events:none}
+.glass-icons .g1{background:rgba(255,255,255,0.16)}
+.glass-icons .g2{background:linear-gradient(315deg,rgba(255,255,255,0.80) 0%,rgba(255,255,255,0) 55%)}
+.ibt{width:32px;height:32px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;cursor:pointer;border-radius:16px;transition:background .1s}
+.ibt:hover{background:rgba(0,0,0,0.04)}
+
+/* ── Fixed header ── */
+.hdr{position:absolute;top:0;left:0;right:0;z-index:100;pointer-events:none}
+.hdr>*{pointer-events:auto}
+.ss{height:60px}
+.nb{display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
+
+/* ── Hero ── */
+.hero{display:flex;flex-direction:column;align-items:center;gap:14px}
+.pro-pill{display:flex;align-items:center;gap:4px;padding:4px 10px 4px 6px;border-radius:35px;border:1px solid rgba(0,0,0,0.10);background:#fff;box-shadow:0 1px 2px rgba(10,13,18,0.05);align-self:center}
+.pro-lbl{font-size:12px;color:var(--fg-2);letter-spacing:-0.3px}
+.val-block{display:flex;flex-direction:column;align-items:center;gap:6px}
+.pv{font-family:var(--font-d);font-size:24px;font-weight:500;color:rgba(10,13,18,0.9);letter-spacing:-1px;line-height:32px;display:flex;align-items:baseline}
+.pv .c{color:rgba(10,13,18,0.4)}
+.gain{display:flex;align-items:center;gap:4px}
+.gain-v{font-size:14px;font-weight:500;color:var(--success);letter-spacing:-0.5px;line-height:20px}
+.gain-p{font-size:14px;color:rgba(10,13,18,0.4);letter-spacing:-0.3px;line-height:20px}
+
+/* ── Chart ── */
+.cw{width:calc(100% + 32px);margin-left:-16px;margin-right:-16px;position:relative}
+.cw canvas{display:block;width:100%;height:237px}
+.cdash{height:1px;background:repeating-linear-gradient(to right,rgba(0,0,0,0.12) 0,rgba(0,0,0,0.12) 4px,transparent 4px,transparent 8px)}
+
+/* ── Period bar ── */
+.pbar{display:flex;align-items:center;gap:2px;width:100%;padding:4px;background:rgba(47,48,50,0.05);border-radius:24px}
+.pbtn{flex:1;display:flex;align-items:center;justify-content:center;padding:6px 0;border-radius:12px;font-size:12px;color:rgba(10,13,18,0.35);letter-spacing:-0.3px;cursor:pointer;position:relative;transition:color .15s;user-select:none}
+.pbtn.on{color:#1c1c1e;font-weight:500}
+.pbtn.on::before{content:'';position:absolute;inset:0;border-radius:12px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.10)}
+.pbtn span{position:relative;z-index:1}
+
+/* ── Section ── */
+.sec{margin-top:32px}
+.sec-t{font-size:18px;font-weight:500;color:rgba(10,13,18,0.9);letter-spacing:-0.5px;line-height:28px;margin-bottom:16px}
+.hrow{display:flex;align-items:center;gap:12px;padding:10px 0;cursor:pointer}
+.hav{width:32px;height:32px;border-radius:16px;border:0.75px solid rgba(0,0,0,0.08);overflow:hidden;flex-shrink:0;background:#e9e9eb}
+.hmid{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.hname{font-size:14px;color:rgba(10,13,18,0.9);letter-spacing:-0.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hsub{font-size:12px;color:#535862;letter-spacing:-0.3px}
+.hright{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.hval{font-size:14px;color:rgba(10,13,18,0.9);letter-spacing:-0.4px}
+.hchg{font-size:12px;color:var(--success);letter-spacing:-0.3px}
+.hdiv{height:1px;background:rgba(0,0,0,0.06);margin-left:44px}
+
+/* ── Avatar 20px ── */
+.av20{width:20px;height:20px;border-radius:50%;border:0.5px solid rgba(0,0,0,0.10);overflow:hidden;flex-shrink:0}
+.av20 img{width:100%;height:100%;object-fit:cover}
+
+/* ── Bottom nav ── */
+.bnav{position:absolute;bottom:0;left:0;right:0;height:76px;display:flex;align-items:center;justify-content:space-around;
+  padding:12px 48px 20px;backdrop-filter:blur(40px) saturate(107%);-webkit-backdrop-filter:blur(40px) saturate(107%);
+  box-shadow:0 -0.5px 0 rgba(0,0,0,0.06);background:rgba(252,252,252,0.7);z-index:50}
+
+/* ── Pill name/count ── */
+.pn{font-size:14px;font-weight:500;color:#1c1c1e;letter-spacing:-0.5px;white-space:nowrap}
+.pc{font-size:12px;color:rgba(10,13,18,0.45);letter-spacing:-0.3px;white-space:nowrap}
+.caret{opacity:0.5;flex-shrink:0;transition:transform .18s cubic-bezier(.2,.8,.2,1)}
+.caret.open{transform:rotate(180deg)}
+
+/* ════════════════════════════════════════════════════════════
+   DIRECTION A — inline account label above value
+════════════════════════════════════════════════════════════ */
+
+.acct-btn{display:flex;align-items:center;gap:5px;padding:4px 10px 4px 8px;border-radius:9999px;border:1px solid rgba(0,0,0,0.09);background:rgba(255,255,255,0.8);cursor:pointer;user-select:none;transition:background .1s}
+.acct-btn:hover{background:#fff}
+.acct-btn:active{transform:scale(0.97)}
+.acct-btn-lbl{font-size:13px;color:rgba(10,13,18,0.7);letter-spacing:-0.3px}
+
+.a-drop{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);width:260px;
+  background:#fff;border:1px solid rgba(0,0,0,0.09);border-radius:16px;padding:6px;
+  box-shadow:0 8px 24px rgba(10,13,18,0.10),0 2px 8px rgba(10,13,18,0.06);z-index:300;
+  display:none;opacity:0;transition:opacity .15s,transform .15s;transform-origin:top center}
+.a-drop.open{display:block;opacity:1}
+.a-opt{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;transition:background .1s}
+.a-opt:hover{background:#f5f5f5}
+.a-opt-info{flex:1;min-width:0}
+.a-opt-name{font-size:14px;font-weight:500;color:var(--fg);letter-spacing:-0.4px;line-height:20px}
+.a-opt-meta{font-size:12px;color:var(--fg-4);letter-spacing:-0.3px;line-height:18px}
+.a-opt-val{font-size:14px;font-weight:500;color:rgba(10,13,18,0.9);letter-spacing:-0.4px;flex-shrink:0}
+.a-check{width:16px;height:16px;flex-shrink:0}
+.a-divider{height:1px;background:rgba(0,0,0,0.06);margin:2px 0}
+
+/* ════════════════════════════════════════════════════════════
+   DIRECTION B — horizontal account strip in header
+════════════════════════════════════════════════════════════ */
+
+.strip{display:flex;gap:6px;overflow-x:auto;padding:4px 16px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.strip::-webkit-scrollbar{display:none}
+.sp{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:9999px;
+  font-size:13px;letter-spacing:-0.3px;cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:background .15s,color .15s,box-shadow .15s;user-select:none;border:1px solid transparent}
+.sp.off{color:rgba(10,13,18,0.45);background:transparent}
+.sp.on{color:rgba(10,13,18,0.9);font-weight:500;background:#fff;border-color:rgba(0,0,0,0.09);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.sp:hover:not(.on){background:rgba(0,0,0,0.03)}
+.sp.cash.on{background:linear-gradient(135deg,#fff9e8,#fff4cc);border-color:rgba(152,130,1,0.20);color:#8a7200}
+.sp-dot{width:6px;height:6px;border-radius:3px;flex-shrink:0}
+
+/* ════════════════════════════════════════════════════════════
+   DIRECTION C — rich nav dropdown
+════════════════════════════════════════════════════════════ */
+
+.c-drop{position:absolute;top:calc(100% + 8px);left:0;width:272px;
+  background:#fff;border:1px solid rgba(0,0,0,0.09);border-radius:16px;padding:6px;
+  box-shadow:0 8px 24px rgba(10,13,18,0.10),0 2px 8px rgba(10,13,18,0.06);z-index:300;
+  display:none;overflow:hidden}
+.c-drop.open{display:block}
+.c-row{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;transition:background .1s}
+.c-row:hover{background:#f5f5f5}
+.c-row.sel{background:rgba(0,0,0,0.025)}
+.c-info{flex:1;min-width:0}
+.c-name{font-size:14px;font-weight:500;color:var(--fg);letter-spacing:-0.4px;line-height:20px}
+.c-sub{font-size:12px;color:var(--fg-4);letter-spacing:-0.3px;line-height:18px}
+.c-right{text-align:right;flex-shrink:0}
+.c-val{font-size:14px;font-weight:500;color:rgba(10,13,18,0.9);letter-spacing:-0.4px;line-height:20px}
+.c-chg{font-size:12px;color:var(--success);letter-spacing:-0.3px;line-height:18px}
+.c-chg.flat{color:rgba(10,13,18,0.4)}
+.c-div{height:1px;background:rgba(0,0,0,0.06);margin:2px 0}
+.add-row{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;transition:background .1s}
+.add-row:hover{background:#f5f5f5}
+.add-lbl{font-size:14px;font-weight:500;color:var(--fg-3);letter-spacing:-0.4px}
+
+/* ════════════════════════════════════════════════════════════
+   HYC STATE — Surmount Cash view
+════════════════════════════════════════════════════════════ */
+
+.hyc-badge{display:flex;align-items:center;gap:5px;padding:4px 10px 4px 8px;border-radius:35px;
+  background:linear-gradient(135deg,#fff9e8 0%,#fff4cc 100%);border:1px solid rgba(152,130,1,0.20);
+  box-shadow:0 1px 2px rgba(152,130,1,0.08)}
+.hyc-badge-txt{font-size:12px;font-weight:500;color:#8a7200;letter-spacing:-0.3px}
+.hyc-gain{font-size:14px;font-weight:500;color:var(--success);letter-spacing:-0.5px}
+.hyc-gain-p{font-size:14px;color:rgba(10,13,18,0.4);letter-spacing:-0.3px}
+
+.hyc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.hyc-card{background:#fff;border-radius:12px;border:1px solid rgba(0,0,0,0.07);padding:12px;display:flex;flex-direction:column;gap:2px}
+.hyc-lbl{font-size:12px;color:var(--fg-4);letter-spacing:-0.3px;line-height:18px}
+.hyc-val{font-size:14px;font-weight:500;color:rgba(10,13,18,0.9);letter-spacing:-0.4px;line-height:20px}
+.hyc-val.green{color:var(--success)}
+
+.act-row{display:flex;align-items:center;gap:12px;padding:10px 0}
+.act-ic{width:32px;height:32px;border-radius:16px;background:#f5f5f5;border:0.75px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:var(--fg-3)}
+.act-mid{flex:1}
+.act-name{font-size:14px;color:rgba(10,13,18,0.9);letter-spacing:-0.4px}
+.act-meta{font-size:12px;color:var(--fg-4);letter-spacing:-0.3px}
+.act-right{text-align:right;flex-shrink:0}
+.act-amt{font-size:14px;color:rgba(10,13,18,0.9);letter-spacing:-0.4px}
+.act-date{font-size:12px;color:rgba(10,13,18,0.35);letter-spacing:-0.3px}
+</style>
+</head>
+<body>
+<div class="pg">
+  <div class="pg-head">
+    <div class="pg-title">Account switcher — exploration</div>
+    <div class="pg-sub">Three directions for switching between portfolio accounts · click to interact · last frame shows Surmount Cash (HYC) state</div>
+  </div>
+
+  <div class="directions">
+
+    <!-- ══════════════════════════════════════════════════════
+         DIRECTION A — inline account label above value
+    ══════════════════════════════════════════════════════ -->
+    <div class="dir">
+      <div class="dir-num">Direction A</div>
+      <div class="dir-title">Account context above value</div>
+      <div class="dir-desc">A small tappable label sits above the dollar value in the hero — shows "All accounts" by default. Opens a compact dropdown. The nav stays clean; account switching lives in the content area where it's most contextual.</div>
+      <div class="phone" id="pa">
+
+        <div class="phone-scroll">
+          <div class="body" style="padding-top:150px;">
+            <div class="hero">
+              <div class="pro-pill"><span style="font-size:11px;color:#988201;line-height:1">✦</span><span class="pro-lbl">Surmount Pro</span></div>
+
+              <!-- inline account selector -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;">
+                <div class="acct-btn" id="abtn-a" onclick="toggleA()">
+                  <div class="av20" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border-color:rgba(64,106,208,0.2);width:16px;height:16px;border-radius:8px;"></div>
+                  <span class="acct-btn-lbl" id="albl-a">All accounts</span>
+                  <svg id="acaret-a" class="caret" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="rgba(10,13,18,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+
+                <!-- dropdown -->
+                <div class="a-drop" id="adrop-a">
+                  <div class="a-opt" onclick="pickA('all','All accounts','$2,234,678','92','All accounts · 3 accounts','+$633.63 (+2.42%)',2234678.92)">
+                    <div class="av20" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border-color:rgba(64,106,208,0.2);"></div>
+                    <div class="a-opt-info"><div class="a-opt-name">All accounts</div><div class="a-opt-meta">3 accounts · Investing</div></div>
+                    <div class="a-opt-val">$2.23M</div>
+                    <div class="a-check" id="ach-all-a"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L5.5 10.5L11.5 3.5" stroke="#535862" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  </div>
+                  <div class="a-divider"></div>
+                  <div class="a-opt" onclick="pickA('rh','Robinhood','$87,654','32','Robinhood · Investing','+$25.75 (+1.50%)',87654.32)">
+                    <div class="av20" style="background:#fff;"></div>
+                    <div class="a-opt-info"><div class="a-opt-name">Robinhood</div><div class="a-opt-meta">Investing account</div></div>
+                    <div class="a-opt-val">$87.6K</div>
+                    <div class="a-check" id="ach-rh-a"></div>
+                  </div>
+                  <div class="a-opt" onclick="pickA('ibkr','IBKR','$172,345','67','IBKR · Investing','+$30.90 (+1.80%)',172345.67)">
+                    <div class="av20" style="background:#fff;"></div>
+                    <div class="a-opt-info"><div class="a-opt-name">IBKR</div><div class="a-opt-meta">Investing account</div></div>
+                    <div class="a-opt-val">$172.3K</div>
+                    <div class="a-check" id="ach-ibkr-a"></div>
+                  </div>
+                  <div class="a-opt" onclick="pickA('cash','Surmount Cash','$12,450','00','Surmount Cash · HYC','4.35% APY',12450)">
+                    <div class="av20" style="background:linear-gradient(135deg,#fff9e8,#fff4cc);border-color:rgba(152,130,1,0.2);"></div>
+                    <div class="a-opt-info"><div class="a-opt-name">Surmount Cash</div><div class="a-opt-meta">High yield · 4.35% APY</div></div>
+                    <div class="a-opt-val">$12.4K</div>
+                    <div class="a-check" id="ach-cash-a"></div>
+                  </div>
+                </div>
+
+                <div class="val-block">
+                  <div class="pv" id="av-a"><span>$2,234,678</span><span class="c">.92</span></div>
+                  <div class="gain"><span class="gain-v" id="ag-a">+$633.63 (+2.42%)</span><span class="gain-p">this week</span></div>
+                </div>
+              </div>
+
+              <div class="cw"><canvas id="ca-a" height="237"></canvas><div class="cdash"></div></div>
+              <div class="pbar">
+                <div class="pbtn on" onclick="sp('a','1D',this)"><span>1D</span></div>
+                <div class="pbtn" onclick="sp('a','1W',this)"><span>1W</span></div>
+                <div class="pbtn" onclick="sp('a','1M',this)"><span>1M</span></div>
+                <div class="pbtn" onclick="sp('a','3M',this)"><span>3M</span></div>
+                <div class="pbtn" onclick="sp('a','6M',this)"><span>6M</span></div>
+                <div class="pbtn" onclick="sp('a','YTD',this)"><span>YTD</span></div>
+                <div class="pbtn" onclick="sp('a','1Y',this)"><span>1Y</span></div>
+                <div class="pbtn" onclick="sp('a','All',this)"><span>All</span></div>
+              </div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-t">Invested strategies</div>
+              <div class="hrow"><div class="hav"></div><div class="hmid"><div class="hname">Investing in Argentina</div><div class="hsub">Robinhood</div></div><div class="hright"><div class="hval">$87,654.32</div><div class="hchg">+$25.75 (+1.50%)</div></div></div>
+              <div class="hdiv"></div>
+              <div class="hrow"><div class="hav"></div><div class="hmid"><div class="hname">AAPL GOOG Arb</div><div class="hsub">4 accounts</div></div><div class="hright"><div class="hval">$172,345.67</div><div class="hchg">+$30.90 (+1.80%)</div></div></div>
+              <div class="hdiv"></div>
+              <div class="hrow"><div class="hav"></div><div class="hmid"><div class="hname">Future of Consumer Tech</div><div class="hsub">2 accounts</div></div><div class="hright"><div class="hval">$162,789.45</div><div class="hchg">+$35.20 (+2.00%)</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- fixed header -->
+        <div class="hdr">
+          <div class="ss"></div>
+          <div class="nb">
+            <!-- left: empty / transfer pill -->
+            <div class="glass-pill" style="opacity:0;pointer-events:none;"><div class="g1"></div><div class="g2"></div><div class="g3"></div><div class="pc"><span class="pn">·</span></div></div>
+            <div class="glass-icons"><div class="g1"></div><div class="g2"></div>
+              <div class="ibt"><?xml version="1.0"?><svg width="20" height="20" viewBox="0 0 256 256" fill="none"><path d="M96 216a32 32 0 0 0 64 0" stroke="#414651" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M56 104a72 72 0 0 1 144 0c0 35.82 8.34 56.6 14.9 68a7.94 7.94 0 0 1-6.9 12H48a7.94 7.94 0 0 1-6.9-12C47.66 160.6 56 139.82 56 104z" stroke="#414651" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="ibt"><svg width="20" height="20" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="96" r="48" stroke="#414651" stroke-width="16"/><path d="M16 216c0-44.18 50.07-80 112-80s112 35.82 112 80" stroke="#414651" stroke-width="16" stroke-linecap="round"/></svg></div>
+              <div class="ibt"><svg width="20" height="20" viewBox="0 0 256 256" fill="none"><path d="M128 24a104 104 0 1 0 104 104A104.11 104.11 0 0 0 128 24zm0 192a88 88 0 1 1 88-88 88.1 88.1 0 0 1-88 88z" fill="none" stroke="#414651" stroke-width="16"/><line x1="128" y1="80" x2="128" y2="128" stroke="#414651" stroke-width="16" stroke-linecap="round"/><circle cx="128" cy="168" r="10" fill="#414651"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bnav">
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M216 112v96a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8v-96" stroke="#181D27" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M240 128L128 32 16 128" stroke="#181D27" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M48 208V80l80-56 80 56v128H160v-56H96v56H48z" stroke="#414651" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M45 177A96 96 0 1 1 79 211" stroke="#414651" stroke-width="14" stroke-linecap="round"/><polyline points="45,137 45,177 85,177" stroke="#414651" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="96" r="48" stroke="#414651" stroke-width="14"/><path d="M16 216c0-44.18 50.07-80 112-80s112 35.82 112 80" stroke="#414651" stroke-width="14" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         DIRECTION B — horizontal account strip
+    ══════════════════════════════════════════════════════ -->
+    <div class="dir">
+      <div class="dir-num">Direction B</div>
+      <div class="dir-title">Always-visible account strip</div>
+      <div class="dir-desc">A scrollable pill strip lives in the header area, always visible — no tap needed to reveal. One-tap switching. Works great for 2–5 accounts; scales via horizontal scroll. The nav title shows the product name, not the account.</div>
+      <div class="phone" id="pb">
+
+        <div class="phone-scroll">
+          <div class="body" style="padding-top:164px;">
+            <div class="hero">
+              <div class="val-block">
+                <div class="pv" id="av-b"><span>$2,234,678</span><span class="c">.92</span></div>
+                <div class="gain"><span class="gain-v" id="ag-b">+$633.63 (+2.42%)</span><span class="gain-p">this week</span></div>
+              </div>
+              <div class="cw"><canvas id="ca-b" height="237"></canvas><div class="cdash"></div></div>
+              <div class="pbar">
+                <div class="pbtn on" onclick="sp('b','1D',this)"><span>1D</span></div>
+                <div class="pbtn" onclick="sp('b','1W',this)"><span>1W</span></div>
+                <div class="pbtn" onclick="sp('b','1M',this)"><span>1M</span></div>
+                <div class="pbtn" onclick="sp('b','3M',this)"><span>3M</span></div>
+                <div class="pbtn" onclick="sp('b','6M',this)"><span>6M</span></div>
+                <div class="pbtn" onclick="sp('b','YTD',this)"><span>YTD</span></div>
+                <div class="pbtn" onclick="sp('b','1Y',this)"><span>1Y</span></div>
+                <div class="pbtn" onclick="sp('b','All',this)"><span>All</span></div>
+              </div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-t">Invested strategies</div>
+              <div class="hrow"><div class="hav"></div><div class="hmid"><div class="hname">Investing in Argentina</div><div class="hsub">Robinhood</div></div><div class="hright"><div class="hval">$87,654.32</div><div class="hchg">+$25.75 (+1.50%)</div></div></div>
+              <div class="hdiv"></div>
+              <div class="hrow"><div class="hav"></div><div class="hmid"><div class="hname">AAPL GOOG Arb</div><div class="hsub">4 accounts</div></div><div class="hright"><div class="hval">$172,345.67</div><div class="hchg">+$30.90 (+1.80%)</div></div></div>
+              <div class="hdiv"></div>
+              <div class="hrow"><div class="hav"></div><div class="hmid"><div class="hname">Future of Consumer Tech</div><div class="hsub">2 accounts</div></div><div class="hright"><div class="hval">$162,789.45</div><div class="hchg">+$35.20 (+2.00%)</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- fixed header with strip -->
+        <div class="hdr">
+          <div class="ss"></div>
+          <div class="nb">
+            <span style="font-size:17px;font-weight:500;color:#1c1c1e;letter-spacing:-0.5px;padding-left:4px;">Portfolio</span>
+            <div class="glass-icons"><div class="g1"></div><div class="g2"></div>
+              <div class="ibt"><svg width="20" height="20" viewBox="0 0 256 256" fill="none"><path d="M96 216a32 32 0 0 0 64 0" stroke="#414651" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M56 104a72 72 0 0 1 144 0c0 35.82 8.34 56.6 14.9 68a7.94 7.94 0 0 1-6.9 12H48a7.94 7.94 0 0 1-6.9-12C47.66 160.6 56 139.82 56 104z" stroke="#414651" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="ibt"><svg width="20" height="20" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="96" r="48" stroke="#414651" stroke-width="16"/><path d="M16 216c0-44.18 50.07-80 112-80s112 35.82 112 80" stroke="#414651" stroke-width="16" stroke-linecap="round"/></svg></div>
+            </div>
+          </div>
+          <!-- account strip -->
+          <div class="strip">
+            <div class="sp on" id="sb-all" onclick="pickB('all','All','$2,234,678','92','All','+$633.63 (+2.42%)',2234678.92)">All</div>
+            <div class="sp off" id="sb-rh" onclick="pickB('rh','rh','$87,654','32','Robinhood','+$25.75 (+1.50%)',87654.32)">
+              <div class="sp-dot" style="background:#00c805;"></div>Robinhood
+            </div>
+            <div class="sp off" id="sb-ibkr" onclick="pickB('ibkr','ibkr','$172,345','67','IBKR','+$30.90 (+1.80%)',172345.67)">
+              <div class="sp-dot" style="background:#e31e24;"></div>IBKR
+            </div>
+            <div class="sp off cash" id="sb-cash" onclick="pickB('cash','cash','$12,450','00','Surmount Cash','4.35% APY',12450)">
+              <span style="font-size:11px;">✦</span>Surmount Cash
+            </div>
+          </div>
+        </div>
+
+        <div class="bnav">
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M216 112v96a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8v-96" stroke="#181D27" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M240 128L128 32 16 128" stroke="#181D27" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M48 208V80l80-56 80 56v128H160v-56H96v56H48z" stroke="#414651" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M45 177A96 96 0 1 1 79 211" stroke="#414651" stroke-width="14" stroke-linecap="round"/><polyline points="45,137 45,177 85,177" stroke="#414651" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="96" r="48" stroke="#414651" stroke-width="14"/><path d="M16 216c0-44.18 50.07-80 112-80s112 35.82 112 80" stroke="#414651" stroke-width="14" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         DIRECTION C — rich nav dropdown
+    ══════════════════════════════════════════════════════ -->
+    <div class="dir">
+      <div class="dir-num">Direction C</div>
+      <div class="dir-title">Rich nav dropdown</div>
+      <div class="dir-desc">The glass pill in the nav shows the selected account name + short value. Tapping opens a richer dropdown with each account's name, type, balance, and performance. Closer to the current pattern but with much more context per row.</div>
+      <div class="phone" id="pc">
+
+        <div class="phone-scroll">
+          <div class="body" style="padding-top:150px;">
+            <div class="hero">
+              <div class="pro-pill"><span style="font-size:11px;color:#988201;line-height:1">✦</span><span class="pro-lbl">Surmount Pro</span></div>
+              <div class="val-block">
+                <div class="pv" id="av-c"><span>$2,234,678</span><span class="c">.92</span></div>
+                <div class="gain"><span class="gain-v" id="ag-c">+$633.63 (+2.42%)</span><span class="gain-p">this week</span></div>
+              </div>
+              <div class="cw"><canvas id="ca-c" height="237"></canvas><div class="cdash"></div></div>
+              <div class="pbar">
+                <div class="pbtn on" onclick="sp('c','1D',this)"><span>1D</span></div>
+                <div class="pbtn" onclick="sp('c','1W',this)"><span>1W</span></div>
+                <div class="pbtn" onclick="sp('c','1M',this)"><span>1M</span></div>
+                <div class="pbtn" onclick="sp('c','3M',this)"><span>3M</span></div>
+                <div class="pbtn" onclick="sp('c','6M',this)"><span>6M</span></div>
+                <div class="pbtn" onclick="sp('c','YTD',this)"><span>YTD</span></div>
+                <div class="pbtn" onclick="sp('c','1Y',this)"><span>1Y</span></div>
+                <div class="pbtn" onclick="sp('c','All',this)"><span>All</span></div>
+              </div>
+            </div>
+
+            <div class="sec">
+              <div class="sec-t" id="sec-t-c">Invested strategies</div>
+              <div class="hrow"><div class="hav"></div><div class="hmid"><div class="hname">Investing in Argentina</div><div class="hsub">Robinhood</div></div><div class="hright"><div class="hval">$87,654.32</div><div class="hchg">+$25.75 (+1.50%)</div></div></div>
+              <div class="hdiv"></div>
+              <div class="hrow"><div class="hav"></div><div class="hmid"><div class="hname">AAPL GOOG Arb</div><div class="hsub">4 accounts</div></div><div class="hright"><div class="hval">$172,345.67</div><div class="hchg">+$30.90 (+1.80%)</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- fixed header with rich dropdown -->
+        <div class="hdr">
+          <div class="ss"></div>
+          <div class="nb">
+            <div style="position:relative;">
+              <div class="glass-pill" id="cpill" onclick="toggleC()">
+                <div class="g1"></div><div class="g2"></div><div class="g3"></div>
+                <div class="pc">
+                  <div class="av20" id="cpill-av" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border-color:rgba(64,106,208,0.2);"></div>
+                  <span class="pn" id="cpill-name">All accounts</span>
+                  <span class="pc" id="cpill-val" style="color:rgba(10,13,18,0.45);font-size:12px;">$2.23M</span>
+                  <svg id="cpill-caret" class="caret" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#1c1c1e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+
+              <!-- rich dropdown -->
+              <div class="c-drop" id="cdrop">
+                <div class="c-row sel" id="crow-all" onclick="pickC('all','All accounts','$2.23M','$2,234,678','92','+$633.63 (+2.42%)',2234678.92,'linear-gradient(135deg,#e0e7ff,#c7d2fe)')">
+                  <div class="av20" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border-color:rgba(64,106,208,0.2);"></div>
+                  <div class="c-info"><div class="c-name">All accounts</div><div class="c-sub">3 accounts · Investing</div></div>
+                  <div class="c-right"><div class="c-val">$2.23M</div><div class="c-chg">+2.42%</div></div>
+                </div>
+                <div class="c-div"></div>
+                <div class="c-row" id="crow-rh" onclick="pickC('rh','Robinhood','$87.6K','$87,654','32','+$25.75 (+1.50%)',87654.32,'#fff')">
+                  <div class="av20" style="background:#fff;"></div>
+                  <div class="c-info"><div class="c-name">Robinhood</div><div class="c-sub">Investing account</div></div>
+                  <div class="c-right"><div class="c-val">$87.6K</div><div class="c-chg">+1.50%</div></div>
+                </div>
+                <div class="c-row" id="crow-ibkr" onclick="pickC('ibkr','IBKR','$172.3K','$172,345','67','+$30.90 (+1.80%)',172345.67,'#fff')">
+                  <div class="av20" style="background:#fff;"></div>
+                  <div class="c-info"><div class="c-name">IBKR</div><div class="c-sub">Investing account</div></div>
+                  <div class="c-right"><div class="c-val">$172.3K</div><div class="c-chg">+1.80%</div></div>
+                </div>
+                <div class="c-row" id="crow-cash" onclick="pickC('cash','Surmount Cash','$12.4K','$12,450','00','4.35% APY',12450,'linear-gradient(135deg,#fff9e8,#fff4cc)')">
+                  <div class="av20" style="background:linear-gradient(135deg,#fff9e8,#fff4cc);border-color:rgba(152,130,1,0.2);"></div>
+                  <div class="c-info"><div class="c-name">Surmount Cash</div><div class="c-sub">High yield · 4.35% APY</div></div>
+                  <div class="c-right"><div class="c-val">$12.4K</div><div class="c-chg flat">4.35% APY</div></div>
+                </div>
+                <div class="c-div"></div>
+                <div class="add-row">
+                  <div style="width:20px;height:20px;border-radius:10px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="#535862" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  </div>
+                  <span class="add-lbl">Add accounts</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-icons"><div class="g1"></div><div class="g2"></div>
+              <div class="ibt"><svg width="20" height="20" viewBox="0 0 256 256" fill="none"><path d="M96 216a32 32 0 0 0 64 0" stroke="#414651" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M56 104a72 72 0 0 1 144 0c0 35.82 8.34 56.6 14.9 68a7.94 7.94 0 0 1-6.9 12H48a7.94 7.94 0 0 1-6.9-12C47.66 160.6 56 139.82 56 104z" stroke="#414651" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="ibt"><svg width="20" height="20" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="96" r="48" stroke="#414651" stroke-width="16"/><path d="M16 216c0-44.18 50.07-80 112-80s112 35.82 112 80" stroke="#414651" stroke-width="16" stroke-linecap="round"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bnav">
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M216 112v96a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8v-96" stroke="#181D27" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M240 128L128 32 16 128" stroke="#181D27" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M48 208V80l80-56 80 56v128H160v-56H96v56H48z" stroke="#414651" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M45 177A96 96 0 1 1 79 211" stroke="#414651" stroke-width="14" stroke-linecap="round"/><polyline points="45,137 45,177 85,177" stroke="#414651" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="96" r="48" stroke="#414651" stroke-width="14"/><path d="M16 216c0-44.18 50.07-80 112-80s112 35.82 112 80" stroke="#414651" stroke-width="14" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         HYC STATE — what the home looks like for Surmount Cash
+    ══════════════════════════════════════════════════════ -->
+    <div class="dir">
+      <div class="dir-num">Variant — Surmount Cash selected</div>
+      <div class="dir-title">High yield cash view</div>
+      <div class="dir-desc">When the HYC account is selected the page transforms — APY replaces percent gain, the chart shows steady accumulation rather than volatile returns, and the content below pivots to cash-specific stats and activity instead of invested strategies.</div>
+      <div class="phone" id="ph">
+
+        <div class="phone-scroll">
+          <div class="body" style="padding-top:150px;">
+            <div class="hero">
+              <!-- HYC badge (replaces pro pill) -->
+              <div class="hyc-badge"><span style="font-size:11px;">✦</span><span class="hyc-badge-txt">4.35% APY</span></div>
+
+              <div class="val-block">
+                <div class="pv"><span>$12,450</span><span class="c">.00</span></div>
+                <div class="gain">
+                  <span class="hyc-gain">+$45.23 earned</span>
+                  <span class="hyc-gain-p">this month</span>
+                </div>
+              </div>
+
+              <!-- accumulation chart (low volatility seed) -->
+              <div class="cw"><canvas id="ca-h" height="237"></canvas><div class="cdash"></div></div>
+
+              <!-- period bar (cash-appropriate labels) -->
+              <div class="pbar">
+                <div class="pbtn on" onclick="spH('1M',this)"><span>1M</span></div>
+                <div class="pbtn" onclick="spH('3M',this)"><span>3M</span></div>
+                <div class="pbtn" onclick="spH('6M',this)"><span>6M</span></div>
+                <div class="pbtn" onclick="spH('YTD',this)"><span>YTD</span></div>
+                <div class="pbtn" onclick="spH('1Y',this)"><span>1Y</span></div>
+                <div class="pbtn" onclick="spH('All',this)"><span>All</span></div>
+              </div>
+            </div>
+
+            <!-- HYC stats -->
+            <div class="sec" style="margin-top:24px;">
+              <div class="hyc-grid">
+                <div class="hyc-card"><div class="hyc-lbl">Current APY</div><div class="hyc-val green" style="font-size:18px;">4.35%</div></div>
+                <div class="hyc-card"><div class="hyc-lbl">Earned this month</div><div class="hyc-val">$45.23</div></div>
+                <div class="hyc-card"><div class="hyc-lbl">Earned YTD</div><div class="hyc-val">$245.18</div></div>
+                <div class="hyc-card"><div class="hyc-lbl">Est. annual yield</div><div class="hyc-val">$541.58</div></div>
+              </div>
+            </div>
+
+            <!-- cash activity (replaces invested strategies) -->
+            <div class="sec">
+              <div class="sec-t">Cash activity</div>
+              <div class="act-row">
+                <div class="act-ic">↓</div>
+                <div class="act-mid"><div class="act-name">Interest paid</div><div class="act-meta">Surmount Cash</div></div>
+                <div class="act-right"><div class="act-amt" style="color:#3b7e3f;">+$45.23</div><div class="act-date">Jan 21</div></div>
+              </div>
+              <div class="hdiv" style="margin-left:44px;"></div>
+              <div class="act-row">
+                <div class="act-ic">↓</div>
+                <div class="act-mid"><div class="act-name">Deposit</div><div class="act-meta">Chase Checking</div></div>
+                <div class="act-right"><div class="act-amt" style="color:#3b7e3f;">+$2,000.00</div><div class="act-date">Jan 15</div></div>
+              </div>
+              <div class="hdiv" style="margin-left:44px;"></div>
+              <div class="act-row">
+                <div class="act-ic">↓</div>
+                <div class="act-mid"><div class="act-name">Interest paid</div><div class="act-meta">Surmount Cash</div></div>
+                <div class="act-right"><div class="act-amt" style="color:#3b7e3f;">+$38.57</div><div class="act-date">Dec 21</div></div>
+              </div>
+              <div class="hdiv" style="margin-left:44px;"></div>
+              <div class="act-row">
+                <div class="act-ic">↑</div>
+                <div class="act-mid"><div class="act-name">Withdrawal</div><div class="act-meta">Chase Checking</div></div>
+                <div class="act-right"><div class="act-amt" style="color:rgba(10,13,18,0.7);">-$500.00</div><div class="act-date">Dec 10</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- fixed header (HYC — glass pill shows Surmount Cash) -->
+        <div class="hdr">
+          <div class="ss"></div>
+          <div class="nb">
+            <div class="glass-pill">
+              <div class="g1"></div><div class="g2"></div><div class="g3"></div>
+              <div class="pc">
+                <div class="av20" style="background:linear-gradient(135deg,#fff9e8,#fff4cc);border-color:rgba(152,130,1,0.2);"></div>
+                <span class="pn">Surmount Cash</span>
+                <svg class="caret" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#1c1c1e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="glass-icons"><div class="g1"></div><div class="g2"></div>
+              <div class="ibt"><svg width="20" height="20" viewBox="0 0 256 256" fill="none"><path d="M96 216a32 32 0 0 0 64 0" stroke="#414651" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M56 104a72 72 0 0 1 144 0c0 35.82 8.34 56.6 14.9 68a7.94 7.94 0 0 1-6.9 12H48a7.94 7.94 0 0 1-6.9-12C47.66 160.6 56 139.82 56 104z" stroke="#414651" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="ibt"><svg width="20" height="20" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="96" r="48" stroke="#414651" stroke-width="16"/><path d="M16 216c0-44.18 50.07-80 112-80s112 35.82 112 80" stroke="#414651" stroke-width="16" stroke-linecap="round"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bnav">
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M216 112v96a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8v-96" stroke="#181D27" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M240 128L128 32 16 128" stroke="#181D27" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M48 208V80l80-56 80 56v128H160v-56H96v56H48z" stroke="#414651" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><path d="M45 177A96 96 0 1 1 79 211" stroke="#414651" stroke-width="14" stroke-linecap="round"/><polyline points="45,137 45,177 85,177" stroke="#414651" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="26" height="26" viewBox="0 0 256 256" fill="none"><circle cx="128" cy="96" r="48" stroke="#414651" stroke-width="14"/><path d="M16 216c0-44.18 50.07-80 112-80s112 35.82 112 80" stroke="#414651" stroke-width="14" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /directions -->
+</div>
+
+<script>
+// ── Chart ────────────────────────────────────────────────────────────────
+
+function gSmooth(data, sigma = 3) {
+  const r = Math.ceil(sigma * 2.5);
+  const w = Array.from({length: r*2+1}, (_,i) => Math.exp(-((i-r)**2)/(2*sigma*sigma)));
+  return data.map((pt, i) => {
+    let v=0,ws=0;
+    for (let j=-r;j<=r;j++) { const k=i+j; if(k>=0&&k<data.length){v+=data[k].value*w[j+r];ws+=w[j+r];} }
+    return {time:pt.time, value:v/ws};
+  });
+}
+
+function mockData(period, end) {
+  let seed = period.split('').reduce((a,c)=>a+c.charCodeAt(0),0)*1013+7;
+  const rand = ()=>{ seed=(seed*1664525+1013904223)>>>0; return seed/4294967296; };
+  const C = {
+    '1D': {n:48,step:1800,vol:0.0018,s:0.975,peak:1.022,peakAt:0.60},
+    '1W': {n:84,step:7200,vol:0.004,s:0.978},
+    '1M': {n:30,step:86400,vol:0.008,s:0.952},
+    '3M': {n:90,step:86400,vol:0.010,s:0.920},
+    '6M': {n:180,step:86400,vol:0.012,s:0.885},
+    'YTD':{n:108,step:86400,vol:0.012,s:0.902},
+    '1Y': {n:252,step:86400,vol:0.015,s:0.845},
+    'All':{n:365,step:86400,vol:0.018,s:0.635},
+  };
+  const {n,step,vol,s,peak,peakAt} = C[period]??C['1D'];
+  const start = end*s;
+  const now = Math.floor(Date.now()/1000);
+  const raw = Array.from({length:n},(_,i)=>{
+    const t=i/(n-1);
+    let trend;
+    if(peak&&peakAt){const pv=end*peak;trend=t<=peakAt?start+(pv-start)*(t/peakAt):pv+(end-pv)*((t-peakAt)/(1-peakAt));}
+    else{trend=start+(end-start)*t;}
+    return {time:now-(n-1-i)*step,value:Math.max(trend+(rand()-0.5)*vol*end*2,end*0.3)};
+  });
+  const out=gSmooth(raw,3);
+  out[out.length-1].value=end;
+  return out;
+}
+
+// HYC: low-volatility upward accumulation
+function hycData(period) {
+  let seed = (period.charCodeAt(0)*997+1337)|0;
+  const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+  const C = {
+    '1M': {n:30,step:86400,vol:0.0002,s:0.996},
+    '3M': {n:90,step:86400,vol:0.0003,s:0.989},
+    '6M': {n:180,step:86400,vol:0.0004,s:0.978},
+    'YTD':{n:108,step:86400,vol:0.0003,s:0.982},
+    '1Y': {n:252,step:86400,vol:0.0004,s:0.966},
+    'All':{n:365,step:86400,vol:0.0005,s:0.950},
+  };
+  const {n,step,vol,s} = C[period]??C['1M'];
+  const end=12450, start=end*s;
+  const now=Math.floor(Date.now()/1000);
+  const raw=Array.from({length:n},(_,i)=>{
+    const t=i/(n-1);
+    const trend=start+(end-start)*t;
+    return {time:now-(n-1-i)*step,value:Math.max(trend+(rand()-0.3)*vol*end*2,start*0.95)};
+  });
+  const out=gSmooth(raw,2);
+  out[out.length-1].value=end;
+  return out;
+}
+
+function drawChart(canvas, period, end, isHYC=false) {
+  if(!canvas) return;
+  const W=canvas.offsetWidth||390, H=237, dpr=window.devicePixelRatio||1;
+  canvas.width=W*dpr; canvas.height=H*dpr; canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d'); if(!ctx) return;
+  ctx.scale(dpr,dpr); ctx.clearRect(0,0,W,H);
+  const data=isHYC?hycData(period):mockData(period,end);
+  const vals=data.map(d=>d.value);
+  const minV=Math.min(...vals),maxV=Math.max(...vals);
+  const padT=18,padB=12,cH=H-padT-padB;
+  const pts=data.map((d,i)=>({x:(i/(data.length-1))*W,y:padT+(1-(d.value-minV)/(maxV-minV))*cH}));
+
+  function curve(path,p,isP2D){
+    (isP2D?((x,y)=>path.moveTo(x,y)):((x,y)=>{path.beginPath();path.moveTo(x,y);}))(p[0].x,p[0].y);
+    for(let i=0;i<p.length-1;i++){
+      const p0=p[i-1]??p[i],p1=p[i],p2=p[i+1],p3=p[i+2]??p2;
+      path.bezierCurveTo(p1.x+(p2.x-p0.x)/4,p1.y+(p2.y-p0.y)/4,p2.x-(p3.x-p1.x)/4,p2.y-(p3.y-p1.y)/4,p2.x,p2.y);
+    }
+  }
+
+  const fp=new Path2D(); curve(fp,pts,true);
+  fp.lineTo(pts[pts.length-1].x,H); fp.lineTo(0,H); fp.closePath();
+  ctx.save(); ctx.clip(fp);
+  for(let y=padT;y<H;y+=7){
+    for(let x=0;x<=W;x+=7){
+      const a=Math.max(0,(1-(y-padT)/(cH*0.65))*0.48); if(a<0.005) continue;
+      ctx.beginPath(); ctx.arc(x,y,1.5,0,Math.PI*2);
+      ctx.fillStyle=`rgba(45,110,49,${a.toFixed(3)})`; ctx.fill();
+    }
+  }
+  ctx.restore();
+  curve(ctx,pts,false);
+  ctx.strokeStyle='#2d6e31'; ctx.lineWidth=2.5; ctx.lineJoin='round'; ctx.lineCap='round'; ctx.stroke();
+  const lx=pts[pts.length-1].x,ly=pts[pts.length-1].y;
+  ctx.beginPath();ctx.arc(lx,ly,6,0,Math.PI*2);ctx.fillStyle='rgba(45,110,49,0.20)';ctx.fill();
+  ctx.beginPath();ctx.arc(lx,ly,3.5,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+  ctx.beginPath();ctx.arc(lx,ly,2,0,Math.PI*2);ctx.fillStyle='#2d6e31';ctx.fill();
+}
+
+// ── State ───────────────────────────────────────────────────────────────
+
+const state = { a:{period:'1D',end:2234678.92}, b:{period:'1D',end:2234678.92}, c:{period:'1D',end:2234678.92}, h:{period:'1M'} };
+
+function sp(frame, period, btn) {
+  state[frame].period = period;
+  btn.closest('.pbar').querySelectorAll('.pbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  drawChart(document.getElementById('ca-'+frame), period, state[frame].end);
+}
+
+function spH(period, btn) {
+  state.h.period = period;
+  btn.closest('.pbar').querySelectorAll('.pbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  drawChart(document.getElementById('ca-h'), period, 12450, true);
+}
+
+function setHeroVal(frame, dollars, cents, gain) {
+  document.getElementById('av-'+frame).innerHTML=`<span>${dollars}</span><span class="c">.${cents}</span>`;
+  document.getElementById('ag-'+frame).textContent=gain;
+}
+
+// ── Direction A ─────────────────────────────────────────────────────────
+
+let aOpen=false;
+function toggleA(){
+  aOpen=!aOpen;
+  document.getElementById('adrop-a').classList.toggle('open',aOpen);
+  document.getElementById('acaret-a').classList.toggle('open',aOpen);
+}
+function pickA(id,name,dollars,cents,_meta,gain,end){
+  aOpen=false;
+  document.getElementById('adrop-a').classList.remove('open');
+  document.getElementById('acaret-a').classList.remove('open');
+  document.getElementById('albl-a').textContent=name;
+  setHeroVal('a',dollars,cents,gain);
+  state.a.end=end;
+  ['all','rh','ibkr','cash'].forEach(k=>{ document.getElementById('ach-'+k+'-a').innerHTML=''; });
+  document.getElementById('ach-'+id+'-a').innerHTML='<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L5.5 10.5L11.5 3.5" stroke="#535862" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  drawChart(document.getElementById('ca-a'),state.a.period,end);
+}
+
+// ── Direction B ─────────────────────────────────────────────────────────
+
+function pickB(id,_name,dollars,cents,_label,gain,end){
+  ['all','rh','ibkr','cash'].forEach(k=>{
+    const el=document.getElementById('sb-'+k);
+    el.classList.replace('on','off');
+  });
+  document.getElementById('sb-'+id).classList.replace('off','on');
+  setHeroVal('b',dollars,cents,gain);
+  state.b.end=end;
+  drawChart(document.getElementById('ca-b'),state.b.period,end);
+}
+
+// ── Direction C ─────────────────────────────────────────────────────────
+
+let cOpen=false;
+function toggleC(){
+  cOpen=!cOpen;
+  document.getElementById('cdrop').classList.toggle('open',cOpen);
+  document.getElementById('cpill-caret').classList.toggle('open',cOpen);
+}
+function pickC(id,name,shortVal,dollars,cents,gain,end,avBg){
+  cOpen=false;
+  document.getElementById('cdrop').classList.remove('open');
+  document.getElementById('cpill-caret').classList.remove('open');
+  document.getElementById('cpill-name').textContent=name;
+  document.getElementById('cpill-val').textContent=shortVal;
+  document.getElementById('cpill-av').style.background=avBg;
+  setHeroVal('c',dollars,cents,gain);
+  state.c.end=end;
+  ['all','rh','ibkr','cash'].forEach(k=>document.getElementById('crow-'+k).classList.remove('sel'));
+  document.getElementById('crow-'+id).classList.add('sel');
+  drawChart(document.getElementById('ca-c'),state.c.period,end);
+}
+
+// ── Close dropdowns on outside click ─────────────────────────────────
+
+document.addEventListener('click',e=>{
+  if(aOpen&&!e.target.closest('#abtn-a')&&!e.target.closest('#adrop-a')){aOpen=false;document.getElementById('adrop-a').classList.remove('open');document.getElementById('acaret-a').classList.remove('open');}
+  if(cOpen&&!e.target.closest('#cpill')&&!e.target.closest('#cdrop')){cOpen=false;document.getElementById('cdrop').classList.remove('open');document.getElementById('cpill-caret').classList.remove('open');}
+});
+
+// ── Init ─────────────────────────────────────────────────────────────────
+
+window.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    ['a','b','c'].forEach(f=>drawChart(document.getElementById('ca-'+f),'1D',state[f].end));
+    drawChart(document.getElementById('ca-h'),'1M',12450,true);
+  },120);
+});
+</script>
+</body>
+</html>

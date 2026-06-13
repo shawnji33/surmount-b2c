@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Surmount — Investing Agent · Welcome</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+:root{
+  --bg-primary:#fff; --bg-secondary:#fafafa; --bg-tertiary:#f5f5f5;
+  --fg-900:#181d27;
+  --text-900:rgba(10,13,18,0.9); --text-700:rgba(10,13,18,0.7); --text-600:rgba(10,13,18,0.6);
+  --border-primary:rgba(0,0,0,0.09); --border-secondary:rgba(0,0,0,0.06); --border-faint:rgba(0,0,0,0.04);
+  --green:#3b7e3f;
+  --font-body:'Geist',-apple-system,sans-serif; --font-mono:'Geist Mono',monospace; --font-display:'Inter',sans-serif;
+  --radius-sm:6px; --radius-md:8px; --radius-lg:12px;
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);letter-spacing:-0.5px;color:var(--text-900);background:var(--bg-secondary);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.45;overflow:hidden}
+button{font-family:inherit;letter-spacing:inherit;cursor:pointer;border:none;background:none;color:inherit}
+textarea{font-family:inherit;letter-spacing:inherit}
+svg{display:block}
+.app{display:flex;height:100vh}
+
+/* ── Sidebar ──────────────────────────────────────────────────────────────*/
+.sidebar{flex:0 0 280px;width:280px;background:var(--bg-primary);border-right:1px solid var(--border-secondary);display:flex;flex-direction:column;gap:24px;padding:24px 20px}
+.sb-head{display:flex;align-items:center;justify-content:space-between;padding-right:4px}
+.logo{display:flex;align-items:center;gap:8px}
+.logo .ic{width:32px;height:32px;flex:0 0 32px}
+.logo .wm{height:16px;width:98px}
+.util-btn{border:1px solid var(--border-primary);border-radius:var(--radius-sm);display:grid;place-items:center;padding:6px;color:var(--text-600);transition:background .12s var(--ease)}
+.util-btn:hover{background:var(--bg-tertiary)}
+.new-conv{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--fg-900);border:2px solid rgba(255,255,255,0.12);border-radius:var(--radius-md);padding:8px 12px;width:100%;color:#fff;font-size:12px;font-weight:500;transition:background .12s var(--ease)}
+.new-conv:hover{background:#000}
+.row-item{display:flex;align-items:center;gap:12px;border:1px solid var(--border-secondary);border-radius:12px;padding:10px 12px;width:100%;transition:background .12s var(--ease)}
+.row-item:hover{background:var(--bg-secondary)}
+.row-item .ri{flex:0 0 20px;color:var(--text-700);display:grid;place-items:center}
+.row-item .label{flex:1;min-width:0;font-size:14px;font-weight:500;color:var(--text-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex:0 0 6px}
+.divider{height:1px;width:100%;background:var(--border-secondary)}
+.section{display:flex;flex-direction:column;gap:12px;width:100%}
+.section .hd{font-size:12px;font-weight:500;color:var(--text-700)}
+.conv{display:flex;align-items:center;gap:2px;width:100%;cursor:pointer;border-radius:6px}
+.conv .t{flex:1;min-width:0;font-size:14px;font-weight:500;color:var(--text-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv .time{font-size:12px;font-weight:400;color:var(--text-600);white-space:nowrap}
+
+/* ── Main ─────────────────────────────────────────────────────────────────*/
+.main{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px}
+.center{width:836px;display:flex;flex-direction:column;align-items:center}
+.hero{display:flex;flex-direction:column;align-items:center;gap:16px;padding-bottom:32px}
+.ai-pill{display:inline-flex;align-items:center;gap:7px;padding:4px 11px 4px 8px;border-radius:999px;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#c9b8f0,#a7c7e7,#f0c9d6) border-box;border:1px solid transparent;box-shadow:0 1px 2px rgba(10,13,18,.04)}
+.ai-pill .spin{width:14px;height:14px;border-radius:50%;border:1.6px solid #d8d0f0;border-top-color:#7c5cd6;animation:spin 1.4s linear infinite}
+.ai-pill .nm{font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--fg-900);letter-spacing:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero h1{font-family:var(--font-display);font-size:24px;font-weight:500;color:var(--fg-900);line-height:28.32px;text-align:center;letter-spacing:-0.4px}
+.form{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%}
+
+/* task input — animated conic-gradient border (exact component from product /home/agents) */
+@property --agent-prompt-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes promptBorderSpin{to{--agent-prompt-angle:360deg}}
+.aiPromptWrap{width:768px;max-width:768px;background:#fff;border:0.5px solid rgba(0,0,0,0.09);border-radius:12px;box-shadow:0 8px 16px rgba(130,130,130,.06);position:relative;z-index:0;display:flex;flex-direction:column;transition:border-color .45s ease,box-shadow .45s ease}
+.aiPromptWrap::before{content:"";position:absolute;inset:-2px;border-radius:14px;background:conic-gradient(from var(--agent-prompt-angle),rgba(177,224,245,1) 0%,rgba(204,205,233,1) 22%,rgba(231,185,221,1) 45%,rgba(231,208,196,1) 65%,rgba(231,219,184,1) 80%,rgba(177,224,245,1) 100%);z-index:-1;opacity:0;animation:promptBorderSpin 3s linear infinite;transition:opacity .45s ease;pointer-events:none}
+.aiPromptWrap::after{content:"";position:absolute;inset:0;border-radius:12px;background:#fff;z-index:-1;pointer-events:none}
+.aiPromptWrap:hover,.aiPromptWrap:focus-within{border-color:transparent;box-shadow:0 8px 16px rgba(130,130,130,.14)}
+.aiPromptWrap:hover::before,.aiPromptWrap:focus-within::before{opacity:1}
+.aiInputUpper{padding:16px 16px 0;overflow-y:auto;max-height:304px;cursor:text;scrollbar-width:none}
+.aiInputUpper::-webkit-scrollbar{display:none}
+.aiInput{width:100%;min-width:0;min-height:24px;background:transparent;border:none;outline:none;resize:none;overflow:hidden;font-family:var(--font-body);font-size:16px;line-height:24px;font-weight:400;color:rgba(10,13,18,0.9);letter-spacing:-0.5px;display:block}
+.aiInput::placeholder{color:rgba(10,13,18,0.6)}
+.aiInputLower{display:flex;align-items:center;justify-content:flex-end;padding:8px 16px 16px;height:56px;flex-shrink:0}
+.aiSendBtn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;flex-shrink:0;background:transparent;border:1px solid rgba(0,0,0,0.09);border-radius:6px;cursor:pointer;color:rgba(10,13,18,0.5);transition:all .12s var(--ease)}
+.aiSendBtn:hover{background:var(--bg-tertiary);color:var(--fg-900)}.aiSendBtn:active{transform:scale(.95)}
+
+/* recommended prompts */
+.recs{width:768px;max-width:768px;background:#fff;border:1px solid var(--border-faint);border-radius:12px;box-shadow:0 2px 12px rgba(10,13,18,.02);overflow:hidden}
+.recs-head{background:var(--bg-tertiary);border-bottom:1px solid var(--border-secondary);height:41px;display:flex;align-items:center;padding:0 12px}
+.recs-head .shimmer{font-size:14px;font-weight:400;letter-spacing:-0.5px;background:linear-gradient(90deg,rgba(10,13,18,0.55) 0%,rgba(10,13,18,0.55) 35%,rgba(10,13,18,0.98) 50%,rgba(10,13,18,0.55) 65%,rgba(10,13,18,0.55) 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sweep 3s linear infinite}
+@keyframes sweep{0%{background-position:120% 0}100%{background-position:-120% 0}}
+.tabs-wrap{position:relative}
+.tabs{display:flex;gap:6px;padding:12px 10px;overflow-x:hidden}
+.tab{flex:0 0 auto;background:var(--bg-secondary);border:1px solid var(--border-faint);border-radius:8px;padding:6px 10px;font-size:14px;font-weight:400;color:var(--text-600);white-space:nowrap;letter-spacing:-0.5px;transition:all .12s var(--ease)}
+.tab:hover{background:var(--bg-tertiary)}
+.tab.on{background:var(--bg-tertiary);border-color:var(--border-primary);color:var(--text-900)}
+.tabs-fade{position:absolute;right:0;top:0;height:56px;width:48px;background:linear-gradient(to left,#fff 30%,rgba(255,255,255,0));pointer-events:none}
+.prompts{display:flex;flex-direction:column;padding:0 8px 8px}
+.prompt{height:36px;display:flex;align-items:center;padding:8px;border-radius:8px;font-size:14px;color:var(--text-600);letter-spacing:-0.5px;cursor:pointer;transition:background .12s var(--ease)}
+.prompt:hover{background:var(--bg-secondary);color:var(--text-900)}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="logo"><img class="ic" src="assets/demo/logo-icon.svg" alt="" /><img class="wm" src="assets/demo/logo-wordmark.svg" alt="Surmount" /></div>
+      <button class="util-btn" title="Toggle panel"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg></button>
+    </div>
+
+    <button class="new-conv"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> New Conversation</button>
+
+    <button class="row-item"><span class="ri"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span><span class="label">My Agent</span></button>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="hd">Active Agent</div>
+      <button class="row-item"><span class="label">NVDA buy dip</span><span class="dot"></span></button>
+      <button class="row-item"><span class="label">AAPL earnings report</span><span class="dot"></span></button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="hd">Latest Conversations</div>
+      <div class="conv"><span class="t">Buy the NVIDIA dip</span><span class="time">2m ago</span></div>
+      <div class="conv"><span class="t">Take profit on TSLA</span><span class="time">18m ago</span></div>
+      <div class="conv"><span class="t">Trim winners over 40%</span><span class="time">Today</span></div>
+      <div class="conv"><span class="t">Trim winners over 30%</span><span class="time">Yesterday</span></div>
+      <div class="conv"><span class="t">Trim steady performers</span><span class="time">May 23</span></div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="center">
+      <div class="hero">
+        <img src="assets/demo/surmount-ai-pill.png" width="111" height="26" alt="Surmount AI" style="height:26px;width:auto;display:block" />
+        <h1>Hey Logan, ready to build an agent for your portfolio?</h1>
+      </div>
+
+      <div class="form">
+        <div class="aiPromptWrap">
+          <div class="aiInputUpper"><textarea class="aiInput" rows="1" placeholder="Define a task for your Agent"></textarea></div>
+          <div class="aiInputLower"><button class="aiSendBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></button></div>
+        </div>
+
+        <div class="recs">
+          <div class="recs-head"><span class="shimmer">Try recommended prompts</span></div>
+          <div class="tabs-wrap">
+            <div class="tabs" id="tabs">
+              <button class="tab on">Trading strategies</button>
+              <button class="tab">Dip buying</button>
+              <button class="tab">Income generation</button>
+              <button class="tab">Cash management</button>
+              <button class="tab">Risk management</button>
+              <button class="tab">Indicators</button>
+              <button class="tab">Market monitoring</button>
+              <button class="tab">Order-based</button>
+              <button class="tab">Multi-step strategies</button>
+            </div>
+            <div class="tabs-fade"></div>
+          </div>
+          <div class="prompts">
+            <div class="prompt">Buy $500 of NVDA every Monday at market open</div>
+            <div class="prompt">If AAPL drops 5% in a single day, buy $1,000 worth</div>
+            <div class="prompt">Sell half my TSLA position if it hits $300</div>
+            <div class="prompt">Buy $100 of BTC every Sunday night</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+  document.querySelectorAll('#tabs .tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('#tabs .tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');});
+  const ta=document.querySelector('.aiInput');
+  ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,240)+'px';});
+  document.querySelectorAll('.prompt').forEach(p=>p.onclick=()=>{ta.value=p.textContent;ta.focus();ta.dispatchEvent(new Event('input'));});
+</script>
+</body>
+</html>

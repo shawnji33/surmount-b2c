@@ -8,6 +8,10 @@
   background: var(--color-bg-secondary, #fafafa);
 }
 
+.dashboardLayoutNoSidebar {
+  padding-left: 0;
+}
+
 .mainWrapper {
   --home-column-gap: 40px;
   display: flex;
@@ -17,6 +21,11 @@
   min-height: 100vh;
   margin: 0 auto;
   padding: 0 32px 0 8px;
+}
+
+.mainWrapperNoSidebar {
+  max-width: none;
+  padding: 0 32px;
 }
 
 @media (min-width: 1660px) {

@@ -1,0 +1,319 @@
+/* ===== Option E — Timeline / activity-first renderer ===== */
+
+.app {
+  --bg-primary: #fff;
+  --bg-secondary: #fafafa;
+  --bg-tertiary: #f5f5f5;
+  --fg-900: #181d27;
+  --fg-700: #414651;
+  --fg-600: #535861;
+  --fg-500: #717680;
+  --fg-400: #a3a7ae;
+  --text-900: rgba(10, 13, 18, 0.9);
+  --text-dis: rgba(10, 13, 18, 0.4);
+  --border: #00000016;
+  --border-strong: #00000022;
+  --brand-600: #406ad0;
+  --success-600: #2f9461;
+  --success-700: #316434;
+  --warning-600: #c4881b;
+  --sc: 0 1px 2px rgba(10, 13, 18, 0.04), 0 1px 3px rgba(10, 13, 18, 0.06);
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  color: var(--text-900);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+}
+
+/* ---- top bar ---- */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-primary);
+}
+.back {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  color: var(--fg-600);
+  transition: background 0.15s var(--ease);
+}
+.back:hover {
+  background: var(--bg-secondary);
+}
+.ttl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--fg-900);
+}
+.ttl .cr {
+  color: var(--fg-400);
+}
+.sp {
+  flex: 1;
+}
+.statusHint {
+  font-size: var(--font-size-text-xs);
+  color: var(--fg-500);
+}
+.statusActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--success-700);
+}
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success-600);
+  box-shadow: 0 0 0 3px rgba(47, 148, 97, 0.16);
+}
+
+/* ---- layout ---- */
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+.inner {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 28px 24px 40px;
+}
+.lead {
+  font-size: var(--font-size-text-md);
+  color: var(--fg-700);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* ---- feed ---- */
+.group {
+  margin-bottom: 4px;
+}
+.groupHead {
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--fg-500);
+  padding: 14px 0 8px 40px;
+}
+
+.row {
+  display: flex;
+  gap: 14px;
+}
+.enter {
+  animation: rowIn 0.32s var(--ease) both;
+}
+@keyframes rowIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* glyph column with the connecting line behind it */
+.glyphCol {
+  position: relative;
+  flex: 0 0 26px;
+  display: flex;
+  justify-content: center;
+}
+.glyphCol::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 1.5px solid var(--border-strong);
+}
+.glyphColLast::before {
+  bottom: auto;
+  height: 13px; /* stop the line at the glyph center on the final row */
+}
+
+.glyph {
+  position: relative;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--bg-secondary);
+  flex: 0 0 auto;
+}
+.glyphProjected {
+  border: 1.5px dashed var(--fg-400);
+  background: var(--bg-secondary);
+}
+.glyphSkip {
+  border: 1.5px solid var(--border-strong);
+  background: var(--bg-secondary);
+}
+.glyphDone {
+  background: var(--success-600);
+  color: #fff;
+}
+.glyphAttn {
+  background: var(--warning-600);
+  color: #fff;
+}
+.glyphNow {
+  background: var(--brand-600);
+}
+.glyphNow .glyphPulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--brand-600);
+  animation: nowPulse 2s var(--ease) infinite;
+}
+@keyframes nowPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(64, 106, 208, 0.35);
+  }
+  70% {
+    box-shadow: 0 0 0 9px rgba(64, 106, 208, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(64, 106, 208, 0);
+  }
+}
+
+/* ---- row body ---- */
+.body {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 18px;
+}
+.rowMain {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  text-align: left;
+  font-size: var(--font-size-text-sm);
+}
+.rowEditable {
+  cursor: pointer;
+}
+.rowTitle {
+  font-weight: 500;
+  color: var(--fg-900);
+}
+.rowEditHint {
+  display: inline-grid;
+  place-items: center;
+  color: var(--fg-400);
+  opacity: 0;
+  transition: opacity 0.15s var(--ease);
+}
+.rowEditable:hover .rowEditHint {
+  opacity: 1;
+}
+.rowDetail {
+  font-size: var(--font-size-text-sm);
+  color: var(--fg-500);
+  margin-top: 2px;
+}
+
+.editor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-primary);
+  box-shadow: var(--sc);
+}
+.editorLabel {
+  font-size: var(--font-size-text-sm);
+  color: var(--fg-700);
+}
+
+/* ---- activation footer ---- */
+.foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  padding-left: 40px;
+}
+.activate {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 9px;
+  background: var(--fg-900);
+  color: #fff;
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  transition: transform 0.15s var(--ease);
+}
+.activate:active {
+  transform: scale(0.98);
+}
+.footActive {
+  flex: 1;
+  font-size: var(--font-size-text-sm);
+  color: var(--fg-600);
+}
+.fullView {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-text-sm);
+  color: var(--fg-500);
+  transition: color 0.15s var(--ease);
+}
+.fullView:hover {
+  color: var(--fg-700);
+}
+
+/* ---- smooth collapse ---- */
+.collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s var(--ease);
+}
+.collapse > * {
+  overflow: hidden;
+}
+.collapseOpen {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enter,
+  .glyphNow .glyphPulse,
+  .collapse {
+    animation: none !important;
+    transition: none !important;
+  }
+}

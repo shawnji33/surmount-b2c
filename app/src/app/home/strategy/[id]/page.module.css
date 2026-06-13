@@ -5,7 +5,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  min-height: 100vh;
   background: var(--color-bg-secondary, #fafafa);
 }
 
@@ -15,7 +15,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 24px 16px;
+  padding: 24px 0 16px;
   flex-shrink: 0;
 }
 
@@ -130,10 +130,8 @@
 
 .contentArea {
   display: flex;
-  gap: 40px;
-  padding: 0 24px;
-  flex: 1;
-  overflow: hidden;
+  gap: var(--home-column-gap, 40px);
+  align-items: flex-start;
 }
 
 .leftColumn {
@@ -142,15 +140,6 @@
   display: flex;
   flex-direction: column;
   gap: 40px;
-  overflow-y: auto;
-  overflow-x: clip;
-  padding-bottom: 24px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.leftColumn::-webkit-scrollbar {
-  display: none;
 }
 
 .rightColumn {
@@ -159,16 +148,9 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  align-self: stretch;
-  padding-bottom: 24px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.rightColumn::-webkit-scrollbar {
-  display: none;
+  position: sticky;
+  top: 24px;
+  align-self: flex-start;
 }
 
 /* ─── Section shell ───────────────────────────────────────────────────────── */

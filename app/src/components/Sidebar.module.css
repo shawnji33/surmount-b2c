@@ -76,6 +76,11 @@
   stroke: currentColor;
 }
 
+.navBtn svg.phosphorNavIcon {
+  fill: currentColor;
+  stroke: none;
+}
+
 .navBtn:hover {
   background: var(--color-gray-lm-200, #e9e9eb);
   color: var(--color-gray-lm-900, #181d27);

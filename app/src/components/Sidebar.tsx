@@ -1,11 +1,12 @@
 'use client';
 
-import { GearSix, SignOut } from '@phosphor-icons/react';
+import { GearSix, Robot, SignOut } from '@phosphor-icons/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ActivityNavItem } from './sidebar/ActivityNavItem';
+import { PendingNavItem } from './sidebar/PendingNavItem';
 import s from './Sidebar.module.css';
 
 function SurmountIcon() {
@@ -85,6 +86,13 @@ const NAV_ITEMS = [
     ),
   },
   {
+    key: 'agents',
+    label: 'Agents',
+    tooltip: 'Go to Agents',
+    href: '/home/agents',
+    icon: <Robot className={s.phosphorNavIcon} weight="regular" />,
+  },
+  {
     key: 'marketplace',
     label: 'Market',
     tooltip: 'Go to Market',
@@ -116,6 +124,7 @@ type NavKey = typeof NAV_ITEMS[number]['key'] | 'activity';
 function activeKey(pathname: string): NavKey {
   if (pathname.startsWith('/activity')) return 'activity';
   if (pathname.startsWith(SAVINGS_HREF)) return 'saving';
+  if (pathname.startsWith('/home/agents')) return 'agents';
   if (pathname.startsWith('/home/marketplace')) return 'marketplace';
   if (pathname.startsWith('/home/builder')) return 'builder';
   return 'investing';
@@ -235,16 +244,7 @@ export function Sidebar() {
               </li>
             ))}
             <ActivityNavItem active={active === 'activity'} />
-            <li className={s.navItem}>
-              <Link
-                href="/activity?filter=pending"
-                className={s.pendingBtn}
-                aria-label="View 5 pending orders"
-              >
-                <span className={s.pendingDot} aria-hidden="true" />
-                <span className={s.pendingCount}>5</span>
-              </Link>
-            </li>
+            <PendingNavItem />
           </ul>
         </nav>
       </div>

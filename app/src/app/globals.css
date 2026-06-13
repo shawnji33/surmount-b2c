@@ -100,6 +100,41 @@ a {
   text-decoration: none;
 }
 
+/* ─── AI components — pastel "intelligence" gradient ──────────────────────────
+ * Shared treatment for ALL AI-related components (Ask AI button, Surmount AI
+ * pill, AI prompt inputs, etc.). Use these tokens / utility classes instead of
+ * re-declaring the gradient + glow per component.
+ */
+:root {
+  --gradient-ai: linear-gradient(
+    90deg,
+    #b1e0f5 0%,
+    #cccde9 23%,
+    #e7b9dd 48%,
+    #e7d0c4 73%,
+    #e7dbb8 100%
+  );
+  --shadow-ai: 1px 1px 2px 0 rgba(231, 219, 184, 0.3), 0 1px 2px 0 rgba(231, 208, 196, 0.3),
+    0 1px 2px 0 rgba(231, 185, 221, 0.3), 0 1px 2px 0 rgba(204, 205, 233, 0.3),
+    -1px 1px 2px 0 rgba(177, 224, 245, 0.3);
+}
+
+/* Gradient border + soft pastel glow (white interior). */
+.ai-gradient-border {
+  border: 1px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box, var(--gradient-ai) border-box;
+  box-shadow: var(--shadow-ai);
+}
+
+/* Gradient-filled text — clip the AI gradient to the text. */
+.ai-gradient-text {
+  background: var(--gradient-ai);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
 /* Recharts — never show focus rings on charts */
 .recharts-wrapper,
 .recharts-wrapper:focus,

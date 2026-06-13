@@ -1,0 +1,801 @@
+/* ===== Option C — Conversational Cards renderer ===== */
+
+.app {
+  --bg-primary: #fff;
+  --bg-secondary: #fafafa;
+  --bg-tertiary: #f5f5f5;
+  --bg-quaternary: #e9e9eb;
+  --fg-900: #181d27;
+  --fg-700: #414651;
+  --fg-600: #535861;
+  --fg-500: #717680;
+  --fg-400: #a3a7ae;
+  --text-900: rgba(10, 13, 18, 0.9);
+  --text-700: rgba(10, 13, 18, 0.7);
+  --text-dis: rgba(10, 13, 18, 0.4);
+  --border: #00000016;
+  --border-2: #0000000e;
+  --border-strong: #00000022;
+  --brand-600: #406ad0;
+  --sc: 0 1px 2px rgba(10, 13, 18, 0.04), 0 1px 3px rgba(10, 13, 18, 0.06);
+  --sp: 0 12px 32px rgba(10, 13, 18, 0.12), 0 2px 6px rgba(10, 13, 18, 0.06);
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  color: var(--text-900);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+}
+
+/* ---- top bar ---- */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-primary);
+}
+.back,
+.hb {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  color: var(--fg-600);
+  transition: background 0.15s var(--ease);
+}
+.back:hover,
+.hb:hover {
+  background: var(--bg-secondary);
+}
+.ttl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--fg-900);
+}
+.ttl .cr {
+  color: var(--fg-400);
+}
+.sp {
+  flex: 1;
+}
+
+/* ---- thread layout ---- */
+.threadWrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.thread {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+.threadInner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 24px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ---- bubbles ---- */
+.user {
+  align-self: flex-end;
+  background: var(--bg-tertiary);
+  border-radius: 14px;
+  border-bottom-right-radius: 5px;
+  padding: 10px 14px;
+  font-size: var(--font-size-text-sm);
+  color: var(--text-900);
+  max-width: 78%;
+}
+.asst {
+  font-size: var(--font-size-text-sm);
+  line-height: 1.65;
+  color: var(--text-900);
+}
+.asst strong {
+  font-weight: 500;
+  color: var(--fg-900);
+}
+
+.enter {
+  animation: itemEnter 0.32s var(--ease) both;
+}
+@keyframes itemEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- reasoning trace shimmer ---- */
+.trace {
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+}
+.traceActive {
+  background: linear-gradient(
+    90deg,
+    rgba(10, 13, 18, 0.45) 0%,
+    rgba(10, 13, 18, 0.45) 35%,
+    rgba(10, 13, 18, 0.95) 50%,
+    rgba(10, 13, 18, 0.45) 65%,
+    rgba(10, 13, 18, 0.45) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: sweep 2.2s linear infinite;
+}
+.traceDone {
+  color: var(--fg-500);
+}
+@keyframes sweep {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+/* ---- suggestion chips ---- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  padding: 7px 14px;
+  background: var(--bg-primary);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 999px;
+  font-size: var(--font-size-text-sm);
+  color: var(--text-900);
+  transition: background 0.14s var(--ease), border-color 0.14s var(--ease);
+}
+.chip:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-strong);
+}
+.chipHint {
+  animation: hintPulse 1.8s var(--ease) infinite;
+}
+@keyframes hintPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(64, 106, 208, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(64, 106, 208, 0.12);
+  }
+}
+
+/* ---- the agent card (artifact) ---- */
+.cardEnter {
+  animation: cardEnter 0.34s var(--ease) both;
+}
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-primary);
+  box-shadow: var(--sp);
+  /* overflow stays visible so editable token popovers can escape the card */
+}
+.cardReadonly {
+  opacity: 0.7;
+  box-shadow: var(--sc);
+}
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 16px 18px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.cardIcon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  color: #7b59d8;
+  background: linear-gradient(135deg, rgba(177, 224, 245, 0.55), rgba(231, 185, 221, 0.55));
+}
+.cardName {
+  flex: 1;
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  color: var(--fg-900);
+  min-width: 0;
+}
+.skillTag {
+  font-size: var(--font-size-text-xs);
+  color: var(--fg-600);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+.statusHint {
+  font-size: var(--font-size-text-xs);
+  color: var(--fg-500);
+}
+.statusActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-success-700, #316434);
+}
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-success-600, #2f9461);
+  box-shadow: 0 0 0 3px rgba(47, 148, 97, 0.16);
+}
+.footActive {
+  flex: 1;
+  font-size: var(--font-size-text-sm);
+  color: var(--fg-600);
+}
+
+.cardBody {
+  padding: 8px 18px 4px;
+}
+.cardRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 0;
+  font-size: var(--font-size-text-sm);
+}
+.rowLabel {
+  color: var(--fg-700);
+  white-space: nowrap;
+}
+.rowDots {
+  flex: 1;
+  border-bottom: 1px dashed var(--border-strong);
+  align-self: flex-end;
+  margin-bottom: 5px;
+  min-width: 16px;
+}
+.rowEnter {
+  animation: itemEnter 0.3s var(--ease) both;
+}
+
+.detailsToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 4px;
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--fg-500);
+  transition: color 0.15s var(--ease);
+}
+.detailsToggle:hover {
+  color: var(--fg-700);
+}
+.detailsChevron {
+  transition: transform 0.24s var(--ease);
+}
+.detailsChevronOpen {
+  transform: rotate(180deg);
+}
+.detailRows {
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+  padding-top: 4px;
+}
+
+.cardFoot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-secondary);
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+.activate {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 9px;
+  background: var(--fg-900);
+  color: #fff;
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  transition: transform 0.15s var(--ease), opacity 0.15s var(--ease);
+}
+.activate:active {
+  transform: scale(0.98);
+}
+.activate:disabled {
+  opacity: 0.4;
+}
+.fullView {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-text-sm);
+  color: var(--fg-500);
+  transition: color 0.15s var(--ease);
+}
+.fullView:hover {
+  color: var(--fg-700);
+}
+
+/* ---- value token (edits in place — the token IS the field) ---- */
+.token {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-primary);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--fg-900);
+  white-space: nowrap;
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease), box-shadow 0.3s var(--ease);
+}
+.token:hover {
+  border-color: var(--fg-400);
+}
+.token:focus-within {
+  border-color: var(--fg-500);
+  background: var(--bg-primary);
+  box-shadow: 0 0 0 3px rgba(10, 13, 18, 0.06);
+}
+.tokenReadonly {
+  border-style: dashed;
+  color: var(--fg-600);
+}
+
+/* the inner editable input — borderless, auto-sizes to its content */
+.tokenField {
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  padding: 0;
+  min-width: 1.5ch;
+  width: auto;
+  field-sizing: content;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.tokenField::-webkit-outer-spin-button,
+.tokenField::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.tokenField::placeholder {
+  color: var(--text-dis);
+}
+.tokenAffix {
+  color: var(--fg-500);
+}
+.tokenLead {
+  color: var(--fg-400);
+  margin-right: 4px;
+}
+
+/* native select styled as a token; its dropdown is the OS one (no floating div) */
+.tokenSelect {
+  position: relative;
+  padding-right: 8px;
+}
+.tokenSelectEl {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  padding: 0 18px 0 0;
+  cursor: pointer;
+}
+.tokenCaret {
+  position: absolute;
+  right: 7px;
+  color: var(--fg-400);
+  pointer-events: none;
+}
+
+.tokenChanged {
+  animation: tokenFlash 0.9s var(--ease) both;
+}
+@keyframes tokenFlash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(64, 106, 208, 0);
+    background: rgba(177, 224, 245, 0.45);
+  }
+  30% {
+    box-shadow: 0 0 0 4px rgba(64, 106, 208, 0.16);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(64, 106, 208, 0);
+    background: var(--bg-primary);
+  }
+}
+
+/* ---- jump-to-card pill ---- */
+.jumpPill {
+  position: absolute;
+  left: 50%;
+  bottom: 132px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--fg-900);
+  color: #fff;
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  box-shadow: var(--sp);
+  animation: itemEnter 0.24s var(--ease) both;
+  z-index: 20;
+}
+.jumpDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7fd6a3;
+}
+
+/* ---- composer (animated AI gradient border, reused from welcome input) ---- */
+.composer {
+  padding: 12px 24px 16px;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+}
+@property --composer-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes composerBorderSpin {
+  to {
+    --composer-angle: 360deg;
+  }
+}
+.cfield {
+  position: relative;
+  z-index: 0;
+  background: #fff;
+  border: 0.5px solid rgba(0, 0, 0, 0.09);
+  border-radius: 12px;
+  padding: 12px 12px 10px;
+  box-shadow: 0 8px 16px rgba(130, 130, 130, 0.06);
+  transition: border-color 0.45s ease, box-shadow 0.45s ease;
+}
+.cfield::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 14px;
+  background: conic-gradient(
+    from var(--composer-angle),
+    rgba(177, 224, 245, 1) 0%,
+    rgba(204, 205, 233, 1) 22%,
+    rgba(231, 185, 221, 1) 45%,
+    rgba(231, 208, 196, 1) 65%,
+    rgba(231, 219, 184, 1) 80%,
+    rgba(177, 224, 245, 1) 100%
+  );
+  z-index: -1;
+  opacity: 0;
+  animation: composerBorderSpin 3s linear infinite;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+.cfield::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: #fff;
+  z-index: -1;
+  pointer-events: none;
+}
+.cfield:hover,
+.cfield:focus-within {
+  border-color: transparent;
+  box-shadow: 0 8px 16px rgba(130, 130, 130, 0.14);
+}
+.cfield:hover::before,
+.cfield:focus-within::before {
+  opacity: 1;
+}
+.cfield textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  font-family: inherit;
+  letter-spacing: inherit;
+  font-size: var(--font-size-text-sm);
+  color: var(--text-900);
+  min-height: 36px;
+}
+.cfield textarea::placeholder {
+  color: var(--text-dis);
+}
+.crow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+.mic {
+  color: var(--fg-500);
+}
+.send {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--fg-900);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  transition: opacity 0.15s var(--ease);
+}
+.send:hover {
+  opacity: 0.88;
+}
+.disc {
+  font-size: var(--font-size-text-xs);
+  color: var(--fg-400);
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* ---- activation gate (review sheet) ---- */
+.gateScrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(10, 13, 18, 0.32);
+  animation: scrimIn 0.18s var(--ease) both;
+}
+@keyframes scrimIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.gate {
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg-primary);
+  border-radius: 16px;
+  box-shadow: var(--sp);
+  overflow: hidden;
+  animation: gateIn 0.26s var(--ease) both;
+}
+@keyframes gateIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.gateHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.gateIcon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  color: var(--fg-700);
+  background: var(--bg-secondary);
+}
+.gateTitle {
+  flex: 1;
+  font-family: var(--font-family-display, 'Inter', sans-serif);
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  color: var(--fg-900);
+}
+.gateClose {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--fg-500);
+  transition: background 0.15s var(--ease);
+}
+.gateClose:hover {
+  background: var(--bg-secondary);
+}
+.gateBody {
+  padding: 18px;
+}
+.gateAgent {
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  color: var(--fg-900);
+  margin-bottom: 6px;
+}
+.gateSummary {
+  font-size: var(--font-size-text-sm);
+  line-height: 1.6;
+  color: var(--text-700);
+  margin: 0 0 18px;
+}
+.gateSection {
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--fg-500);
+  margin-bottom: 10px;
+}
+.gateList {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gateList li {
+  display: flex;
+  gap: 9px;
+  font-size: var(--font-size-text-sm);
+  line-height: 1.5;
+  color: var(--text-900);
+}
+.gateBullet {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--color-success-600, #2f9461);
+}
+.gateAck {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  font-size: var(--font-size-text-sm);
+  color: var(--text-900);
+  cursor: pointer;
+}
+.gateAck input {
+  margin-top: 2px;
+  accent-color: var(--fg-900);
+}
+.gateFoot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+.gateCancel {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 9px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-primary);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--fg-700);
+  transition: background 0.15s var(--ease);
+}
+.gateCancel:hover {
+  background: var(--bg-secondary);
+}
+.gateActivate {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 9px;
+  background: var(--fg-900);
+  color: #fff;
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  transition: opacity 0.15s var(--ease), transform 0.15s var(--ease);
+}
+.gateActivate:active {
+  transform: scale(0.98);
+}
+.gateActivate:disabled {
+  opacity: 0.4;
+}
+
+/* ---- smooth collapse (Show details) ---- */
+.collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s var(--ease);
+}
+.collapse > * {
+  overflow: hidden;
+}
+.collapseOpen {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enter,
+  .cardEnter,
+  .rowEnter,
+  .jumpPill,
+  .tokenChanged,
+  .traceActive,
+  .chipHint,
+  .cfield::before {
+    animation: none !important;
+  }
+  .collapse {
+    transition: none;
+  }
+}

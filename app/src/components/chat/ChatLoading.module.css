@@ -1,0 +1,46 @@
+@keyframes spinRing {
+  to { transform: rotate(360deg); }
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  padding-right: 48px;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(177, 224, 245, 1) 0%,
+    rgba(204, 205, 233, 1) 20%,
+    rgba(231, 185, 221, 1) 40%,
+    rgba(231, 208, 196, 1) 60%,
+    rgba(231, 219, 184, 1) 80%,
+    rgba(177, 224, 245, 1) 100%
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+  animation: spinRing 1.4s linear infinite;
+}
+
+.text {
+  margin: 0;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  font-weight: 400;
+  color: rgba(10, 13, 18, 0.9);
+  letter-spacing: -0.5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 1ms;
+  }
+}

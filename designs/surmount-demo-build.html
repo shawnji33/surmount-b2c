@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Surmount — Build Agent Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+:root{
+  --bg-primary:#fff; --bg-secondary:#fafafa; --bg-tertiary:#f5f5f5; --bg-quaternary:#e9e9eb;
+  --fg-900:#181d27; --fg-700:#414651; --fg-600:#535861; --fg-500:#717680; --fg-400:#a3a7ae;
+  --text-900:rgba(10,13,18,0.9); --text-700:rgba(10,13,18,0.7); --text-600:rgba(10,13,18,0.6); --text-dis:rgba(10,13,18,0.4);
+  --border:#00000016; --border-2:#0000000e; --border-strong:#00000022;
+  --brand-600:#406ad0; --brand-secondary:#e0eaf9;
+  --green-600:#3b7e3f; --green-secondary:#e4f4e5; --amber-600:#de5b18; --purple-600:#6838ee; --red-600:#b6544c;
+  --font-body:'Geist',sans-serif; --font-mono:'Geist Mono',monospace; --font-display:'Inter',sans-serif;
+  --sc:0 1px 2px rgba(10,13,18,.04),0 1px 3px rgba(10,13,18,.06);
+  --sp:0 8px 24px rgba(10,13,18,.10),0 2px 6px rgba(10,13,18,.06);
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);letter-spacing:-0.5px;color:var(--text-900);background:var(--bg-secondary);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5;overflow:hidden}
+button{font-family:inherit;letter-spacing:inherit;cursor:pointer;border:none;background:none;color:inherit}
+textarea{font-family:inherit;letter-spacing:inherit}
+svg{display:block}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* top bar */
+.top{height:52px;flex:0 0 52px;display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--bg-primary);border-bottom:1px solid var(--border);z-index:30}
+.top .back{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--fg-600)}
+.top .ttl{display:flex;align-items:center;gap:7px;font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--fg-900)}
+.top .ttl .cr{color:var(--fg-500)}
+.top .saved{font-size:12.5px;color:var(--fg-500)}
+.top .seg{position:absolute;left:50%;transform:translateX(-50%);display:flex;background:var(--bg-tertiary);border-radius:9px;padding:3px}
+.top .seg b{font-size:13px;font-weight:500;color:var(--fg-900);background:var(--bg-primary);box-shadow:var(--sc);padding:6px 13px;border-radius:7px}
+.top .seg span{font-size:13px;color:var(--fg-500);padding:6px 13px}
+.top .sp{flex:1}
+.toggle{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--fg-600)}
+.toggle .sw{width:34px;height:20px;border-radius:999px;background:var(--bg-quaternary);position:relative}
+.toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.toggle .d{width:7px;height:7px;border-radius:50%;background:var(--fg-400)}
+.tbtn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;border-radius:9px;font-size:13px;font-weight:500;color:var(--fg-700)}
+.tbtn.share{border:1px solid var(--border)}
+.tbtn.activate{background:var(--fg-900);color:#fff}
+
+.body{flex:1;display:flex;min-height:0}
+
+/* chat panel */
+.chat{flex:0 0 420px;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--bg-primary);min-height:0}
+.chat-head{display:flex;align-items:center;gap:10px;padding:14px 18px}
+.ai-pill{display:inline-flex;align-items:center;gap:7px;padding:4px 11px 4px 8px;border-radius:999px;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#c9b8f0,#a7c7e7,#f0c9d6) border-box;border:1px solid transparent}
+.ai-pill .spin{width:13px;height:13px;border-radius:50%;border:1.6px solid #d8d0f0;border-top-color:#7c5cd6;animation:spin 1.4s linear infinite}
+.ai-pill .nm{font-family:var(--font-mono);font-size:11.5px;font-weight:500;color:var(--fg-900);letter-spacing:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.chat-head .sp{flex:1}
+.chat-head .hb{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--fg-500)}
+.log{flex:1;overflow-y:auto;padding:8px 18px 18px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin}
+
+.msg-user{align-self:flex-end;background:var(--bg-tertiary);border-radius:14px;border-bottom-right-radius:5px;padding:10px 14px;font-size:14px;color:var(--text-900);max-width:80%}
+.asst{font-size:14px;line-height:1.55;color:var(--text-900)}
+.asst.dim{color:var(--text-700)}
+
+.enter{animation:itemEnter .34s var(--ease) both}
+@keyframes itemEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* phase header + shimmer */
+.phase{font-size:14px;font-weight:500;color:var(--fg-900)}
+.phase.active{background:linear-gradient(90deg,rgba(10,13,18,.5) 0%,rgba(10,13,18,.5) 35%,rgba(10,13,18,.98) 50%,rgba(10,13,18,.5) 65%,rgba(10,13,18,.5) 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sweep 2.4s linear infinite}
+@keyframes sweep{0%{background-position:120% 0}100%{background-position:-120% 0}}
+.phase .ck{color:var(--green-600);margin-left:4px}
+
+.steps{display:flex;flex-direction:column;gap:0;margin-top:-4px}
+.step{display:flex;align-items:center;gap:11px;padding:6px 0;font-size:13.5px;color:var(--text-600);position:relative}
+.step .si{width:18px;height:18px;flex:0 0 18px;display:grid;place-items:center;color:var(--fg-500);background:var(--bg-primary);z-index:1}
+.step.sub::before{content:"";position:absolute;left:8px;top:-8px;height:16px;width:1px;background:var(--border-strong)}
+.step.proc>span:last-child{background:linear-gradient(90deg,rgba(10,13,18,.4) 0%,rgba(10,13,18,.4) 35%,rgba(10,13,18,.96) 50%,rgba(10,13,18,.4) 65%,rgba(10,13,18,.4) 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sweep 1.5s linear infinite}
+.step.proc .si{color:var(--fg-700)}
+
+/* follow-up */
+.followq{font-size:14px;color:var(--text-900);line-height:1.55}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{font-size:13px;color:var(--text-700);border:1px solid var(--border-strong);background:var(--bg-primary);border-radius:10px;padding:8px 12px;transition:all .14s var(--ease)}
+.chip:hover{background:var(--bg-tertiary);border-color:var(--fg-400)}
+.chip.picked{background:var(--fg-900);color:#fff;border-color:var(--fg-900)}
+.chip.fade{opacity:.35;pointer-events:none}
+
+/* preview card */
+.preview{border:1px solid var(--border);border-radius:14px;box-shadow:var(--sc);overflow:hidden;animation:itemEnter .4s var(--ease) both}
+.pv-body{padding:16px}
+.pv-eyebrow{font-size:11.5px;color:var(--fg-500);margin-bottom:7px}
+.pv-title{font-family:var(--font-display);font-size:16px;font-weight:500;color:var(--fg-900)}
+.pv-desc{font-size:13px;color:var(--fg-600);line-height:1.5;margin-top:5px}
+.pv-canvas{margin-top:14px;height:150px;border-radius:10px;border:1px solid var(--border-2);background:radial-gradient(circle, rgba(10,13,18,.06) 1px, transparent 1.4px) 0 0/14px 14px,var(--bg-secondary);position:relative;overflow:hidden;filter:grayscale(.5) opacity(.85)}
+.ghost{position:absolute;background:#fff;border:1px solid var(--border);border-radius:7px;box-shadow:var(--sc)}
+.gline{position:absolute;height:1.5px;background:var(--border-strong)}
+.pv-actions{display:flex;gap:10px;padding:0 16px 16px}
+.apply{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:42px;background:var(--fg-900);color:#fff;border-radius:11px;font-size:14px;font-weight:500;transition:background .12s var(--ease)}
+.apply:hover{background:#000}.apply:active{transform:translateY(1px)}
+.reject{display:flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 18px;border:1px solid var(--border-strong);border-radius:11px;font-size:14px;font-weight:500;color:var(--fg-700)}
+.reject:hover{background:var(--bg-tertiary)}
+
+/* pinned approval bar (always visible above the composer) */
+.approval{border-top:1px solid var(--border-2);padding:14px 16px;display:flex;flex-direction:column;gap:12px;background:var(--bg-primary);animation:itemEnter .35s var(--ease) both}
+.appr-eyebrow{font-size:11.5px;color:var(--fg-500)}
+.appr-title{font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--fg-900);margin-top:2px}
+.appr-actions{display:flex;gap:10px}
+
+/* composer */
+.composer{padding:12px 16px 14px;border-top:1px solid var(--border-2)}
+.scope{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--fg-700);background:var(--bg-primary);border:1px solid var(--border-strong);border-radius:8px;padding:5px 10px;margin-bottom:10px}
+.scope .x{color:var(--fg-400)}
+.cfield{border:1px solid var(--border-strong);border-radius:12px;padding:12px 12px 10px;position:relative}
+.cfield textarea{width:100%;border:none;outline:none;resize:none;font-size:14px;color:var(--text-900);min-height:36px}
+.cfield textarea::placeholder{color:var(--text-dis)}
+.cfield .crow{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.cfield .mic{color:var(--fg-500)}
+.cfield .send{width:30px;height:30px;border-radius:8px;background:var(--bg-quaternary);color:var(--fg-500);display:grid;place-items:center}
+.disc{font-size:12px;color:var(--fg-400);margin-top:10px;text-align:center}
+
+/* canvas */
+.canvas{flex:1;position:relative;overflow:hidden;background:radial-gradient(circle, rgba(10,13,18,.06) 1px, transparent 1.4px) 0 0/20px 20px,var(--bg-secondary)}
+.cc{position:absolute;inset:0}
+.cnode{position:absolute;opacity:0;transform:translateY(10px) scale(.97);transition:opacity .45s var(--ease),transform .45s var(--ease),filter .45s var(--ease)}
+.cnode.show{opacity:1;transform:none}
+.cnode.ghost{filter:grayscale(.55)}
+.cnode.ghost.show{opacity:.5}
+/* white node card (trigger / notification) — Figma 1265:1288 / 1265:1299 */
+.wcard{background:#fff;border:1px solid rgba(0,0,0,0.09);border-radius:14px;box-shadow:0 1px 2px rgba(10,13,18,.04);overflow:hidden;transition:box-shadow .16s var(--ease),transform .16s var(--ease)}
+.wc-head{display:flex;align-items:center;gap:10px;padding:16px 16px 8px}
+.wc-ic{width:24px;height:24px;flex:0 0 24px;background:#e9eaeb;border:1px solid rgba(0,0,0,0.04);border-radius:6px;display:grid;place-items:center}
+.wc-ic img{width:16px;height:16px;display:block}
+.wc-t{font-size:14px;font-weight:500;color:#181d27;line-height:20px}
+.wc-d{padding:0 16px 12px;font-size:14px;font-weight:400;color:#717680;line-height:20px}
+/* gray branch node (get NVDA) — Figma 1265:1233 */
+.gcard{background:#e9e9eb;border:1px solid rgba(0,0,0,0.09);border-radius:24px;box-shadow:0 1px 1px rgba(10,13,18,.04);padding:10px;display:flex;flex-direction:column;gap:8px;transition:box-shadow .16s var(--ease),transform .16s var(--ease)}
+.gc-title{display:flex;align-items:center;gap:8px;padding:4px 8px}
+.gc-ic{width:24px;height:24px;flex:0 0 24px;border:1px solid rgba(0,0,0,0.04);border-radius:6px;overflow:hidden}
+.gc-ic img{width:100%;height:100%;object-fit:cover;display:block}
+.gc-t{font-size:14px;font-weight:500;color:rgba(10,13,18,0.9)}
+.gc-branches{display:flex;gap:8px}
+.branchw{background:#fafafa;border-radius:22px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.bw-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(10,13,18,0.3);border-radius:9999px;padding:4px 12px;align-self:flex-start}
+.bw-pill.if{background:#406ad0;box-shadow:inset 0 2px 2px rgba(255,255,255,.35),inset 0 -2px 0 rgba(10,13,18,.05)}
+.bw-pill.if .k{font-size:12px;font-weight:600;color:#fff;line-height:18px}
+.bw-pill.if .v{font-size:12px;font-weight:500;color:#fff;line-height:18px}
+.bw-pill.else{background:#fff;box-shadow:inset 0 2px 2px rgba(255,255,255,.35)}
+.bw-pill.else .k{font-size:14px;font-weight:600;color:rgba(10,13,18,0.7);line-height:20px}
+.bw-t{font-size:14px;font-weight:500;color:rgba(10,13,18,0.9);line-height:20px}
+.bw-s{font-size:14px;font-weight:400;color:rgba(10,13,18,0.6);line-height:20px}
+/* connection handles (xyflow-style) */
+.whandle{position:absolute;width:16px;height:16px;background:#fff;border:1px solid rgba(0,0,0,0.09);border-radius:4px;box-shadow:0 1px 2px rgba(10,13,18,.04);z-index:3;opacity:0;transition:opacity .4s ease,border-color .14s var(--ease),box-shadow .14s var(--ease)}
+.whandle.show{opacity:1}
+/* hover states (active only once the workflow is applied) */
+.cc.live .wcard:hover,.cc.live .gcard:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(10,13,18,.09),0 1px 3px rgba(10,13,18,.06)}
+.cc.live .cnode:hover{z-index:5}
+.cc.live .whandle:hover{border-color:#406ad0;box-shadow:0 0 0 3px rgba(64,106,208,.18)}
+.cedge{position:absolute;pointer-events:none;opacity:0;transition:opacity .5s ease}
+.cedge.show{opacity:1}
+.cv-empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--fg-400);font-size:14px}
+.toolbar{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--border);box-shadow:var(--sp);border-radius:12px;padding:7px;z-index:10}
+.tb-ask{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border:1px solid var(--purple-600);color:var(--purple-600);border-radius:9px;font-size:13.5px;font-weight:500}
+.tb-add{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 15px;background:var(--fg-900);color:#fff;border-radius:9px;font-size:13.5px;font-weight:500}
+.tb-div{width:1px;height:20px;background:var(--border)}
+.tb-i{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--fg-600)}
+.replay{position:absolute;top:14px;right:16px;z-index:10;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border:1px solid var(--border);border-radius:9px;background:#fff;box-shadow:var(--sc);font-size:12.5px;font-weight:500;color:var(--fg-700)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <button class="back"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="160 208 80 128 160 48"/></svg></button>
+    <div class="ttl"><span id="wfTitle">New agent</span><svg class="cr" width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></div>
+    <span class="saved" id="savedTxt"></span>
+    <div class="seg"><b>Workflow</b><span>Execution history</span></div>
+    <div class="sp"></div>
+    <span class="toggle" id="statusToggle"><span class="d"></span>Off<span class="sw"></span></span>
+    <button class="tbtn share"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><circle cx="64" cy="128" r="24"/><circle cx="176" cy="64" r="24"/><circle cx="176" cy="192" r="24"/><line x1="85.7" y1="116.3" x2="154.3" y2="75.7"/><line x1="85.7" y1="139.7" x2="154.3" y2="180.3"/></svg>Share</button>
+    <button class="tbtn activate">Activate</button>
+  </header>
+
+  <div class="body">
+    <!-- Chat -->
+    <aside class="chat">
+      <div class="chat-head">
+        <img src="assets/demo/surmount-ai-pill.png" width="111" height="26" alt="Surmount AI" style="height:26px;width:auto;display:block" />
+        <span class="sp"></span>
+        <button class="hb"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M92 216H48a8 8 0 0 1-8-8v-44a8 8 0 0 1 2.3-5.6l120-120a8 8 0 0 1 11.4 0l44 44a8 8 0 0 1 0 11.4l-120 120A8 8 0 0 1 92 216Z"/><line x1="136" y1="64" x2="192" y2="120"/></svg></button>
+        <button class="hb"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="200" y1="56" x2="56" y2="200"/><line x1="56" y1="56" x2="200" y2="200"/></svg></button>
+      </div>
+      <div class="log" id="log"></div>
+      <div class="approval" id="approvalBar" style="display:none">
+        <div class="appr-info"><div class="appr-eyebrow">Workflow Ready for Approval</div><div class="appr-title">NVDA buy the dip</div></div>
+        <div class="appr-actions">
+          <button class="apply" id="applyBtn"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><polyline points="216 72 104 184 48 128"/></svg> Apply Workflow</button>
+          <button class="reject" id="rejectBtn"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="200" y1="56" x2="56" y2="200"/><line x1="56" y1="56" x2="200" y2="200"/></svg> Reject</button>
+        </div>
+      </div>
+      <div class="composer">
+        <span class="scope"><svg width="13" height="13" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linejoin="round"><polygon points="128 24 224 80 224 176 128 232 32 176 32 80 128 24"/></svg> Entire Workflow <span class="x"><svg width="11" height="11" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round"><line x1="200" y1="56" x2="56" y2="200"/><line x1="56" y1="56" x2="200" y2="200"/></svg></span></span>
+        <div class="cfield">
+          <textarea rows="1" placeholder="Write a message…"></textarea>
+          <div class="crow"><span class="mic"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><rect x="88" y="24" width="80" height="128" rx="40"/><path d="M200 128a72 72 0 0 1-144 0M128 200v32"/></svg></span><span class="send"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><line x1="128" y1="216" x2="128" y2="60"/><polyline points="60 128 128 60 196 128"/></svg></span></div>
+        </div>
+        <div class="disc">AI assistants might make mistakes. Check important information.</div>
+      </div>
+    </aside>
+
+    <!-- Canvas -->
+    <main class="canvas">
+      <button class="replay" id="replay"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="79.8 99.7 31.8 99.7 31.8 51.7"/><path d="M65.8 190.2a88 88 0 1 0 0-124.4l-34 33.9"/></svg> Replay</button>
+      <div class="cc" id="cc">
+        <div class="cv-empty" id="cvEmpty">Your agent's workflow will appear here</div>
+      </div>
+      <div class="toolbar">
+        <button class="tb-ask"><svg width="15" height="15" viewBox="0 0 256 256" fill="currentColor"><path d="m208 144-32 11-11 32-11-32-32-11 32-11 11-32 11 32Zm-96-40 24-8 8-24 8 24 24 8-24 8-8 24-8-24Z"/></svg> Ask AI</button>
+        <button class="tb-add"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="40" y1="128" x2="216" y2="128"/><line x1="128" y1="40" x2="128" y2="216"/></svg> Add</button>
+        <span class="tb-div"></span>
+        <button class="tb-i"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="76 104 36 144 76 184"/><path d="M36 144h132a52 52 0 0 0 52-52v-12"/></svg></button>
+        <button class="tb-i"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="180 104 220 144 180 184"/><path d="M220 144H88a52 52 0 0 1-52-52v-12"/></svg></button>
+        <span class="tb-div"></span>
+        <button class="tb-i"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><circle cx="116" cy="116" r="80"/><line x1="84" y1="116" x2="148" y2="116"/><line x1="116" y1="84" x2="116" y2="148"/><line x1="173" y1="173" x2="224" y2="224"/></svg></button>
+        <button class="tb-i"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><circle cx="116" cy="116" r="80"/><line x1="84" y1="116" x2="148" y2="116"/><line x1="173" y1="173" x2="224" y2="224"/></svg></button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const log=$('#log');
+const ICON={
+  brain:'<svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M248 132a40 40 0 0 0-25-37 40 40 0 0 0-51-49 40 40 0 0 0-88 0 40 40 0 0 0-51 49 40 40 0 0 0 0 74 40 40 0 0 0 51 49 40 40 0 0 0 88 0 40 40 0 0 0 51-49 40 40 0 0 0 25-37Z"/><line x1="128" y1="36" x2="128" y2="220"/></svg>',
+  search:'<svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><circle cx="116" cy="116" r="80"/><line x1="173" y1="173" x2="224" y2="224"/></svg>',
+  book:'<svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M128 88a48 48 0 0 1 48-48h56v152h-56a48 48 0 0 0-48 48 48 48 0 0 0-48-48H24V40h56a48 48 0 0 1 48 48ZM128 88v120"/></svg>',
+  db:'<svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="128" cy="80" rx="88" ry="40"/><path d="M40 80v96c0 22 39 40 88 40s88-18 88-40V80"/></svg>',
+  build:'<svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M226.8 169.4 198 140.6a32 32 0 0 0-45.2 0l-12.2 12.2-90-90A8 8 0 0 0 38 65l11.3 11.3-22.7 22.6a8 8 0 0 0 0 11.3l28 28a8 8 0 0 0 11.3 0l22.6-22.7L132 156l-12.2 12.2a32 32 0 0 0 0 45.2l28.8 28.8a8 8 0 0 0 11.4 0l66.8-66.8a8 8 0 0 0 0-11.2Z"/></svg>',
+  scan:'<svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="116" cy="116" r="40"/><circle cx="116" cy="116" r="80"/><line x1="148" y1="148" x2="172" y2="172"/></svg>',
+};
+function el(html){const d=document.createElement('div');d.innerHTML=html.trim();return d.firstElementChild;}
+function add(node){log.appendChild(node);log.scrollTop=log.scrollHeight;return node;}
+function wait(ms){return new Promise(r=>setTimeout(r,ms));}
+
+function addUser(t){return add(el(`<div class="msg-user enter">${t}</div>`));}
+function addAsst(html,cls=''){return add(el(`<div class="asst enter ${cls}">${html}</div>`));}
+
+async function addPhase(title,steps){
+  const ph=title?add(el(`<div class="phase active enter">${title}</div>`)):null;
+  const wrap=add(el(`<div class="steps"></div>`));
+  let prev=null;
+  for(let i=0;i<steps.length;i++){
+    const [icon,txt,sub]=steps[i];
+    const st=el(`<div class="step enter proc ${sub?'sub':''}"><span class="si">${ICON[icon]}</span><span>${txt}</span></div>`);
+    if(prev) prev.classList.remove('proc');           /* finalize previous step */
+    wrap.appendChild(st);prev=st;log.scrollTop=log.scrollHeight;
+    await wait(360+Math.random()*320);                /* slower, more deliberate */
+  }
+  if(prev) prev.classList.remove('proc');
+  if(ph){ph.classList.remove('active');ph.insertAdjacentHTML('beforeend','<span class="ck">✓</span>');}
+  return ph;
+}
+
+function followup(q,opts,picked){
+  return new Promise(resolve=>{
+    add(el(`<div class="followq asst enter">${q}</div>`));
+    const row=add(el(`<div class="chips enter"></div>`));
+    opts.forEach(o=>{
+      const c=el(`<button class="chip">${o}</button>`);
+      c.onclick=()=>{
+        row.querySelectorAll('.chip').forEach(x=>{x.classList.add('fade');if(x===c)x.classList.replace('fade','picked')});
+        addUser(o);
+        resolve(o);
+      };
+      row.appendChild(c);
+    });
+    // gently hint the demo pick
+    const hint=row.querySelectorAll('.chip')[picked];
+    if(hint) hint.animate([{boxShadow:'0 0 0 0 rgba(64,106,208,0)'},{boxShadow:'0 0 0 4px rgba(64,106,208,.14)'},{boxShadow:'0 0 0 0 rgba(64,106,208,0)'}],{duration:1600,iterations:Infinity});
+  });
+}
+
+/* ── The scripted build flow ───────────────────────────────────────────────*/
+async function run(){
+  log.innerHTML='';
+  const ab=$('#approvalBar'); if(ab) ab.style.display='none';
+  $('#cc').classList.remove('live');
+  $('#wfTitle').textContent='New agent'; $('#savedTxt').textContent='';
+  $('#cc').innerHTML='<div class="cv-empty" id="cvEmpty">Your agent’s workflow will appear here</div>';
+
+  addUser('Buy NVDA when it drops');
+  await wait(700);
+  addAsst("I'll help you build an agent that monitors NVDA's price and automatically buys when it drops. Let me plan the workflow — I'll route this to the Planner first to design the structure.",'dim');
+  await wait(800);
+
+  await addPhase('Planning your workflow…',[
+    ['brain','Planning'],
+    ['book','Reading your request',1],
+    ['search','Found 10 actions for "stock price quote"',1],
+    ['search','Found 15 actions for "buy stock order trade"',1],
+    ['book','Reading connections',1],
+    ['search','Found 10 actions for "alpaca buy order"',1],
+    ['search','Found 12 actions for "place market order brokerage"',1],
+    ['search','Found 2 triggers for "schedule cron"',1],
+    ['search','Found 3 actions for "yahoo finance ticker"',1],
+    ['scan','Checking available integrations',1],
+    ['brain','Designing the workflow structure',1],
+    ['book','Writing the plan',1],
+  ]);
+  await wait(500);
+
+  // Follow-up 1
+  const drop=await followup('Got it — a dip-buying agent on NVDA. How big a drop should trigger a buy?',
+    ['Drops 2% in a day','Drops 5% in a day','Drop vs. its recent high','Something else'],1);
+  await wait(450);
+  addAsst('Using <strong>previous close</strong> as the reference and checking <strong>continuously during market hours</strong>.','dim');
+  await wait(700);
+
+  // Follow-up 2
+  const amt=await followup('How much should I buy each time it dips 5%?',
+    ['$500','$1,000','$2,000','Enter an amount'],2);
+  await wait(700);
+
+  // Follow-up 3
+  const cap=await followup("Smart to cap how much this deploys so it doesn't overextend on a rough week. Want a weekly limit?",
+    ['$4,000 / week','$6,000 / week','No cap','Custom'],0);
+  await wait(450);
+  const amtTxt=amt.startsWith('$')?amt:'$2,000', capTxt=cap.includes('/')?cap:'$4,000 / week';
+  addAsst(`Locked in — buy <strong>${amtTxt}</strong> of NVDA on a <strong>5% daily drop</strong>, capped at <strong>${capTxt}</strong>. I'll email you each time it fires.`,'dim');
+  await wait(700);
+
+  await addPhase('Now building your NVDA price-drop detection and auto-buy agent…',[
+    ['build','Building'],
+    ['book','Reading the plan',1],
+    ['db','Reading node schemas',1],
+    ['db','Querying node schemas',1],
+    ['build','Wiring trigger → price check',1],
+    ['build','Adding conditional buy logic',1],
+    ['build','Configuring notifications',1],
+    ['scan','Generating workflow',1],
+    ['scan','Validating connections',1],
+  ]);
+  await wait(400);
+
+  // generate the workflow on the canvas as a ghosted preview (Figma 1265:1104)
+  const cvE=$('#cvEmpty'); if(cvE) cvE.remove();
+  buildWorkflow(true);
+  await wait(wfNodes.length*200+300);
+
+  // reveal the approval bar — pinned above the composer, always visible
+  const bar=$('#approvalBar');
+  bar.style.display='flex';
+  $('#applyBtn').onclick=()=>{bar.style.display='none';finalizeWorkflow();};
+  $('#rejectBtn').onclick=()=>{bar.style.display='none';};
+}
+
+/* ── Workflow nodes (pixel-perfect Figma cards 1265:1288 / 1233 / 1299) ─────*/
+const wfNodes=[
+  {id:'trig',x:360,y:96,w:355,html:`
+    <div class="wcard">
+      <div class="wc-head"><span class="wc-ic"><img src="assets/demo/icon-trigger.svg" alt=""/></span><span class="wc-t">Every 15 minutes, Mon-Friday, Market Hours</span></div>
+      <div class="wc-d">Trigger the agent every 15 minutes, on Monday to Friday during market hours</div>
+    </div>`},
+  {id:'nvda',x:300,y:320,w:340,html:`
+    <div class="gcard">
+      <div class="gc-title"><span class="gc-ic"><img src="assets/demo/nvidia.png" alt=""/></span><span class="gc-t">Get NVDA current &amp; opening price</span></div>
+      <div class="gc-branches">
+        <div class="branchw"><span class="bw-pill if"><span class="k">IF</span><span class="v">daily drop &gt; 5%</span></span><div><div class="bw-t">Buy $5,000 NVDA</div><div class="bw-s">Market order</div></div></div>
+        <div class="branchw"><span class="bw-pill else"><span class="k">Else</span></span><div><div class="bw-t">No actions</div><div class="bw-s">Position hold</div></div></div>
+      </div>
+    </div>`},
+  {id:'notif',x:360,y:560,w:355,html:`
+    <div class="wcard">
+      <div class="wc-head"><span class="wc-ic"><img src="assets/demo/icon-bell.svg" alt=""/></span><span class="wc-t">Send email and in-app notifications</span></div>
+      <div class="wc-d">Send Email and in-app notification</div>
+    </div>`},
+];
+
+/* xyflow-style smoothstep path: source right-handle → target left-handle,
+   routed through the gap (midY) with rounded corners. */
+function smoothPath(sx,sy,tx,ty,midY){
+  const o=22,r=14,ax=sx+o,dx=tx-o;
+  return `M ${sx} ${sy} H ${ax-r} Q ${ax} ${sy} ${ax} ${sy+r} V ${midY-r} Q ${ax} ${midY} ${ax-r} ${midY} H ${dx+r} Q ${dx} ${midY} ${dx} ${midY+r} V ${ty-r} Q ${dx} ${ty} ${dx+r} ${ty} H ${tx}`;
+}
+
+/* Build the workflow on the canvas — ghosted (preview) or solid.
+   Handles + edges are computed from the nodes' REAL rendered geometry so
+   they always attach correctly (like React Flow). */
+function buildWorkflow(ghost){
+  const cc=$('#cc');cc.innerHTML='';
+  const nodeEls={};
+  wfNodes.forEach((n,i)=>{
+    const node=el(`<div class="cnode ${ghost?'ghost':''}" style="left:${n.x}px;top:${n.y}px;width:${n.w}px">${n.html}</div>`);
+    cc.appendChild(node);nodeEls[n.id]=node;
+    setTimeout(()=>node.classList.add('show'),120+i*200);
+  });
+  try{
+  // measure actual geometry → connection points (right = output, left = input)
+  const g=id=>{const e=nodeEls[id];return{l:e.offsetLeft,t:e.offsetTop,w:e.offsetWidth,h:e.offsetHeight};};
+  const trig=g('trig'),nvda=g('nvda'),notif=g('notif');
+  const pt={
+    trigR:[trig.l+trig.w+8, trig.t+trig.h/2],
+    nvdaL:[nvda.l-8, nvda.t+nvda.h/2],
+    nvdaR:[nvda.l+nvda.w+8, nvda.t+nvda.h/2],
+    notifL:[notif.l-8, notif.t+notif.h/2],
+    notifR:[notif.l+notif.w+8, notif.t+notif.h/2],
+  };
+  const midA=(trig.t+trig.h+nvda.t)/2, midB=(nvda.t+nvda.h+notif.t)/2;
+  // edges behind the nodes
+  const edgeSvg=el(`<svg class="cedge" id="edges" style="position:absolute;inset:0;width:100%;height:100%" fill="none" stroke="rgba(10,13,18,.22)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="${smoothPath(...pt.trigR,...pt.nvdaL,midA)}"/><path d="${smoothPath(...pt.nvdaR,...pt.notifL,midB)}"/></svg>`);
+  cc.insertBefore(edgeSvg,cc.firstChild);
+  // handles (16px squares centered on the connection points)
+  Object.values(pt).forEach(([x,y],i)=>{
+    const h=el(`<div class="whandle" style="left:${x-8}px;top:${y-8}px"></div>`);
+    cc.appendChild(h);
+    setTimeout(()=>h.classList.add('show'),220+i*90);
+  });
+  setTimeout(()=>edgeSvg.classList.add('show'),140+wfNodes.length*200);
+  }catch(err){console.error('[workflow edges]',err);}
+}
+
+/* Apply → the ghosted preview solidifies into the final workflow */
+async function finalizeWorkflow(){
+  $('#wfTitle').textContent='Buy NVIDIA when it drops 5%';
+  $('#savedTxt').textContent='· Saved';
+  document.querySelectorAll('.cnode').forEach(n=>n.classList.remove('ghost'));
+  $('#cc').classList.add('live');
+  const e=$('#edges'); if(e) e.classList.add('show');
+  await wait(900);
+  addAsst('Done — I built a “buy the dip” automation for NVDA: Triggers when NVDA drops 5% intraday (or 8% in a week). Only if RSI is oversold and cash is available. Buys $2,000 of NVDA at market. Notifies you on execution. Tap any step to see its details, or tell me what to change.');
+  await addPhase('',[
+    ['build','Building'],['scan','Inspecting current workflow',1],['search','Found 3 actions for "send email"',1],
+    ['db','Reading connections',1],['db','Reading action node schema',1],['scan','Inspecting out-0 node',1],
+  ]);
+}
+
+$('#replay').onclick=run;
+run();
+</script>
+</body>
+</html>
