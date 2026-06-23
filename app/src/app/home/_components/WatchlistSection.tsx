@@ -1,13 +1,13 @@
 'use client';
 
-import { FunnelSimple } from '@phosphor-icons/react';
+import { FunnelSimple, Eye } from '@phosphor-icons/react';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { WATCHLIST, WATCHLIST_SORT_OPTIONS, type WatchlistSortKey } from '../_data';
 import s from '../page.module.css';
 
-export function WatchlistSection() {
+export function WatchlistSection({ empty = false }: { empty?: boolean }) {
   const [sortKey, setSortKey] = useState<WatchlistSortKey>('todayReturn');
   const [sortOpen, setSortOpen] = useState(false);
   const [sortPos, setSortPos] = useState<{ top: number; right: number } | null>(null);
@@ -121,23 +121,32 @@ export function WatchlistSection() {
     <section className={s.watchlistSection} aria-label="Watchlist">
       <div className={s.sectionHeader}>
         <span className={s.sectionTitle}>Watchlist</span>
-        <div className={s.watchlistControls} aria-label="Watchlist controls">
-          <span className={s.watchlistRangePill} aria-label="1 day performance">
-            1D
-          </span>
-          <button
-            ref={sortButtonRef}
-            type="button"
-            className={[s.watchlistSortButton, sortOpen ? s.watchlistSortButtonOpen : ''].filter(Boolean).join(' ')}
-            onClick={toggleSortMenu}
-            aria-label={`Sort by ${activeSortLabel}`}
-            aria-haspopup="menu"
-            aria-expanded={sortOpen}
-          >
-            <FunnelSimple weight="bold" aria-hidden="true" />
-          </button>
-        </div>
+        {!empty && (
+          <div className={s.watchlistControls} aria-label="Watchlist controls">
+            <span className={s.watchlistRangePill} aria-label="1 day performance">
+              1D
+            </span>
+            <button
+              ref={sortButtonRef}
+              type="button"
+              className={[s.watchlistSortButton, sortOpen ? s.watchlistSortButtonOpen : ''].filter(Boolean).join(' ')}
+              onClick={toggleSortMenu}
+              aria-label={`Sort by ${activeSortLabel}`}
+              aria-haspopup="menu"
+              aria-expanded={sortOpen}
+            >
+              <FunnelSimple weight="bold" aria-hidden="true" />
+            </button>
+          </div>
+        )}
       </div>
+      {empty ? (
+        <div className={s.watchlistEmpty}>
+          <span className={s.watchlistEmptyIcon} aria-hidden="true"><Eye weight="regular" /></span>
+          <span className={s.watchlistEmptyTitle}>Your watchlist is empty</span>
+          <p className={s.watchlistEmptyDesc}>Follow strategies and assets to track their performance here.</p>
+        </div>
+      ) : (
       <div className={s.watchlistCard}>
         {sortedItems.map((item) => {
           const primaryValue = sortKey === 'price' ? item.price : item.value;
@@ -171,6 +180,7 @@ export function WatchlistSection() {
           );
         })}
       </div>
+      )}
       {mounted && sortOpen && sortPos && createPortal(sortMenu, document.body)}
     </section>
   );

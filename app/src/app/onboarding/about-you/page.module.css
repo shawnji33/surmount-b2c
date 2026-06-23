@@ -1,0 +1,345 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--color-bg-secondary, #fafafa);
+}
+
+/* ── Top bar ─────────────────────────────────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  flex-shrink: 0;
+}
+.topbarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--color-bg-primary, #fff);
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.086));
+  border-radius: var(--radius-md, 8px);
+  color: rgba(10, 13, 18, 0.7);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.5px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+}
+.topbarBtn:hover {
+  background: #fafafa;
+  color: rgba(10, 13, 18, 0.8);
+}
+.topbarBtn:active {
+  transform: scale(0.97);
+}
+.topbarBtn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.topbarBrand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.topbarBrandIcon {
+  width: 32px;
+  height: 32px;
+  display: block;
+  flex-shrink: 0;
+}
+.topbarBrandName {
+  width: 98px;
+  height: 16px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ── Stepper — single continuous progress bar ────────────────────── */
+.progress {
+  position: relative;
+  height: 2px;
+  flex-shrink: 0;
+  background: rgba(10, 13, 18, 0.08);
+  overflow: hidden;
+}
+.progressFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--color-fg-primary-900, #181d27);
+  border-radius: 0 9999px 9999px 0;
+  transition: width 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Layout ──────────────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding: 24px 24px 80px;
+}
+.questionView {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 200ms cubic-bezier(0.2, 0, 0, 1),
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+/* directional page-to-page transitions */
+.leaveForward {
+  opacity: 0;
+  transform: translateX(-16px);
+  pointer-events: none;
+}
+.leaveBackward {
+  opacity: 0;
+  transform: translateX(16px);
+  pointer-events: none;
+}
+.enterForward {
+  opacity: 0;
+  transform: translateX(16px);
+  transition: none;
+  pointer-events: none;
+}
+.enterBackward {
+  opacity: 0;
+  transform: translateX(-16px);
+  transition: none;
+  pointer-events: none;
+}
+
+/* ── Hero ────────────────────────────────────────────────────────── */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.title {
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.8px;
+  color: var(--color-fg-primary-900, #181d27);
+  margin: 0;
+}
+.subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.5px;
+  color: rgba(10, 13, 18, 0.7);
+  margin: 0;
+  max-width: 460px;
+}
+
+/* ── Pills ───────────────────────────────────────────────────────── */
+.pillBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+.pillGroup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm, 6px);
+  padding: 10px var(--spacing-xl, 16px);
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-bg-primary, #fff);
+  color: var(--color-fg-primary-900, #181d27);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+  transition:
+    background-color 150ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 150ms cubic-bezier(0.2, 0, 0, 1),
+    color 150ms cubic-bezier(0.2, 0, 0, 1),
+    transform 150ms cubic-bezier(0.2, 0, 0, 1);
+}
+.pill:hover {
+  background: var(--color-bg-primary-hover, #fafafa);
+}
+.pill:active {
+  transform: scale(0.98);
+}
+.pill:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(10, 13, 18, 0.08);
+}
+.pillSelected {
+  background: var(--color-fg-primary-900, #181d27);
+  border-color: var(--color-fg-primary-900, #181d27);
+  color: var(--color-text-white, #fff);
+}
+.pillSelected:hover {
+  background: #252b37;
+}
+
+.otherInput {
+  width: 100%;
+  max-width: 420px;
+  padding: 12px 16px;
+  border: 1px solid rgba(10, 13, 18, 0.14);
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-bg-primary, #fff);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 16px;
+  letter-spacing: -0.5px;
+  color: var(--color-fg-primary-900, #181d27);
+  outline: none;
+  text-align: center;
+  transition: border-color 150ms ease;
+  animation: otherReveal 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.otherInput:focus {
+  border-color: rgba(10, 13, 18, 0.32);
+}
+.otherInput::placeholder {
+  color: rgba(10, 13, 18, 0.4);
+}
+@keyframes otherReveal {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Style cards ─────────────────────────────────────────────────── */
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 520px;
+}
+.styleCard {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  min-height: 138px;
+  padding: 20px;
+  text-align: left;
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.086));
+  border-radius: var(--radius-xl, 12px);
+  background: var(--color-bg-primary, #fff);
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, transform 150ms ease;
+}
+.styleCard:hover {
+  background: var(--color-bg-secondary, #fafafa);
+}
+.styleCard:active {
+  transform: scale(0.99);
+}
+.styleCardSelected {
+  border-color: rgba(10, 13, 18, 0.24);
+  background: var(--color-bg-secondary, #fafafa);
+}
+.styleCardText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 80%;
+}
+.styleCardTitle {
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: -0.5px;
+  color: var(--color-fg-primary-900, #181d27);
+}
+.styleCardSub {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.5px;
+  color: rgba(10, 13, 18, 0.6);
+}
+.styleCardEmoji {
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  font-size: 30px;
+  line-height: 1;
+}
+
+/* ── Continue ────────────────────────────────────────────────────── */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border: 0;
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-fg-primary-900, #181d27);
+  color: #fff;
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease, opacity 150ms ease;
+}
+.cta:hover {
+  background: #252b37;
+}
+.cta:active {
+  transform: scale(0.98);
+}
+.cta:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.cta svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .questionView,
+  .otherInput {
+    transition: opacity 120ms ease !important;
+    animation: none !important;
+    transform: none !important;
+  }
+  .leaveForward,
+  .leaveBackward,
+  .enterForward,
+  .enterBackward {
+    transform: none !important;
+  }
+}

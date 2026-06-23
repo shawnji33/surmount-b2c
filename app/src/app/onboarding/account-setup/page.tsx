@@ -7,8 +7,8 @@ export default function AccountSetupPage() {
       <header className={s.topbar}>
         <span className={s.topbarSpacer} aria-hidden="true">Close</span>
         <Link href="/home" className={s.topbarBrand}>
-          <img src="https://www.figma.com/api/mcp/asset/3bbd6119-7028-47e5-9a7d-d4fafba87569" alt="" className={s.topbarBrandIcon} />
-          <img src="https://www.figma.com/api/mcp/asset/3297adb2-a615-459c-b3a1-30442b03c519" alt="Surmount" className={s.topbarBrandName} />
+          <img src="/assets/sidebar/logo-mark.svg" alt="" className={s.topbarBrandIcon} />
+          <img src="/assets/sidebar/wordmark.svg" alt="Surmount" className={s.topbarBrandName} />
         </Link>
         <Link href="/home" className={s.topbarBtn}>
           Close

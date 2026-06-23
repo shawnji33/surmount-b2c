@@ -4,8 +4,9 @@ import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { WealthsimpleNetWorthChart } from '@/components/charts/WealthsimpleNetWorthChart';
 import { TransactionList } from '@/components/transactions/TransactionList';
 import Link from 'next/link';
-import { Suspense, useState, useCallback, useMemo } from 'react';
+import { Suspense, useState, useCallback, useMemo, type ReactNode } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { ChartLineUp, ChartPieSlice, Receipt } from '@phosphor-icons/react';
 import {
   STRATEGIES,
   PORTFOLIO_BREAKDOWN,
@@ -25,8 +26,43 @@ import { WatchlistSection } from './_components/WatchlistSection';
 import { TransferModal } from './_components/TransferModal';
 import s from './page.module.css';
 
+const CONNECTED_BROKERS: Record<string, { name: string; logo: string; cash: number }> = {
+  kraken: { name: 'Kraken', logo: '/assets/brokers/kraken.png', cash: 12480.55 },
+  coinbase: { name: 'Coinbase', logo: '/assets/brokers/coinbase.png', cash: 8230.12 },
+  alpaca: { name: 'Alpaca', logo: '/assets/brokers/alpaca.png', cash: 5400.0 },
+  etrade: { name: 'E*Trade', logo: '/assets/brokers/etrade.png', cash: 21750.4 },
+  tradestation: { name: 'TradeStation', logo: '/assets/brokers/tradestation.jpeg', cash: 9325.8 },
+};
+
+const formatUSD = (n: number) =>
+  `$${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+function EmptyState({ icon, title, desc, ctaLabel, ctaHref }: {
+  icon: ReactNode;
+  title: string;
+  desc: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}) {
+  return (
+    <div className={s.emptyState}>
+      <span className={s.emptyStateIcon} aria-hidden="true">{icon}</span>
+      <span className={s.emptyStateTitle}>{title}</span>
+      <p className={s.emptyStateDesc}>{desc}</p>
+      {ctaLabel && ctaHref && (
+        <Link href={ctaHref} className={s.emptyStateCta} style={{ textDecoration: 'none' }}>
+          {ctaLabel}
+        </Link>
+      )}
+    </div>
+  );
+}
+
 function HomePageContent() {
   const searchParams = useSearchParams();
+  const isEmpty = searchParams.get('state') === 'empty';
+  const broker = CONNECTED_BROKERS[searchParams.get('connected') ?? 'kraken'] ?? CONNECTED_BROKERS.kraken;
+
   const [transferMode, setTransferMode] = useState<TransferMode | null>(() => searchParams.get('deposit') === '1' ? 'deposit' : null);
   const [selectedPortfolioAccounts, setSelectedPortfolioAccounts] = useState<Set<string>>(
     () => new Set(ACCOUNT_SWITCHER_ACCOUNTS.map((account) => account.id)),
@@ -67,7 +103,7 @@ function HomePageContent() {
   return (
     <main className={s.main}>
       <DashboardHeader
-        title="Good morning, Logan"
+        title={isEmpty ? `Welcome to Surmount, Logan` : 'Good morning, Logan'}
         onDeposit={() => setTransferMode('deposit')}
         onWithdraw={() => setTransferMode('withdrawal')}
       />
@@ -81,118 +117,153 @@ function HomePageContent() {
           <section className={s.portfolioSection}>
             <div className={s.sectionHeader}>
               <div className={s.sectionTitleRow}>
-                <AccountSwitcher selected={selectedPortfolioAccounts} onToggle={togglePortfolioAccount} />
+                {isEmpty ? (
+                  <div className={s.emptyAccountChip}>
+                    <img src={broker.logo} alt="" />
+                    <span>{broker.name}</span>
+                  </div>
+                ) : (
+                  <AccountSwitcher selected={selectedPortfolioAccounts} onToggle={togglePortfolioAccount} />
+                )}
               </div>
               <div className={s.sectionActions}>
-                <button type="button" className={s.actionLink}>Edit</button>
+                {!isEmpty && <button type="button" className={s.actionLink}>Edit</button>}
                 <button type="button" className={s.btnSecondary}>
                   <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 3v10M3 8h10" /></svg>
                   Connect accounts
                 </button>
               </div>
             </div>
-            <WealthsimpleNetWorthChart
-              value={portfolioValue}
-              changeText={portfolioChangeText}
-              changePeriod="this month"
-              data={portfolioChartData}
-              initialRange="1D"
-              height={237}
-            />
 
-
+            {isEmpty ? (
+              <div className={s.emptyHero}>
+                <span className={s.emptyHeroLabel}>Available to trade</span>
+                <span className={s.emptyHeroValue}>{formatUSD(broker.cash)}</span>
+              </div>
+            ) : (
+              <WealthsimpleNetWorthChart
+                value={portfolioValue}
+                changeText={portfolioChangeText}
+                changePeriod="this month"
+                data={portfolioChartData}
+                initialRange="1D"
+                height={237}
+              />
+            )}
           </section>
 
           {/* Active Strategies */}
           <section className={s.leftSection}>
             <div className={s.sectionHeader}>
               <span className={s.sectionTitle}>Invested strategies</span>
-              <div className={s.sectionActions}>
-                <button type="button" className={s.actionLink}>Edit</button>
-                <button type="button" className={s.btnSecondary}>
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 3v10M3 8h10" /></svg>
-                  Add strategies
-                </button>
-              </div>
+              {!isEmpty && (
+                <div className={s.sectionActions}>
+                  <button type="button" className={s.actionLink}>Edit</button>
+                  <button type="button" className={s.btnSecondary}>
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 3v10M3 8h10" /></svg>
+                    Add strategies
+                  </button>
+                </div>
+              )}
             </div>
-            <div className={s.strategiesTable}>
-              <div className={s.tableHeader}>
-                <div className={[s.th, s.thStrategy].join(' ')}>Strategy</div>
-                <div className={[s.th, s.thValue].join(' ')}>Value</div>
-                <div className={[s.th, s.thReturn].join(' ')}>Total return</div>
-                <div className={[s.th, s.thAccount].join(' ')}>Account</div>
+            {isEmpty ? (
+              <EmptyState
+                icon={<ChartLineUp weight="regular" />}
+                title="No strategies yet"
+                desc="Explore the marketplace to find strategies that match how you want to invest, then start putting your cash to work."
+                ctaLabel="Explore the marketplace"
+                ctaHref="/strategy-result"
+              />
+            ) : (
+              <div className={s.strategiesTable}>
+                <div className={s.tableHeader}>
+                  <div className={[s.th, s.thStrategy].join(' ')}>Strategy</div>
+                  <div className={[s.th, s.thValue].join(' ')}>Value</div>
+                  <div className={[s.th, s.thReturn].join(' ')}>Total return</div>
+                  <div className={[s.th, s.thAccount].join(' ')}>Account</div>
+                </div>
+                {STRATEGIES.map((row) => (
+                  <Link key={row.name} href={`/home/strategy/${row.name.toLowerCase().replace(/\s+/g, '-')}`} className={s.tableRow} style={{ textDecoration: 'none' }}>
+                    <div className={[s.td, s.tdStrategy].join(' ')}>
+                      <div className={s.strategyIcon}>
+                        <img src={row.cover} alt={row.name} />
+                      </div>
+                      <span className={s.strategyName}>{row.name}</span>
+                    </div>
+                    <div className={[s.td, s.tdValue].join(' ')}>
+                      <span className={s.tdValueText}>{row.value}</span>
+                    </div>
+                    <div className={[s.td, s.tdReturn].join(' ')}>
+                      <span className={s.tdReturnPrimary}>{row.returnPct}</span>
+                      <span className={s.tdReturnSecondary}>{row.returnAbs}</span>
+                    </div>
+                    <div className={[s.td, s.tdAccount].join(' ')}>
+                      <div className={s.avatarGroup}>
+                        {row.brokers.map((src, i) => (
+                          <div key={i} className={s.accountAvatar}>
+                            <img src={src} alt="" />
+                          </div>
+                        ))}
+                        <div className={[s.accountAvatar, s.accountAvatarOverflow].join(' ')}>{row.overflow}</div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
               </div>
-              {STRATEGIES.map((row) => (
-                <Link key={row.name} href={`/home/strategy/${row.name.toLowerCase().replace(/\s+/g, '-')}`} className={s.tableRow} style={{ textDecoration: 'none' }}>
-                  <div className={[s.td, s.tdStrategy].join(' ')}>
-                    <div className={s.strategyIcon}>
-                      <img src={row.cover} alt={row.name} />
-                    </div>
-                    <span className={s.strategyName}>{row.name}</span>
-                  </div>
-                  <div className={[s.td, s.tdValue].join(' ')}>
-                    <span className={s.tdValueText}>{row.value}</span>
-                  </div>
-                  <div className={[s.td, s.tdReturn].join(' ')}>
-                    <span className={s.tdReturnPrimary}>{row.returnPct}</span>
-                    <span className={s.tdReturnSecondary}>{row.returnAbs}</span>
-                  </div>
-                  <div className={[s.td, s.tdAccount].join(' ')}>
-                    <div className={s.avatarGroup}>
-                      {row.brokers.map((src, i) => (
-                        <div key={i} className={s.accountAvatar}>
-                          <img src={src} alt="" />
-                        </div>
-                      ))}
-                      <div className={[s.accountAvatar, s.accountAvatarOverflow].join(' ')}>{row.overflow}</div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            )}
           </section>
 
           {/* Portfolio Breakdown */}
           <section className={s.leftSection}>
             <div className={s.sectionHeader}>
               <span className={s.sectionTitle}>Portfolio breakdown</span>
-              <button type="button" className={s.pbDropdown}>
-                By asset
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 6l4 4 4-4" /></svg>
-              </button>
+              {!isEmpty && (
+                <button type="button" className={s.pbDropdown}>
+                  By asset
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 6l4 4 4-4" /></svg>
+                </button>
+              )}
             </div>
-            <div className={s.pbTable}>
-              <div className={s.pbHeader}>
-                <div className={s.pbTh}>Asset</div>
-                <div className={s.pbTh}>
-                  Weight
-                  <svg className={s.sortArrow} viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M6 2v8M3 7l3 3 3-3" /></svg>
+            {isEmpty ? (
+              <EmptyState
+                icon={<ChartPieSlice weight="regular" />}
+                title="Nothing to break down yet"
+                desc="Once you invest in a strategy, your holdings and allocation will show up here."
+              />
+            ) : (
+              <div className={s.pbTable}>
+                <div className={s.pbHeader}>
+                  <div className={s.pbTh}>Asset</div>
+                  <div className={s.pbTh}>
+                    Weight
+                    <svg className={s.sortArrow} viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M6 2v8M3 7l3 3 3-3" /></svg>
+                  </div>
+                  <div className={s.pbTh}>Share price</div>
+                  <div className={s.pbTh}>Value</div>
+                  <div className={s.pbTh}>From strategy</div>
                 </div>
-                <div className={s.pbTh}>Share price</div>
-                <div className={s.pbTh}>Value</div>
-                <div className={s.pbTh}>From strategy</div>
+                {PORTFOLIO_BREAKDOWN.map((row) => (
+                  <div key={row.ticker} className={s.pbRow}>
+                    <div className={s.pbTd}>
+                      <div className={s.tickerLogo}><img src={row.logo} alt={row.ticker} /></div>
+                      <div className={s.tickerText}>
+                        <span className={s.tickerSymbol}>{row.ticker}</span>
+                        <span className={s.tickerName}>{row.name}</span>
+                      </div>
+                    </div>
+                    <div className={s.pbTd}><span className={s.pbWeight}>{row.weight}</span></div>
+                    <div className={s.pbTd}><span className={s.pbPrice}>{row.price}</span></div>
+                    <div className={s.pbTd}>
+                      <div className={s.pbValue}>
+                        <span className={s.pbValuePrimary}>{row.value}</span>
+                        <span className={s.pbValueSecondary}>{row.shares}</span>
+                      </div>
+                    </div>
+                    <div className={s.pbTd}><span className={s.pbStrategy}>{row.strategies}</span></div>
+                  </div>
+                ))}
               </div>
-              {PORTFOLIO_BREAKDOWN.map((row) => (
-                <div key={row.ticker} className={s.pbRow}>
-                  <div className={s.pbTd}>
-                    <div className={s.tickerLogo}><img src={row.logo} alt={row.ticker} /></div>
-                    <div className={s.tickerText}>
-                      <span className={s.tickerSymbol}>{row.ticker}</span>
-                      <span className={s.tickerName}>{row.name}</span>
-                    </div>
-                  </div>
-                  <div className={s.pbTd}><span className={s.pbWeight}>{row.weight}</span></div>
-                  <div className={s.pbTd}><span className={s.pbPrice}>{row.price}</span></div>
-                  <div className={s.pbTd}>
-                    <div className={s.pbValue}>
-                      <span className={s.pbValuePrimary}>{row.value}</span>
-                      <span className={s.pbValueSecondary}>{row.shares}</span>
-                    </div>
-                  </div>
-                  <div className={s.pbTd}><span className={s.pbStrategy}>{row.strategies}</span></div>
-                </div>
-              ))}
-            </div>
+            )}
           </section>
 
           {/* Recent Activities */}
@@ -200,7 +271,15 @@ function HomePageContent() {
             <div className={s.txSectionHeader}>
               <span className={s.txSectionTitle}>Recent activities</span>
             </div>
-            <TransactionList title={null} groups={ACTIVITY_GROUPS} />
+            {isEmpty ? (
+              <EmptyState
+                icon={<Receipt weight="regular" />}
+                title="No activity yet"
+                desc="Your deposits, trades, and dividends will appear here once you start investing."
+              />
+            ) : (
+              <TransactionList title={null} groups={ACTIVITY_GROUPS} />
+            )}
           </section>
 
         </div>
@@ -209,7 +288,7 @@ function HomePageContent() {
         <div className={s.rightColumn}>
 
           {/* Carousel — top */}
-          <Carousel />
+          <Carousel variant={isEmpty ? 'empty' : 'default'} />
 
           {/* Dividend management — compact utility row */}
           <a className={s.utilityRow} href="#" aria-label="Dividend management">
@@ -225,7 +304,7 @@ function HomePageContent() {
           </a>
 
           {/* Holdings / Watchlist tabbed module */}
-          <WatchlistSection />
+          <WatchlistSection empty={isEmpty} />
 
         </div>
 

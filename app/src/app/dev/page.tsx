@@ -12,7 +12,9 @@ const SECTIONS = [
   {
     label: 'Dashboard',
     routes: [
+      { href: '/flow', label: 'Onboarding flow — visual map ★' },
       { href: '/home', label: 'Investing home' },
+      { href: '/home?state=empty&connected=kraken', label: 'Investing home — empty (just connected)' },
       { href: '/home/saving', label: 'Saving home' },
       { href: '/home/strategy/quantum-computing-leaders', label: 'Strategy detail' },
       { href: '/activity', label: 'Activity' },
@@ -28,6 +30,16 @@ const SECTIONS = [
       { href: '/home/playground/account-selection-2/account/ibkr', label: 'External account detail' },
       { href: '/home/playground/account-selection-2/account/surmount', label: 'Surmount brokerage account' },
       { href: '/home/playground/account-selection-2/account/surmount-hyca', label: 'High yield cash account prototype' },
+    ],
+  },
+  {
+    label: 'Onboarding — Start',
+    routes: [
+      { href: '/onboarding/welcome', label: 'Welcome (steps overview)' },
+      { href: '/onboarding/about-you', label: 'About you' },
+      { href: '/onboarding/start-investing', label: 'Start investing (choice)' },
+      { href: '/onboarding/connect-brokerage', label: 'Connect brokerage' },
+      { href: '/onboarding/brokerage-connected', label: 'Brokerage connected' },
     ],
   },
   {
@@ -98,7 +110,6 @@ const SECTIONS = [
       { href: '/onboarding/fund-deposit', label: 'Fund deposit' },
       { href: '/onboarding/fund-review', label: 'Fund review' },
       { href: '/onboarding/fund-success', label: 'Fund success' },
-      { href: '/onboarding/fund-account-linked', label: 'Fund account linked' },
       { href: '/onboarding/cash-account', label: 'Cash account' },
     ],
   },

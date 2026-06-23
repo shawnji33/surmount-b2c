@@ -418,9 +418,9 @@
   white-space: nowrap;
 }
 .badgeBrand {
-  background: #f1f6fd;
-  border: 1px solid #c8dbf5;
-  color: #3757be;
+  background: var(--color-bg-secondary, #fafafa);
+  border: 1px solid rgba(0, 0, 0, 0.086);
+  color: var(--color-fg-primary-900, #181d27);
 }
 .badgeGray {
   background: var(--color-bg-secondary, #fafafa);
@@ -739,7 +739,7 @@
   width: 24px;
   height: 24px;
   flex-shrink: 0;
-  color: var(--color-brand-600, #406ad0);
+  color: var(--color-fg-primary-900, #181d27);
 }
 .securityNoteBody {
   display: flex;
@@ -830,13 +830,13 @@
   display: inline-flex;
   align-items: center;
   padding: 3px 9px;
-  background: #f1f6fd;
-  border: 1px solid #c8dbf5;
+  background: var(--color-bg-secondary, #fafafa);
+  border: 1px solid rgba(0, 0, 0, 0.086);
   border-radius: 9999px;
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 12px;
   font-weight: 500;
-  color: #3757be;
+  color: var(--color-fg-primary-900, #181d27);
   white-space: nowrap;
   flex-shrink: 0;
   margin-top: 2px;
@@ -876,11 +876,11 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: rgba(55, 87, 190, 0.08);
+  background: rgba(10, 13, 18, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #3757be;
+  color: var(--color-fg-primary-900, #181d27);
   flex-shrink: 0;
 }
 .complianceIconWrap svg {
@@ -984,9 +984,9 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #3757be;
+  background: var(--color-fg-primary-900, #181d27);
   flex-shrink: 0;
-  box-shadow: 0 0 8px rgba(55, 87, 190, 0.4);
+  box-shadow: 0 0 8px rgba(10, 13, 18, 0.25);
 }
 .appSubmittedHero {
   display: flex;
@@ -1644,11 +1644,11 @@
   align-items: center;
   padding: 2px 8px;
   border-radius: 9999px;
-  background: #f1f6fd;
-  border: 1px solid #c8dbf5;
+  background: var(--color-bg-secondary, #fafafa);
+  border: 1px solid rgba(0, 0, 0, 0.086);
   font-size: 12px;
   font-weight: 500;
-  color: #3757be;
+  color: var(--color-fg-primary-900, #181d27);
   white-space: nowrap;
 }
 .btnStart {
@@ -1878,6 +1878,59 @@
 }
 .entryFooterLink:hover {
   color: var(--color-fg-primary-900, #181d27);
+}
+
+/* ── Welcome — numbered onboarding steps ─────────────────────────── */
+.welcomeSteps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  counter-reset: welcome-step;
+}
+.welcomeStep {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.welcomeStepNum {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(10, 13, 18, 0.1);
+  background: var(--color-bg-primary, #fff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  color: var(--color-fg-primary-900, #181d27);
+}
+.welcomeStepBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 2px;
+}
+.welcomeStepTitle {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.5px;
+  color: var(--color-fg-primary-900, #181d27);
+}
+.welcomeStepDesc {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.5px;
+  color: rgba(10, 13, 18, 0.7);
 }
 
 /* ── Link bank — illustrated split layout ────────────────────────── */
@@ -3206,10 +3259,10 @@
   flex-shrink: 0;
   width: 20px;
   height: 20px;
-  color: #b6544c;
+  color: var(--color-fg-tertiary-600, #535861);
 }
 .vFileIconImage {
-  color: #3757be;
+  color: var(--color-fg-tertiary-600, #535861);
 }
 .progressInfo {
   flex: 1;
@@ -3249,7 +3302,7 @@
 }
 .uploadProgressFill {
   height: 100%;
-  background: #3757be;
+  background: var(--color-fg-primary-900, #181d27);
   border-radius: 9999px;
   transition: width 280ms ease;
 }
@@ -3408,13 +3461,13 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #3757be;
+  background: var(--color-fg-primary-900, #181d27);
   flex-shrink: 0;
   animation: docsHalo 2400ms ease-in-out infinite;
 }
 @keyframes docsHalo {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(55, 87, 190, 0.18), 0 0 6px 3px rgba(55, 87, 190, 0.12); }
-  50%       { box-shadow: 0 0 0 2px rgba(55, 87, 190, 0.18), 0 0 10px 6px rgba(55, 87, 190, 0.20); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(10, 13, 18, 0.18), 0 0 6px 3px rgba(10, 13, 18, 0.12); }
+  50%       { box-shadow: 0 0 0 2px rgba(10, 13, 18, 0.18), 0 0 10px 6px rgba(10, 13, 18, 0.20); }
 }
 .docsReceivedHero {
   display: flex;
@@ -3506,4 +3559,457 @@
 }
 .docsReceivedQuestions a:hover {
   color: #252b37;
+}
+
+/* ── Start investing — method choice ─────────────────────────────── */
+.choiceMain {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+.choiceStack {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  max-width: 480px;
+}
+.methodList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.methodCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  border-radius: var(--radius-xl, 12px);
+  border: 1px solid rgba(10, 13, 18, 0.06);
+  background: var(--color-bg-primary, #fff);
+  box-shadow: 0 1px 3px rgba(10, 13, 18, 0.03);
+  text-decoration: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.methodCard:hover {
+  border-color: rgba(10, 13, 18, 0.24);
+  box-shadow: 0 4px 12px rgba(10, 13, 18, 0.06);
+}
+.methodCardIcon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-bg-secondary, #fafafa);
+  border: 1px solid rgba(10, 13, 18, 0.06);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-fg-primary-900, #181d27);
+}
+.methodCardIcon svg {
+  width: 22px;
+  height: 22px;
+}
+.methodCardIconImg {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+.methodCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.methodCardTitle {
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: -0.3px;
+  color: var(--color-fg-primary-900, #181d27);
+}
+.methodCardDesc {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: -0.2px;
+  color: rgba(10, 13, 18, 0.7);
+}
+.methodCardLogos {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.methodCardLogo {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(10, 13, 18, 0.06);
+  background: var(--color-bg-primary, #fff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.methodCardLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.methodCardLogoMore {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600, #535861);
+  margin-left: 2px;
+}
+.methodCardChevron {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 13px;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+/* ── Connect brokerage — picker ──────────────────────────────────── */
+.brokerMain {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+.brokerStack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 480px;
+}
+.brokerSearch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: var(--radius-xl, 12px);
+  border: 1px solid rgba(10, 13, 18, 0.09);
+  background: var(--color-bg-primary, #fff);
+}
+.brokerSearch:focus-within {
+  border-color: rgba(10, 13, 18, 0.55);
+  box-shadow: 0 0 0 3px rgba(10, 13, 18, 0.08);
+}
+.brokerSearchIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+.brokerSearchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.3px;
+  color: var(--color-fg-primary-900, #181d27);
+}
+.brokerSearchInput::placeholder {
+  color: var(--color-fg-tertiary-600, #535861);
+}
+.brokerList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+}
+.brokerRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius-xl, 12px);
+  border: 1px solid rgba(10, 13, 18, 0.06);
+  background: var(--color-bg-primary, #fff);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+.brokerRow:hover {
+  border-color: rgba(10, 13, 18, 0.24);
+  box-shadow: 0 2px 8px rgba(10, 13, 18, 0.05);
+}
+.brokerLogo {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(10, 13, 18, 0.06);
+  background: var(--color-bg-primary, #fff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.brokerLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.brokerInfo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.brokerName {
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  color: var(--color-fg-primary-900, #181d27);
+}
+.brokerType {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+.paperInfoWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.paperInfo {
+  width: 16px;
+  height: 16px;
+  color: var(--color-fg-quaternary-400, #a4a7ae);
+  transition: color 140ms ease;
+}
+.paperInfoWrap:hover .paperInfo {
+  color: var(--color-fg-tertiary-600, #535861);
+}
+.paperTooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  z-index: 30;
+  width: 232px;
+  padding: 10px 12px;
+  background: var(--color-fg-primary-900, #181d27);
+  color: var(--color-bg-primary, #fff);
+  border-radius: var(--radius-md, 8px);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 140ms ease, transform 140ms ease, visibility 140ms;
+  box-shadow: 0 8px 24px -6px rgba(10, 13, 18, 0.2);
+}
+.paperTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: var(--color-fg-primary-900, #181d27);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.paperInfoWrap:hover .paperTooltip,
+.paperInfoWrap:focus-within .paperTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .paperTooltip {
+    transition: opacity 100ms ease, visibility 100ms;
+    transform: translateX(-50%);
+  }
+  .paperInfoWrap:hover .paperTooltip,
+  .paperInfoWrap:focus-within .paperTooltip {
+    transform: translateX(-50%);
+  }
+}
+.brokerChevron {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+.brokerEmpty {
+  padding: 24px 4px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600, #535861);
+  text-align: center;
+}
+
+/* Connect modal — paired logos */
+.connectModalIcons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.connectModalLogo {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(10, 13, 18, 0.08);
+  background: var(--color-bg-primary, #fff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.connectModalLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.connectModalDots {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+.connectModalDotsLegacy svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ── Brokerage connected — success pair ──────────────────────────── */
+.connectedPair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.connectedLogo {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  border: 1px solid rgba(10, 13, 18, 0.08);
+  background: var(--color-bg-primary, #fff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.connectedLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.connectedCheck {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--color-fg-primary-900, #181d27);
+  color: var(--color-bg-primary, #fff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.connectedCheck svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Method card — Phosphor link glyph + full-bleed logo variant */
+.methodCardIconGlyph {
+  width: 22px;
+  height: 22px;
+}
+.methodCardIconFill {
+  padding: 0;
+  border: none;
+  background: none;
+  overflow: hidden;
+}
+.methodCardIconFill .methodCardIconImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md, 8px);
+}
+
+/* Start investing — continuous forward enter (mirrors about-you's exit) */
+.choiceEnter {
+  animation: choiceEnter 340ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+}
+@keyframes choiceEnter {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .choiceEnter {
+    animation: choiceEnterFade 160ms ease both;
+  }
+}
+@keyframes choiceEnterFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Connect brokerage — disabled "coming soon" rows */
+.brokerRowDisabled {
+  cursor: default;
+  background: var(--color-bg-secondary, #fafafa);
+  border-color: rgba(10, 13, 18, 0.04);
+}
+.brokerRowDisabled:hover {
+  border-color: rgba(10, 13, 18, 0.04);
+  box-shadow: none;
+}
+.brokerRowDisabled .brokerLogo {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+.brokerRowDisabled .brokerName,
+.brokerRowDisabled .brokerType {
+  color: var(--color-fg-tertiary-600, #535861);
+  opacity: 0.7;
+}
+.brokerTag {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: var(--color-bg-primary, #fff);
+  border: 1px solid rgba(0, 0, 0, 0.086);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600, #535861);
+  white-space: nowrap;
 }

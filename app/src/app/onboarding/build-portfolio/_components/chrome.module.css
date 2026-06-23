@@ -1,0 +1,101 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  flex-shrink: 0;
+  background: var(--color-bg-secondary, #fafafa);
+}
+.topbarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--color-bg-primary, #fff);
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.086));
+  border-radius: var(--radius-md, 8px);
+  color: rgba(10, 13, 18, 0.7);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+}
+.topbarBtn:hover { background: #fafafa; color: rgba(10, 13, 18, 0.8); }
+.topbarBtn:active { transform: scale(0.97); }
+.topbarBtn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.brand { display: flex; align-items: center; gap: 8px; }
+.brandIcon { width: 32px; height: 32px; display: block; }
+.brandName { width: 98px; height: 16px; display: block; }
+
+.continueBar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  background: var(--color-bg-primary, #fff);
+  border-top: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.086));
+  z-index: 5;
+}
+.continueMeta {
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 14px;
+  letter-spacing: -0.5px;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+.continueActions { display: flex; align-items: center; gap: 8px; }
+.skip {
+  padding: 12px 18px;
+  border: 0;
+  background: transparent;
+  color: var(--color-fg-tertiary-600, #535861);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+  border-radius: var(--radius-md, 8px);
+  transition: color 150ms ease, background 150ms ease;
+}
+.skip:hover { color: var(--color-fg-primary-900, #181d27); background: var(--color-bg-secondary, #fafafa); }
+.continue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border: 0;
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-fg-primary-900, #181d27);
+  color: #fff;
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease;
+}
+.continue:hover { background: #252b37; }
+.continue:active { transform: scale(0.98); }
+.continue svg { width: 17px; height: 17px; }
+
+/* Section heading used outside cards across layouts */
+.sectionTitle {
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  color: var(--color-fg-primary-900, #181d27);
+  margin: 0;
+}
+.sectionSub {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: -0.5px;
+  color: rgba(10, 13, 18, 0.65);
+  margin: 4px 0 0;
+}
