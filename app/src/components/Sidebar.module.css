@@ -274,26 +274,7 @@
 .accountMenuHeader {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md, 10px);
   padding: 8px 10px 10px;
-}
-
-.accountMenuAvatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--color-bg-secondary, #fafafa);
-  border: 0.75px solid rgba(0, 0, 0, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.accountMenuAvatar .avatarInner {
-  width: 20px;
-  height: 20px;
-  font-size: 11px;
 }
 
 .accountMenuUser {
@@ -347,7 +328,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: -0.1px;
   text-align: left;
   cursor: pointer;
@@ -363,6 +344,16 @@
   transform: scale(0.99);
 }
 
+.accountMenuItemUpgrade {
+  color: var(--color-brand-600, #406ad0);
+  font-weight: 500;
+}
+
+.accountMenuItemUpgrade:hover {
+  background: var(--color-brand-50, #eef2fb);
+  color: var(--color-brand-600, #406ad0);
+}
+
 .accountMenuItemDanger {
   color: var(--color-utility-error-700, #98443d);
 }
@@ -373,8 +364,8 @@
 }
 
 .accountMenuIcon {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
   color: currentColor;
 }

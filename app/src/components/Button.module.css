@@ -26,6 +26,44 @@
   transform: translateY(1px);
 }
 
+/* Disabled state (design system): muted fill + text, no interaction. */
+.button:disabled {
+  cursor: not-allowed;
+}
+
+.button:disabled:active {
+  transform: none;
+}
+
+/* Disabled solid button (design system): gray-400 fill, white text. */
+.primary:disabled,
+.primary:disabled:hover,
+.destructive:disabled,
+.destructive:disabled:hover {
+  background: var(--color-utility-gray-400, #a3a7ae);
+  color: var(--color-fg-white, #fff);
+}
+
+/* Auto-width (hug contents) instead of the default full-width. */
+.auto {
+  width: auto;
+}
+
+/* Small size — matches the design system Button (Figma Buttons/Button: 8/14 padding, text-sm). */
+.sm {
+  min-height: 36px;
+  padding: 8px 14px;
+  gap: var(--spacing-xs, 4px);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+}
+
+.sm .icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
 .primary {
   background: var(--color-fg-primary-900);
   border: 2px solid var(--color-alpha-white-12, rgba(255, 255, 255, 0.12));
@@ -45,6 +83,17 @@
 .secondary:hover {
   background: var(--color-bg-primary-hover);
   color: var(--color-text-secondary-hover);
+}
+
+/* Destructive — solid error/red (e.g. "Cancel plan"). */
+.destructive {
+  background: var(--color-bg-error-solid, #b6544c);
+  border: 2px solid var(--color-alpha-white-12, rgba(255, 255, 255, 0.12));
+  color: var(--color-fg-white, #fff);
+}
+
+.destructive:hover {
+  background: var(--color-bg-error-solid-hover, #98443d);
 }
 
 .icon {

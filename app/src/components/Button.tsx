@@ -2,12 +2,16 @@ import { type ButtonHTMLAttributes, type ReactNode } from 'react';
 import styles from './Button.module.css';
 
 type ButtonProps = {
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'destructive';
+  size?: 'sm' | 'lg';
+  fullWidth?: boolean;
   iconLeading?: ReactNode;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
 export function Button({
   variant = 'primary',
+  size = 'lg',
+  fullWidth = true,
   iconLeading,
   className,
   children,
@@ -15,7 +19,9 @@ export function Button({
 }: ButtonProps) {
   const classes = [
     styles.button,
-    variant === 'primary' ? styles.primary : styles.secondary,
+    styles[variant],
+    size === 'sm' ? styles.sm : '',
+    fullWidth ? '' : styles.auto,
     className,
   ].filter(Boolean).join(' ');
 
