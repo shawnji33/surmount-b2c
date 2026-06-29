@@ -89,6 +89,7 @@
 }
 
 .cycleSave {
+  /* Intentional brand accent — special savings callout, not UI chrome. */
   color: var(--color-brand-600, #406ad0);
 }
 
@@ -157,7 +158,7 @@
   font-family: var(--font-family-body);
   font-size: 30px;
   line-height: 34px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.6px;
 }
@@ -205,6 +206,56 @@
   font-weight: 400;
   color: var(--color-fg-tertiary-600, #535861);
   letter-spacing: -0.1px;
+}
+
+/* Annualized monthly rate (monthly × 12) struck through beside the yearly price,
+   so the saving reads at a glance (e.g. "$120 $100 USD / year"). */
+.strikePrice {
+  align-self: baseline;
+  font-family: var(--font-family-body);
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: 500;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+  letter-spacing: -0.4px;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  white-space: nowrap;
+  transform-origin: left center;
+  animation: strikePriceIn 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.strikePriceExiting {
+  animation: strikePriceOut 200ms ease-in forwards;
+}
+
+@keyframes strikePriceIn {
+  from {
+    opacity: 0;
+    transform: translateX(-6px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes strikePriceOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-6px) scale(0.94);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strikePrice,
+  .strikePriceExiting {
+    animation: none;
+  }
 }
 
 .divider {
@@ -383,6 +434,52 @@
   letter-spacing: -0.1px;
 }
 
+.cdSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--color-bg-secondary, #fafafa);
+  border: 1px solid var(--color-border-secondary, rgba(10, 13, 18, 0.06));
+}
+
+.cdSummaryLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cdSummaryName {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+  letter-spacing: -0.1px;
+}
+
+.cdSummarySub {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+  letter-spacing: -0.1px;
+}
+
+.cdSummaryPrice {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+}
+
 .cdActions {
   display: flex;
   justify-content: flex-end;
@@ -429,7 +526,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: 20px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.1px;
   color: var(--color-utility-success-700, #316434);
 }
@@ -524,7 +621,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 0 24px 8px;
+  /* Top padding so the selected card's outward ring isn't clipped by overflow. */
+  padding: 6px 24px 8px;
   overflow-y: auto;
 }
 
@@ -548,9 +646,8 @@
 }
 
 .upPlanCardSelected {
-  border-color: var(--color-border-brand, #406ad0);
-  background: var(--color-brand-50, #f1f6fd);
-  box-shadow: 0 0 0 1px var(--color-border-brand, #406ad0);
+  border-color: rgba(10, 13, 18, 0.24);
+  background: var(--color-bg-secondary, #fafafa);
 }
 
 .upTag {
@@ -562,7 +659,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
   line-height: 18px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-secondary-700, #414651);
   letter-spacing: -0.1px;
 }
@@ -572,15 +669,15 @@
   height: 18px;
   margin-bottom: 8px;
   border-radius: 50%;
-  background: var(--color-brand-600, #406ad0);
-  box-shadow: inset 0 0 0 4px #fff, 0 0 0 1px var(--color-brand-600, #406ad0);
+  background: var(--color-fg-primary-900, #181d27);
+  box-shadow: inset 0 0 0 4px #fff, 0 0 0 1px var(--color-fg-primary-900, #181d27);
 }
 
 .upPlanName {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: 20px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.1px;
 }
@@ -632,7 +729,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: 20px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.1px;
 }
@@ -651,7 +748,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: 20px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.1px;
 }
@@ -660,7 +757,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-md, 16px);
   line-height: 24px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.2px;
 }
@@ -709,7 +806,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: 20px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.1px;
 }
@@ -807,8 +904,8 @@
 }
 
 .upCheckboxOn {
-  background: var(--color-brand-600, #406ad0);
-  border-color: var(--color-brand-600, #406ad0);
+  background: var(--color-fg-primary-900, #181d27);
+  border-color: var(--color-fg-primary-900, #181d27);
 }
 
 .upAgreeText {

@@ -57,7 +57,7 @@
   gap: 6px;
   padding: 10px 16px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   visibility: hidden;
   user-select: none;
 }
@@ -202,7 +202,7 @@
 }
 .fieldLabel {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.1px;
   color: var(--color-fg-primary-900, #181d27);
 }
@@ -412,7 +412,7 @@
   padding: 2px 8px;
   border-radius: 9999px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 18px;
   letter-spacing: 0;
   white-space: nowrap;
@@ -649,7 +649,7 @@
   border-radius: 12px;
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 24px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.4px;
   color: var(--color-fg-primary-900, #181d27);
   text-align: center;
@@ -820,7 +820,7 @@
 .regCheckText {
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 24px;
   letter-spacing: -0.2px;
   color: var(--color-fg-primary-900, #181d27);
@@ -835,7 +835,7 @@
   border-radius: 9999px;
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   white-space: nowrap;
   flex-shrink: 0;
@@ -1139,7 +1139,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(10, 13, 18, 0.4);
   pointer-events: none;
   transition: top 200ms ease, transform 200ms ease, font-size 200ms ease, color 200ms ease;
@@ -1154,7 +1154,7 @@
 }
 .ddSelectedValue {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   line-height: 24px;
   letter-spacing: -0.2px;
@@ -1275,7 +1275,7 @@
   padding: 6px 8px;
   border-radius: 8px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.1px;
   color: var(--color-fg-primary-900, #181d27);
   text-decoration: none;
@@ -1384,7 +1384,7 @@
   justify-content: center;
   flex-shrink: 0;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(10, 13, 18, 0.7);
 }
 .stepIconAlert {
@@ -1403,7 +1403,7 @@
 .stepLabelDone {
   flex: 1;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.2px;
   color: rgba(10, 13, 18, 0.4);
 }
@@ -1422,7 +1422,7 @@
   background: #f0faf1;
   border: 1px solid #b5ddb8;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   color: #316434;
   white-space: nowrap;
 }
@@ -1518,7 +1518,7 @@
 }
 .timelineLabel {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.1px;
   color: var(--color-fg-tertiary-600, #535861);
 }
@@ -1576,7 +1576,7 @@
 }
 .tlStepTitle {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.1px;
   color: var(--color-fg-primary-900, #181d27);
 }
@@ -1603,7 +1603,7 @@
 }
 .questions a {
   color: var(--color-fg-primary-900, #181d27);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 /* ── Strategy / pick screens ─────────────────────────────────────── */
@@ -1647,7 +1647,7 @@
   background: var(--color-bg-secondary, #fafafa);
   border: 1px solid rgba(0, 0, 0, 0.086);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   white-space: nowrap;
 }
@@ -1688,7 +1688,7 @@
 }
 .browseLink {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.1px;
   color: var(--color-fg-primary-900, #181d27);
   text-decoration: underline;
@@ -1715,7 +1715,7 @@
   border: 1px solid #b5ddb8;
   border-radius: 9999px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   color: #316434;
 }
 .badgeDot {
@@ -1772,7 +1772,7 @@
 }
 .readyFooter a {
   color: var(--color-fg-primary-900, #181d27);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 /* ── Entry screens (investing-account / cash-account) ────────────── */
@@ -1908,7 +1908,7 @@
   justify-content: center;
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.5px;
   color: var(--color-fg-primary-900, #181d27);
 }
@@ -1920,7 +1920,7 @@
 }
 .welcomeStepTitle {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 24px;
   letter-spacing: -0.5px;
   color: var(--color-fg-primary-900, #181d27);
@@ -2036,7 +2036,7 @@
 }
 .plaidTrustName {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
 }
 .plaidTrustDesc {
@@ -2054,9 +2054,9 @@
   align-items: flex-start;
   gap: 10px;
   padding: 12px;
-  border: 1px solid rgba(152, 68, 61, 0.18);
+  border: 1px solid var(--color-border-secondary, rgba(10, 13, 18, 0.06));
   border-radius: 12px;
-  background: rgba(152, 68, 61, 0.06);
+  background: var(--color-bg-secondary, #fafafa);
   text-align: left;
 }
 .bankUpdateNoticeIcon {
@@ -2066,7 +2066,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #98443d;
+  color: var(--color-fg-tertiary-600, #535861);
 }
 .bankUpdateNoticeIcon svg {
   width: 18px;
@@ -2147,7 +2147,7 @@
 }
 .bankCardName {
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.2px;
   color: var(--color-fg-primary-900, #181d27);
 }
@@ -2258,7 +2258,7 @@
 .bankName {
   flex: 1;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.2px;
   color: var(--color-fg-primary-900, #181d27);
 }
@@ -2298,7 +2298,7 @@
 }
 .reviewValue {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.1px;
   color: var(--color-fg-primary-900, #181d27);
   text-align: right;
@@ -2382,7 +2382,7 @@
   left: 0;
   pointer-events: none;
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-tertiary-600, #535861);
   user-select: none;
   transition: top 200ms ease, transform 200ms ease, font-size 200ms ease, line-height 200ms ease;
@@ -2411,7 +2411,7 @@
   padding-top: 18px;
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 24px;
   letter-spacing: -0.2px;
   color: var(--color-fg-primary-900, #181d27);
@@ -2438,7 +2438,7 @@
   padding-top: 18px;
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 24px;
   letter-spacing: -0.2px;
   color: var(--color-fg-primary-900, #181d27);
@@ -2460,7 +2460,7 @@
   align-items: center;
   gap: 6px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-tertiary-600, #535861);
   padding-right: 10px;
   border-right: 1px solid rgba(0, 0, 0, 0.086);
@@ -2553,7 +2553,7 @@
   gap: 4px;
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.2px;
   color: var(--color-fg-primary-900, #181d27);
 }
@@ -2567,7 +2567,7 @@
   text-align: center;
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-tertiary-600, #535861);
   padding: 4px 0;
 }
@@ -2601,7 +2601,7 @@
 .dpDaySelected {
   background: var(--color-fg-primary-900, #181d27) !important;
   color: #fff !important;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 /* ── Bank linked page ────────────────────────────────────────────── */
@@ -2684,7 +2684,7 @@
 }
 .bankLinkedName {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 20px;
   color: var(--color-fg-primary-900, #181d27);
 }
@@ -2951,7 +2951,7 @@
 }
 .plaidModalFeatureTitle {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 20px;
   color: var(--color-fg-primary-900, #181d27);
 }
@@ -3279,7 +3279,7 @@
 }
 .progressFilename {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.2px;
   color: var(--color-fg-primary-900, #181d27);
   white-space: nowrap;
@@ -3315,7 +3315,7 @@
 }
 .vFileName {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.2px;
   color: var(--color-fg-primary-900, #181d27);
   white-space: nowrap;
@@ -3779,7 +3779,7 @@
 .brokerName {
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.3px;
   color: var(--color-fg-primary-900, #181d27);
 }
@@ -4008,7 +4008,7 @@
   border: 1px solid rgba(0, 0, 0, 0.086);
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.2px;
   color: var(--color-fg-tertiary-600, #535861);
   white-space: nowrap;

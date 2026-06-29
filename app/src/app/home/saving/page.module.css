@@ -142,7 +142,7 @@
   font-family: var(--font-family-body);
   font-size: 12px;
   line-height: 1;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .accountSwitcherLabel {
@@ -216,7 +216,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
   line-height: var(--line-height-text-xs, 18px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-tertiary-600, #535862);
 }
 
@@ -261,7 +261,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
 }
 
@@ -373,7 +373,7 @@
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
   color: #3757be;
   letter-spacing: -0.5px;
 }
@@ -503,7 +503,7 @@
 
 .txDate {
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(10, 13, 18, 0.6);
   line-height: var(--line-height-text-sm, 20px);
   letter-spacing: -0.5px;
@@ -582,7 +582,7 @@
 
 .txName {
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(10, 13, 18, 0.9);
   line-height: var(--line-height-text-sm, 20px);
 }
@@ -596,7 +596,7 @@
 
 .txAmount {
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(10, 13, 18, 0.9);
   line-height: var(--line-height-text-sm, 20px);
   font-variant-numeric: tabular-nums;
@@ -641,7 +641,7 @@
 
 .txDetailLabel {
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   line-height: var(--line-height-text-sm, 20px);
 }
@@ -668,7 +668,7 @@
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: var(--font-size-text-xs, 12px);
   line-height: var(--line-height-text-xs, 18px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.3px;
   white-space: nowrap;
 }
@@ -678,7 +678,7 @@
   padding-top: 12px;
 }
 .txDetailRowAmount .txDetailValue {
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
 }
 
@@ -764,7 +764,7 @@
 
 .interestLabel {
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(10, 13, 18, 0.5);
   line-height: var(--line-height-text-sm, 20px);
   letter-spacing: -0.5px;
@@ -778,7 +778,7 @@
   border: 1px solid #c8dbf5;
   border-radius: 9999px;
   font-size: var(--font-size-text-xs, 12px);
-  font-weight: 500;
+  font-weight: 400;
   color: #3757be;
   line-height: var(--line-height-text-xs, 18px);
 }
@@ -866,7 +866,7 @@
 .interestProjectionRow strong {
   flex: 0 0 auto;
   color: var(--color-fg-primary-900, rgba(10, 13, 18, 0.9));
-  font-weight: 500;
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -885,7 +885,7 @@
   box-shadow: 0 8px 24px rgba(10, 13, 18, 0.16);
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: var(--font-size-text-xs, 12px);
-  font-weight: 500;
+  font-weight: 400;
   line-height: var(--line-height-text-xs, 18px);
   letter-spacing: 0;
   opacity: 0;
@@ -1111,7 +1111,7 @@
 .calMonthLabel {
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   line-height: 20px;
   letter-spacing: -0.3px;
@@ -1145,7 +1145,7 @@
   text-align: center;
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-quaternary-400, #a4a7ae);
   padding: 4px 0;
 }
@@ -1172,7 +1172,7 @@
 .calDay:hover:not(:disabled):not(.calDayEmpty) { background: rgba(0, 0, 0, 0.06); }
 .calDay:disabled { color: var(--color-fg-disabled-subtle, #d5d7da); cursor: default; }
 .calDayEmpty { pointer-events: none; }
-.calDayToday { font-weight: 500; }
+.calDayToday { font-weight: 400; }
 .calDayToday:not(.calDaySelected)::after {
   content: '';
   display: block;
@@ -1330,7 +1330,7 @@
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-tertiary-600, #535861);
   letter-spacing: -0.35px;
 }
@@ -1345,7 +1345,7 @@
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: var(--font-size-text-lg, 18px);
   line-height: var(--line-height-text-lg, 28px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.5px;
 }
@@ -1360,7 +1360,7 @@
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: var(--font-size-text-lg, 18px);
   line-height: var(--line-height-text-lg, 28px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.5px;
   font-variant-numeric: tabular-nums;
 }
@@ -1387,7 +1387,7 @@
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: var(--font-size-text-xs, 12px);
   line-height: var(--line-height-text-xs, 18px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-tertiary-600, #535861);
   letter-spacing: -0.3px;
 }
@@ -1646,14 +1646,14 @@
 
 .confirmRowLabel {
   flex-shrink: 0;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .confirmRowValue,
 .confirmRowValueAmount {
   min-width: 0;
   text-align: right;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .confirmRowValueAmount {
@@ -1666,7 +1666,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .confirmRowIcon {

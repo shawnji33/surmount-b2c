@@ -39,7 +39,7 @@
   margin-bottom: 4px;
 }
 .calMonthLabel {
-  font-size: 14px; font-weight: 500;
+  font-size: 14px; font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   line-height: 20px;
 }
@@ -62,7 +62,7 @@
 }
 .calWeekday {
   text-align: center;
-  font-size: 11px; font-weight: 500;
+  font-size: 11px; font-weight: 400;
   color: var(--color-fg-quaternary-400, #a4a7ae);
   padding: 4px 0;
 }
@@ -84,7 +84,7 @@
 .calDay:hover:not(:disabled):not(.calDayEmpty) { background: rgba(0,0,0,0.06); }
 .calDay:disabled { color: var(--color-fg-disabled-subtle, #d5d7da); cursor: default; }
 .calDay.calDayEmpty { pointer-events: none; }
-.calDay.calDayToday { font-weight: 500; }
+.calDay.calDayToday { font-weight: 400; }
 .calDay.calDayToday:not(.calDaySelected)::after {
   content: '';
   display: block; width: 3px; height: 3px;
@@ -95,6 +95,6 @@
 .calDay.calDaySelected {
   background: var(--color-fg-primary-900, #181d27) !important;
   color: #fff;
-  font-weight: 500;
+  font-weight: 400;
 }
 .calDay.weekend:not(.calDaySelected) { color: var(--color-fg-disabled-subtle, #d5d7da); }

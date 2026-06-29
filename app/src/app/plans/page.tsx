@@ -9,8 +9,18 @@ const STEPS: PlansStep[] = [
   'upgrade-confirm',
 ];
 
-export default async function Plans({ searchParams }: { searchParams: Promise<{ cycle?: string; step?: string }> }) {
-  const { cycle, step } = await searchParams;
+export default async function Plans({
+  searchParams,
+}: {
+  searchParams: Promise<{ cycle?: string; step?: string; target?: string }>;
+}) {
+  const { cycle, step, target } = await searchParams;
   const previewStep = STEPS.includes(step as PlansStep) ? (step as PlansStep) : undefined;
-  return <PlansPage initialCycle={cycle === 'yearly' ? 'yearly' : 'monthly'} previewStep={previewStep} />;
+  return (
+    <PlansPage
+      initialCycle={cycle === 'yearly' ? 'yearly' : 'monthly'}
+      previewStep={previewStep}
+      previewTarget={target}
+    />
+  );
 }

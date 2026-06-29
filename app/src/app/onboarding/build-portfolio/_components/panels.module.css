@@ -177,7 +177,7 @@
 .rowName {
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.5px;
   color: var(--color-fg-primary-900, #181d27);
   white-space: nowrap;
@@ -194,7 +194,7 @@
   background: var(--color-bg-secondary, #fafafa);
   color: var(--color-fg-secondary-700, #414651);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.5px;
 }
 .metaText {
@@ -256,7 +256,7 @@
 }
 .amountCurrency {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.5px;
   color: var(--color-fg-tertiary-600, #535861);
   padding-left: 12px;
@@ -304,7 +304,7 @@
   background: var(--color-bg-secondary, #fafafa);
   border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.06));
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.5px;
   color: var(--color-fg-tertiary-600, #535861);
 }
@@ -328,7 +328,7 @@
 }
 .allocName {
   flex: 1; min-width: 0;
-  font-size: 14px; font-weight: 500; letter-spacing: -0.5px;
+  font-size: 14px; font-weight: 400; letter-spacing: -0.5px;
   color: var(--color-fg-primary-900, #181d27);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
@@ -346,7 +346,7 @@
 .miniInput {
   width: 100%; border: 0; outline: none; background: transparent; text-align: right;
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 14px; font-weight: 500; letter-spacing: -0.5px;
+  font-size: 14px; font-weight: 400; letter-spacing: -0.5px;
   color: var(--color-fg-primary-900, #181d27);
 }
 .miniInput:disabled { color: var(--color-fg-secondary-700, #414651); }
@@ -389,7 +389,7 @@
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .ovPct {
-  font-size: 14px; font-weight: 500; letter-spacing: -0.5px;
+  font-size: 14px; font-weight: 400; letter-spacing: -0.5px;
   color: var(--color-fg-primary-900, #181d27); flex-shrink: 0;
 }
 .ovTrack { height: 8px; border-radius: 9999px; background: var(--color-bg-tertiary, #f0f1f3); overflow: hidden; }

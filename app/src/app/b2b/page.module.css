@@ -112,7 +112,7 @@
   color: var(--color-text-white, #fff);
   font-size: var(--font-size-text-xxs, 10px);
   line-height: var(--line-height-text-xxs, 13px);
-  font-weight: 600;
+  font-weight: 400;
   box-shadow: 0 2px 6px rgba(10, 13, 18, 0.03);
   transition: opacity 140ms ease, transform 140ms ease;
 }
@@ -143,7 +143,7 @@
   background: #7b78d6;
   color: #fff;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 18px;
 }
 
@@ -169,7 +169,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-lg, 18px);
   line-height: var(--line-height-text-lg, 28px);
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0;
 }
 
@@ -330,7 +330,7 @@
 }
 
 .statLabel {
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .statCell strong {
@@ -363,7 +363,7 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full, 9999px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0;
   white-space: nowrap;
 }
@@ -425,7 +425,7 @@
 
 .briefing strong {
   color: var(--color-fg-primary-900, #181d27);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .briefingActions {
@@ -569,7 +569,7 @@
   color: var(--color-fg-primary-900, #181d27);
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0;
 }
 
@@ -691,7 +691,7 @@
 
 .insightRow p span {
   color: var(--color-error-600, #b6544c);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .crmPanel {
@@ -738,7 +738,7 @@
   color: var(--color-text-secondary-700, rgba(10, 13, 18, 0.7));
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 @media (max-width: 1180px) {

@@ -59,7 +59,7 @@
   color: rgba(10, 13, 18, 0.45);
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.5px;
   flex-shrink: 0;
   transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
@@ -96,7 +96,7 @@
   background: var(--color-fg-primary-900, #181d27);
   color: #fff;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 400;
 }
 .stepLine {
   flex: 1;

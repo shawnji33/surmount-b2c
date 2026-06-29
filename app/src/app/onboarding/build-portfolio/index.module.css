@@ -51,7 +51,7 @@
   background: var(--color-fg-primary-900, #181d27);
   color: #fff;
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 14px; font-weight: 500;
+  font-size: 14px; font-weight: 400;
 }
 .cardBody { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .cardName {

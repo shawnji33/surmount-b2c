@@ -2,15 +2,15 @@
   min-height: 100vh;
   padding: 56px 32px 80px;
   background: var(--color-bg-secondary, #fafafa);
-  /* Grow to the widest flow so the background covers the full horizontal scroll. */
-  width: max-content;
-  min-width: 100%;
+  /* Page stays at viewport width; each flow's screen row scrolls on its own. */
+  overflow-x: hidden;
 }
 
 .inner {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  width: 100%;
 }
 
 /* ---------- Header ---------- */
@@ -22,7 +22,7 @@
 .eyebrow {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.1px;
   color: var(--color-brand-600, #406ad0);
 }
@@ -49,6 +49,8 @@
 
 /* ---------- Flow ---------- */
 .flow {
+  align-self: stretch;
+  min-width: 0;
   margin-top: 48px;
   padding-top: 32px;
   border-top: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.08));
@@ -68,7 +70,7 @@
   border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.1px;
   color: var(--color-fg-tertiary-600, #535861);
 }
@@ -94,11 +96,30 @@
 }
 
 /* ---------- Step track ---------- */
-/* Single row — extends past the viewport; the page scrolls horizontally (no clipped window). */
+/* Each flow's screens scroll horizontally within their own row (trackpad / scrollbar).
+   The page and the flow headings/tags stay fixed. */
 .track {
   display: flex;
   flex-wrap: nowrap;
   align-items: flex-start;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-bottom: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-primary, rgba(10, 13, 18, 0.12)) transparent;
+}
+
+.track::-webkit-scrollbar {
+  height: 8px;
+}
+
+.track::-webkit-scrollbar-thumb {
+  background: var(--color-border-primary, rgba(10, 13, 18, 0.12));
+  border-radius: 9999px;
+}
+
+.track::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .stepWrap {
@@ -144,7 +165,7 @@
   color: #fff;
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .stepTitle {
@@ -189,7 +210,7 @@
   color: #fff;
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.1px;
   opacity: 0;
   transition: opacity 160ms ease;

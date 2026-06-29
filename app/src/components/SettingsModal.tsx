@@ -1,23 +1,34 @@
 'use client';
 
-import { CalendarBlank, CheckCircle, CreditCard, Lock, SlidersHorizontal, X, type Icon } from '@phosphor-icons/react';
+import {
+  CalendarBlank,
+  CheckCircle,
+  CreditCard,
+  Lifebuoy,
+  Lock,
+  SlidersHorizontal,
+  X,
+  type Icon,
+} from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from './Button';
 import { GeneralPanel } from './settings/GeneralPanel';
 import { PrivacyPanel } from './settings/PrivacyPanel';
+import { SupportPanel } from './settings/SupportPanel';
 import s from './SettingsModal.module.css';
 
-type SettingsTab = 'general' | 'privacy' | 'billing';
+type SettingsTab = 'general' | 'privacy' | 'billing' | 'support';
 
 // Lets a preview/handoff route render the Billing tab in a specific state.
 export type BillingStep = 'default' | 'cancel-confirm' | 'scheduled' | 'renew-confirm' | 'toast' | 'renewed';
 
 const NAV_ITEMS: { key: SettingsTab; label: string; icon: Icon }[] = [
+  { key: 'billing', label: 'Billing', icon: CreditCard },
   { key: 'general', label: 'General', icon: SlidersHorizontal },
   { key: 'privacy', label: 'Privacy & security', icon: Lock },
-  { key: 'billing', label: 'Billing', icon: CreditCard },
+  { key: 'support', label: 'Support', icon: Lifebuoy },
 ];
 
 const INVOICES = [
@@ -118,6 +129,8 @@ export function SettingsModal({
               <BillingPanel previewStep={previewStep} />
             ) : tab === 'privacy' ? (
               <PrivacyPanel />
+            ) : tab === 'support' ? (
+              <SupportPanel />
             ) : (
               <GeneralPanel />
             )}
@@ -132,6 +145,7 @@ export function SettingsModal({
 function ConfirmDialog({
   title,
   body,
+  summary,
   primaryLabel,
   primaryVariant = 'primary',
   secondaryLabel,
@@ -140,6 +154,7 @@ function ConfirmDialog({
 }: {
   title: string;
   body: string;
+  summary?: { name: string; sub: string; price: string };
   primaryLabel: string;
   primaryVariant?: 'primary' | 'destructive';
   secondaryLabel: string;
@@ -172,6 +187,15 @@ function ConfirmDialog({
       <div className={s.confirmModal}>
         <h2 className={s.confirmTitle}>{title}</h2>
         <p className={s.confirmBody}>{body}</p>
+        {summary && (
+          <div className={s.confirmSummary}>
+            <div className={s.confirmSummaryLeft}>
+              <span className={s.confirmSummaryName}>{summary.name}</span>
+              <span className={s.confirmSummarySub}>{summary.sub}</span>
+            </div>
+            <span className={s.confirmSummaryPrice}>{summary.price}</span>
+          </div>
+        )}
         <div className={s.confirmActions}>
           <Button type="button" variant="secondary" fullWidth={false} onClick={onSecondary}>
             {secondaryLabel}
@@ -199,7 +223,7 @@ function BillingPanel({ previewStep }: { previewStep?: BillingStep }) {
     previewStep === 'toast'
       ? 'Downgrade to Surmount Free scheduled'
       : previewStep === 'renewed'
-        ? 'Subscription renewed'
+        ? 'Subscription reactivated'
         : null,
   );
   const [toastLeaving, setToastLeaving] = useState(false);
@@ -255,7 +279,7 @@ function BillingPanel({ previewStep }: { previewStep?: BillingStep }) {
               <span className={s.planCardDesc}>Invest up to $150K with no-code strategy builders.</span>
             </div>
           </div>
-          <Button type="button" variant="secondary" size="sm" fullWidth={false} onClick={goToPlans}>
+          <Button type="button" variant="primary" size="sm" fullWidth={false} onClick={goToPlans}>
             Adjust plan
           </Button>
         </div>
@@ -271,7 +295,7 @@ function BillingPanel({ previewStep }: { previewStep?: BillingStep }) {
           </div>
           {scheduled ? (
             <Button type="button" variant="primary" size="sm" fullWidth={false} onClick={() => setRenewOpen(true)}>
-              Renew current Plus plan
+              Reactivate current Plus plan
             </Button>
           ) : (
             <Button type="button" variant="secondary" size="sm" fullWidth={false} onClick={() => setCancelOpen(true)}>
@@ -295,7 +319,13 @@ function BillingPanel({ previewStep }: { previewStep?: BillingStep }) {
               <span className={s.paySub}>Expires 08 / 2028</span>
             </div>
           </div>
-          <Button type="button" variant="secondary" size="sm" fullWidth={false}>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            fullWidth={false}
+            onClick={() => router.push('/onboarding/link-bank?mode=update')}
+          >
             Update
           </Button>
         </div>
@@ -347,15 +377,16 @@ function BillingPanel({ previewStep }: { previewStep?: BillingStep }) {
 
       {renewOpen && (
         <ConfirmDialog
-          title="Renew subscription"
+          title="Reactivate subscription"
           body="You'll keep access to Surmount Plus and your next charge will be processed on Jul 9, 2026."
-          primaryLabel="Renew subscription"
+          summary={{ name: 'Surmount Plus', sub: 'Next charge Jul 9, 2026', price: '$100 USD / year' }}
+          primaryLabel="Reactivate subscription"
           primaryVariant="primary"
           secondaryLabel="Go back"
           onPrimary={() => {
             setScheduled(false);
             setRenewOpen(false);
-            showToast('Subscription renewed');
+            showToast('Subscription reactivated');
           }}
           onSecondary={() => setRenewOpen(false)}
         />

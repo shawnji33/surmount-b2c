@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Brain,
   BookOpen,
@@ -62,12 +63,41 @@ type LogItem =
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+const DEFAULT_PROMPT = 'Buy NVDA when it drops';
+
+/* recommended-prompt deck shown on the welcome screen (mirrors surmount-demo-welcome) */
+const PROMPT_TABS = [
+  'Trading strategies',
+  'Dip buying',
+  'Income generation',
+  'Cash management',
+  'Risk management',
+  'Indicators',
+  'Market monitoring',
+  'Order-based',
+  'Multi-step strategies',
+];
+const RECOMMENDED_PROMPTS = [
+  'Buy $500 of NVDA every Monday at market open',
+  'If AAPL drops 5% in a single day, buy $1,000 worth',
+  'Sell half my TSLA position if it hits $300',
+  'Buy $100 of BTC every Sunday night',
+];
+
 export default function BuildPage() {
   const [items, setItems] = useState<LogItem[]>([]);
   const [canvasPhase, setCanvasPhase] = useState<'empty' | 'ghost' | 'live'>('empty');
   const [showApproval, setShowApproval] = useState(false);
   const [title, setTitle] = useState('New agent');
   const [saved, setSaved] = useState('');
+
+  // welcome screen → build flow
+  const [started, setStarted] = useState(false);
+  const [draft, setDraft] = useState('');
+  const [recTab, setRecTab] = useState(0);
+  const promptRef = useRef(DEFAULT_PROMPT);
+  const welcomeInputRef = useRef<HTMLTextAreaElement>(null);
+  const router = useRouter();
 
   const logRef = useRef<HTMLDivElement>(null);
   const runRef = useRef(0); // current run id — bumping it cancels a running flow
@@ -241,7 +271,7 @@ export default function BuildPage() {
   );
 
   const runFlow = useCallback(
-    async (run: number) => {
+    async (run: number, prompt: string = promptRef.current) => {
       setItems([]);
       setCanvasPhase('empty');
       setShowApproval(false);
@@ -249,7 +279,7 @@ export default function BuildPage() {
       setSaved('');
       resolvers.current = {};
 
-      push({ id: uid(), kind: 'user', text: 'Buy NVDA when it drops' });
+      push({ id: uid(), kind: 'user', text: prompt });
       await W(700);
       if (stale(run)) return;
       await say(
@@ -405,16 +435,134 @@ export default function BuildPage() {
     runFlow(run);
   }, [runFlow]);
 
-  // start on mount; cleanup bumps runRef so StrictMode's first pass is cancelled
+  // submit from the welcome screen → reveal the builder and kick off the flow
+  const start = useCallback(
+    (prompt: string) => {
+      const p = prompt.trim();
+      if (!p) return;
+      promptRef.current = p;
+      setStarted(true);
+      const run = ++runRef.current;
+      runFlow(run, p);
+    },
+    [runFlow],
+  );
+
+  // on mount, auto-start only for Figma capture or a deep-linked ?prompt=…;
+  // otherwise wait on the welcome screen. cleanup bumps runRef so StrictMode's
+  // first pass is cancelled.
   useEffect(() => {
-    captureRef.current =
-      typeof window !== 'undefined' && window.location.hash.includes('figmacapture');
-    const run = ++runRef.current;
-    runFlow(run);
+    if (typeof window === 'undefined') return;
+    captureRef.current = window.location.hash.includes('figmacapture');
+    const qp = new URLSearchParams(window.location.search).get('prompt');
+    if (captureRef.current || qp) {
+      const p = qp || DEFAULT_PROMPT;
+      promptRef.current = p;
+      setStarted(true);
+      const run = ++runRef.current;
+      runFlow(run, p);
+    }
     return () => {
       runRef.current++;
     };
   }, [runFlow]);
+
+  const submitWelcome = () => start(draft || promptRef.current);
+  const autoGrow = (el: HTMLTextAreaElement) => {
+    el.style.height = 'auto';
+    el.style.height = `${Math.min(el.scrollHeight, 240)}px`;
+  };
+
+  if (!started) {
+    return (
+      <div className={s.welcome}>
+        <div className={s.welcomeHead}>
+          <button className={s.back} onClick={() => router.back()} aria-label="Back">
+            <CaretLeft size={18} />
+          </button>
+        </div>
+        <div className={s.welcomeBody}>
+          <div className={s.wCenter}>
+            <div className={s.wHero}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                className={s.aiPill}
+                src="/agent-canvas/surmount-ai-pill.svg"
+                width={111}
+                height={26}
+                alt="Surmount AI"
+              />
+              <h1 className={s.wTitle}>Hey Logan, ready to build an agent for your portfolio?</h1>
+            </div>
+
+            <div className={s.wForm}>
+              <div className={`${s.cfield} ${s.wField}`}>
+                <textarea
+                  ref={welcomeInputRef}
+                  rows={1}
+                  placeholder="Define a task for your Agent"
+                  value={draft}
+                  onChange={(e) => {
+                    setDraft(e.target.value);
+                    autoGrow(e.target);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      submitWelcome();
+                    }
+                  }}
+                />
+                <div className={s.wSendRow}>
+                  <button className={s.wSend} onClick={submitWelcome} aria-label="Build agent">
+                    <ArrowUp size={16} />
+                  </button>
+                </div>
+              </div>
+
+              <div className={s.recs}>
+                <div className={s.recsHead}>
+                  <span className={s.recsShimmer}>Try recommended prompts</span>
+                </div>
+                <div className={s.wTabsWrap}>
+                  <div className={s.wTabs}>
+                    {PROMPT_TABS.map((t, i) => (
+                      <button
+                        key={t}
+                        className={`${s.wTab} ${i === recTab ? s.wTabOn : ''}`}
+                        onClick={() => setRecTab(i)}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                  <div className={s.wTabsFade} />
+                </div>
+                <div className={s.prompts}>
+                  {RECOMMENDED_PROMPTS.map((p) => (
+                    <button
+                      key={p}
+                      className={s.prompt}
+                      onClick={() => {
+                        setDraft(p);
+                        const el = welcomeInputRef.current;
+                        if (el) {
+                          el.focus();
+                          requestAnimationFrame(() => autoGrow(el));
+                        }
+                      }}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={s.app}>

@@ -3,7 +3,7 @@ import s from './flows.module.css';
 
 export const metadata: Metadata = {
   title: 'Plan management — flows',
-  description: 'Design handoff: cancel-plan and renew-plan flows for the Surmount Settings → Billing experience.',
+  description: 'Design handoff: cancel-plan and reactivate-plan flows for the Surmount Settings → Billing experience.',
 };
 
 type Step = { title: string; desc: string; src: string; w: number; h: number };
@@ -55,25 +55,25 @@ const FLOWS: Flow[] = [
   {
     id: 'renew',
     index: 2,
-    title: 'Renew plan',
+    title: 'Reactivate plan',
     description:
-      'After a downgrade is scheduled, the member can renew to keep their current plan. This reverts the scheduled downgrade.',
+      'After a downgrade is scheduled, the member can reactivate to keep their current plan. This reverts the scheduled downgrade.',
     steps: [
       {
         title: 'Downgrade scheduled',
-        desc: 'The Billing banner shows the scheduled downgrade with a primary “Renew current Plus plan” button.',
+        desc: 'The Billing banner shows the scheduled downgrade with a primary “Reactivate current Plus plan” button.',
         src: '/home?settings=billing&step=scheduled',
         ...HOME,
       },
       {
-        title: 'Confirm renewal',
-        desc: '“Renew current Plus plan” opens a confirmation — “Renew subscription” or “Go back”.',
+        title: 'Confirm reactivation',
+        desc: '“Reactivate current Plus plan” opens a confirmation — “Reactivate subscription” or “Go back”.',
         src: '/home?settings=billing&step=renew-confirm',
         ...HOME,
       },
       {
-        title: 'Renewed',
-        desc: 'On renew, the scheduled downgrade is cleared, a “Subscription renewed” toast appears, and the banner returns to the renews state.',
+        title: 'Reactivated',
+        desc: 'On reactivate, the scheduled downgrade is cleared, a “Subscription reactivated” toast appears, and the banner returns to the renews state.',
         src: '/home?settings=billing&step=renewed',
         ...HOME,
       },
@@ -82,9 +82,9 @@ const FLOWS: Flow[] = [
   {
     id: 'plans-downgrade',
     index: 4,
-    title: 'Plans — downgrade',
+    title: 'Plans — cancel plan (downgrade to Free)',
     description:
-      'From Upgrade plan (account menu) or Adjust plan (Settings → Billing), the member opens the Plans page and downgrades. The downgrade is scheduled for the end of the term.',
+      'From Upgrade plan (account menu) or Adjust plan (Settings → Billing), the member opens the Plans page and downgrades all the way to Free — cancelling their paid plan. The cancellation is scheduled for the end of the term.',
     steps: [
       {
         title: 'Open the account menu',
@@ -113,27 +113,54 @@ const FLOWS: Flow[] = [
     ],
   },
   {
-    id: 'plans-renew',
+    id: 'plans-downgrade-core',
     index: 5,
-    title: 'Plans — renew',
+    title: 'Plans — downgrade to Core',
     description:
-      'With a downgrade scheduled, the member renews from the Plans page banner to keep Surmount Plus. This reverts the scheduled downgrade.',
+      'On the Plans page, a Surmount Plus member steps down to Core instead of cancelling outright. They keep a paid plan — the change is scheduled for the end of the term, and the Core card locks to the scheduled state.',
+    steps: [
+      {
+        title: 'Plans page',
+        desc: 'The Plans page shows all tiers with the current plan (Surmount Plus) highlighted; Core sits one tier below.',
+        src: '/plans',
+        ...PLANS,
+      },
+      {
+        title: 'Confirm downgrade',
+        desc: '“Downgrade to Core” opens a confirmation — “Keep your Plus plan” or the non-destructive “Downgrade plan” (not “Cancel plan”, since a paid tier is retained).',
+        src: '/plans?step=downgrade-confirm&target=core',
+        ...PLANS,
+      },
+      {
+        title: 'Scheduled + toast',
+        desc: 'The banner shows the scheduled downgrade to Core, the Core card locks to “Downgrade scheduled”, and a “Downgrade to Surmount Core scheduled” toast confirms.',
+        src: '/plans?step=scheduled-toast&target=core',
+        ...PLANS,
+      },
+    ],
+  },
+  {
+    id: 'plans-renew',
+    index: 6,
+    title: 'Plans — reactivate',
+    description:
+      'With a downgrade scheduled, the member reactivates from the Plans page banner to keep Surmount Plus. This reverts the scheduled downgrade.',
     steps: [
       {
         title: 'Downgrade scheduled',
-        desc: 'The banner shows the scheduled downgrade with a primary “Renew current Plus plan” button; the Free card is locked.',
+        desc: 'The banner shows the scheduled downgrade with a primary “Reactivate current Plus plan” button; the Free card is locked.',
         src: '/plans?step=scheduled',
         ...PLANS,
       },
       {
-        title: 'Confirm renewal',
-        desc: '“Renew current Plus plan” opens a confirmation — “Renew subscription” or “Go back”.',
+        title: 'Confirm reactivation',
+        desc: '“Reactivate current Plus plan” opens a confirmation — “Reactivate subscription” or “Go back”.',
         src: '/plans?step=renew-confirm',
         ...PLANS,
       },
       {
-        title: 'Renewed',
-        desc: 'On renew, the schedule is cleared, a “Subscription renewed” toast appears, and the banner returns to the auto-renews state.',
+        title: 'Reactivated',
+        desc: 'On reactivate, the schedule is cleared, a “Subscription reactivated” toast appears, and the banner returns to the auto-renews state.',
         src: '/plans?step=renewed',
         ...PLANS,
       },
@@ -192,7 +219,7 @@ export default function FlowsPage() {
           <span className={s.eyebrow}>Design handoff</span>
           <h1 className={s.title}>Plan management — flows</h1>
           <p className={s.subtitle}>
-            Cancel-plan and renew-plan flows for the Surmount Settings → Billing experience. Each frame is a live screen —
+            Cancel-plan and reactivate-plan flows for the Surmount Settings → Billing experience. Each frame is a live screen —
             click any one to open it full-size.
           </p>
         </header>

@@ -396,7 +396,7 @@
   padding: 1px 5px;
 }
 .asst strong {
-  font-weight: 500;
+  font-weight: 400;
   color: inherit;
 }
 
@@ -1037,7 +1037,7 @@
 }
 .runLabel {
   font-size: var(--font-size-text-md);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--fg-900);
   white-space: nowrap;
   overflow: hidden;
@@ -1299,7 +1299,7 @@
 }
 .pickerItemName {
   font-size: var(--font-size-text-sm);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--fg-900);
 }
 .pickerItemDesc {
@@ -1426,7 +1426,7 @@
 }
 .pLabel {
   font-size: var(--font-size-text-sm);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 20px;
   color: var(--text-700);
 }
@@ -1546,7 +1546,7 @@
   border-radius: 9999px;
   padding: 4px 12px;
   font-size: var(--font-size-text-sm);
-  font-weight: 600;
+  font-weight: 400;
   line-height: 20px;
 }
 .pPillIf {
@@ -1598,7 +1598,7 @@
 }
 .pTickerSym {
   font-size: var(--font-size-text-sm);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--text-900);
   white-space: nowrap;
 }
@@ -1737,7 +1737,7 @@
   place-items: center;
   color: #fff;
   font-size: var(--font-size-text-xs);
-  font-weight: 600;
+  font-weight: 400;
 }
 .actOk {
   background: var(--green-600);
@@ -1798,7 +1798,7 @@
 }
 .txTitle {
   font-size: var(--font-size-text-md);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--fg-900);
 }
 .txDate {
@@ -1811,7 +1811,7 @@
 }
 .txAmount {
   font-size: var(--font-size-text-md);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--fg-900);
 }
 .txShares {
@@ -2021,6 +2021,222 @@
 }
 .panelDone:hover {
   background: #000;
+}
+
+/* ===== Welcome / start screen (mirrors surmount-demo-welcome) ===== */
+.welcome {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  font-family: var(--font-family-body);
+  letter-spacing: -0.5px;
+  color: var(--text-900);
+  -webkit-font-smoothing: antialiased;
+  animation: welcomeIn 0.4s var(--ease);
+}
+:where(.welcome) button {
+  font-family: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+:where(.welcome) :focus-visible {
+  outline: 2px solid rgba(10, 13, 18, 0.2);
+  outline-offset: 2px;
+}
+@keyframes welcomeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.welcomeHead {
+  height: 52px;
+  flex: 0 0 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+.welcomeBody {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 24px 64px;
+}
+.wCenter {
+  width: 100%;
+  max-width: 768px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: itemEnter 0.5s var(--ease);
+}
+.wHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 32px;
+}
+.wTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-display-xs);
+  font-weight: 500;
+  color: var(--fg-900);
+  line-height: 1.18;
+  text-align: center;
+  letter-spacing: -0.4px;
+}
+.wForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+/* bigger sizing on top of the shared .cfield gradient-border field */
+.wField {
+  width: 100%;
+  padding: 16px 16px 12px;
+}
+.wField textarea {
+  font-size: var(--font-size-text-md);
+  line-height: 24px;
+  min-height: 24px;
+  max-height: 240px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.wField textarea::-webkit-scrollbar {
+  display: none;
+}
+.wSendRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.wSend {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dis);
+  display: grid;
+  place-items: center;
+  transition: background 0.14s var(--ease), color 0.14s var(--ease),
+    transform 0.1s var(--ease);
+}
+.wSend:hover {
+  background: var(--bg-tertiary);
+  color: var(--fg-900);
+}
+.wSend:active {
+  transform: scale(0.95);
+}
+
+/* recommended prompts card */
+.recs {
+  width: 100%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-2);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(10, 13, 18, 0.02);
+  overflow: hidden;
+}
+.recsHead {
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border);
+  height: 41px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
+.recsShimmer {
+  font-size: var(--font-size-text-sm);
+  background: linear-gradient(
+    90deg,
+    rgba(10, 13, 18, 0.55) 0%,
+    rgba(10, 13, 18, 0.55) 35%,
+    rgba(10, 13, 18, 0.98) 50%,
+    rgba(10, 13, 18, 0.55) 65%,
+    rgba(10, 13, 18, 0.55) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: sweep 3s linear infinite;
+}
+.wTabsWrap {
+  position: relative;
+}
+.wTabs {
+  display: flex;
+  gap: 6px;
+  padding: 12px 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.wTabs::-webkit-scrollbar {
+  display: none;
+}
+.wTab {
+  flex: 0 0 auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: var(--font-size-text-sm);
+  color: var(--text-600);
+  white-space: nowrap;
+  transition: background 0.14s var(--ease), border-color 0.14s var(--ease),
+    color 0.14s var(--ease);
+}
+.wTab:hover {
+  background: var(--bg-tertiary);
+}
+.wTabOn {
+  background: var(--bg-tertiary);
+  border-color: var(--border-strong);
+  color: var(--text-900);
+}
+.wTabsFade {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 56px;
+  width: 48px;
+  background: linear-gradient(to left, var(--bg-primary) 30%, rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+.prompts {
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px 8px;
+}
+.prompt {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: var(--font-size-text-sm);
+  color: var(--text-600);
+  text-align: left;
+  transition: background 0.14s var(--ease), color 0.14s var(--ease);
+}
+.prompt:hover {
+  background: var(--bg-secondary);
+  color: var(--text-900);
 }
 
 @media (prefers-reduced-motion: reduce) {

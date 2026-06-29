@@ -133,6 +133,45 @@ function RollingNumber({ value }: { value: number }) {
   );
 }
 
+// On yearly billing, shows the monthly rate annualized (monthly × 12) struck
+// through and grayed beside the yearly price, so the saving is visible. Animates
+// in/out (bidirectional) on cycle change; unmounts instantly under reduced-motion.
+function StrikePrice({ show, amount }: { show: boolean; amount: number }) {
+  const [render, setRender] = useState(show);
+  const [exiting, setExiting] = useState(false);
+  const prev = useRef(show);
+
+  useEffect(() => {
+    if (show === prev.current) return;
+    prev.current = show;
+    if (show) {
+      setExiting(false);
+      setRender(true);
+    } else if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      setRender(false);
+    } else {
+      setExiting(true);
+    }
+  }, [show]);
+
+  if (!render) return null;
+
+  return (
+    <span
+      className={[s.strikePrice, exiting ? s.strikePriceExiting : ''].filter(Boolean).join(' ')}
+      aria-label={`Normally $${amount} per year when billed monthly`}
+      onAnimationEnd={() => {
+        if (exiting) {
+          setRender(false);
+          setExiting(false);
+        }
+      }}
+    >
+      ${amount}
+    </span>
+  );
+}
+
 function PlanCard({
   plan,
   cycle,
@@ -159,6 +198,7 @@ function PlanCard({
         <span className={s.cardName}>{plan.name}</span>
 
         <div className={s.priceRow}>
+          {plan.id !== 'free' && <StrikePrice show={cycle === 'yearly'} amount={plan.priceMonthly * 12} />}
           <span className={s.price}>
             <span className={s.currency}>$</span>
             <RollingNumber value={amount} />
@@ -196,11 +236,13 @@ function PlanCard({
 function DowngradeModal({
   target,
   currentName,
+  cycle,
   onKeep,
   onConfirm,
 }: {
   target: Tier;
   currentName: string;
+  cycle: Cycle;
   onKeep: () => void;
   onConfirm: () => void;
 }) {
@@ -220,6 +262,11 @@ function DowngradeModal({
   const target_ = shortName(target.name);
   const current_ = shortName(currentName);
 
+  const isFree = target.id === 'free';
+  const amount = cycle === 'yearly' ? target.priceYearly : target.priceMonthly;
+  const per = cycle === 'yearly' ? 'USD / year' : 'USD / month';
+  const priceText = isFree ? 'Free' : `$${amount} ${per}`;
+
   return createPortal(
     <div
       className={s.cdOverlay}
@@ -233,9 +280,19 @@ function DowngradeModal({
       <div className={s.cdModal}>
         <h2 className={s.cdTitle}>Downgrade to the {target_} plan?</h2>
         <p className={s.cdBody}>
-          Your downgrade to the {target_} monthly plan is scheduled for {RENEW_DATE}. You&apos;ll keep {currentName} and
-          all its features until then.
+          You&apos;ll keep {currentName} and all its features until {RENEW_DATE}. On that date your plan changes to{' '}
+          {target.name}
+          {isFree ? ' and you won’t be charged again.' : ` and you’ll be billed ${priceText} going forward.`}
         </p>
+        {!isFree && (
+          <div className={s.cdSummary}>
+            <div className={s.cdSummaryLeft}>
+              <span className={s.cdSummaryName}>{target.name}</span>
+              <span className={s.cdSummarySub}>{`Billing starts ${RENEW_DATE}`}</span>
+            </div>
+            <span className={s.cdSummaryPrice}>{priceText}</span>
+          </div>
+        )}
         <div className={s.cdActions}>
           <Button type="button" variant="secondary" fullWidth={false} onClick={onKeep}>
             Keep your {current_} plan
@@ -251,11 +308,13 @@ function DowngradeModal({
 }
 
 function RenewModal({
-  currentName,
+  currentTier,
+  cycle,
   onGoBack,
   onRenew,
 }: {
-  currentName: string;
+  currentTier: Tier;
+  cycle: Cycle;
   onGoBack: () => void;
   onRenew: () => void;
 }) {
@@ -272,6 +331,11 @@ function RenewModal({
 
   if (!mounted) return null;
 
+  const currentName = currentTier.name;
+  const amount = cycle === 'yearly' ? currentTier.priceYearly : currentTier.priceMonthly;
+  const per = cycle === 'yearly' ? 'USD / year' : 'USD / month';
+  const priceText = `$${amount} ${per}`;
+
   return createPortal(
     <div
       className={s.cdOverlay}
@@ -280,19 +344,26 @@ function RenewModal({
       }}
       role="dialog"
       aria-modal="true"
-      aria-label="Renew subscription"
+      aria-label="Reactivate subscription"
     >
       <div className={s.cdModal}>
-        <h2 className={s.cdTitle}>Renew subscription</h2>
+        <h2 className={s.cdTitle}>Reactivate subscription</h2>
         <p className={s.cdBody}>
           You&apos;ll keep access to {currentName} and your next charge will be processed on {RENEW_DATE}.
         </p>
+        <div className={s.cdSummary}>
+          <div className={s.cdSummaryLeft}>
+            <span className={s.cdSummaryName}>{currentName}</span>
+            <span className={s.cdSummarySub}>Next charge {RENEW_DATE}</span>
+          </div>
+          <span className={s.cdSummaryPrice}>{priceText}</span>
+        </div>
         <div className={s.cdActions}>
           <Button type="button" variant="secondary" fullWidth={false} onClick={onGoBack}>
             Go back
           </Button>
           <Button type="button" variant="primary" fullWidth={false} onClick={onRenew}>
-            Renew subscription
+            Reactivate subscription
           </Button>
         </div>
       </div>
@@ -461,22 +532,26 @@ function UpgradeModal({
 export function PlansPage({
   initialCycle = 'monthly',
   previewStep,
+  previewTarget = 'free',
 }: {
   initialCycle?: Cycle;
   previewStep?: PlansStep;
+  previewTarget?: string;
 }) {
   const router = useRouter();
+  // The tier a downgrade preview is scheduled toward (defaults to Free, i.e. a full cancellation).
+  const previewTier = TIERS.find((t) => t.id === previewTarget) ?? TIERS[0];
   const [cycle, setCycle] = useState<Cycle>(initialCycle);
   const [currentPlanId, setCurrentPlanId] = useState('plus');
   const [confirmTarget, setConfirmTarget] = useState<Tier | null>(
-    previewStep === 'downgrade-confirm' ? TIERS[0] : null,
+    previewStep === 'downgrade-confirm' ? previewTier : null,
   );
   const [upgradeTarget, setUpgradeTarget] = useState<Tier | null>(
     previewStep === 'upgrade-confirm' ? TIERS[3] : null,
   );
   const [scheduled, setScheduled] = useState<{ name: string; date: string } | null>(
     previewStep === 'scheduled' || previewStep === 'scheduled-toast' || previewStep === 'renew-confirm'
-      ? { name: 'Free', date: RENEW_DATE }
+      ? { name: shortName(previewTier.name), date: RENEW_DATE }
       : null,
   );
   const [renewOpen, setRenewOpen] = useState(previewStep === 'renew-confirm');
@@ -484,9 +559,9 @@ export function PlansPage({
   const [mounted, setMounted] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(
     previewStep === 'scheduled-toast'
-      ? 'Downgrade to Surmount Free scheduled'
+      ? `Downgrade to ${previewTier.name} scheduled`
       : previewStep === 'renewed'
-        ? 'Subscription renewed'
+        ? 'Subscription reactivated'
         : null,
   );
   const [toastLeaving, setToastLeaving] = useState(false);
@@ -549,7 +624,7 @@ export function PlansPage({
   function handleRenew() {
     setScheduled(null);
     setRenewOpen(false);
-    showToast('Subscription renewed');
+    showToast('Subscription reactivated');
   }
 
   const bannerText = scheduled
@@ -584,7 +659,7 @@ export function PlansPage({
           </div>
           {scheduled && (
             <Button type="button" variant="primary" size="sm" fullWidth={false} onClick={() => setRenewOpen(true)}>
-              Renew current {currentShort} plan
+              Reactivate current {currentShort} plan
             </Button>
           )}
         </div>
@@ -635,13 +710,14 @@ export function PlansPage({
         <DowngradeModal
           target={confirmTarget}
           currentName={currentName}
+          cycle={cycle}
           onKeep={() => setConfirmTarget(null)}
           onConfirm={confirmDowngrade}
         />
       )}
 
       {renewOpen && (
-        <RenewModal currentName={currentName} onGoBack={() => setRenewOpen(false)} onRenew={handleRenew} />
+        <RenewModal currentTier={currentTier} cycle={cycle} onGoBack={() => setRenewOpen(false)} onRenew={handleRenew} />
       )}
 
       {upgradeTarget && (

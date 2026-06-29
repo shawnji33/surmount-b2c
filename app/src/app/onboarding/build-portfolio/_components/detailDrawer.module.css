@@ -116,7 +116,7 @@
 .statLabel { font-size: 12px; letter-spacing: -0.5px; color: var(--color-fg-tertiary-600, #535861); }
 .statValue {
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 15px; font-weight: 500; letter-spacing: -0.5px;
+  font-size: 15px; font-weight: 400; letter-spacing: -0.5px;
   color: var(--color-fg-primary-900, #181d27);
 }
 .riskVal { display: inline-flex; align-items: center; gap: 6px; }
@@ -134,7 +134,7 @@
   font-size: 28px; font-weight: 500; letter-spacing: -0.8px;
   color: var(--color-fg-primary-900, #181d27);
 }
-.priceChange { font-size: 14px; font-weight: 500; letter-spacing: -0.5px; }
+.priceChange { font-size: 14px; font-weight: 400; letter-spacing: -0.5px; }
 .muted { color: var(--color-fg-tertiary-600, #535861); font-weight: 400; }
 .chart { width: 100%; height: 140px; display: block; }
 
@@ -177,7 +177,7 @@
 .barTop { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .barLabel { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; letter-spacing: -0.5px; color: var(--color-fg-primary-900, #181d27); }
 .barDot { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; }
-.barPct { font-size: 14px; font-weight: 500; letter-spacing: -0.5px; color: var(--color-fg-primary-900, #181d27); }
+.barPct { font-size: 14px; font-weight: 400; letter-spacing: -0.5px; color: var(--color-fg-primary-900, #181d27); }
 .barTrack { height: 8px; border-radius: 9999px; background: var(--color-bg-tertiary, #f0f1f3); overflow: hidden; }
 .barFill { height: 100%; border-radius: 9999px; }
 

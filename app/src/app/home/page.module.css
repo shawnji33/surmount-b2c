@@ -81,7 +81,7 @@
 .actionLink {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-tertiary-600);
   background: none;
   border: none;
@@ -188,7 +188,7 @@
 .heroChangeValue {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-success-primary, #3b7e3f);
   font-variant-numeric: tabular-nums;
 }
@@ -233,7 +233,7 @@
   border-radius: var(--radius-xl, 12px);
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(10, 13, 18, 0.45);
   background: transparent;
   border: none;
@@ -346,7 +346,7 @@
   min-width: 0;
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
   white-space: nowrap;
   overflow: hidden;
@@ -453,7 +453,7 @@
   padding: 0 4px;
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-quaternary-400);
   background: transparent;
   border: none;
@@ -495,7 +495,7 @@
 .perfValue {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-success-primary, #3b7e3f);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -523,7 +523,7 @@
   border-radius: var(--radius-xl, 12px);
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(10, 13, 18, 0.45);
   background: transparent;
   border: none;
@@ -679,7 +679,7 @@
 .strategyName {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
   white-space: nowrap;
   overflow: hidden;
@@ -689,7 +689,7 @@
 .tdValueText {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -698,7 +698,7 @@
 .tdReturnPrimary {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-success-primary, #3b7e3f);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -731,7 +731,7 @@
   align-items: center;
   justify-content: center;
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .accountAvatar:last-child {
@@ -853,7 +853,7 @@
 .tickerSymbol {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
   line-height: 20px;
 }
@@ -964,7 +964,7 @@
 .activityDateLabel {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-tertiary-600);
   letter-spacing: -0.5px;
   line-height: var(--line-height-text-sm, 20px);
@@ -1053,7 +1053,7 @@
 .activityName {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
   line-height: 20px;
   display: inline-flex;
@@ -1076,7 +1076,7 @@
   padding: 1px 8px;
   border-radius: var(--radius-full, 9999px);
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 16px;
   border: 1px solid transparent;
   letter-spacing: 0;
@@ -1103,7 +1103,7 @@
 .activityAmount {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
   line-height: 20px;
   font-variant-numeric: tabular-nums;
@@ -1166,7 +1166,7 @@
 .detailKey {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
   line-height: var(--line-height-text-sm, 20px);
 }
@@ -1452,7 +1452,7 @@
 .dividendLabel {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-secondary-700);
 }
 
@@ -1601,7 +1601,7 @@
   min-width: 0;
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
 }
 
@@ -1636,7 +1636,7 @@
   margin-right: 0;
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-md, 16px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-quaternary-400);
   cursor: default;
   white-space: nowrap;
@@ -1901,7 +1901,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
   letter-spacing: 0;
   white-space: nowrap;
@@ -1931,7 +1931,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
   letter-spacing: 0;
   white-space: nowrap;
@@ -1968,9 +1968,9 @@
 
 .carouselCounter {
   font-family: var(--font-family-body);
-  font-size: var(--font-size-text-lg, 18px);
-  font-weight: 500;
-  color: var(--color-fg-primary-900);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600);
 }
 
 .carouselControls {
@@ -2216,7 +2216,7 @@
   justify-content: center;
   font-family: var(--font-family-body);
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(10, 13, 18, 0.5);
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
@@ -2312,7 +2312,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xxs, 10px);
   line-height: var(--line-height-text-xxs, 13px);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .switcherAccountLogoFallback::before {
@@ -2331,7 +2331,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-md, 16px);
   line-height: var(--line-height-text-md, 24px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
   letter-spacing: 0;
   white-space: nowrap;
@@ -2542,7 +2542,7 @@
   white-space: nowrap;
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .switcherAccountValue {
@@ -2869,7 +2869,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: 20px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900);
   letter-spacing: -0.4px;
 }
@@ -2960,7 +2960,7 @@
   background: var(--color-bg-secondary, #fafafa);
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-tertiary-600, #535861);
   letter-spacing: -0.3px;
   cursor: pointer;
@@ -3162,7 +3162,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: 20px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.3px;
   flex-shrink: 0;
@@ -3182,7 +3182,7 @@
 .confirmRowValueAmount {
   font-size: 14px;
   line-height: 20px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.3px;
 }
@@ -3198,7 +3198,7 @@
 .confirmDetailList .confirmRowLabel {
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.35px;
 }
@@ -3207,7 +3207,7 @@
 .confirmDetailList .confirmRowValueAmount {
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.35px;
 }
@@ -3216,7 +3216,7 @@
   gap: 10px;
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.35px;
 }
@@ -3583,7 +3583,7 @@
   background: var(--color-bg-primary, #fff);
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: var(--font-size-text-md, 16px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.3px;
   color: var(--color-fg-primary-900, #181d27);
 }

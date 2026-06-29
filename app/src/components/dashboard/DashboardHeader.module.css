@@ -90,7 +90,7 @@
 .searchShortcut {
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-quaternary-400, #717680);
   border: 1px solid var(--color-border-secondary, #e9eaeb);
   border-radius: var(--radius-xs, 4px);
@@ -289,7 +289,7 @@
   color: var(--color-fg-primary-900);
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0;
   text-overflow: ellipsis;
   white-space: nowrap;

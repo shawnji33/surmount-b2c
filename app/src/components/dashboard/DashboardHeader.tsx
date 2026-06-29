@@ -74,7 +74,7 @@ function TransferMoneyMenu({ onDeposit, onWithdraw }: { onDeposit?: () => void; 
 
   const transferItems = [
     { label: 'Deposit', icon: ArrowDown, tone: s.transferIconGreen, action: () => { closeMenu(); onDeposit?.(); } },
-    { label: 'Transfer money', icon: ArrowUp, tone: s.transferIconBlue, action: () => { closeMenu(); onWithdraw?.(); } },
+    { label: 'Withdraw', icon: ArrowUp, tone: s.transferIconBlue, action: () => { closeMenu(); onWithdraw?.(); } },
   ];
 
   const menu = (

@@ -13,6 +13,7 @@ const SECTIONS = [
     label: 'Dashboard',
     routes: [
       { href: '/flow', label: 'Onboarding flow — visual map ★' },
+      { href: '/onboarding-map', label: 'Onboarding map — flows, scenarios, edge cases ★' },
       { href: '/home', label: 'Investing home' },
       { href: '/home?state=empty&connected=kraken', label: 'Investing home — empty (just connected)' },
       { href: '/home/saving', label: 'Saving home' },

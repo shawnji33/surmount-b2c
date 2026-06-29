@@ -287,9 +287,6 @@ function HomePageContent() {
         {/* ── RIGHT COLUMN ── */}
         <div className={s.rightColumn}>
 
-          {/* Carousel — top */}
-          <Carousel variant={isEmpty ? 'empty' : 'default'} />
-
           {/* Dividend management — compact utility row */}
           <a className={s.utilityRow} href="#" aria-label="Dividend management">
             <div className={s.utilityRowIconWrap}>
@@ -303,7 +300,10 @@ function HomePageContent() {
             </svg>
           </a>
 
-          {/* Holdings / Watchlist tabbed module */}
+          {/* Carousel */}
+          <Carousel variant={isEmpty ? 'empty' : 'default'} />
+
+          {/* Holdings / Watchlist tabbed module — end of column */}
           <WatchlistSection empty={isEmpty} />
 
         </div>
