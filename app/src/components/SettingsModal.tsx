@@ -13,6 +13,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { PAYMENT_UPDATE_ROUTE, paymentExpiry, paymentLabel } from '@/lib/payment-method';
 import { Button } from './Button';
 import { GeneralPanel } from './settings/GeneralPanel';
 import { PrivacyPanel } from './settings/PrivacyPanel';
@@ -315,8 +316,8 @@ function BillingPanel({ previewStep }: { previewStep?: BillingStep }) {
               <CreditCard weight="fill" aria-hidden="true" />
             </span>
             <div className={s.payMeta}>
-              <span className={s.payPrimary}>Visa ending in 4242</span>
-              <span className={s.paySub}>Expires 08 / 2028</span>
+              <span className={s.payPrimary}>{paymentLabel()}</span>
+              <span className={s.paySub}>{paymentExpiry()}</span>
             </div>
           </div>
           <Button
@@ -324,7 +325,7 @@ function BillingPanel({ previewStep }: { previewStep?: BillingStep }) {
             variant="secondary"
             size="sm"
             fullWidth={false}
-            onClick={() => router.push('/onboarding/link-bank?mode=update')}
+            onClick={() => router.push(PAYMENT_UPDATE_ROUTE)}
           >
             Update
           </Button>

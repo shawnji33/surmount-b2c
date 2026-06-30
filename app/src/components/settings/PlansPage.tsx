@@ -5,6 +5,7 @@ import { ArrowLeft, CalendarBlank, Check, CheckCircle, CreditCard, Info, PencilS
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { PAYMENT_UPDATE_ROUTE, paymentLabel } from '@/lib/payment-method';
 import s from './PlansPage.module.css';
 
 type Cycle = 'monthly' | 'yearly';
@@ -30,6 +31,9 @@ type Tier = {
 };
 
 const RENEW_DATE = 'Jul 9, 2026';
+// Upgrading resets the Stripe billing anchor to now, so the renewal date becomes
+// "today + one interval" rather than the original subscription renewal date.
+const UPGRADE_RENEW_DATE = 'Jul 30, 2026';
 const PLAN_ORDER = ['free', 'core', 'plus', 'pro'];
 const TAX_RATE = 0.0825;
 
@@ -383,6 +387,7 @@ function UpgradeModal({
   onClose: () => void;
   onConfirm: () => void;
 }) {
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [agreed, setAgreed] = useState(false);
 
@@ -453,7 +458,7 @@ function UpgradeModal({
             <div className={s.upOrderRow}>
               <div className={s.upOrderLabel}>
                 <span className={s.upOrderName}>Adjustments</span>
-                <span className={s.upOrderSub}>Prorated credit for the remainder of {current_} plan</span>
+                <span className={s.upOrderSub}>Unused time on your {current_} plan, credited to today&apos;s charge (no cash refund)</span>
               </div>
               <span className={s.upOrderValue}>-{fmt(credit)}</span>
             </div>
@@ -481,8 +486,8 @@ function UpgradeModal({
           <div className={s.upInfo}>
             <Info className={s.upInfoIcon} weight="regular" aria-hidden="true" />
             <span>
-              Your subscription will auto-renew on {RENEW_DATE}. You&apos;ll be charged {fmt(target.priceMonthly)}/month +
-              tax.
+              Your {target_} period starts <span className={s.upInfoStrong}>today</span> and renews {UPGRADE_RENEW_DATE},
+              then auto-renews monthly at {fmt(target.priceMonthly)}/month + tax until canceled.
             </span>
           </div>
 
@@ -493,8 +498,13 @@ function UpgradeModal({
               <span className={s.upCardChip}>
                 <CreditCard weight="fill" aria-hidden="true" />
               </span>
-              <span className={s.upPaymentValue}>Visa ending in 4242</span>
-              <button type="button" className={s.upEdit} aria-label="Edit payment method">
+              <span className={s.upPaymentValue}>{paymentLabel()}</span>
+              <button
+                type="button"
+                className={s.upEdit}
+                aria-label="Edit payment method"
+                onClick={() => router.push(PAYMENT_UPDATE_ROUTE)}
+              >
                 <PencilSimple weight="regular" aria-hidden="true" />
               </button>
             </div>
