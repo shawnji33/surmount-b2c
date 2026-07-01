@@ -2048,31 +2048,91 @@
   color: var(--color-fg-tertiary-600, #535861);
   letter-spacing: -0.2px;
 }
-.bankUpdateNotice {
-  width: 100%;
+.currentBank {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.currentBankLabel {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+.currentBankCard {
+  background: var(--color-bg-primary, #fff);
+  border: 1px solid var(--color-border-secondary, rgba(10, 13, 18, 0.06));
+  border-radius: 12px;
+  box-shadow: 0 1px 12px rgba(10, 13, 18, 0.03);
+  overflow: hidden;
+}
+.currentBankRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+.currentBankLogo {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full, 9999px);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-tertiary, #f5f5f5);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.currentBankLogo img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.currentBankInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.currentBankName {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.2px;
+  color: var(--color-fg-primary-900, #181d27);
+}
+.currentBankMeta {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+.currentBankNotice {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid var(--color-border-secondary, rgba(10, 13, 18, 0.06));
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--color-border-tertiary, rgba(10, 13, 18, 0.04));
   background: var(--color-bg-secondary, #fafafa);
-  text-align: left;
 }
-.bankUpdateNoticeIcon {
-  width: 20px;
-  height: 20px;
+.currentBankNoticeIcon {
+  width: 18px;
+  height: 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   color: var(--color-fg-tertiary-600, #535861);
+  margin-top: 1px;
 }
-.bankUpdateNoticeIcon svg {
-  width: 18px;
-  height: 18px;
+.currentBankNoticeIcon svg {
+  width: 16px;
+  height: 16px;
 }
-.bankUpdateNotice p {
+.currentBankNotice p {
   margin: 0;
   font-size: 13px;
   font-weight: 400;
