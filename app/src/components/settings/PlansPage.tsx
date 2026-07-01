@@ -18,7 +18,8 @@ export type PlansStep =
   | 'scheduled-toast'
   | 'renew-confirm'
   | 'renewed'
-  | 'upgrade-confirm';
+  | 'upgrade-confirm'
+  | 'upgraded';
 
 type Tier = {
   id: string;
@@ -458,7 +459,7 @@ function UpgradeModal({
             <div className={s.upOrderRow}>
               <div className={s.upOrderLabel}>
                 <span className={s.upOrderName}>Adjustments</span>
-                <span className={s.upOrderSub}>Unused time on your {current_} plan, credited to today&apos;s charge (no cash refund)</span>
+                <span className={s.upOrderSub}>Unused time on your {current_} plan, credited to today&apos;s charge</span>
               </div>
               <span className={s.upOrderValue}>-{fmt(credit)}</span>
             </div>
@@ -552,7 +553,7 @@ export function PlansPage({
   // The tier a downgrade preview is scheduled toward (defaults to Free, i.e. a full cancellation).
   const previewTier = TIERS.find((t) => t.id === previewTarget) ?? TIERS[0];
   const [cycle, setCycle] = useState<Cycle>(initialCycle);
-  const [currentPlanId, setCurrentPlanId] = useState('plus');
+  const [currentPlanId, setCurrentPlanId] = useState(previewStep === 'upgraded' ? 'pro' : 'plus');
   const [confirmTarget, setConfirmTarget] = useState<Tier | null>(
     previewStep === 'downgrade-confirm' ? previewTier : null,
   );
@@ -572,7 +573,9 @@ export function PlansPage({
       ? `Downgrade to ${previewTier.name} scheduled`
       : previewStep === 'renewed'
         ? 'Subscription reactivated'
-        : null,
+        : previewStep === 'upgraded'
+          ? "You're now on Surmount Pro"
+          : null,
   );
   const [toastLeaving, setToastLeaving] = useState(false);
   const toastTimer = useRef<number | undefined>(undefined);

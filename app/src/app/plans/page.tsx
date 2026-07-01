@@ -7,6 +7,7 @@ const STEPS: PlansStep[] = [
   'renew-confirm',
   'renewed',
   'upgrade-confirm',
+  'upgraded',
 ];
 
 export default async function Plans({

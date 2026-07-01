@@ -3,7 +3,7 @@ import s from './flows.module.css';
 
 export const metadata: Metadata = {
   title: 'Plan management — flows',
-  description: 'Design handoff: cancel-plan and reactivate-plan flows for the Surmount Settings → Billing experience.',
+  description: 'Design handoff: plan management flows (upgrade, downgrade, cancel, reactivate, billing cycle) for the Surmount Settings → Billing and Plans experience.',
 };
 
 type Step = { title: string; desc: string; src: string; w: number; h: number };
@@ -187,6 +187,39 @@ const FLOWS: Flow[] = [
       },
     ],
   },
+  {
+    id: 'plans-upgrade',
+    index: 7,
+    title: 'Plans — upgrade to a higher tier',
+    description:
+      'A Surmount Plus member upgrades to a higher tier (Pro). Upgrades take effect immediately (unlike downgrades, which are scheduled) — the member is credited for unused Plus time and charged the prorated difference today.',
+    steps: [
+      {
+        title: 'Open the account menu',
+        desc: 'Open the account menu and choose “Upgrade plan” — or Settings → Billing → “Adjust plan” — to reach the Plans page.',
+        src: '/home?menu=open',
+        ...HOME,
+      },
+      {
+        title: 'Plans page',
+        desc: 'The Plans page shows all tiers; Pro sits above the current Surmount Plus with an “Upgrade to Pro” CTA.',
+        src: '/plans',
+        ...PLANS,
+      },
+      {
+        title: 'Confirm upgrade',
+        desc: '“Upgrade to Pro” opens an order summary — prorated credit for unused Plus time, total due today, and the new renewal date. The member agrees to the terms, then confirms with “Upgrade to Pro”.',
+        src: '/plans?step=upgrade-confirm',
+        ...PLANS,
+      },
+      {
+        title: 'Upgraded',
+        desc: 'The upgrade applies immediately: a “You’re now on Surmount Pro” toast appears and Pro becomes the current plan.',
+        src: '/plans?step=upgraded',
+        ...PLANS,
+      },
+    ],
+  },
 ];
 
 const FRAME_W = 460;
@@ -219,7 +252,7 @@ export default function FlowsPage() {
           <span className={s.eyebrow}>Design handoff</span>
           <h1 className={s.title}>Plan management — flows</h1>
           <p className={s.subtitle}>
-            Cancel-plan and reactivate-plan flows for the Surmount Settings → Billing experience. Each frame is a live screen —
+            Plan management flows — upgrade, downgrade, cancel, reactivate, and billing cycle — across the Surmount Settings → Billing and Plans experience. Each frame is a live screen —
             click any one to open it full-size.
           </p>
         </header>
