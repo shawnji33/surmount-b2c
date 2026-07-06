@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/Button';
-import { ArrowLeft, CalendarBlank, Check, CheckCircle, CreditCard, Info, PencilSimple, X } from '@phosphor-icons/react';
+import { ArrowLeft, CalendarBlank, Check, CheckCircle, CreditCard, Info, PencilSimple, Warning, X } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -296,6 +296,15 @@ function DowngradeModal({
               <span className={s.cdSummarySub}>{`Billing starts ${RENEW_DATE}`}</span>
             </div>
             <span className={s.cdSummaryPrice}>{priceText}</span>
+          </div>
+        )}
+        {isFree && (
+          <div className={s.cdWarning}>
+            <Warning className={s.cdWarningIcon} weight="fill" aria-hidden="true" />
+            <p className={s.cdWarningText}>
+              When your plan changes to Free on {RENEW_DATE}, any strategies you invested in through a connected
+              external brokerage will be liquidated, and your external trading connections will be removed.
+            </p>
           </div>
         )}
         <div className={s.cdActions}>
@@ -676,6 +685,16 @@ export function PlansPage({
             </Button>
           )}
         </div>
+
+        {scheduled && scheduled.name === 'Free' && (
+          <div className={s.scheduleWarning}>
+            <Warning className={s.scheduleWarningIcon} weight="fill" aria-hidden="true" />
+            <span className={s.scheduleWarningText}>
+              On {scheduled.date}, strategies you invested in through a connected external brokerage will be liquidated
+              and your external trading connections removed.
+            </span>
+          </div>
+        )}
 
         <div className={s.cycleToggle}>
           <button

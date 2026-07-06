@@ -7,6 +7,7 @@ import {
   Lifebuoy,
   Lock,
   SlidersHorizontal,
+  Warning,
   X,
   type Icon,
 } from '@phosphor-icons/react';
@@ -147,6 +148,7 @@ function ConfirmDialog({
   title,
   body,
   summary,
+  warning,
   primaryLabel,
   primaryVariant = 'primary',
   secondaryLabel,
@@ -156,6 +158,7 @@ function ConfirmDialog({
   title: string;
   body: string;
   summary?: { name: string; sub: string; price: string };
+  warning?: string;
   primaryLabel: string;
   primaryVariant?: 'primary' | 'destructive';
   secondaryLabel: string;
@@ -195,6 +198,12 @@ function ConfirmDialog({
               <span className={s.confirmSummarySub}>{summary.sub}</span>
             </div>
             <span className={s.confirmSummaryPrice}>{summary.price}</span>
+          </div>
+        )}
+        {warning && (
+          <div className={s.confirmWarning}>
+            <Warning className={s.confirmWarningIcon} weight="fill" aria-hidden="true" />
+            <p className={s.confirmWarningText}>{warning}</p>
           </div>
         )}
         <div className={s.confirmActions}>
@@ -305,6 +314,16 @@ function BillingPanel({ previewStep }: { previewStep?: BillingStep }) {
           )}
         </div>
 
+        {scheduled && (
+          <div className={s.statusWarning}>
+            <Warning className={s.statusWarningIcon} weight="fill" aria-hidden="true" />
+            <span className={s.statusWarningText}>
+              On Jul 9, 2026, strategies you invested in through a connected external brokerage will be liquidated and
+              your external trading connections removed.
+            </span>
+          </div>
+        )}
+
         <div className={s.divider} />
 
       {/* Payment */}
@@ -364,6 +383,7 @@ function BillingPanel({ previewStep }: { previewStep?: BillingStep }) {
         <ConfirmDialog
           title="Downgrade to the Free plan?"
           body="Your downgrade to the Free monthly plan is scheduled for Jul 9, 2026. You'll keep Surmount Plus and all its features until then."
+          warning="When your plan changes to Free on Jul 9, 2026, any strategies you invested in through a connected external brokerage will be liquidated, and your external trading connections will be removed."
           primaryLabel="Cancel plan"
           primaryVariant="destructive"
           secondaryLabel="Keep your Plus plan"
