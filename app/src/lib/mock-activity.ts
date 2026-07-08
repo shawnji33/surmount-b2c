@@ -39,7 +39,7 @@ export const MOCK_CONNECTED_ACCOUNTS: readonly ConnectedAccount[] = [
   },
 ] as const;
 
-const [surmount, hyca, schwab, , ibkr, coinbase] = MOCK_CONNECTED_ACCOUNTS;
+const [surmount, , schwab, , ibkr, coinbase] = MOCK_CONNECTED_ACCOUNTS;
 
 export const MOCK_ACTIVITY_ITEMS: readonly ActivityItem[] = [
   // ── 3 demo pending orders ─────────────────────────────────────────────────
@@ -59,17 +59,18 @@ export const MOCK_ACTIVITY_ITEMS: readonly ActivityItem[] = [
     ],
   },
   {
-    id: 'pend-2',
-    type: 'transfer',
-    amount: 5000,
-    account: hyca,
-    toAccount: surmount,
-    status: 'submitted',
-    submittedAt: '2026-05-30T09:15:00-04:00',
+    id: 'pend-withdrawal',
+    type: 'withdrawal',
+    amount: 1200,
+    account: surmount,
+    status: 'processing',
+    submittedAt: '2026-05-30T10:15:00-04:00',
+    estimatedCompletion: '2026-06-03T17:00:00-04:00',
     canCancel: true,
     canModify: false,
     statusTimeline: [
-      { status: 'submitted', timestamp: '2026-05-30T09:15:00-04:00', note: 'Transfer from HYCA to Brokerage submitted.' },
+      { status: 'submitted', timestamp: '2026-05-30T10:15:00-04:00', note: 'ACH withdrawal initiated to Chase Total Checking.' },
+      { status: 'processing', timestamp: '2026-05-30T10:15:30-04:00', note: 'Funds are being sent to your bank.' },
     ],
   },
   {

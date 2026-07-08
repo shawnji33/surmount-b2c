@@ -2,33 +2,87 @@
 
 import { Input } from '@/components/Input';
 import { AccountSelectorCard, type SelectableAccount } from '@/components/AccountSelectorCard';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { BANK_SELECTABLE, SURMOUNT_GROUPS, type TransferMode, type TransferStep } from '../_data';
+import { useRouter } from 'next/navigation';
+import { BANK_SELECTABLE, SURMOUNT_GROUPS, SURMOUNT_SELECTABLE, type TransferMode, type TransferStep } from '../_data';
 import { fmtAmount, useAnimatedHeight } from '../_helpers';
+import { FREQ_OPTIONS, MONTH_SHORT, type FreqOption } from '../saving/_data';
+import { sameDay, todayMidnight } from '../saving/_helpers';
+import { CalendarPicker } from '../saving/_components/CalendarPicker';
 import { Toggle } from './Toggle';
 import s from '../page.module.css';
 
-export function TransferModal({ mode, onClose }: { mode: TransferMode; onClose: () => void }) {
+export function TransferModal({ mode, initialStep, onClose }: { mode: TransferMode; initialStep?: TransferStep; onClose: () => void }) {
+  const router = useRouter();
+  const handleUpdateBank = () => router.push('/onboarding/link-bank?mode=update');
   const [mounted, setMounted] = useState(false);
-  const [amount, setAmount] = useState('');
-  const [step, setStep] = useState<TransferStep>('amount');
+  // TEMP: figma capture — when initialStep is passed, prefill amount + account so confirm/success render fully
+  const [amount, setAmount] = useState(initialStep && initialStep !== 'amount' ? '1000' : '');
+  const [step, setStep] = useState<TransferStep>(initialStep ?? 'amount');
   const [isSubmittingTransfer, setIsSubmittingTransfer] = useState(false);
-  const [submittedAt, setSubmittedAt] = useState<Date | null>(null);
+  const [submittedAt, setSubmittedAt] = useState<Date | null>(
+    initialStep === 'success' ? new Date() : null,
+  );
   const [repeat, setRepeat] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState<SelectableAccount | null>(null);
+  const [freq, setFreq] = useState<FreqOption>('Bi-weekly');
+  const [freqOpen, setFreqOpen] = useState(false);
+  const [freqExiting, setFreqExiting] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [dpOpen, setDpOpen] = useState(false);
+  const [dpExiting, setDpExiting] = useState(false);
+  const [dpPos, setDpPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const [selectedAccount, setSelectedAccount] = useState<SelectableAccount | null>(
+    initialStep && initialStep !== 'amount' ? SURMOUNT_SELECTABLE : null,
+  );
+
+  const freqRef = useRef<HTMLDivElement>(null);
+  const dpRef = useRef<HTMLDivElement>(null);
+  const startsTriggerRef = useRef<HTMLButtonElement>(null);
+
   const QUICK_AMOUNTS = [100, 500, 1000, 5000];
   const isWithdrawal = mode === 'withdrawal';
   const transferNoun = isWithdrawal ? 'withdrawal' : 'deposit';
-  const transferTitle = isWithdrawal ? 'Withdrawal' : 'Add money';
-  const reviewTitle = isWithdrawal ? 'Confirm withdrawal details' : 'Confirm add money details';
-  const submittingLabel = isWithdrawal ? 'Submitting withdrawal' : 'Adding money';
-  const confirmLabel = isWithdrawal ? 'Confirm withdrawal' : 'Confirm add money';
-  const successTitle = isWithdrawal ? 'Withdrawal initiated' : 'Money added';
+  const transferTitle = isWithdrawal ? 'Withdrawal' : 'Deposit';
+  const reviewTitle = isWithdrawal ? 'Confirm withdrawal details' : 'Confirm deposit details';
+  const submittingLabel = isWithdrawal ? 'Submitting withdrawal' : 'Submitting deposit';
+  const confirmLabel = isWithdrawal ? 'Confirm withdrawal' : 'Confirm deposit';
+  const successTitle = isWithdrawal ? 'Withdrawal initiated' : 'Deposit initiated';
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Close the frequency / date popovers on outside click or Escape
+  useEffect(() => {
+    function onDown(e: globalThis.MouseEvent) {
+      if (freqOpen && !freqExiting && freqRef.current && !freqRef.current.contains(e.target as Node)) {
+        setFreqExiting(true);
+      }
+      if (dpOpen && !dpExiting && dpRef.current && !dpRef.current.contains(e.target as Node) &&
+          !startsTriggerRef.current?.contains(e.target as Node)) {
+        setDpExiting(true);
+      }
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        if (freqOpen && !freqExiting) setFreqExiting(true);
+        if (dpOpen && !dpExiting) setDpExiting(true);
+      }
+    }
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [freqOpen, dpOpen, freqExiting, dpExiting]);
+
+  function startsLabel() {
+    const today = todayMidnight();
+    if (!startDate || sameDay(startDate, today)) return 'Starts today';
+    return `Starts ${MONTH_SHORT[startDate.getMonth()]} ${startDate.getDate()}`;
+  }
 
   const parsedAmount = parseFloat(amount);
   const hasAmount = amount.length > 0 && !isNaN(parsedAmount) && parsedAmount > 0;
@@ -39,7 +93,7 @@ export function TransferModal({ mode, onClose }: { mode: TransferMode; onClose: 
   const submittedTimeStr = submittedAt
     ? 'Today at ' + submittedAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase()
     : '';
-  const modalSheetRef = useAnimatedHeight<HTMLDivElement>([step, isSubmittingTransfer]);
+  const modalSheetRef = useAnimatedHeight<HTMLDivElement>([step, isSubmittingTransfer, repeat]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
@@ -100,6 +154,7 @@ export function TransferModal({ mode, onClose }: { mode: TransferMode; onClose: 
   if (!mounted) return null;
 
   return createPortal(
+    <>
     <div className={s.modalOverlay} onClick={handleBackdropClick} role="dialog" aria-modal="true" aria-label={transferTitle}>
       <div ref={modalSheetRef} className={s.modalSheet}>
 
@@ -147,6 +202,72 @@ export function TransferModal({ mode, onClose }: { mode: TransferMode; onClose: 
                       <span className={s.repeatLabel}>Repeat</span>
                       <Toggle on={repeat} onChange={setRepeat} />
                     </div>
+
+                    <div className={s.repeatControls} data-visible={repeat ? 'true' : 'false'}>
+                      <button
+                        ref={startsTriggerRef}
+                        type="button"
+                        className={s.startsBtn}
+                        onClick={() => {
+                          if (dpOpen) {
+                            setDpExiting(true);
+                          } else {
+                            if (startsTriggerRef.current) {
+                              const r = startsTriggerRef.current.getBoundingClientRect();
+                              setDpPos({ top: r.bottom + 8, left: r.left + r.width / 2 - 145 });
+                            }
+                            setDpOpen(true);
+                            setDpExiting(false);
+                          }
+                        }}
+                      >
+                        {startsLabel()}
+                        <svg viewBox="0 0 256 256" fill="currentColor" style={{ width: 14, height: 14, color: 'rgba(10,13,18,0.35)', flexShrink: 0 }}>
+                          <path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM51.31,160,136,75.31,152.69,92,68,176.68ZM48,179.31,76.69,208H48Zm48,25.38L79.31,188,164,103.31,180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"/>
+                        </svg>
+                      </button>
+
+                      <div ref={freqRef} style={{ position: 'relative' }}>
+                        <button
+                          type="button"
+                          className={s.freqPill}
+                          aria-expanded={freqOpen && !freqExiting}
+                          aria-haspopup="listbox"
+                          onClick={() => {
+                            if (freqOpen) setFreqExiting(true);
+                            else { setFreqOpen(true); setFreqExiting(false); }
+                          }}
+                        >
+                          {freq}
+                          <svg viewBox="0 0 14 14" style={{ width: 14, height: 14, stroke: 'rgba(10,13,18,0.4)', fill: 'none', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', flexShrink: 0 }}>
+                            <polyline points="3 5 7 9 11 5"/>
+                          </svg>
+                        </button>
+                        {freqOpen && (
+                          <div
+                            className={freqExiting ? s.popoverExit : s.popover}
+                            role="listbox"
+                            onAnimationEnd={() => { if (freqExiting) { setFreqOpen(false); setFreqExiting(false); } }}
+                            style={{ position: 'absolute', top: 'calc(100% + 6px)', right: 0, zIndex: 50, background: 'var(--color-bg-primary)', border: '1px solid var(--color-border-primary)', borderRadius: 'var(--radius-xl)', padding: 4, minWidth: 150, boxShadow: '0 8px 24px rgba(10,13,18,0.12)' }}
+                          >
+                            {FREQ_OPTIONS.map(opt => (
+                              <button
+                                key={opt} type="button" role="option" aria-selected={opt === freq}
+                                onClick={() => { setFreq(opt); setFreqExiting(true); }}
+                                className={s.freqOption}
+                              >
+                                {opt}
+                                {opt === freq && (
+                                  <svg viewBox="0 0 256 256" fill="currentColor" style={{ width: 14, height: 14, flexShrink: 0 }}>
+                                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/>
+                                  </svg>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -163,7 +284,11 @@ export function TransferModal({ mode, onClose }: { mode: TransferMode; onClose: 
                     groups={SURMOUNT_GROUPS}
                   />
                 ) : (
-                  <AccountSelectorCard selected={BANK_SELECTABLE} readOnly />
+                  <AccountSelectorCard
+                    selected={BANK_SELECTABLE}
+                    readOnly
+                    trailingAction={{ label: 'Update', onClick: handleUpdateBank }}
+                  />
                 )}
               </div>
 
@@ -180,7 +305,11 @@ export function TransferModal({ mode, onClose }: { mode: TransferMode; onClose: 
               <div className={s.transferSection}>
                 <span className={s.transferSectionLabel}>To</span>
                 {isWithdrawal ? (
-                  <AccountSelectorCard selected={BANK_SELECTABLE} readOnly />
+                  <AccountSelectorCard
+                    selected={BANK_SELECTABLE}
+                    readOnly
+                    trailingAction={{ label: 'Update', onClick: handleUpdateBank }}
+                  />
                 ) : (
                   <AccountSelectorCard
                     selected={selectedAccount}
@@ -223,6 +352,18 @@ export function TransferModal({ mode, onClose }: { mode: TransferMode; onClose: 
                   <span className={s.confirmRowLabel}>Processing</span>
                   <span className={s.confirmRowValue}>1–4 business days</span>
                 </div>
+                {!isWithdrawal && repeat && (
+                  <>
+                    <div className={s.confirmDetailRow}>
+                      <span className={s.confirmRowLabel}>Frequency</span>
+                      <span className={s.confirmRowValue}>{freq}</span>
+                    </div>
+                    <div className={s.confirmDetailRow}>
+                      <span className={s.confirmRowLabel}>Starts</span>
+                      <span className={s.confirmRowValue}>{startsLabel().replace('Starts ', '')}</span>
+                    </div>
+                  </>
+                )}
                 <div className={s.confirmDetailDivider} />
                 <div className={s.confirmDetailRow}>
                   <span className={s.confirmRowLabel}>Amount</span>
@@ -284,7 +425,21 @@ export function TransferModal({ mode, onClose }: { mode: TransferMode; onClose: 
         )}
 
       </div>
-    </div>,
+    </div>
+    {dpOpen && (
+      <div
+        ref={dpRef}
+        className={dpExiting ? s.popoverLeftExit : s.popoverLeft}
+        onAnimationEnd={() => { if (dpExiting) { setDpOpen(false); setDpExiting(false); } }}
+        style={{ position: 'fixed', top: dpPos.top, left: dpPos.left, zIndex: 10004, background: 'var(--color-bg-primary)', border: '1px solid var(--color-border-primary)', borderRadius: 'var(--radius-xl)', padding: 16, width: 290, boxShadow: '0 8px 32px rgba(10,13,18,0.14)' }}
+      >
+        <CalendarPicker
+          selected={startDate}
+          onSelect={d => { setStartDate(d); setDpExiting(true); }}
+        />
+      </div>
+    )}
+    </>,
     document.body
   );
 }

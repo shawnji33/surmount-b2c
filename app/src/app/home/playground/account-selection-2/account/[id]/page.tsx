@@ -500,7 +500,7 @@ export default function ExternalAccountDetailPage() {
             <div className={s.brokerageActions}>
               <button type="button" className={s.brokerageActionCard}>
                 <Plus weight="bold" aria-hidden="true" />
-                <span>Add money</span>
+                <span>Deposit</span>
               </button>
               <button type="button" className={s.brokerageActionCard}>
                 <ArrowsLeftRight weight="bold" aria-hidden="true" />

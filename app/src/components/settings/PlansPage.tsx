@@ -56,7 +56,7 @@ const TIERS: Tier[] = [
     tint: 'tintFree',
     featuresTitle: 'Includes:',
     features: [
-      'Open a Surmount account and start investing right away (applicable fees may apply)',
+      'Open a Surmount account and start investing right away (0.94% management fee applies)',
       'Track and manage your portfolio from your Dashboard',
       'Discover investment strategies on the Marketplace',
       'Research markets with screeners and insights on the Markets page',

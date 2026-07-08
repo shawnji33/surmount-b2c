@@ -8,11 +8,13 @@ import {
   ArrowUp,
   ArrowsLeftRight,
   CaretLeft,
+  Headset,
   TrendUp,
   Warning,
 } from '@phosphor-icons/react';
 import type { ActivityItem, ActivityItemType } from '@/types/activity';
 import { isPendingActivityStatus } from '@/types/activity';
+import { ContactModal } from '../settings/ContactSupportModal';
 import s from './PendingPanel.module.css';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -61,15 +63,6 @@ function subtitleForItem(item: ActivityItem): string {
       return [item.quantity ? `${item.quantity} shares` : '', item.account.name].filter(Boolean).join(' · ');
     default:
       return item.account.name;
-  }
-}
-
-function cancelNounForItem(item: ActivityItem): string {
-  switch (item.type) {
-    case 'deposit':    return 'deposit';
-    case 'withdrawal': return 'withdrawal';
-    case 'transfer':   return 'transfer';
-    default:           return 'order';
   }
 }
 
@@ -240,18 +233,20 @@ function ItemAvatar({ item, size = 38 }: { item: ActivityItem; size?: number }) 
 
 // ── Panel ─────────────────────────────────────────────────────────────────────
 
-type PanelView = 'list' | 'detail' | 'cancel-confirm';
+type PanelView = 'list' | 'detail';
 
 export type PendingPanelProps = {
   items: ActivityItem[];
   pendingCount: number;
   onClose: () => void;
   onViewAll: () => void;
+  onCancelled?: (item: ActivityItem) => void;
 };
 
 export function PendingPanel({ items, pendingCount, onClose, onViewAll }: PendingPanelProps) {
   const [view, setView]         = useState<PanelView>('list');
   const [selected, setSelected] = useState<ActivityItem | null>(null);
+  const [contactOpen, setContactOpen] = useState(false);
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const panelRef = useAnimatedHeight<HTMLDivElement>([view, selected?.id]);
@@ -263,22 +258,19 @@ export function PendingPanel({ items, pendingCount, onClose, onViewAll }: Pendin
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') {
-        if (view === 'cancel-confirm') switchView('detail');
-        else if (view === 'detail') switchView('list');
+        // Let the contact-support modal handle its own Escape first.
+        if (contactOpen) return;
+        if (view === 'detail') switchView('list');
         else onClose();
       }
     }
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [onClose, view]);
+  }, [onClose, view, contactOpen]);
 
   function switchView(next: PanelView, item?: ActivityItem) {
     if (item) setSelected(item);
     setView(next);
-  }
-
-  function handleCancelConfirmed() {
-    switchView('list');
   }
 
   const modal = (
@@ -301,18 +293,13 @@ export function PendingPanel({ items, pendingCount, onClose, onViewAll }: Pendin
             <DetailView
               item={selected}
               onBack={() => switchView('list')}
-              onCancelRequest={() => switchView('cancel-confirm')}
-            />
-          )}
-          {view === 'cancel-confirm' && selected && (
-            <CancelConfirmView
-              item={selected}
-              onBack={() => switchView('detail')}
-              onConfirm={handleCancelConfirmed}
+              onContactSupport={() => setContactOpen(true)}
             />
           )}
         </div>
       </div>
+
+      {contactOpen && <ContactModal onClose={() => setContactOpen(false)} />}
     </div>
   );
 
@@ -375,11 +362,11 @@ function ListView({
 function DetailView({
   item,
   onBack,
-  onCancelRequest,
+  onContactSupport,
 }: {
   item: ActivityItem;
   onBack: () => void;
-  onCancelRequest: () => void;
+  onContactSupport: () => void;
 }) {
   const urgent = item.status === 'awaiting_user';
 
@@ -557,8 +544,9 @@ function DetailView({
             <span className={s.footerTotalValue}>{fmtUSD(item.amount)}</span>
           </div>
           {item.canCancel && (
-            <button type="button" className={s.cancelPill} onClick={onCancelRequest}>
-              Cancel {cancelNounForItem(item)}
+            <button type="button" className={s.supportPill} onClick={onContactSupport}>
+              <Headset weight="regular" aria-hidden="true" />
+              Contact support
             </button>
           )}
         </div>
@@ -567,51 +555,3 @@ function DetailView({
   );
 }
 
-// ── Cancel confirmation view ──────────────────────────────────────────────────
-
-function CancelConfirmView({
-  item,
-  onBack,
-  onConfirm,
-}: {
-  item: ActivityItem;
-  onBack: () => void;
-  onConfirm: () => void;
-}) {
-  const noun = cancelNounForItem(item);
-
-  return (
-    <>
-      <div className={s.detailHeader}>
-        <button type="button" className={s.detailBackBtn} onClick={onBack} aria-label="Back">
-          <CaretLeft weight="bold" aria-hidden="true" />
-        </button>
-        <div className={s.detailHeaderCenter}>
-          <span className={s.detailHeaderName}>Cancel {noun}?</span>
-        </div>
-        <div className={s.detailHeaderRight} />
-      </div>
-
-      <div className={s.cancelConfirmBody}>
-        <div className={s.cancelConfirmIcon}>
-          <Warning weight="fill" aria-hidden="true" />
-        </div>
-        <p className={s.cancelConfirmTitle}>
-          Cancel this {noun}?
-        </p>
-        <p className={s.cancelConfirmText}>
-          Your {noun} of {fmtUSD(item.amount)} will be cancelled. This action cannot be undone.
-        </p>
-      </div>
-
-      <div className={s.cancelConfirmActions}>
-        <button type="button" className={s.cancelConfirmYes} onClick={onConfirm}>
-          Yes, cancel {noun}
-        </button>
-        <button type="button" className={s.cancelConfirmBack} onClick={onBack}>
-          Keep {noun}
-        </button>
-      </div>
-    </>
-  );
-}

@@ -153,6 +153,11 @@
   align-self: flex-start;
 }
 
+/* Mobile-only Buy/Sell slot (rendered below the hero); hidden on desktop */
+.widgetMobile {
+  display: none;
+}
+
 /* ─── Section shell ───────────────────────────────────────────────────────── */
 
 .leftSection {
@@ -1071,6 +1076,7 @@
 }
 
 .wtTabs {
+  position: relative;
   display: flex;
   gap: var(--spacing-xs, 4px);
   padding: 3px;
@@ -1079,7 +1085,33 @@
   background: var(--color-bg-secondary, #fafafa);
 }
 
+/* Sliding dark "thumb" that sits behind the labels and translates between
+   Buy and Sell. Its width matches one tab; it moves by its own width + the
+   inter-tab gap. */
+.wtTabThumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc((100% - 6px - var(--spacing-xs, 4px)) / 2);
+  border-radius: 15px;
+  background: var(--color-fg-primary-900, #181d27);
+  box-shadow:
+    0 1px 2px rgba(10, 13, 18, 0.16),
+    0 2px 6px rgba(10, 13, 18, 0.12);
+  transform: translateX(0);
+  transition: transform 280ms cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.wtTabThumbSell {
+  transform: translateX(calc(100% + var(--spacing-xs, 4px)));
+}
+
 .wtTab {
+  position: relative;
+  z-index: 1;
   flex: 1 1 0;
   min-height: 34px;
   padding: 6px 12px;
@@ -1094,13 +1126,13 @@
   cursor: pointer;
   letter-spacing: 0;
   transition:
-    background-color 150ms cubic-bezier(0.2, 0, 0, 1),
-    color 150ms cubic-bezier(0.2, 0, 0, 1),
-    box-shadow 150ms cubic-bezier(0.2, 0, 0, 1),
+    /* Delay the color flip slightly so the label turns white only once the
+       fast-easing thumb has slid over it (avoids a white-on-light flash). */
+    color 140ms cubic-bezier(0.2, 0, 0, 1) 70ms,
     transform 120ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-.wtTab:hover {
+.wtTab:not(.wtTabActive):hover {
   color: var(--color-text-primary-900, #181d27);
 }
 
@@ -1109,11 +1141,8 @@
 }
 
 .wtTabActive {
-  color: var(--color-text-primary-900, #181d27);
-  background: var(--color-bg-primary, #fff);
-  box-shadow:
-    0 1px 3px rgba(10, 13, 18, 0.08),
-    0 0 0 0.5px rgba(10, 13, 18, 0.06);
+  color: var(--color-bg-primary, #fff);
+  font-weight: 500;
 }
 
 .wtCard {
@@ -1258,7 +1287,7 @@
   overflow-y: auto;
   max-height: 240px;
   padding: 6px;
-  transform-origin: top left;
+  transform-origin: top right;
   animation: wtAccountMenuIn 170ms cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
@@ -1645,7 +1674,7 @@
 
 .wtDisclaimer {
   margin: 0;
-  padding: 4px var(--spacing-md, 8px);
+  padding: 0 var(--spacing-md, 8px);
   color: var(--color-text-tertiary-600, #535862);
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
@@ -1819,6 +1848,80 @@
     opacity: 1;
     filter: blur(0);
     transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* ─── Mobile / responsive ─────────────────────────────────────────────────── */
+/* Matches the home shell's 760px breakpoint. Stacks the two-column layout and
+   moves the Buy/Sell widget directly beneath the strategy image. */
+@media (max-width: 760px) {
+  /* Stack: hero → mobile Buy/Sell widget → chart → tables → … */
+  .contentArea {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .leftColumn {
+    gap: 28px;
+  }
+
+  /* Desktop widget column hides; the in-flow mobile instance takes over */
+  .rightColumn {
+    display: none;
+  }
+
+  .widgetMobile {
+    display: block;
+  }
+
+  /* Widget goes full-width instead of the fixed 400px rail */
+  .buySellWidget {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  /* Page header a touch tighter on phones */
+  .pageHeader {
+    padding: 16px 0 12px;
+  }
+
+  /* Key metrics: stack the two columns, drop the vertical divider */
+  .metricsGrid {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .metricsDivider {
+    display: none;
+  }
+
+  /* Wide data tables scroll horizontally rather than overflow the viewport */
+  .holdingsTable,
+  .topHoldingsTable {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .hThRow,
+  .hRow {
+    min-width: 560px;
+  }
+
+  .pbThRow,
+  .pbRow {
+    min-width: 520px;
+  }
+}
+
+/* Fine-tune for small phones */
+@media (max-width: 420px) {
+  .heroCard {
+    aspect-ratio: 4 / 5;
+  }
+
+  .heroDetails h1 {
+    font-size: var(--font-size-display-xs, 24px);
   }
 }
 

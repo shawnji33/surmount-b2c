@@ -50,12 +50,16 @@ const STRATEGY_DATA: Record<string, {
   },
 };
 
+// `external: true` marks brokerages that aren't the internal Surmount Investing
+// account. Some external brokerages don't support fractional shares, which the
+// review step warns about.
 const ACCOUNTS = [
-  { id: 'robinhood', name: 'Robinhood',  logo: '/assets/brokers/robinhood.png', cash: '$5,231.40',  holdings: '$5,000.00'  },
-  { id: 'webull',    name: 'Webull',     logo: '/assets/brokers/webull.png',    cash: '$2,800.00',  holdings: '$3,200.00'  },
-  { id: 'ibkr',      name: 'IBKR',       logo: '/assets/brokers/ibkr.png',      cash: '$18,450.00', holdings: '$12,500.00' },
-  { id: 'schwab',    name: 'Schwab',     logo: '/assets/brokers/schwab.png',    cash: '$10,000.00', holdings: '$8,750.00'  },
-  { id: 'coinbase',  name: 'Coinbase',   logo: '/assets/brokers/coinbase.png',  cash: '$640.20',    holdings: '$1,200.00'  },
+  { id: 'surmount',  name: 'Surmount Investing', logo: '/assets/brokers/surmount.png',  cash: '$10,432.18', holdings: '$24,918.55', external: false },
+  { id: 'robinhood', name: 'Robinhood',  logo: '/assets/brokers/robinhood.png', cash: '$5,231.40',  holdings: '$5,000.00',  external: true },
+  { id: 'webull',    name: 'Webull',     logo: '/assets/brokers/webull.png',    cash: '$2,800.00',  holdings: '$3,200.00',  external: true },
+  { id: 'ibkr',      name: 'IBKR',       logo: '/assets/brokers/ibkr.png',      cash: '$18,450.00', holdings: '$12,500.00', external: true },
+  { id: 'schwab',    name: 'Schwab',     logo: '/assets/brokers/schwab.png',    cash: '$10,000.00', holdings: '$8,750.00',  external: true },
+  { id: 'coinbase',  name: 'Coinbase',   logo: '/assets/brokers/coinbase.png',  cash: '$640.20',    holdings: '$1,200.00',  external: true },
 ];
 
 const STRATEGY_PRICE = 138.44;
@@ -70,7 +74,7 @@ function BuySellWidget({ stratName }: { stratName: string }) {
   const [selectedAcctId, setSelectedAcctId] = useState<string | null>(null);
   const [amount, setAmount] = useState('');
   const [dropOpen, setDropOpen] = useState(false);
-  const [dropPos, setDropPos] = useState<{ top: number; left: number } | null>(null);
+  const [dropPos, setDropPos] = useState<{ top: number; right: number } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedAt, setSubmittedAt] = useState<Date | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -85,10 +89,23 @@ function BuySellWidget({ stratName }: { stratName: string }) {
   const isReady = !!selectedAcct && hasAmount;
   const displayAmount = hasAmount ? '$' + parsedAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '$0.00';
 
+  // Buying into a strategy from an external brokerage (anything other than the
+  // Surmount Investing account) may leave cash uninvested if the brokerage
+  // doesn't support fractional shares.
+  const showExternalNotice = tab === 'buy' && !!selectedAcct && selectedAcct.external;
+  const externalNotice = showExternalNotice ? (
+    <p className={s.wtDisclaimer}>
+      Not all external brokerages allow partial (fractional) share purchases. Your cash will be
+      allocated to the strategy, but any amount that can&rsquo;t buy whole shares may stay uninvested.
+    </p>
+  ) : null;
+
   const openDrop = useCallback(() => {
     if (selectRef.current) {
       const r = selectRef.current.getBoundingClientRect();
-      setDropPos({ top: r.bottom + 4, left: r.left });
+      // Right-align the menu with the trigger's right edge so it doesn't
+      // overflow toward the screen edge.
+      setDropPos({ top: r.bottom + 4, right: window.innerWidth - r.right });
     }
     setDropOpen(true);
   }, []);
@@ -174,7 +191,7 @@ function BuySellWidget({ stratName }: { stratName: string }) {
     <div
       ref={menuRef}
       className={s.wtAcctMenu}
-      style={{ top: dropPos.top, left: dropPos.left }}
+      style={{ top: dropPos.top, right: dropPos.right }}
     >
       {ACCOUNTS.map(a => (
         <div
@@ -202,6 +219,10 @@ function BuySellWidget({ stratName }: { stratName: string }) {
         </div>
 
         <div className={s.wtTabs}>
+          <span
+            aria-hidden="true"
+            className={[s.wtTabThumb, tab === 'sell' ? s.wtTabThumbSell : ''].filter(Boolean).join(' ')}
+          />
           <button type="button" className={[s.wtTab, tab === 'buy' ? s.wtTabActive : ''].filter(Boolean).join(' ')} onClick={() => handleTabChange('buy')}>Buy</button>
           <button type="button" className={[s.wtTab, tab === 'sell' ? s.wtTabActive : ''].filter(Boolean).join(' ')} onClick={() => handleTabChange('sell')}>Sell</button>
         </div>
@@ -327,6 +348,7 @@ function BuySellWidget({ stratName }: { stratName: string }) {
             <p className={s.wtDisclaimer}>
               This order will execute at the next available market price. Surmount will rebalance your portfolio according to the strategy's current allocations.
             </p>
+            {externalNotice}
             <button
               type="button"
               className={s.btnSubmit}
@@ -393,6 +415,7 @@ function BuySellWidget({ stratName }: { stratName: string }) {
             <p className={s.wtDisclaimer}>
               This order will execute at the next available market price. Surmount will rebalance your portfolio according to the strategy's current allocations.
             </p>
+            {externalNotice}
             <button type="button" className={s.btnDone} onClick={handleDone}>Done</button>
             <button type="button" className={s.btnViewDetails}>View details</button>
           </div>
@@ -481,6 +504,11 @@ export default function StrategyDetailPage() {
                 </dl>
               </div>
             </div>
+          </div>
+
+          {/* Mobile-only Buy/Sell widget — sits directly below the strategy image on narrow screens */}
+          <div className={s.widgetMobile}>
+            <BuySellWidget stratName={strategy.name} />
           </div>
 
           {/* Chart section */}

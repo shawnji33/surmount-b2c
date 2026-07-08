@@ -13,6 +13,7 @@ import {
   ACTIVITY_GROUPS,
   ACCOUNT_SWITCHER_ACCOUNTS,
   type TransferMode,
+  type TransferStep,
 } from './_data';
 import {
   aggregatePortfolioSeries,
@@ -63,7 +64,12 @@ function HomePageContent() {
   const isEmpty = searchParams.get('state') === 'empty';
   const broker = CONNECTED_BROKERS[searchParams.get('connected') ?? 'kraken'] ?? CONNECTED_BROKERS.kraken;
 
-  const [transferMode, setTransferMode] = useState<TransferMode | null>(() => searchParams.get('deposit') === '1' ? 'deposit' : null);
+  // TEMP: figma capture — allow ?transfer=deposit|withdrawal & ?step=amount|confirm|success to open the modal to any state
+  const captureTransfer = searchParams.get('transfer') as TransferMode | null;
+  const captureStep = searchParams.get('step') as TransferStep | null;
+  const [transferMode, setTransferMode] = useState<TransferMode | null>(
+    () => captureTransfer ?? (searchParams.get('deposit') === '1' ? 'deposit' : null),
+  );
   const [selectedPortfolioAccounts, setSelectedPortfolioAccounts] = useState<Set<string>>(
     () => new Set(ACCOUNT_SWITCHER_ACCOUNTS.map((account) => account.id)),
   );
@@ -310,7 +316,7 @@ function HomePageContent() {
 
       </div>
 
-      {transferMode && <TransferModal mode={transferMode} onClose={() => setTransferMode(null)} />}
+      {transferMode && <TransferModal mode={transferMode} initialStep={captureStep ?? undefined} onClose={() => setTransferMode(null)} />}
     </main>
   );
 }

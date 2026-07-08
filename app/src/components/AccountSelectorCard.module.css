@@ -33,6 +33,19 @@
   cursor: pointer;
 }
 
+.cardReadonly {
+  cursor: default;
+}
+
+.cardReadonly:hover {
+  background: var(--color-bg-primary, #fff);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.trailingAction {
+  flex-shrink: 0;
+}
+
 /* Account logo circle (trigger — filled state) */
 .logoWrap {
   width: 36px;
@@ -51,6 +64,13 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Read-only bank row: match the bank-update flow (contained logo with padding) */
+.logoWrap.logoWrapContained img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .info {

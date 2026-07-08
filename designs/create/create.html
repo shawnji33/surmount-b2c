@@ -402,10 +402,38 @@ html,body{letter-spacing:-0.5px;height:100%;overflow:hidden;font-family:var(--fo
 .btn-build{display:flex;align-items:center;gap:4px;background:#fff;border:1px solid rgba(0,0,0,0.09);border-radius:var(--rm);padding:10px 14px;font-family:var(--font-family-body);font-size:var(--text-sm);font-weight:500;color:rgba(10,13,18,.7);cursor:pointer;transition:all .12s;position:relative;z-index:1;}
 .btn-build:hover{background:var(--g50);border-color:var(--g300);color:var(--g900);}
 .btn-build svg{width:16px;height:16px;stroke:currentColor;fill:none;flex-shrink:0;}
+
+/* ─── MOBILE FALLBACK ─── */
+.mobile-notice{display:none;}
+@media (max-width:760px){
+  .page,.modal-overlay{display:none;}
+  .mobile-notice{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:0 32px;text-align:center;background:#F8F8F8;}
+  .mobile-notice-icon{width:40px;height:40px;color:var(--color-gray-lm-700);flex-shrink:0;}
+  .mobile-notice-text{display:flex;flex-direction:column;gap:8px;max-width:320px;}
+  .mobile-notice-title{font-family:var(--font-family-display);font-size:var(--font-size-text-md);font-weight:500;color:var(--color-fg-primary-900);letter-spacing:-.2px;}
+  .mobile-notice-desc{font-size:var(--font-size-text-sm);line-height:var(--line-height-text-sm);color:var(--color-fg-tertiary-600);}
+  @media (prefers-reduced-motion:no-preference){
+    .mobile-notice{animation:pageSlideIn 200ms cubic-bezier(0.16,1,0.3,1) both;}
+  }
+}
 </style>
 <script src="../sidebar.js"></script>
 </head>
 <body>
+
+<!-- ═══ MOBILE FALLBACK — strategy building is desktop-only ═══ -->
+<div class="mobile-notice" role="status">
+  <svg class="mobile-notice-icon" viewBox="0 0 256 256" fill="none" aria-hidden="true">
+    <rect x="32" y="48" width="192" height="144" rx="16" transform="translate(256 240) rotate(180)" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
+    <line x1="160" y1="224" x2="96" y2="224" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
+    <line x1="32" y1="152" x2="224" y2="152" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
+    <line x1="128" y1="192" x2="128" y2="224" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"/>
+  </svg>
+  <div class="mobile-notice-text">
+    <div class="mobile-notice-title">Please use desktop for a better experience</div>
+    <div class="mobile-notice-desc">Creating and managing strategies isn't available on mobile yet. Visit Surmount on your desktop to build strategies.</div>
+  </div>
+</div>
 
 <!-- ═══ CHOOSE A BUILDER MODAL ═══ -->
 <div class="modal-overlay hidden" id="choose-modal">
