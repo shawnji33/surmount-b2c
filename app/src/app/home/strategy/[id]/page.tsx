@@ -345,9 +345,6 @@ function BuySellWidget({ stratName }: { stratName: string }) {
           </div>
 
           <div className={s.wtReviewFooter}>
-            <p className={s.wtDisclaimer}>
-              This order will execute at the next available market price. Surmount will rebalance your portfolio according to the strategy's current allocations.
-            </p>
             {externalNotice}
             <button
               type="button"
@@ -415,7 +412,6 @@ function BuySellWidget({ stratName }: { stratName: string }) {
             <p className={s.wtDisclaimer}>
               This order will execute at the next available market price. Surmount will rebalance your portfolio according to the strategy's current allocations.
             </p>
-            {externalNotice}
             <button type="button" className={s.btnDone} onClick={handleDone}>Done</button>
             <button type="button" className={s.btnViewDetails}>View details</button>
           </div>

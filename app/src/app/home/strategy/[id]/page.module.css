@@ -503,7 +503,7 @@
   align-items: center;
 }
 
-.hTdAccount { flex: 1; min-width: 0; gap: 12px; }
+.hTdAccount { flex: 1; min-width: 0; gap: 8px; }
 .hTdAmount { width: 160px; flex-shrink: 0; flex-direction: column; align-items: flex-start; gap: 2px; }
 .hTdReturns { width: 130px; flex-shrink: 0; }
 .hTdSince { width: 150px; flex-shrink: 0; }
