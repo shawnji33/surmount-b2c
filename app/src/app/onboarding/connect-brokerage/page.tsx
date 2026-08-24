@@ -27,7 +27,6 @@ const SUPPORTED: Broker[] = [
 
 // Not yet supported — shown disabled at the bottom with a "Coming soon" tag.
 const COMING_SOON: Broker[] = [
-  { id: 'robinhood', name: 'Robinhood',           type: 'Stocks & crypto', logo: '/assets/brokers/robinhood.png', soon: true },
   { id: 'schwab',    name: 'Charles Schwab',      type: 'Stocks & ETFs',   logo: '/assets/brokers/schwab.png',    soon: true },
   { id: 'ibkr',      name: 'Interactive Brokers', type: 'Stocks & ETFs',   logo: '/assets/brokers/ibkr.png',      soon: true },
   { id: 'webull',    name: 'Webull',              type: 'Stocks & ETFs',   logo: '/assets/brokers/webull.png',    soon: true },

@@ -84,7 +84,7 @@
 .viewAllBtn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   appearance: none;
   border: 0;
   background: none;
@@ -181,8 +181,8 @@
 .iconStrategyBuy { background: rgba(49, 100, 52, 0.1);   color: var(--color-utility-success-700, #316434); }
 
 .itemLogoFallback svg {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
 }
 
 /* Item text */
@@ -220,13 +220,13 @@
   align-items: center;
   padding: 2px 6px;
   border-radius: 9999px;
-  background: #eef7ee;
-  border: 1px solid #cbe7cc;
+  background: var(--color-bg-success-primary);
+  border: 1px solid var(--color-utility-success-200);
   font-family: var(--font-family-body);
   font-size: 10px;
   font-weight: 400;
-  line-height: 13px;
-  color: #316434;
+  line-height: 14px;
+  color: var(--color-utility-success-700);
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -302,7 +302,7 @@
 }
 .detailBackBtn:active { transform: scale(0.94); }
 
-.detailBackBtn svg { width: 15px; height: 15px; }
+.detailBackBtn svg { width: 16px; height: 16px; }
 
 .detailHeaderName {
   font-family: var(--font-family-body);
@@ -339,14 +339,14 @@
 }
 
 .urgentNoticeIcon {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   color: var(--color-utility-error-700, #98443d);
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-.urgentNoticeIcon svg { width: 15px; height: 15px; }
+.urgentNoticeIcon svg { width: 16px; height: 16px; }
 
 .urgentNoticeText {
   font-family: var(--font-family-body);
@@ -425,7 +425,7 @@
 
 .detailRowValueSmall {
   font-family: var(--font-family-body);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 16px;
   color: var(--color-fg-tertiary-600, #535861);
@@ -435,7 +435,7 @@
 .detailRowWithLogo {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   justify-content: flex-end;
   min-width: 0;
 }
@@ -469,7 +469,7 @@
   width: 12px;
   height: 12px;
   object-fit: contain;
-  border-radius: 1px;
+  border-radius: 2px;
 }
 
 .detailRowLogoBank img {
@@ -481,7 +481,7 @@
 /* ── Detail footer — split layout ── */
 
 .detailFooter {
-  padding: 25px 24px 24px;
+  padding: 26px 24px 24px;
   flex-shrink: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.09);
 }
@@ -527,7 +527,7 @@
   font-size: var(--font-size-text-sm, 14px);
   font-weight: 500;
   line-height: 20px;
-  color: #fff;
+  color: var(--color-fg-white);
   letter-spacing: -0.3px;
   cursor: pointer;
   flex-shrink: 0;
@@ -632,14 +632,14 @@
   appearance: none;
   border: none;
   border-radius: 9999px;
-  background: #b6544c;
+  background: var(--color-bg-error-solid);
   min-height: 44px;
   padding: 10px 16px;
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   font-weight: 500;
   line-height: 20px;
-  color: #fff;
+  color: var(--color-fg-white);
   letter-spacing: -0.3px;
   cursor: pointer;
   width: 100%;
@@ -655,7 +655,7 @@
   border-radius: 9999px;
   background: var(--color-bg-primary, #fff);
   min-height: 40px;
-  padding: 9px 16px;
+  padding: 10px 16px;
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   font-weight: 500;

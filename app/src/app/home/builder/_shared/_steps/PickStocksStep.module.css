@@ -1,0 +1,387 @@
+.screen {
+  --elevation-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
+
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--spacing-3xl) 0 var(--spacing-6xl);
+  display: flex;
+  flex-direction: column;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-4xl);
+}
+
+/* Back/Next and the row select buttons now use the real shadcn Button (@/components/ui/button)
+ * — it already has correct press/focus states built in, so the hand-tuned .pressBtn/.compactBtn
+ * overrides that used to sit on top of the old @/components/Button are gone. */
+
+.heading {
+  margin: 0 0 var(--spacing-3xl);
+  text-align: center;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-display-xs);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  letter-spacing: -0.4px;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Applied directly to ClearableSearchInput's own bordered pill (via its `className` prop) rather
+ * than wrapping it in a second bordered box — nesting two pill borders flush against each other
+ * would double the edge instead of reading as one elevated surface. */
+.searchShadow {
+  box-shadow: var(--elevation-shadow);
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.searchGrow {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+
+.listCard {
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-primary);
+  padding: var(--spacing-xl);
+  box-shadow: var(--elevation-shadow);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 480px;
+  overflow-y: auto;
+  /* mask-image is set inline from JS (see PickStocksStep.tsx) — it needs to react to scroll
+   * position, so a static CSS mask would fade edges even when there's nothing left to scroll to. */
+}
+
+/* Targets direct children by position, not by class name — the list now renders AssetRow
+ * (its own CSS module, own scoped `.row` class), so this can't reach in by class the way it did
+ * when the row markup lived inline in this file. */
+.list[data-motion='true'] > * {
+  animation: pickerRowIn 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Still used directly by the reveal-panel's own row markup below, which stayed inline rather
+ * than moving to AssetRow (compact selected-list rows have no Add button, no meta line, no
+ * asset-class badge — a different shape, not worth threading through AssetRow's props). */
+.logo {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.logoFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-fg-white);
+}
+
+.rowText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rowTitle {
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rowSub {
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-tertiary-600);
+  font-variant-numeric: tabular-nums;
+}
+
+.pos {
+  color: var(--color-fg-success-primary);
+}
+
+.neg {
+  color: var(--color-fg-error-primary);
+}
+
+/* Top bar Back/Next — full pill, 64x20 content + 8px/12px padding = 88x36, 2px border
+ * (shadcn Button's own sizing fixes height at 28px via its "sm" size class, which this
+ * overrides), shadow-card. */
+.pillBtn.pillBtn {
+  width: 88px;
+  height: 36px;
+  border-width: 2px;
+  border-radius: var(--radius-full);
+  padding: var(--spacing-md) var(--spacing-lg);
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  box-shadow: var(--elevation-shadow);
+}
+
+/* Back stays outline-only, so it reads lighter than Next's 2px dark-fill border. */
+.pillBtn.pillBtnBack {
+  border-width: 1px;
+}
+
+/* Next's dark fill needs its own translucent-white border color (shadcn's default variant ships
+ * `border-transparent`) — matches the established Surmount dark-CTA inset-ring treatment. */
+.pillBtnPrimary.pillBtnPrimary {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: var(--elevation-shadow);
+}
+
+.empty {
+  padding: var(--spacing-2xl);
+  text-align: center;
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-tertiary-600);
+}
+
+/* ─── Bottom preview dock + reveal panel ─── */
+
+.previewDock {
+  position: sticky;
+  bottom: var(--spacing-2xl);
+  z-index: 10;
+}
+
+.previewTrigger {
+  appearance: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  box-shadow: var(--elevation-shadow);
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease,
+    scale 150ms ease-out;
+}
+
+.previewTrigger:active:not(:disabled) {
+  scale: 0.96;
+}
+
+.previewTrigger:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.previewTrigger svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-fg-tertiary-600);
+  flex-shrink: 0;
+}
+
+.avatarStack {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-bg-primary);
+  overflow: hidden;
+  margin-right: -8px;
+  flex-shrink: 0;
+}
+
+.avatar:last-child {
+  margin-right: 0;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-fg-white);
+}
+
+.previewLabel {
+  flex: 1;
+  text-align: left;
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+/* Panel reveal — transitions.dev pattern: translateY + opacity + blur, same duration/ease for
+ * both directions so a short travel distance still reads as a full open/close. */
+.revealPanel {
+  --panel-open-dur: 250ms;
+  --panel-close-dur: 180ms;
+  --panel-translate-y: 14px;
+  --panel-blur: 2px;
+  --panel-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + var(--spacing-md));
+  max-height: 340px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-primary);
+  /* Same shadow recipe as the rest of the screen, scaled up for a floating overlay's higher
+   * elevation rather than a resting card's. */
+  box-shadow: 0 8px 24px 0 rgba(10, 13, 18, 0.08);
+
+  transform: translateY(var(--panel-translate-y));
+  opacity: 0;
+  filter: blur(var(--panel-blur));
+  pointer-events: none;
+  transition:
+    transform var(--panel-close-dur) var(--panel-ease),
+    opacity var(--panel-close-dur) var(--panel-ease),
+    filter var(--panel-close-dur) var(--panel-ease);
+  will-change: transform, opacity, filter;
+}
+
+.revealPanel[data-open='true'] {
+  transform: translateY(0);
+  opacity: 1;
+  filter: blur(0);
+  pointer-events: auto;
+  transition:
+    transform var(--panel-open-dur) var(--panel-ease),
+    opacity var(--panel-open-dur) var(--panel-ease),
+    filter var(--panel-open-dur) var(--panel-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .revealPanel,
+  .previewTrigger {
+    transition: none !important;
+  }
+
+  .list[data-motion='true'] > * {
+    animation: none;
+  }
+}
+
+.revealList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-sm);
+}
+
+.revealRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+}
+
+.revealRow:hover {
+  background: var(--color-bg-secondary);
+}
+
+.removeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-tertiary);
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.removeBtn:hover {
+  background: var(--color-bg-error-primary);
+  color: var(--color-fg-error-primary);
+}
+
+.removeBtn svg {
+  width: 12px;
+  height: 12px;
+}
+
+@media (max-width: 760px) {
+  .screen {
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
+  }
+}
+
+@keyframes pickerRowIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}

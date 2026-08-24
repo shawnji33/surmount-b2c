@@ -1,0 +1,159 @@
+/* Adapted from transitions.dev's "Input clear with dissolve" pattern. The reference spec drives
+ * a per-word radial-gradient streak via per-frame JS; here the glow is simplified to a single
+ * soft radial flash driven entirely by CSS transitions (search queries in this picker are short —
+ * a ticker or a couple words — so a per-word streak isn't worth the text-measurement machinery). */
+
+:root {
+  --clear-out-dur: 400ms;
+  --clear-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --clear-fly: 10px;
+  --clear-blur: 2px;
+  --glow-opacity: 0.4;
+}
+
+.wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: 12px var(--spacing-xl);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  transition: border-color 120ms ease;
+}
+
+.wrap:focus-within {
+  border-color: var(--color-border-focus, rgba(10, 13, 18, 0.24));
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-fg-tertiary-600);
+  flex-shrink: 0;
+}
+
+.fieldBox {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 22px;
+  overflow: hidden;
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-md);
+  color: var(--color-fg-primary-900);
+  caret-color: var(--color-fg-primary-900);
+}
+
+.input:focus {
+  outline: none;
+}
+
+.hasValue .input,
+.isClearing .input {
+  -webkit-text-fill-color: transparent;
+}
+
+.mirror,
+.placeholderText {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-md);
+  transition:
+    transform var(--clear-out-dur) var(--clear-ease),
+    opacity var(--clear-out-dur) var(--clear-ease),
+    filter var(--clear-out-dur) var(--clear-ease);
+}
+
+.mirror {
+  opacity: 0;
+  color: var(--color-fg-primary-900);
+}
+
+.hasValue .mirror,
+.isClearing .mirror {
+  opacity: 1;
+}
+
+.isClearing .mirror {
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--clear-fly)));
+  filter: blur(var(--clear-blur));
+}
+
+.placeholderText {
+  color: var(--color-fg-quaternary-400);
+}
+
+.hasValue .placeholderText {
+  opacity: 0;
+}
+
+.isClearing .placeholderText {
+  opacity: 1;
+  transition-delay: 60ms;
+}
+
+.glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  mix-blend-mode: multiply;
+  background: radial-gradient(ellipse 70% 140% at 30% 50%, rgba(10, 13, 18, 0.5), transparent 72%);
+  transition: opacity var(--clear-out-dur) ease;
+}
+
+.isClearing .glow {
+  opacity: var(--glow-opacity);
+}
+
+.clearBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-bg-tertiary);
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.clearBtn:hover {
+  background: var(--color-border-secondary);
+  color: var(--color-fg-primary-900);
+}
+
+.clearBtn svg {
+  width: 10px;
+  height: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mirror,
+  .placeholderText,
+  .glow {
+    transition: none !important;
+  }
+}

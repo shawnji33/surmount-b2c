@@ -299,7 +299,7 @@ export default function BuildPage() {
       if (!(await S({ k: 'step', icon: 'search', txt: 'Found 10 actions for "stock price quote"', sub: true }))) return;
       if (!(await S({ k: 'step', icon: 'search', txt: 'Found 15 actions for "buy stock trade order alpaca"', sub: true }))) return;
       if (!(await S({ k: 'step', icon: 'search', txt: 'Found 4 triggers for "schedule cron periodic"', sub: true }))) return;
-      if (!(await S({ k: 'step', icon: 'search', txt: 'Found 2 actions for "alpaca robinhood interactive brokers trading"', sub: true }))) return;
+      if (!(await S({ k: 'step', icon: 'search', txt: 'Found 2 actions for "alpaca interactive brokers trading"', sub: true }))) return;
       if (!(await S({ k: 'step', icon: 'search', txt: 'Found 0 actions for "yahoo finance ticker"', sub: true }))) return;
       if (!(await S({ k: 'step', icon: 'search', txt: 'Found 3 actions for "yahoo finance ticker"', sub: true }))) return;
 

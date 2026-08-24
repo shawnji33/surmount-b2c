@@ -24,9 +24,12 @@ No unit/integration test runner is configured yet (no jest, vitest, playwright, 
 | Task | Command |
 |---|---|
 | Type-check (no emit) | `npx tsc --noEmit` |
+| Design-system conformance | `npm run ds:check` (must PASS) |
 | Production build (catches type + build errors) | `npm run build` |
 
 `tsconfig.json` runs in `strict` mode, so `npx tsc --noEmit` is the fast pre-commit check; `npm run build` is the full verification.
+
+**Never run `npm run build` while `npm run dev` is running** — they share `.next`, and the build clobbers the dev server's state, leaving every route returning `Internal Server Error` until dev is restarted. Stop dev first, or verify against the running dev server instead.
 
 ## Architecture
 
@@ -51,9 +54,24 @@ No unit/integration test runner is configured yet (no jest, vitest, playwright, 
 ## Styling & design system
 
 - **Tailwind v4** (`@tailwindcss/postcss`, configured in `postcss.config.mjs`) **+ CSS Modules** co-located per component as `Name.module.css`. Most components combine both: Tailwind utilities for layout, a module for bespoke styling.
+- **shadcn/ui** is the component layer, ported into `src/components/ui/` (`button`, `select`, `avatar` so far). Port from `~/Surmount/design-system-surmount/components/ui/` rather than running `shadcn add` cold — that repo's versions are already reconciled with Surmount tokens. Substitute Phosphor icons for lucide. Its Tailwind classes are already on-scale (Tailwind's spacing is 4px-based with `.5` steps at 2px; `text-sm`/`text-xs` = 14/12px), so they need no numeric adjustment.
 - **Tokens**: `src/styles/tokens.css` holds the design-system variables and is **auto-generated — never hand-edit it**. It is imported by `src/app/globals.css`.
+- **Product roles**: `src/styles/product-roles.css` composes canonical primitives into recurring Surmount patterns (type hierarchy, guided-flow geometry, quiet surfaces, and motion feedback). It must not redefine primitives or become a second token authority.
 - **`@theme inline` gotcha**: `globals.css` re-declares Tailwind utility variables (radius, font-weight) inside `@theme inline` with literal DS values. This is intentional — without it, `tokens.css` (`:root`, specificity 1) would silently override Tailwind's `:where(:root)` defaults. If you add a Tailwind utility whose `--variable` name also appears in `tokens.css`, pin it in `@theme inline`. The rationale is documented at the top of `globals.css`.
+- **Cascade layers**: any *unlayered* rule beats *every* layered rule regardless of specificity, so a bare global reset silently defeats all of Tailwind's `@layer utilities`. `globals.css`'s `* { padding: 0; margin: 0 }` reset lives inside `@layer base` for exactly this reason — this already cost one round of debugging where every ported shadcn component rendered with zero padding. Keep new global resets in `@layer base`.
+- **`--primary` / `--secondary` collision**: `globals.css` maps `--color-primary`/`--color-secondary` to legacy UUI values that 14 files depend on, so `shadcn-bridge.css` deliberately does *not* expose its own `--primary`/`--secondary` as Tailwind theme keys. In ported components use `bg-[var(--primary)]`, never `bg-primary`. Full rationale at the top of `src/styles/shadcn-bridge.css`.
 - Follow the master CLAUDE.md hard rules: tokens via `var(--*)` (no raw hex/px), Geist for UI / Inter for display, and **never** ALL CAPS or `text-transform: uppercase`.
+
+### Numeric scales — enforced, not aspirational
+
+Every px value must land on a scale. **Odd or decimal px is a bug.** Full table in `~/Surmount/CLAUDE.md` § "Numeric scales"; the short version:
+
+- **Spacing** (padding/margin/gap/offsets/sizes) — always a multiple of 2. Prefer `var(--spacing-*)`.
+- **Font size** — only 10 · 12 · 14 · 16 · 18 · 20 · 24 · 30 · 36 · 48 · 60 · 72. No 13px, no 15px, no 11px.
+- **Border radius** — only 2 · 4 · 6 · 8 · 10 · 12 · 16 · 20 · 24 · full.
+- **Exempt** (px encodes a look, not a step): `box-shadow` blur/spread, `filter: blur()`, `transform` distances, `outline-offset`, `stroke-width`, `letter-spacing`, animation travel. `border-width: 1px` is correct; `1.5px`/`0.5px` are not.
+
+`npm run ds:check` enforces this across every `*.module.css` and `globals.css`, and exits non-zero on any violation. `npm run ds:fix` applies the fixes. **Run it before calling any UI work done** — the whole app was normalized on 10 Aug 2026 (813 fixes / 71 files) and the point is to keep it at zero. The checker also prints an *advisory* list of even-but-off-scale font sizes and radii (32px, 22px radius, …); those are compliant with the multiple-of-2 rule and are Shawn's call — do not silently snap them.
 
 ## Key files & directories
 
@@ -62,6 +80,9 @@ No unit/integration test runner is configured yet (no jest, vitest, playwright, 
 | `src/app/layout.tsx` | Root layout — fonts, global CSS, FigmaCaptureLoader |
 | `src/app/globals.css` | Global styles, Tailwind import, `@theme inline` token pinning |
 | `src/styles/tokens.css` | Auto-generated design-system tokens (do not edit) |
+| `src/styles/product-roles.css` | Composed Surmount product roles built from canonical tokens |
+| `src/styles/shadcn-bridge.css` | Maps canonical tokens to shadcn semantic roles |
+| `src/styles/DESIGN_SYSTEM.md` | Design-system architecture and product-pattern contract |
 | `src/app/dev/page.tsx` | Route index for every page |
 | `src/app/home/HomeShell.tsx` | Dashboard shell + sidebar visibility logic |
 | `src/app/onboarding/_components/` | Onboarding-local DS inputs (`DSInput`, `DSDropdown`, `DSDatePicker`, `Brand`, `OnboardingFlow`) |

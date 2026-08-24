@@ -103,16 +103,6 @@ const INVESTING_ACCOUNTS: InvestingAccount[] = [
     data: makeSeries(134880, 142350.3, 760, 1.1),
   },
   {
-    id: 'robinhood',
-    name: 'Robinhood',
-    shortName: 'Robinhood',
-    logo: '/assets/brokers/robinhood.png',
-    value: 67213.18,
-    change: -384.22,
-    color: '#00c805',
-    data: makeSeries(68910, 67213.18, 520, 2.2),
-  },
-  {
     id: 'schwab',
     name: 'Schwab',
     shortName: 'Schwab',
@@ -132,7 +122,6 @@ const STRATEGIES: Strategy[] = [
     accounts: {
       surmount: { value: 21424.82, returnAbs: 1180.32 },
       ibkr: { value: 70842.4, returnAbs: 4251.08 },
-      robinhood: { value: 16022.1, returnAbs: -428.12 },
     },
   },
   {
@@ -150,7 +139,6 @@ const STRATEGIES: Strategy[] = [
     name: 'Biotechnology Ventures',
     cover: '/assets/strategy-covers/Biotech Breakthroughs.png',
     accounts: {
-      robinhood: { value: 29518.42, returnAbs: -620.34 },
       schwab: { value: 9575.28, returnAbs: 318.52 },
     },
   },

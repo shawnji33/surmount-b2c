@@ -1,0 +1,523 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-tertiary, #f5f5f5);
+  animation: overlayIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+:global(:root) {
+  --resize-dur: 300ms;
+  --resize-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .card {
+    animation: none;
+    transition: none !important;
+  }
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xl) var(--spacing-3xl);
+  flex-shrink: 0;
+}
+
+.topLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.backBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, scale 150ms ease-out;
+}
+
+/* 32px visually matches the reference's compact icon, but touch/desktop targets need >=40px —
+ * extend the hit area with a transparent pseudo-element instead of growing the icon itself. */
+.backBtn::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
+
+.backBtn:hover {
+  background: var(--color-border-tertiary);
+  color: var(--color-fg-primary-900);
+}
+
+.backBtn:active {
+  scale: 0.96;
+}
+
+.backBtn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.topTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  box-shadow: 0 1px 2px 0 rgba(10, 13, 18, 0.03);
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease, scale 150ms ease-out;
+}
+
+.closeBtn:hover {
+  background: var(--color-bg-secondary);
+  color: var(--color-fg-primary-900);
+}
+
+.closeBtn:active {
+  scale: 0.96;
+}
+
+.closeBtn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--spacing-4xl) var(--spacing-3xl);
+  overflow-y: auto;
+}
+
+.card {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-3xl);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-2xl);
+  background: var(--color-bg-primary);
+  overflow: hidden;
+  /* Layered shadow (design-foundations: layered shadows read as physical, a single big shadow
+   * reads as pasted on) — soft ambient blur plus a tighter contact shadow. */
+  box-shadow:
+    0 2px 6px 0 rgba(10, 13, 18, 0.03),
+    0 12px 32px 0 rgba(10, 13, 18, 0.06);
+  /* Transitions.dev — Card resize */
+  transition:
+    width  var(--resize-dur) var(--resize-ease),
+    height var(--resize-dur) var(--resize-ease);
+  interpolate-size: allow-keywords;
+  will-change: width, height;
+  animation: cardIn 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 40ms;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: scale(0.97) translateY(6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.cardTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-text-lg);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.amountWrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  padding: var(--spacing-lg) 0;
+}
+
+.currency,
+.digit,
+.amountInput {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-display-md);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Amount display: a real, always-editable <input> sits directly on top of the animated digit
+ * spans — same size, same position (inset:0) — but with transparent text so only the animated
+ * glyphs beneath are visible, while `caret-color` keeps a real, visible blinking cursor. This
+ * gets genuine typing (cursor, selection, IME) plus the Transitions.dev digit pop-in on every
+ * value change, without a dual-mode "click to edit" toggle. */
+.amountStack {
+  position: relative;
+  display: inline-flex;
+}
+
+.amountInput {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--color-fg-primary-900);
+  padding: 0;
+  transition: border-color 150ms ease;
+}
+
+.amountInput:focus {
+  outline: none;
+  border-bottom-color: var(--color-border-focus, rgba(10, 13, 18, 0.24));
+}
+
+/* ─── Transitions.dev "Number pop-in" ─── */
+.digitGroup {
+  display: inline-flex;
+  align-items: baseline;
+  pointer-events: none;
+}
+
+.digit {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+  animation: digitPopIn 500ms cubic-bezier(0.34, 1.45, 0.64, 1) both;
+}
+
+@keyframes digitPopIn {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .digit {
+    animation: none;
+  }
+}
+
+.pills {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.pill {
+  flex: 1;
+  min-width: 0;
+  appearance: none;
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+  padding: 10px var(--spacing-md);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-fg-secondary-700);
+  cursor: pointer;
+  text-align: center;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease, scale 150ms ease-out;
+}
+
+.pill:hover {
+  background: var(--color-bg-secondary);
+}
+
+.pill:active {
+  scale: 0.97;
+}
+
+.pillActive {
+  background: var(--color-fg-primary-900);
+  border-color: var(--color-fg-primary-900);
+  color: var(--color-fg-white);
+}
+
+.pillActive:hover {
+  background: var(--color-fg-primary-900);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.rowLabel {
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  flex-shrink: 0;
+}
+
+.rowControl {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  width: 220px;
+  flex-shrink: 0;
+}
+
+/* Design-system Select (src/components/ui/select.tsx) trigger, restyled to this card's language:
+ * full width, visible border (the DS default is a borderless filled pill), a touch taller. */
+.selectTrigger.selectTrigger {
+  width: 100%;
+  height: 44px;
+  padding: 10px var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+}
+
+/* Avatar + label row inside the Account trigger/items — vertically centered as requested. */
+.accountValue {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.hint {
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-tertiary-600);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.divider {
+  height: 1px;
+  background: var(--color-border-secondary);
+}
+
+/* ─── Transitions.dev "Page side-by-side" (Fund ↔ Review) ───
+ * Only the active page stays in normal flow. The inactive page remains layered for its exit
+ * transition, but never contributes its former height to the card. This keeps Review content-hugged
+ * while the card's existing height transition interpolates between the two natural page heights. */
+.pageSlide {
+  position: relative;
+}
+
+.page {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  opacity: 0;
+  pointer-events: none;
+  filter: blur(3px);
+  transition: opacity 250ms cubic-bezier(0.22, 1, 0.36, 1), transform 250ms cubic-bezier(0.22, 1, 0.36, 1), filter 250ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
+}
+
+.page[data-page-id='1'] {
+  transform: translateX(-8px);
+}
+
+.page[data-page-id='2'] {
+  transform: translateX(8px);
+}
+
+.pageSlide[data-page='1'] .page[data-page-id='1'],
+.pageSlide[data-page='2'] .page[data-page-id='2'] {
+  position: relative;
+  inset: auto;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+  filter: blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page {
+    transition: none;
+  }
+}
+
+.reviewSummary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.reviewRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.reviewValue {
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-fg-primary-900);
+}
+
+.reviewBack {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  border: 0;
+  background: transparent;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.reviewBack:hover {
+  background: var(--color-bg-secondary);
+  color: var(--color-fg-primary-900);
+}
+
+.reviewBack svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ─── Transitions.dev "Success check" ─── */
+.successWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl) 0;
+  text-align: center;
+}
+
+.successCheck {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  transform-origin: center;
+  opacity: 0;
+  will-change: transform, opacity, filter;
+}
+
+.successCheck svg {
+  display: block;
+  overflow: visible;
+  width: 100%;
+  height: 100%;
+}
+
+.successCheck svg path {
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+}
+
+.successCheck[data-state='in'] {
+  animation:
+    successFade 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    successRotate 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    successBlur 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    successBob 500ms cubic-bezier(0.34, 1.35, 0.64, 1) forwards;
+}
+
+.successCheck[data-state='in'] svg path {
+  animation: successDraw 500ms cubic-bezier(0.22, 1, 0.36, 1) 80ms forwards;
+}
+
+@keyframes successFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes successRotate {
+  from { transform: rotate(80deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes successBlur {
+  from { filter: blur(10px); }
+  to { filter: blur(0); }
+}
+
+@keyframes successBob {
+  from { translate: 0 12px; }
+  to { translate: 0 0; }
+}
+
+@keyframes successDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .successCheck {
+    animation: none;
+    opacity: 1;
+  }
+
+  .successCheck svg path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+.successTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-text-lg);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.successDesc {
+  margin: 0 0 var(--spacing-sm);
+  max-width: 320px;
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-tertiary-600);
+}

@@ -1,0 +1,274 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.sectionTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+/* Wrapped variant — one gray panel around all three cards, matching AddAssetsPanel exactly. */
+.wrappedSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  background: var(--color-bg-quaternary);
+  box-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
+  overflow: hidden;
+  interpolate-size: allow-keywords;
+  transition:
+    width  var(--resize-dur, 300ms) var(--resize-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    height var(--resize-dur, 300ms) var(--resize-ease, cubic-bezier(0.22, 1, 0.36, 1));
+  will-change: width, height;
+}
+
+.wrappedTitle {
+  padding: var(--spacing-xs) var(--spacing-md) 0;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+}
+
+.card {
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  background: var(--color-bg-primary);
+  transition: border-color 150ms ease;
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.cardHeadText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cardNameRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cardName {
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.helpIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-fg-quaternary-400);
+}
+
+/* Transitions.dev tooltip — the wrapper owns hover so the trigger stays stable while the
+ * tooltip fades and scales in. The same relationship is available to keyboard users on focus. */
+:global(:root) {
+  --tt-in-dur: 150ms;
+  --tt-out-dur: 50ms;
+  --tt-scale: 0.98;
+  --tt-delay: 80ms;
+  --tt-in-ease: ease-out;
+  --tt-out-ease: ease-out;
+  --tt-bg: #ffffff;
+  --tt-fg: #2f2f2f;
+}
+
+.tooltipWrap {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltipTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: help;
+}
+
+.tooltipTrigger:focus-visible {
+  outline: 2px solid var(--color-border-focus, rgba(10, 13, 18, 0.24));
+  outline-offset: 2px;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, 0) scale(var(--tt-scale));
+  transform-origin: 50% 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--tt-bg);
+  color: var(--tt-fg);
+  font-size: var(--font-size-text-xs);
+  line-height: 1.4;
+  white-space: nowrap;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 2px 6px 0 rgba(0, 0, 0, 0.05),
+    0 4px 42px 0 rgba(0, 0, 0, 0.06);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--tt-out-dur) var(--tt-out-ease),
+    transform var(--tt-out-dur) var(--tt-out-ease);
+}
+
+.tooltipWrap:hover .tooltip,
+.tooltipTrigger:focus-visible + .tooltip {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+  transition-duration: var(--tt-in-dur);
+  transition-timing-function: var(--tt-in-ease);
+  transition-delay: var(--tt-delay);
+}
+
+.cardDesc {
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-tertiary-600);
+  line-height: 1.5;
+}
+
+.body {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 240ms cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.bodyClosed {
+  grid-template-rows: 0fr;
+}
+
+.bodyInner {
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.bodyClosed .bodyInner {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.rebalanceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border-tertiary);
+}
+
+.rebalanceLabel {
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-secondary-700);
+}
+
+.numberInput {
+  width: 64px;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-primary-900);
+}
+
+.unitSelect.unitSelect {
+  width: 86px;
+  height: 34px;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  color: var(--color-fg-primary-900);
+  background: var(--color-bg-primary);
+  box-shadow: none;
+}
+
+.unitSelect.unitSelect:hover {
+  border-color: var(--color-border-primary);
+  background: var(--color-bg-primary-hover, #f9fafb);
+}
+
+.unitMenu {
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-body);
+}
+
+.numberInput:focus {
+  outline: none;
+  border-color: var(--color-border-focus, rgba(10, 13, 18, 0.24));
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border-tertiary);
+}
+
+.sliderRow > :first-child {
+  flex: 1;
+}
+
+.sliderValue {
+  flex-shrink: 0;
+  width: 40px;
+  text-align: right;
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    border-color: var(--color-border-primary);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrappedSection,
+  .card,
+  .body,
+  .bodyInner {
+    transition: none !important;
+  }
+
+  .tooltip {
+    transition: none !important;
+  }
+}

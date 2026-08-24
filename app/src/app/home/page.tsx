@@ -25,6 +25,8 @@ import { AccountSwitcher } from './_components/AccountSwitcher';
 import { Carousel } from './_components/Carousel';
 import { WatchlistSection } from './_components/WatchlistSection';
 import { TransferModal } from './_components/TransferModal';
+import { UnlockedModal } from './_components/UnlockedModal';
+import { VerifyIdentityCard } from './_components/VerifyIdentityCard';
 import s from './page.module.css';
 
 const CONNECTED_BROKERS: Record<string, { name: string; logo: string; cash: number }> = {
@@ -62,6 +64,16 @@ function EmptyState({ icon, title, desc, ctaLabel, ctaHref }: {
 function HomePageContent() {
   const searchParams = useSearchParams();
   const isEmpty = searchParams.get('state') === 'empty';
+  // Local state (not read live from searchParams) so closing the modal doesn't need a URL
+  // round-trip — matches the transferMode pattern below and avoids router.replace stripping
+  // ?state=empty off the URL when the modal closes.
+  const [unlockedTier, setUnlockedTier] = useState<string | null>(() => searchParams.get('unlocked'));
+  const hasConnectedAccount = searchParams.has('connected');
+  // True empty state (no account at all — e.g. straight off checkout) shows the Figma "Start with an
+  // account" prompt cards; partialEmpty (a broker was just connected but no strategies yet) keeps the
+  // existing cash-hero + EmptyState treatment.
+  const richEmpty = isEmpty && !hasConnectedAccount;
+  const partialEmpty = isEmpty && hasConnectedAccount;
   const broker = CONNECTED_BROKERS[searchParams.get('connected') ?? 'kraken'] ?? CONNECTED_BROKERS.kraken;
 
   // TEMP: figma capture — allow ?transfer=deposit|withdrawal & ?step=amount|confirm|success to open the modal to any state
@@ -121,27 +133,73 @@ function HomePageContent() {
 
           {/* Portfolio — hero + chart naked (no card chrome) */}
           <section className={s.portfolioSection}>
-            <div className={s.sectionHeader}>
-              <div className={s.sectionTitleRow}>
-                {isEmpty ? (
-                  <div className={s.emptyAccountChip}>
-                    <img src={broker.logo} alt="" />
-                    <span>{broker.name}</span>
-                  </div>
-                ) : (
-                  <AccountSwitcher selected={selectedPortfolioAccounts} onToggle={togglePortfolioAccount} />
-                )}
+            {!richEmpty && (
+              <div className={s.sectionHeader}>
+                <div className={s.sectionTitleRow}>
+                  {partialEmpty ? (
+                    <div className={s.emptyAccountChip}>
+                      <img src={broker.logo} alt="" />
+                      <span>{broker.name}</span>
+                    </div>
+                  ) : (
+                    <AccountSwitcher selected={selectedPortfolioAccounts} onToggle={togglePortfolioAccount} />
+                  )}
+                </div>
+                <div className={s.sectionActions}>
+                  {!isEmpty && <button type="button" className={s.actionLink}>Edit</button>}
+                  <button type="button" className={s.btnSecondary}>
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 3v10M3 8h10" /></svg>
+                    Connect accounts
+                  </button>
+                </div>
               </div>
-              <div className={s.sectionActions}>
-                {!isEmpty && <button type="button" className={s.actionLink}>Edit</button>}
-                <button type="button" className={s.btnSecondary}>
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 3v10M3 8h10" /></svg>
-                  Connect accounts
-                </button>
-              </div>
-            </div>
+            )}
 
-            {isEmpty ? (
+            {richEmpty ? (
+              <div className={[s.emptyRichCard, s.emptyRichCardAccount].join(' ')}>
+                <div className={s.emptyRichCardCopy}>
+                  <div className={s.emptyRichCardText}>
+                    <h2 className={s.emptyRichCardTitle}>Start with an account</h2>
+                    <p className={s.emptyRichCardDesc}>
+                      Create a Surmount account or link your broker accounts and manage all your investments in one dashboard.
+                    </p>
+                  </div>
+                  <div className={s.emptyRichCardButtons}>
+                    <Link href="/onboarding/investing-account" className={s.emptyRichCardBtnPrimary}>
+                      Create a Surmount account
+                    </Link>
+                    <Link href="/onboarding/connect-brokerage" className={s.emptyRichCardBtnSecondary}>
+                      Connect accounts
+                    </Link>
+                  </div>
+                </div>
+                <div className={s.emptyBrokerChipRow}>
+                  <div className={s.emptyBrokerChip}>
+                    <div className={s.emptyBrokerChipTop}>
+                      <img className={s.emptyBrokerChipLogo} src="/assets/brokers/surmount-badge-light.png" alt="" />
+                      <span className={s.emptyBrokerChipNew}>NEW</span>
+                    </div>
+                    <span className={s.emptyBrokerChipLabel}>Surmount</span>
+                  </div>
+                  <div className={s.emptyBrokerChip}>
+                    <img className={s.emptyBrokerChipLogo} src="/assets/brokers/coinbase.png" alt="" />
+                    <span className={s.emptyBrokerChipLabel}>Coinbase</span>
+                  </div>
+                  <div className={s.emptyBrokerChip}>
+                    <img className={s.emptyBrokerChipLogo} src="/assets/brokers/kraken.png" alt="" />
+                    <span className={s.emptyBrokerChipLabel}>Kraken</span>
+                  </div>
+                  <div className={s.emptyBrokerChip}>
+                    <img className={s.emptyBrokerChipLogo} src="/assets/brokers/ibkr.png" alt="" />
+                    <span className={s.emptyBrokerChipLabel}>IBKR</span>
+                  </div>
+                  <div className={s.emptyBrokerChipMore}>
+                    <span className={s.emptyBrokerChipMoreAvatar}>+10</span>
+                    <span className={s.emptyBrokerChipLabel}>And more</span>
+                  </div>
+                </div>
+              </div>
+            ) : partialEmpty ? (
               <div className={s.emptyHero}>
                 <span className={s.emptyHeroLabel}>Available to trade</span>
                 <span className={s.emptyHeroValue}>{formatUSD(broker.cash)}</span>
@@ -161,7 +219,7 @@ function HomePageContent() {
           {/* Active Strategies */}
           <section className={s.leftSection}>
             <div className={s.sectionHeader}>
-              <span className={s.sectionTitle}>Invested strategies</span>
+              <span className={s.sectionTitle}>{richEmpty ? 'Active strategies' : 'Invested strategies'}</span>
               {!isEmpty && (
                 <div className={s.sectionActions}>
                   <button type="button" className={s.actionLink}>Edit</button>
@@ -172,7 +230,24 @@ function HomePageContent() {
                 </div>
               )}
             </div>
-            {isEmpty ? (
+            {richEmpty ? (
+              <div className={[s.emptyRichCard, s.emptyRichCardStrategies].join(' ')}>
+                <div className={s.emptyRichCardCopy}>
+                  <div className={s.emptyRichCardText}>
+                    <h2 className={s.emptyRichCardTitle}>Invest in your future</h2>
+                    <p className={s.emptyRichCardDesc}>Explore 50+ pre-built portfolios and begin your investment journey.</p>
+                  </div>
+                  <Link href="/strategy-result" className={s.emptyRichCardBtnSecondary}>
+                    Explore strategies
+                  </Link>
+                </div>
+                <img
+                  className={s.emptyStrategiesIllustration}
+                  src="/assets/onboarding/home-empty-strategies-illustration.png"
+                  alt="Surmount Market Place strategy cards"
+                />
+              </div>
+            ) : partialEmpty ? (
               <EmptyState
                 icon={<ChartLineUp weight="regular" />}
                 title="No strategies yet"
@@ -293,6 +368,11 @@ function HomePageContent() {
         {/* ── RIGHT COLUMN ── */}
         <div className={s.rightColumn}>
 
+          {/* Entry into the account-progress flow, for users who submitted an
+              application but never finished identity verification. Sits at the
+              top of the rail because it's the only blocking action on the page. */}
+          <VerifyIdentityCard />
+
           {/* Dividend management — compact utility row */}
           <a className={s.utilityRow} href="#" aria-label="Dividend management">
             <div className={s.utilityRowIconWrap}>
@@ -317,6 +397,12 @@ function HomePageContent() {
       </div>
 
       {transferMode && <TransferModal mode={transferMode} initialStep={captureStep ?? undefined} onClose={() => setTransferMode(null)} />}
+      {unlockedTier && <UnlockedModal tier={unlockedTier} onClose={() => setUnlockedTier(null)} />}
+      {isEmpty && (
+        <Link href="/home/get-started" className={s.previewToggleLink}>
+          Preview: checklist page
+        </Link>
+      )}
     </main>
   );
 }

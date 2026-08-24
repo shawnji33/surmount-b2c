@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { PAYMENT_UPDATE_ROUTE, paymentLabel } from '@/lib/payment-method';
+import { CancelFlowModal, type CancelFlowStep } from './CancelFlowModal';
 import s from './PlansPage.module.css';
 
 type Cycle = 'monthly' | 'yearly';
@@ -14,6 +15,7 @@ type Action = 'current' | 'downgrade' | 'upgrade';
 // Lets a preview/handoff route render the Plans page in a specific state.
 export type PlansStep =
   | 'downgrade-confirm'
+  | 'cancel-details'
   | 'scheduled'
   | 'scheduled-toast'
   | 'renew-confirm'
@@ -564,7 +566,7 @@ export function PlansPage({
   const [cycle, setCycle] = useState<Cycle>(initialCycle);
   const [currentPlanId, setCurrentPlanId] = useState(previewStep === 'upgraded' ? 'pro' : 'plus');
   const [confirmTarget, setConfirmTarget] = useState<Tier | null>(
-    previewStep === 'downgrade-confirm' ? previewTier : null,
+    previewStep === 'downgrade-confirm' || previewStep === 'cancel-details' ? previewTier : null,
   );
   const [upgradeTarget, setUpgradeTarget] = useState<Tier | null>(
     previewStep === 'upgrade-confirm' ? TIERS[3] : null,
@@ -602,6 +604,8 @@ export function PlansPage({
   const currentTier = TIERS.find((t) => t.id === currentPlanId) ?? TIERS[2];
   const currentName = currentTier.name;
   const currentShort = shortName(currentName);
+  const cancelPreviewStep: CancelFlowStep | undefined =
+    previewStep === 'cancel-details' ? 'details' : previewStep === 'downgrade-confirm' ? 'reason' : undefined;
 
   function showToast(message: string) {
     if (toastTimer.current != null) window.clearTimeout(toastTimer.current);
@@ -738,15 +742,25 @@ export function PlansPage({
         <p className={s.footnote}>Prices and plans are subject to change at Surmount&apos;s discretion.</p>
       </div>
 
-      {confirmTarget && (
-        <DowngradeModal
-          target={confirmTarget}
-          currentName={currentName}
-          cycle={cycle}
-          onKeep={() => setConfirmTarget(null)}
-          onConfirm={confirmDowngrade}
-        />
-      )}
+      {confirmTarget &&
+        (confirmTarget.id === 'free' ? (
+          // Downgrading to Free ends the paid plan, so it runs the cancel flow.
+          <CancelFlowModal
+            planName={currentShort}
+            endDate={RENEW_DATE}
+            previewStep={cancelPreviewStep}
+            onKeep={() => setConfirmTarget(null)}
+            onConfirm={confirmDowngrade}
+          />
+        ) : (
+          <DowngradeModal
+            target={confirmTarget}
+            currentName={currentName}
+            cycle={cycle}
+            onKeep={() => setConfirmTarget(null)}
+            onConfirm={confirmDowngrade}
+          />
+        ))}
 
       {renewOpen && (
         <RenewModal currentTier={currentTier} cycle={cycle} onGoBack={() => setRenewOpen(false)} onRenew={handleRenew} />

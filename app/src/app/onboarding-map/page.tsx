@@ -76,16 +76,26 @@ export default function OnboardingMapPage() {
           <div className={s.phaseHead}><span className={s.phaseNum}>1</span><span className={s.phaseName}>Account creation</span><span className={s.phaseNote}>· before onboarding</span></div>
           <div className={s.row}>
             <Card n={{ route: '/', tag: '/', title: 'Log in / Sign up', desc: 'Email + password sign-up; or sign in.', badges: [{ label: 'edge: 4-rule password', kind: 'edge' }, { label: 'states: sign-in/up/forgot', kind: 'conditional' }] }} />
-            <Card n={{ route: '/', tag: 'verify-email', title: 'Check your email', desc: 'Verification link sent. "Open link" → welcome.', badges: [{ label: 'edge: resend 60s cooldown', kind: 'edge' }] }} />
+            <Card n={{ route: '/', tag: 'verify-email', title: 'Check your email', desc: 'Verification link sent. "Open link" → simulated email.', badges: [{ label: 'edge: resend 60s cooldown', kind: 'edge' }] }} />
+            <Card n={{ route: '/onboarding/email-link', tag: 'email-link', title: 'Verification email', desc: 'Simulated inbox — clicking the button/link → verifying.', badges: [] }} />
+            <Card n={{ route: '/onboarding/verifying', tag: 'verifying', title: 'Verifying', desc: 'Branded splash — logo pulse loop, auto-advances to welcome.', badges: [{ label: 'edge: auto-redirect ~2.7s', kind: 'edge' }] }} />
           </div>
         </section>
-        <Down label="sign up → open the email link" />
+        <Down label="sign up → open the email → click the link → verifying" />
 
         {/* 2 — Onboarding */}
         <section className={s.phase}>
           <div className={s.phaseHead}><span className={s.phaseNum}>2</span><span className={s.phaseName}>Get to know you</span></div>
           <div className={s.row}>
-            <Card n={{ route: '/onboarding/welcome', tag: 'welcome', title: 'Welcome', desc: 'Two-step overview. No back/close (entry point).' }} />
+            <Card n={{ route: '/onboarding/welcome', tag: 'welcome', title: 'Welcome', desc: 'Centered card, animated entrance. No back/close (entry point).' }} />
+            <Card n={{ route: '/onboarding/tour-2', tag: 'tour-2', title: 'Product tour (1 of 3)', desc: 'Promptfolio (AI-gradient title) + no-code strategy builder panels. Card morphs from Welcome, then the preview panel enters from the right.', badges: [{ label: 'edge: shared-element route morph', kind: 'edge' }] }} />
+            <Card n={{ route: '/onboarding/tour', tag: 'tour', title: 'Product tour (2 of 3)', desc: 'Strategies do the work — strategy performance preview with a shared card/text morph.', badges: [{ label: 'edge: shared-element route morph', kind: 'edge' }] }} />
+            <Card n={{ route: '/onboarding/tour-3', tag: 'tour-3', title: 'Product tour (3 of 3)', desc: 'Easy to invest — brokerages + Surmount account panels. Continue → choose-plan.', badges: [{ label: 'edge: sequential panel exit/enter', kind: 'edge' }] }} />
+            <Card n={{ route: '/onboarding/choose-plan', tag: 'choose-plan', title: 'Choose plan', desc: 'Start free vs paid plan radio choice. Not part of the growing-card pattern — its own layout.', badges: [{ label: 'alt: standalone screen, no ViewTransition morph', kind: 'alt' }] }} />
+            <Card n={{ route: '/onboarding/all-set', tag: 'all-set', title: 'All set', desc: 'Free path lands here → Go to dashboard (/home).', badges: [{ label: 'conditional: free selection', kind: 'conditional' }] }} />
+            <Card n={{ route: '/onboarding/choose-your-plan', tag: 'choose-your-plan', title: 'Choose your plan', desc: 'Paid path: Core/Plus/Pro tiers, rolling-number prices, monthly/yearly toggle. Select → checkout.', badges: [{ label: 'conditional: paid selection', kind: 'conditional' }] }} />
+            <Card n={{ route: '/onboarding/checkout?tier=plus', tag: 'checkout', title: 'Checkout', desc: 'Mock Stripe-style payment (no real charge, no backend). Pay → /home?state=empty&unlocked=<tier>.', badges: [{ label: 'edge: prototype only, test card pre-filled', kind: 'edge' }] }} />
+            <Card n={{ route: '/home?state=empty&unlocked=core', tag: 'unlocked-modal', title: '"You’ve unlocked" modal', desc: 'Empty dashboard + dark celebratory modal, per-tier feature cards, glow matches that tier\'s pricing-card gradient.', badges: [{ label: 'conditional: ?unlocked=core|plus|pro', kind: 'conditional' }] }} />
             <Card n={{ route: '/onboarding/about-you', tag: 'about-you', title: 'About you', desc: '5 KYC / get-to-know-you questions.', badges: [{ label: 'conditional: required vs optional steps', kind: 'conditional' }] }} />
           </div>
         </section>
@@ -138,7 +148,8 @@ export default function OnboardingMapPage() {
               <span className={s.outcomeHead}><Pill b={{ label: '📄 Needs documents', kind: 'rejected' }} /></span>
               <Card n={{ route: '/onboarding/account-setup', tag: 'account-setup', title: '"Almost ready"', desc: 'Identity docs required.', badges: [{ label: 'scenario: needs docs', kind: 'scenario' }] }} />
               <Card n={{ route: '/onboarding/verify-documents', tag: 'verify-documents', title: 'Upload documents', desc: 'Drag-drop ID upload → submit.', badges: [{ label: 'scenario: needs docs', kind: 'scenario' }] }} />
-              <Card n={{ route: '/onboarding/documents-received', tag: 'documents-received', title: 'Docs received', desc: '"Thanks" → approved.', badges: [{ label: 'scenario: needs docs', kind: 'scenario' }] }} />
+              <Card n={{ route: '/onboarding/documents-received', tag: 'documents-received', title: 'Docs under review', desc: 'Wait state — up to 2 weeks.', badges: [{ label: 'scenario: needs docs', kind: 'scenario' }] }} />
+              <Card n={{ route: '/onboarding/documents-rejected', tag: 'documents-rejected', title: 'Docs rejected', desc: 'Rejection reasons → re-upload.', badges: [{ label: 'scenario: needs docs', kind: 'scenario' }] }} />
             </div>
           </div>
         </section>
@@ -184,7 +195,7 @@ export default function OnboardingMapPage() {
           <div className={s.sectionSub}>The same flow shows different screens depending on these states.</div>
           <div className={s.refList}>
             {[
-              ['Application result', <>After submitting KYC, exactly one outcome shows: <b>Approved</b> → application-submitted/account-ready; <b>Under review</b> → application-review; <b>Needs documents</b> → account-setup → verify-documents → documents-received. (Prototype: pick the outcome from <code>/dev</code>.)</>],
+              ['Application result', <>After submitting KYC, exactly one outcome shows: <b>Approved</b> → application-submitted/account-ready; <b>Under review</b> → application-review; <b>Needs documents</b> → account-setup → verify-documents → documents-received (under review, up to 2 weeks); if rejected → documents-rejected → re-upload. (Prototype: pick the outcome from <code>/dev</code>.)</>],
               ['Entry path', <>The user never sees both: choosing <b>Connect a brokerage</b> skips the entire Surmount KYC + funding flow; choosing <b>Open a Surmount account</b> runs it.</>],
               ['Bank: first-time vs update', <><code>link-bank</code> / <code>bank-linked</code> render different copy, CTAs, and a replace-warning when opened with <code>?mode=update</code> (re-linking from the dashboard) vs first-time funding.</>],
               ['Dashboard: empty vs populated', <><code>/home?state=empty&connected=&lt;broker&gt;</code> shows the first-time state (cash only, empty sections, banners); plain <code>/home</code> shows holdings/returns. The <code>connected</code> param picks which broker’s cash is shown.</>],
@@ -208,7 +219,7 @@ export default function OnboardingMapPage() {
               ['Email resend', <>"Check your email" resend has a 60-second cooldown showing <code>Resend in Ns</code>.</>],
               ['No exit mid-flow', <>start-investing, connect-brokerage, and investing-account have <b>no Close button</b> — you can’t abandon the flow to nowhere. investing-account has a Back to recover an accidental "Open a Surmount account".</>],
               ['Paper accounts', <>Alpaca Paper / Surmount Paper show an info (i); hovering explains they use virtual money (practice, not real funds).</>],
-              ['Coming-soon brokers', <>Robinhood, Charles Schwab, Interactive Brokers, Webull are disabled with a Coming soon tag — inert, not selectable.</>],
+              ['Coming-soon brokers', <>Charles Schwab, Interactive Brokers, Webull are disabled with a Coming soon tag — inert, not selectable.</>],
               ['DOB + OTP', <>Date-of-birth validates a real, non-future date (year ≥ 1900); verify-phone accepts any 6 digits and auto-advances (demo).</>],
               ['Regulatory gating', <>The Continue on regulatory is disabled until at least one compliance option is selected.</>],
             ].map(([name, body], i) => (

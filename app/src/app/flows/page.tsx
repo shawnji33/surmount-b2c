@@ -18,7 +18,7 @@ const FLOWS: Flow[] = [
     index: 1,
     title: 'Cancel plan',
     description:
-      'A member on Surmount Plus cancels their paid plan from Settings → Billing. The cancellation is scheduled for the end of the current term.',
+      'A member on Surmount Plus cancels their paid plan from Settings → Billing. Confirming takes two steps — pick a reason, then add detail — and nothing is cancelled until the second step. “Keep Plus plan” backs out of either one. The cancellation itself is scheduled for the end of the current term.',
     steps: [
       {
         title: 'Dashboard',
@@ -39,14 +39,26 @@ const FLOWS: Flow[] = [
         ...HOME,
       },
       {
-        title: 'Confirm cancellation',
-        desc: '“Cancel plan” opens a confirmation — “Keep your Plus plan” or the destructive “Cancel plan”.',
-        src: '/home?settings=billing&step=cancel-confirm',
+        title: 'Step 1 — what changed?',
+        desc: '“Cancel plan” opens the cancel flow on a single-select list of reasons. “Continue” stays disabled until one is picked; “Keep Plus plan” backs out.',
+        src: '/home?settings=billing&step=cancel-reason',
+        ...HOME,
+      },
+      {
+        title: 'Reason selected',
+        desc: 'Picking a reason fills the radio and tints the row — no icon appears and no weight changes, so the row never resizes under the cursor. “Continue” activates.',
+        src: '/home?settings=billing&step=cancel-reason-picked',
+        ...HOME,
+      },
+      {
+        title: 'Step 2 — tell us more',
+        desc: 'The headline is tailored to the reason (“What wasn’t working?”), the note is optional, and the liquidation warning sits next to the destructive “Confirm cancellation”. Back returns to step 1 with the reason intact.',
+        src: '/home?settings=billing&step=cancel-details',
         ...HOME,
       },
       {
         title: 'Scheduled + toast',
-        desc: 'The banner switches to the scheduled downgrade and a “Downgrade to Surmount Free scheduled” toast slides in.',
+        desc: 'Confirming schedules the downgrade: the banner switches to the scheduled state and a “Downgrade to Surmount Free scheduled” toast slides in.',
         src: '/home?settings=billing&step=toast',
         ...HOME,
       },
@@ -99,9 +111,15 @@ const FLOWS: Flow[] = [
         ...PLANS,
       },
       {
-        title: 'Confirm downgrade',
-        desc: '“Downgrade to Free” opens a confirmation — “Keep your Plus plan” or the destructive “Cancel plan”.',
+        title: 'Step 1 — what changed?',
+        desc: 'Because Free ends the paid plan, “Downgrade to Free” opens the same two-step cancel flow rather than a plain confirmation.',
         src: '/plans?step=downgrade-confirm',
+        ...PLANS,
+      },
+      {
+        title: 'Step 2 — tell us more',
+        desc: 'Optional note plus the liquidation warning, then “Confirm cancellation”.',
+        src: '/plans?step=cancel-details',
         ...PLANS,
       },
       {
@@ -127,7 +145,7 @@ const FLOWS: Flow[] = [
       },
       {
         title: 'Confirm downgrade',
-        desc: '“Downgrade to Core” opens a confirmation — “Keep your Plus plan” or the non-destructive “Downgrade plan” (not “Cancel plan”, since a paid tier is retained).',
+        desc: '“Downgrade to Core” opens the plain confirmation — “Keep your Plus plan” or the non-destructive “Downgrade plan”. No cancel flow and no exit survey, since a paid tier is retained.',
         src: '/plans?step=downgrade-confirm&target=core',
         ...PLANS,
       },

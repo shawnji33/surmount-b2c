@@ -1,0 +1,163 @@
+.shell {
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: var(--color-bg-quaternary, #e9eaeb);
+}
+
+.container {
+  flex: 1 0 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px var(--container-padding-desktop, 32px);
+}
+
+.emailWindow {
+  width: 560px;
+  max-width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  background: var(--color-bg-primary, #fff);
+  box-shadow: 0px 4px 8px 0px rgba(10, 13, 18, 0.05);
+  overflow: hidden;
+}
+
+.emailChrome {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 32px;
+  background: var(--color-bg-secondary, #fafafa);
+  border-bottom: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+}
+
+.emailChromeRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.emailChromeLabel {
+  flex-shrink: 0;
+  width: 52px;
+  font-weight: 400;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.emailChromeValue {
+  font-weight: 500;
+  color: var(--color-fg-secondary-700, #414651);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emailBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.emailLogo {
+  width: 40px;
+  height: 40px;
+  display: block;
+  flex-shrink: 0;
+  margin-bottom: 4px;
+}
+
+.emailTitle {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-xl, 20px);
+  line-height: 28px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.emailText {
+  margin: 0;
+  max-width: 400px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+.emailCta {
+  appearance: none;
+  margin-top: 8px;
+  padding: 10px 24px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-fg-primary-900, #181d27);
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+  color: var(--color-fg-white);
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.emailCta:hover {
+  background: var(--color-utility-gray-800);
+}
+
+.emailFallback {
+  margin: 8px 0 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.emailLink {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.emailFinePrint {
+  margin: 16px 0 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--spacing-4xl, 32px);
+}
+
+.copyright {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: 400;
+  color: var(--color-text-tertiary-600, rgba(10, 13, 18, 0.6));
+  white-space: nowrap;
+}

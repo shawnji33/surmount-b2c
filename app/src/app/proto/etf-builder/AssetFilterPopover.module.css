@@ -1,0 +1,233 @@
+/* Figma node 2139:4878 — 29px radius on this 44px box renders identical to a full circle, so it
+ * maps to --radius-full (the on-scale token that resolves to the same pixel result) rather than
+ * the literal 29px. Padding-driven sizing per spec, with min-width/height:44px kept as the touch
+ * target floor (18px icon + 2×6px padding = 30px, well under the 44px minimum on its own). */
+.trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--spacing-sm);
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  box-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.trigger svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .trigger:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-fg-primary-900);
+  }
+}
+
+.trigger[aria-expanded='true'] {
+  border-color: var(--color-fg-primary-900);
+  background: var(--color-fg-primary-900);
+  color: var(--color-fg-white);
+}
+
+/* Matches the 32px-tall compact search bar it sits beside. Visual size shrinks below the 44px
+ * floor, so a pseudo-element restores the touch target (32px + 6px inset each side = 44px). */
+.trigger[data-compact='true'] {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+}
+
+.trigger[data-compact='true']::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}
+
+.trigger[data-compact='true'] svg {
+  width: 16px;
+  height: 16px;
+}
+
+.dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--color-fg-primary-900);
+  box-shadow: 0 0 0 2px var(--color-bg-primary);
+}
+
+.trigger[data-compact='true'] .dot {
+  top: 3px;
+  right: 3px;
+}
+
+.trigger[aria-expanded='true'] .dot {
+  background: var(--color-fg-white);
+  box-shadow: 0 0 0 2px var(--color-fg-primary-900);
+}
+
+/* Same reveal recipe as PickStep's previewDock panel — translateY + opacity + blur, pointer-events
+ * gated so closed content can't be clicked, inert (set in the .tsx) so it can't be tabbed into.
+ * The panel itself no longer scrolls — it's a flex column of a scrollable content area plus a
+ * pinned footer, so "Clear all" never scrolls out of view. */
+.panel {
+  --panel-open-dur: 220ms;
+  --panel-close-dur: 160ms;
+  --panel-translate-y: -8px;
+  --panel-blur: 2px;
+  --panel-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: fixed;
+  width: 340px;
+  max-height: min(60vh, 480px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-primary);
+  box-shadow: 0 8px 24px 0 rgba(10, 13, 18, 0.1);
+  overflow: hidden;
+  z-index: 200;
+
+  transform: translateY(var(--panel-translate-y));
+  opacity: 0;
+  filter: blur(var(--panel-blur));
+  pointer-events: none;
+  transition: transform var(--panel-close-dur) var(--panel-ease), opacity var(--panel-close-dur) var(--panel-ease), filter var(--panel-close-dur) var(--panel-ease);
+  will-change: transform, opacity, filter;
+}
+
+.panel[data-open='true'] {
+  transform: translateY(0);
+  opacity: 1;
+  filter: blur(0);
+  pointer-events: auto;
+  transition: transform var(--panel-open-dur) var(--panel-ease), opacity var(--panel-open-dur) var(--panel-ease), filter var(--panel-open-dur) var(--panel-ease);
+}
+
+.scrollArea {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+  /* mask-image set inline from JS — scroll-aware, only fades an edge once there's more content
+   * in that direction (see AssetFilterPopover.tsx). */
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.sectionLabel {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xxs);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.chip {
+  appearance: none;
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-full);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-secondary-700, var(--color-fg-primary-900));
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover:not(.chipActive) {
+    border-color: var(--color-border-primary);
+    background: var(--color-bg-secondary);
+  }
+}
+
+.chip:active {
+  transform: scale(0.97);
+}
+
+.chipActive {
+  background: var(--color-fg-primary-900);
+  border-color: var(--color-fg-primary-900);
+  color: var(--color-fg-white);
+}
+
+/* Pinned outside the scrollable area (a plain flex sibling, not position:sticky — the scroll
+ * area is what scrolls, not the panel) so it never scrolls away, with its own background,
+ * border-top, and a raised z-index so scrolled content never bleeds over it. */
+.footer {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-border-secondary);
+  background: var(--color-bg-primary);
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.clearAll {
+  align-self: flex-start;
+  appearance: none;
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-full);
+  padding: var(--spacing-xs) var(--spacing-lg);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  cursor: pointer;
+  transition: background 120ms ease, opacity 120ms ease;
+}
+
+.clearAll:hover:not(:disabled) {
+  background: var(--color-bg-secondary);
+}
+
+.clearAll:disabled {
+  color: var(--color-fg-tertiary-600);
+  cursor: default;
+  opacity: 0.5;
+}
+
+@media (max-width: 760px) {
+  .panel {
+    width: min(340px, calc(100vw - 48px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .chip,
+  .trigger,
+  .clearAll {
+    transition: none;
+  }
+}

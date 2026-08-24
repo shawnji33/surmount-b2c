@@ -334,7 +334,7 @@
   gap: 8px;
   margin-top: 2px;
   margin-left: -8px;
-  padding: 5px 12px 5px 8px;
+  padding: 6px 12px 6px 8px;
   border: 0;
   border-radius: var(--radius-md, 8px);
   background: transparent;
@@ -374,7 +374,7 @@
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
   font-weight: 400;
-  color: #3757be;
+  color: var(--color-text-brand-secondary-700);
   letter-spacing: -0.5px;
 }
 
@@ -424,11 +424,11 @@
 }
 
 .pendingIconWarning {
-  background: #fdedd7;
+  background: var(--color-bg-warning-secondary);
 }
 
 .pendingIconBrand {
-  background: #e0eaf9;
+  background: var(--color-bg-brand-secondary);
 }
 
 .pendingCardInfo {
@@ -603,7 +603,7 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
-.txAmountPos { color: #3b7e3f; }
+.txAmountPos { color: var(--color-fg-success-primary); }
 
 .txChevron {
   width: 20px;
@@ -700,7 +700,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 93px;
+  min-height: 94px;
   padding: 20px;
   background: var(--color-bg-primary, #fff);
   border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
@@ -774,12 +774,12 @@
   display: inline-flex;
   align-items: center;
   padding: 2px 8px;
-  background: #f1f6fd;
-  border: 1px solid #c8dbf5;
+  background: var(--color-bg-brand-primary);
+  border: 1px solid var(--color-utility-brand-200);
   border-radius: 9999px;
   font-size: var(--font-size-text-xs, 12px);
   font-weight: 400;
-  color: #3757be;
+  color: var(--color-text-brand-secondary-700);
   line-height: var(--line-height-text-xs, 18px);
 }
 
@@ -938,7 +938,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 6px;
   min-height: 36px;
   padding: 8px 12px;
   border-radius: var(--radius-md, 8px);
@@ -1004,7 +1004,7 @@
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
   border-radius: var(--radius-xl, 12px);
-  padding: 21px;
+  padding: 22px;
 }
 
 .repeatRow {
@@ -1144,7 +1144,7 @@
 .calWeekday {
   text-align: center;
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   color: var(--color-fg-quaternary-400, #a4a7ae);
   padding: 4px 0;
@@ -1160,7 +1160,7 @@
   justify-content: center;
   border-radius: var(--radius-md, 8px);
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   cursor: pointer;
@@ -1176,18 +1176,18 @@
 .calDayToday:not(.calDaySelected)::after {
   content: '';
   display: block;
-  width: 3px;
-  height: 3px;
+  width: 4px;
+  height: 4px;
   background: var(--color-fg-primary-900, #181d27);
   border-radius: 50%;
   position: absolute;
-  bottom: 3px;
+  bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
 }
 .calDaySelected {
   background: var(--color-fg-primary-900, #181d27) !important;
-  color: #fff;
+  color: var(--color-fg-white);
   font-weight: 500;
 }
 .calDay.weekend:not(.calDaySelected) { color: var(--color-fg-disabled-subtle, #d5d7da); }
@@ -1481,7 +1481,7 @@
 .accountCardUpdateBtn {
   appearance: none;
   flex-shrink: 0;
-  padding: 5px 10px;
+  padding: 6px 10px;
   border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.086));
   border-radius: var(--radius-md, 8px);
   background: var(--color-bg-secondary, #fafafa);
@@ -1553,12 +1553,12 @@
   justify-content: center;
   gap: 8px;
   margin-top: 40px;
-  padding: 11px 24px;
+  padding: 12px 24px;
   border: 0;
   border-radius: var(--radius-md, 8px);
   background: var(--color-fg-primary-900, #181d27);
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08);
-  color: #fff;
+  color: var(--color-fg-white);
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: var(--font-size-text-md, 16px);
   line-height: var(--line-height-text-md, 24px);
@@ -1591,7 +1591,7 @@
   width: 16px;
   height: 16px;
   border: 2px solid rgba(255, 255, 255, 0.28);
-  border-top-color: #fff;
+  border-top-color: var(--color-fg-white);
   border-radius: var(--radius-full, 9999px);
   animation: buttonSpinner 720ms linear infinite;
 }
@@ -1720,7 +1720,7 @@
   appearance: none;
   width: 100%;
   min-height: 48px;
-  padding: 11px 24px;
+  padding: 12px 24px;
   border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
   border-radius: var(--radius-full, 9999px);
   background: var(--color-bg-primary, #fff);

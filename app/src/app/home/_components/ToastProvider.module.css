@@ -1,0 +1,63 @@
+/* Adapted from the prototype's Transitions.dev "Toast open/close" reference (rise from below,
+ * fade + cross blur + slight scale, asymmetric open/close timing) — same visual recipe, but
+ * driven by React state instead of manual dataset writes on a raw DOM node. */
+.toast {
+  --toast-open: 350ms;
+  --toast-close: 250ms;
+  --toast-distance: 16px;
+  --toast-blur: 2px;
+  --toast-scale: 0.97;
+  --toast-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  /* Above DeployOverlay's own 1000 (the highest z-index in this app) — a toast should always be
+   * the topmost thing on screen, even if it fires while some other overlay is still visible. */
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-full);
+  background: var(--color-fg-primary-900);
+  color: var(--color-fg-white);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+
+  opacity: 0;
+  transform: translateX(-50%) translateY(var(--toast-distance)) scale(var(--toast-scale));
+  filter: blur(var(--toast-blur));
+  pointer-events: none;
+  will-change: transform, opacity, filter;
+  transition:
+    opacity var(--toast-close) var(--toast-ease),
+    transform var(--toast-close) var(--toast-ease),
+    filter var(--toast-close) var(--toast-ease);
+}
+
+.toast[data-open='true'] {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  filter: blur(0);
+  transition:
+    opacity var(--toast-open) var(--toast-ease),
+    transform var(--toast-open) var(--toast-ease),
+    filter var(--toast-open) var(--toast-ease);
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--color-fg-success-primary, #52c76a);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    transition: none !important;
+  }
+}

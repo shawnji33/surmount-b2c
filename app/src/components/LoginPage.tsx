@@ -381,7 +381,10 @@ export default function LoginPage() {
                     </div>
 
                     <div className={styles.verifyActions}>
-                      <Button type="button" onClick={() => router.push('/onboarding/welcome')}>
+                      <Button
+                        type="button"
+                        onClick={() => router.push(`/onboarding/email-link?email=${encodeURIComponent(verificationEmail)}`)}
+                      >
                         Open verification link
                       </Button>
                       <p className={styles.authSwitchLine}>

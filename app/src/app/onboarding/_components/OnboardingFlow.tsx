@@ -6,7 +6,7 @@ import s from './onboarding.module.css';
 
 const FLOW_PHASES: string[][] = [
   ['legal-name', 'date-of-birth', 'address', 'citizenship', 'ssn', 'phone', 'verify-phone',
-   'employment', 'occupation', 'annual-income', 'net-worth', 'funding-source', 'regulatory'],
+   'employment', 'occupation', 'annual-income', 'net-worth', 'funding-source', 'regulatory', 'affiliation-details'],
   ['investing-style', 'financial-goal', 'financial-situation',
    'time-horizon', 'risk-tolerance', 'investment-allocation', 'terms'],
 ];

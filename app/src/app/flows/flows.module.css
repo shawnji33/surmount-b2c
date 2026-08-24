@@ -64,7 +64,7 @@
 .flowIndex {
   display: inline-flex;
   align-items: center;
-  padding: 3px 10px;
+  padding: 4px 10px;
   border-radius: 9999px;
   background: var(--color-bg-tertiary, #f0f1f2);
   border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
@@ -162,7 +162,7 @@
   flex-shrink: 0;
   border-radius: 50%;
   background: var(--color-fg-primary-900, #181d27);
-  color: #fff;
+  color: var(--color-fg-white);
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
   font-weight: 400;
@@ -184,7 +184,7 @@
   overflow: hidden;
   border-radius: 14px;
   border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
-  background: #fff;
+  background: var(--color-bg-primary);
   box-shadow: 0px 2px 12px rgba(10, 13, 18, 0.06);
   transition: box-shadow 160ms ease, transform 160ms ease;
 }
@@ -204,10 +204,10 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  padding: 4px 9px;
+  padding: 4px 10px;
   border-radius: 9999px;
   background: rgba(10, 13, 18, 0.72);
-  color: #fff;
+  color: var(--color-fg-white);
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
   font-weight: 400;
@@ -241,6 +241,6 @@
 }
 
 .footer code {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--color-fg-tertiary-600, #535861);
 }

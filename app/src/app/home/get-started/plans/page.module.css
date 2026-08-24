@@ -1,0 +1,403 @@
+.shell {
+  position: relative;
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: var(--color-bg-quaternary, #e9eaeb);
+}
+
+.closeButton {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  appearance: none;
+  border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+  border-radius: 9999px;
+  background: var(--color-bg-primary, #fff);
+  color: var(--color-text-secondary-700, rgba(10, 13, 18, 0.7));
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.closeButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+.closeButton:hover {
+  background: var(--color-bg-primary-hover, #fafafa);
+  color: var(--color-text-primary-900, rgba(10, 13, 18, 0.9));
+}
+
+.container {
+  flex: 1 0 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px var(--container-padding-desktop, 32px);
+}
+
+.stack {
+  width: 100%;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-xl, 20px);
+  line-height: var(--line-height-text-xl, 30px);
+  font-weight: 500;
+  white-space: nowrap;
+  background: linear-gradient(45deg, var(--color-utility-gray-900, #181d27), var(--color-utility-gray-600, #535861));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.subtitle {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: 400;
+  color: var(--color-text-secondary-700, rgba(10, 13, 18, 0.7));
+}
+
+/* ─── Monthly / Yearly toggle ─────────────────────────────────────────────── */
+
+.cycleToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  border-radius: 9999px;
+  background: var(--color-bg-tertiary, #f5f5f5);
+  border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+}
+
+.cycleOption {
+  appearance: none;
+  border: 0;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  background: transparent;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+  letter-spacing: -0.1px;
+  cursor: pointer;
+  white-space: nowrap;
+  opacity: 0.5;
+  transition: background 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+}
+
+.cycleOptionActive {
+  background: var(--color-bg-primary, #fff);
+  opacity: 1;
+  box-shadow: 0px 1px 1px rgba(10, 13, 18, 0.08);
+}
+
+.cycleSave {
+  /* Intentional brand accent — special savings callout, not UI chrome. */
+  color: var(--color-brand-600, #406ad0);
+}
+
+/* ─── Cards ───────────────────────────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  border-radius: var(--radius-2xl, 16px);
+  box-shadow: 0px 1px 2px rgba(10, 13, 18, 0.04);
+  overflow: hidden;
+}
+
+.tintCore {
+  background: linear-gradient(60.19deg, rgb(224, 214, 238) 0%, rgb(244, 240, 250) 100%);
+}
+
+.tintPlus {
+  background: linear-gradient(60.1deg, rgb(206, 222, 237) 0%, rgb(239, 244, 249) 100%);
+}
+
+.tintPro {
+  background: linear-gradient(60.19deg, rgb(227, 232, 210) 0%, rgb(243, 245, 235) 100%);
+}
+
+/* Premium diagonal shine that sweeps left-to-right across the row, card by card (Core →
+   Plus → Pro), like light passing over a glossy surface — one continuous-feeling pass every
+   cycle, then a pause, so it reads as an occasional accent rather than a constant flicker. */
+.shine {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 36%,
+    rgba(255, 255, 255, 0.16) 45%,
+    rgba(255, 255, 255, 0.32) 50%,
+    rgba(255, 255, 255, 0.16) 55%,
+    transparent 64%
+  );
+  mix-blend-mode: overlay;
+  transform: translateX(-100%);
+  animation: planShineSweep 4.8s ease-in-out infinite;
+}
+
+.card:nth-child(2) .shine {
+  animation-delay: 0.95s;
+}
+
+.card:nth-child(3) .shine {
+  animation-delay: 1.9s;
+}
+
+@keyframes planShineSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  22% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shine {
+    animation: none;
+    display: none;
+  }
+}
+
+.cardTop {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+}
+
+.cardName {
+  margin-top: 20px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-xl, 20px);
+  line-height: 28px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+  letter-spacing: -0.2px;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 12px 0 16px;
+}
+
+.price {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 30px;
+  line-height: 34px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+  letter-spacing: -0.6px;
+}
+
+.currency {
+  margin-right: 1px;
+}
+
+/* Slot-machine rolling digits */
+.roller {
+  display: inline-flex;
+}
+
+.reelWindow {
+  display: inline-block;
+  height: 34px;
+  overflow: hidden;
+}
+
+.reel {
+  display: flex;
+  flex-direction: column;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.reelDigit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reel {
+    transition: none;
+  }
+}
+
+.priceMeta {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-xs, 12px);
+  line-height: 16px;
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+  letter-spacing: -0.1px;
+}
+
+/* Annualized monthly rate (monthly × 12) struck through beside the yearly price,
+   so the saving reads at a glance (e.g. "$60 $50 USD / year"). */
+.strikePrice {
+  align-self: baseline;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: 500;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+  letter-spacing: -0.4px;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  white-space: nowrap;
+  transform-origin: left center;
+  animation: strikePriceIn 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.strikePriceExiting {
+  animation: strikePriceOut 200ms ease-in forwards;
+}
+
+@keyframes strikePriceIn {
+  from {
+    opacity: 0;
+    transform: translateX(-6px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes strikePriceOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-6px) scale(0.94);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strikePrice,
+  .strikePriceExiting {
+    animation: none;
+  }
+}
+
+.divider {
+  height: 1px;
+  background: var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+}
+
+.featuresTitle {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+  letter-spacing: -0.1px;
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--color-fg-secondary-700, #414651);
+  letter-spacing: -0.1px;
+}
+
+.check {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--color-fg-secondary-700, #414651);
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--spacing-4xl, 32px);
+}
+
+.copyright {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: 400;
+  color: var(--color-text-tertiary-600, rgba(10, 13, 18, 0.6));
+  white-space: nowrap;
+}

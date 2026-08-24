@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 28px 28px 24px;
-  background: var(--color-bg-secondary, #fafafa);
+  background: none;
   z-index: 300;
 }
 
@@ -121,9 +121,9 @@
   top: 50%;
   transform: translateY(-50%) translateX(-6px);
   background: var(--color-gray-lm-900, #181d27);
-  color: #fff;
+  color: var(--color-fg-white);
   font-size: 10px;
-  line-height: 13px;
+  line-height: 14px;
   font-weight: 400;
   font-family: var(--font-family-body, 'Geist', sans-serif);
   padding: 8px;
@@ -172,7 +172,7 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   cursor: pointer;
-  padding: 10px 9px;
+  padding: 10px 10px;
   border-radius: 9999px;
   box-shadow: 0 2px 8px rgba(10, 13, 18, 0.07);
   transition: background 120ms ease, box-shadow 120ms ease;
@@ -185,8 +185,8 @@
 }
 
 .pendingDot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--color-utility-error-600, #b6544c);
   animation: pendingPulse 2s ease-in-out infinite;
@@ -250,7 +250,7 @@
   justify-content: center;
   font-size: 10px;
   font-weight: 400;
-  color: #fff;
+  color: var(--color-fg-white);
   font-family: var(--font-family-body, 'Geist', sans-serif);
   letter-spacing: 0;
 }
@@ -320,7 +320,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 10px;
+  padding: 10px 10px;
   border: 0;
   border-radius: var(--radius-md, 8px);
   background: transparent;

@@ -44,7 +44,7 @@
   place-items: center;
   width: 34px;
   height: 34px;
-  border-radius: 9px;
+  border-radius: 10px;
   color: var(--fg-600);
   transition: background 0.15s var(--ease);
 }
@@ -78,8 +78,8 @@
   color: var(--success-700);
 }
 .statusDot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--success-600);
   box-shadow: 0 0 0 3px rgba(47, 148, 97, 0.16);
@@ -150,7 +150,7 @@
 }
 .glyphColLast::before {
   bottom: auto;
-  height: 13px; /* stop the line at the glyph center on the final row */
+  height: 14px; /* stop the line at the glyph center on the final row */
 }
 
 .glyph {
@@ -175,11 +175,11 @@
 }
 .glyphDone {
   background: var(--success-600);
-  color: #fff;
+  color: var(--color-fg-white);
 }
 .glyphAttn {
   background: var(--warning-600);
-  color: #fff;
+  color: var(--color-fg-white);
 }
 .glyphNow {
   background: var(--brand-600);
@@ -212,7 +212,7 @@
 .rowMain {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   text-align: left;
   font-size: var(--font-size-text-sm);
 }
@@ -266,12 +266,12 @@
 .activate {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   height: 40px;
   padding: 0 18px;
-  border-radius: 9px;
+  border-radius: 10px;
   background: var(--fg-900);
-  color: #fff;
+  color: var(--color-fg-white);
   font-size: var(--font-size-text-sm);
   font-weight: 500;
   transition: transform 0.15s var(--ease);

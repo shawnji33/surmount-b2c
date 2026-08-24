@@ -104,3 +104,27 @@
   justify-content: center;
   flex: 0 0 24px;
 }
+
+.iconOnly {
+  width: 44px;
+  min-width: 44px;
+  padding: 0;
+  gap: 0;
+}
+
+.iconOnly.sm {
+  width: 36px;
+  min-width: 36px;
+}
+
+.iconOnly .icon {
+  width: 18px;
+  height: 18px;
+  flex-basis: 18px;
+}
+
+.iconOnly.sm .icon {
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+}

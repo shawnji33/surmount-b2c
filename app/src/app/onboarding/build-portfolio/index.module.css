@@ -49,14 +49,14 @@
   display: inline-flex; align-items: center; justify-content: center;
   border-radius: 9999px;
   background: var(--color-fg-primary-900, #181d27);
-  color: #fff;
+  color: var(--color-fg-white);
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 14px; font-weight: 400;
 }
 .cardBody { flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .cardName {
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 17px; font-weight: 500; letter-spacing: -0.5px;
+  font-size: 18px; font-weight: 500; letter-spacing: -0.5px;
   color: var(--color-fg-primary-900, #181d27);
 }
 .cardDesc {

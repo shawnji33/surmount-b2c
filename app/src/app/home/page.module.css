@@ -223,7 +223,7 @@
   align-items: center;
   background: var(--color-bg-tertiary, #f5f5f5);
   border-radius: var(--radius-2xl, 16px);
-  padding: 3px;
+  padding: 4px;
   gap: 2px;
   flex-shrink: 0;
 }
@@ -708,7 +708,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
   font-weight: 400;
-  color: #a3a7ae;
+  color: var(--color-fg-quaternary-400);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -1075,7 +1075,7 @@
   align-items: center;
   padding: 1px 8px;
   border-radius: var(--radius-full, 9999px);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 16px;
   border: 1px solid transparent;
@@ -1083,15 +1083,15 @@
 }
 
 .txPillBuy {
-  background: #eef7ee;
-  border-color: #cbe7cc;
-  color: #316434;
+  background: var(--color-bg-success-primary);
+  border-color: var(--color-utility-success-200);
+  color: var(--color-utility-success-700);
 }
 
 .txPillSell {
-  background: #fbf5f5;
-  border-color: #f3d7d5;
-  color: #98443d;
+  background: var(--color-bg-error-primary);
+  border-color: var(--color-utility-error-200);
+  color: var(--color-utility-error-700);
 }
 
 .txPillDeposit {
@@ -1111,7 +1111,7 @@
 }
 
 .activityAmountPositive {
-  color: #3b7e3f;
+  color: var(--color-fg-success-primary);
 }
 
 .activityChevron {
@@ -1184,7 +1184,7 @@
   gap: 6px;
 }
 
-.detailComplete { color: #316434; }
+.detailComplete { color: var(--color-utility-success-700); }
 .detailPending  { color: var(--color-fg-warning-primary, #de5b18); }
 
 .detailAvatar {
@@ -1311,7 +1311,7 @@
 }
 
 .verifyProgressSegActive {
-  background: linear-gradient(to right, #de5b18, #f19246);
+  background: linear-gradient(to right, var(--color-bg-warning-solid), var(--color-utility-warning-400));
 }
 
 .verifyCardCaption {
@@ -1351,7 +1351,7 @@
   letter-spacing: 0;
 }
 .strategyProgressSegFull {
-  background: linear-gradient(to right, #3b7e3f, #56a85a);
+  background: linear-gradient(to right, var(--color-bg-success-solid), #56a85a);
 }
 
 .carouselSlide.strategyCarouselSlide {
@@ -2098,7 +2098,7 @@
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border-primary);
   border-radius: var(--radius-md, 8px);
-  color: #414651;
+  color: var(--color-fg-secondary-700);
   cursor: pointer;
   flex-shrink: 0;
   position: relative;
@@ -2124,10 +2124,10 @@
 
 .promoCardIllo {
   position: absolute;
-  right: 11px;
-  top: 115px;
-  width: 131px;
-  height: 131px;
+  right: 12px;
+  top: 116px;
+  width: 132px;
+  height: 132px;
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
@@ -2235,7 +2235,7 @@
 .switcherDropdown {
   position: fixed;
   z-index: 9999;
-  width: 263px;
+  width: 264px;
   max-height: 200px;
   display: flex;
   flex-direction: column;
@@ -2372,7 +2372,7 @@
   content: '';
   display: block;
   width: 8px;
-  height: 5px;
+  height: 6px;
   border-left: 1.5px solid white;
   border-bottom: 1.5px solid white;
   transform: rotate(-45deg) translateY(-1px);
@@ -2387,7 +2387,7 @@
   content: '';
   display: block;
   width: 8px;
-  height: 1.5px;
+  height: 1px;
   background: var(--color-fg-white, #fff);
 }
 
@@ -2485,7 +2485,7 @@
 }
 
 .switcherDropdown {
-  width: 263px;
+  width: 264px;
   max-height: 256px;
   gap: 0;
   padding: var(--spacing-xs, 4px);
@@ -2870,7 +2870,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--color-bg-primary);
   box-shadow: 0 1px 3px rgba(10, 13, 18, 0.1);
   transition: left 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -2993,7 +2993,7 @@
   border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.086));
   border-radius: var(--radius-md, 8px);
   background: var(--color-bg-secondary, #fafafa);
-  padding: 5px 10px;
+  padding: 6px 10px;
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs, 12px);
   font-weight: 500;
@@ -3087,12 +3087,12 @@
   cursor: pointer;
   width: 100%;
   min-height: 48px;
-  padding: 11px 24px;
+  padding: 12px 24px;
   margin-top: 24px;
   border-radius: var(--radius-full, 9999px);
   background: var(--color-fg-primary-900, #181d27);
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08);
-  color: #fff;
+  color: var(--color-fg-white);
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-md, 16px);
   line-height: 24px;
@@ -3222,7 +3222,7 @@
   align-items: center;
   justify-content: space-between;
   min-height: 48px;
-  padding: 13px 16px;
+  padding: 14px 16px;
   gap: 16px;
 }
 
@@ -3284,7 +3284,7 @@
 .confirmRowValueWithIcon {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   justify-content: flex-end;
   min-width: 0;
 }
@@ -3346,8 +3346,8 @@
 }
 
 .confirmRowIcon img {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   object-fit: contain;
 }
 
@@ -3374,7 +3374,7 @@
   cursor: pointer;
   width: 100%;
   min-height: 48px;
-  padding: 11px 24px;
+  padding: 12px 24px;
   border-radius: var(--radius-full, 9999px);
   background: var(--color-bg-primary, #fff);
   color: var(--color-fg-primary-900, #181d27);
@@ -3626,7 +3626,7 @@
   transition: background 150ms ease;
 }
 .emptyStateCta:hover {
-  background: #252b37;
+  background: var(--color-utility-gray-800);
 }
 
 /* Empty hero — available cash on the connected account */
@@ -3664,6 +3664,197 @@
   border-radius: 999px;
   object-fit: cover;
   border: 1px solid var(--color-border-secondary, rgba(10, 13, 18, 0.06));
+}
+
+/* ── Rich empty-state cards (Figma node 1711:822) — Portfolio + Active strategies ── */
+
+.emptyRichCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+  padding: 40px 56px 0;
+  border-radius: var(--radius-xl, 12px);
+  border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+  overflow: hidden;
+}
+
+.emptyRichCardAccount {
+  background: #d8e9f2;
+  height: 308px;
+}
+
+.emptyRichCardStrategies {
+  background: #e8d8f2;
+  padding-bottom: 0;
+}
+
+.emptyRichCardCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.emptyRichCardText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  text-align: center;
+}
+
+.emptyRichCardTitle {
+  margin: 0;
+  font-family: var(--font-instrument-serif, serif);
+  font-size: 32px;
+  line-height: normal;
+  font-weight: 400;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.emptyRichCardDesc {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535862);
+}
+
+.emptyRichCardButtons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.emptyRichCardBtnPrimary,
+.emptyRichCardBtnSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: var(--radius-md, 8px);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.emptyRichCardBtnPrimary {
+  background: var(--color-fg-primary-900, #181d27);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-fg-white);
+}
+
+.emptyRichCardBtnPrimary:hover {
+  background: var(--color-utility-gray-800);
+}
+
+.emptyRichCardBtnSecondary {
+  background: var(--color-bg-primary, #fff);
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  color: var(--color-text-secondary-700, rgba(10, 13, 18, 0.7));
+}
+
+.emptyRichCardBtnSecondary:hover {
+  background: var(--color-bg-primary-hover, #fafafa);
+}
+
+/* Broker chip fan — same overlap pattern as the onboarding tour panel */
+.emptyBrokerChipRow {
+  display: flex;
+  align-items: flex-end;
+}
+
+.emptyBrokerChip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: 144px;
+  padding: 12px 80px 24px 12px;
+  margin-right: -52px;
+  border-radius: var(--radius-xl, 12px);
+  border: 1px solid rgba(10, 13, 18, 0.07);
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0px 1px 12px 0px rgba(10, 13, 18, 0.03);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.emptyBrokerChipMore {
+  composes: emptyBrokerChip;
+  width: auto;
+  margin-right: 0;
+  padding: 12px 24px 24px 12px;
+  justify-content: flex-end;
+}
+
+.emptyBrokerChipTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.emptyBrokerChipLogo {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 0.5px solid rgba(0, 0, 0, 0.08);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.emptyBrokerChipNew {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-bg-brand-primary);
+  border: 1px solid var(--color-utility-brand-200);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 14px;
+  color: var(--color-text-brand-secondary-700);
+}
+
+.emptyBrokerChipLabel {
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: 400;
+  color: var(--color-fg-secondary-700, #414651);
+  white-space: nowrap;
+}
+
+.emptyBrokerChipMoreAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--color-bg-tertiary, #f5f5f5);
+  border: 0.5px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-quaternary-500, rgba(10, 13, 18, 0.5));
+}
+
+.emptyStrategiesIllustration {
+  width: 100%;
+  max-width: 580px;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
 }
 
 /* Connected-account chip (replaces the account switcher in empty state) */
@@ -3729,4 +3920,30 @@
   line-height: 18px;
   letter-spacing: -0.1px;
   color: var(--color-fg-tertiary-600, #535861);
+}
+
+/* Dev-only: lets Shawn flip between the card empty state and the checklist-nav exploration
+   while presenting to the team. Not part of the product surface. */
+.previewToggleLink {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 500;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px dashed var(--color-border-primary, rgba(0, 0, 0, 0.18));
+  background: var(--color-bg-primary, #fff);
+  box-shadow: 0px 4px 16px 0px rgba(10, 13, 18, 0.08);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600, #535861);
+  text-decoration: none;
+}
+
+.previewToggleLink:hover {
+  color: var(--color-fg-primary-900, #181d27);
+  border-color: rgba(0, 0, 0, 0.3);
 }

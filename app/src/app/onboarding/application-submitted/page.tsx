@@ -34,7 +34,7 @@ export default function ApplicationSubmittedPage() {
           </div>
 
           <div className={s.appSubmittedBtns}>
-            <Link href="/home" className={s.appSubmittedBtnSecondary}>
+            <Link href="/home/get-started?state=pending" className={s.appSubmittedBtnSecondary}>
               Maybe later
             </Link>
             <Link href="/onboarding/link-bank" className={s.appSubmittedBtnPrimary}>

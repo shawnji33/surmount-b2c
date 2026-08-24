@@ -39,7 +39,6 @@ type AccountItem = {
 
 const EXTERNAL_ACCOUNTS: AccountItem[] = [
   { id: 'ibkr',      name: 'Interactive Brokers', logo: '/assets/brokers/ibkr.png',      value: 142350.30, returnAbs:  2921.40 },
-  { id: 'robinhood', name: 'Robinhood',            logo: '/assets/brokers/robinhood.png', value:  67213.18, returnAbs:  -384.22 },
   { id: 'schwab',    name: 'Schwab',               logo: '/assets/brokers/schwab.png',    value:  31200.50, returnAbs:   512.66 },
 ];
 
@@ -52,7 +51,7 @@ const STRATEGIES = [
   {
     id: 'quantum',   name: 'Quantum Computing Leaders',        cover: '/assets/strategy-covers/Quantum Computing Leaders.png',
     value: 108289.32, returnAbs: 5003.28, returnPct: 4.85,
-    logos: ['/assets/brokers/surmount.png', '/assets/brokers/ibkr.png', '/assets/brokers/robinhood.png'],
+    logos: ['/assets/brokers/surmount.png', '/assets/brokers/ibkr.png'],
   },
   {
     id: 'ai',        name: 'Artificial Intelligence Innovators', cover: '/assets/strategy-covers/AI Innovators.png',
@@ -62,7 +61,7 @@ const STRATEGIES = [
   {
     id: 'biotech',   name: 'Biotechnology Ventures',           cover: '/assets/strategy-covers/Biotech Breakthroughs.png',
     value:  39093.70, returnAbs:  -301.82, returnPct: -0.77,
-    logos: ['/assets/brokers/robinhood.png', '/assets/brokers/schwab.png'],
+    logos: ['/assets/brokers/schwab.png'],
   },
   {
     id: 'data-infra', name: 'Next-Gen Data Infrastructure',   cover: '/assets/strategy-covers/Next-Gen Data Infrastructure.png',
@@ -81,7 +80,6 @@ const HOLDINGS = [
 const investingSeriesData = [
   makeSeries(79240, 85420.54, 420, 0.3),    // Surmount Investing
   makeSeries(134880, 142350.3, 760, 1.1),   // IBKR
-  makeSeries(68910, 67213.18, 520, 2.2),    // Robinhood
   makeSeries(29210, 31200.5, 210, 0.8),     // Schwab
   makeSeries(350295, 351242.54, 50, 1.5),   // HYCA (steady)
 ];

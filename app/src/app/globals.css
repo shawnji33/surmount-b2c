@@ -1,5 +1,9 @@
+/* Keep the composed role layer before Tailwind: the v4 import expansion can
+ * omit custom-property-only imports placed after `tailwindcss` in dev builds. */
+@import "../styles/product-roles.css";
 @import "tailwindcss";
 @import "../styles/tokens.css";
+@import "../styles/shadcn-bridge.css";
 
 /*
  * ─── WHY @theme inline ───────────────────────────────────────────────────────
@@ -43,8 +47,9 @@
 /*
  * ─── UUI component token mapping ─────────────────────────────────────────────
  *
- * UUI components (Tags, etc.) use short utility classes: bg-primary,
- * text-secondary, ring-primary, bg-brand-solid, text-fg-quaternary.
+ * Older UUI-derived primitives use the explicit `uui-*` namespace. Keeping
+ * that namespace separate leaves `primary` and `secondary` available for
+ * shadcn's semantic component roles.
  * These @theme entries tell Tailwind v4 what value each resolves to.
  *
  * Colors are NOT in @theme inline because they reference other CSS vars
@@ -54,10 +59,10 @@
  */
 @theme {
   /* Surfaces */
-  --color-primary:             var(--color-bg-primary);
-  --color-secondary:           var(--color-fg-secondary-700);
+  --color-uui-primary:         var(--color-bg-primary);
+  --color-uui-secondary:       var(--color-fg-secondary-700);
   --color-tertiary:            var(--color-bg-tertiary);
-  --color-primary_hover:       var(--color-bg-primary-hover);
+  --color-uui-primary-hover:   var(--color-bg-primary-hover);
 
   /* Brand */
   --color-brand-solid:         var(--color-bg-brand-solid);
@@ -84,20 +89,101 @@ html, body {
   font-family: var(--font-family-body);
   background: var(--color-bg-secondary);
   color: var(--color-fg-primary-900);
+  font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  letter-spacing: -0.5px;
+  letter-spacing: var(--type-body-tracking);
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* @layer base (not a plain global rule): CSS cascade layers give ANY unlayered rule priority
+ * over ANY layered rule regardless of specificity, so a plain `* { padding: 0 }` here would
+ * silently beat every Tailwind padding/margin utility class inside @layer utilities — exactly
+ * what was zeroing out the ported shadcn Select/Avatar's spacing. Tailwind's own Preflight reset
+ * ships inside @layer base for this reason; this reset needs to live there too. */
+@layer base {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* ─── Dropdown / popover motion — Transitions.dev "Menu dropdown" ─────────────
+ * Applies to every Radix-portalled menu surface in the app, so dropdowns move
+ * consistently wherever they appear.
+ *
+ * Two adaptations of the reference. (1) It defines a `transition` and asks the
+ * caller to hand-swap .is-open / .is-closing and remove the class after the
+ * close duration; Radix already exposes data-state=open|closed and holds the
+ * node mounted through its exit via Presence — but Presence waits on
+ * `animationend`, not `transitionend`, so the exit must be a keyframe animation
+ * for it to be seen at all. (2) The reference's hand-set data-origin is
+ * replaced by Radix's own computed transform-origin variable, which already
+ * accounts for the resolved side and align after collision flipping.
+ */
+:root {
+  --dropdown-open-dur: 250ms;
+  --dropdown-close-dur: 150ms;
+  --dropdown-pre-scale: 0.97;
+  --dropdown-closing-scale: 0.99;
+  --dropdown-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-slot='popover-content'],
+[data-slot='select-content'],
+[data-slot='dropdown-menu-content'] {
+  transform-origin: var(
+    --radix-popover-content-transform-origin,
+    var(--radix-select-content-transform-origin, var(--radix-dropdown-menu-content-transform-origin, top left))
+  );
+  will-change: transform, opacity;
+}
+
+[data-slot='popover-content'][data-state='open'],
+[data-slot='select-content'][data-state='open'],
+[data-slot='dropdown-menu-content'][data-state='open'] {
+  animation: dropdownIn var(--dropdown-open-dur) var(--dropdown-ease) both;
+}
+
+[data-slot='popover-content'][data-state='closed'],
+[data-slot='select-content'][data-state='closed'],
+[data-slot='dropdown-menu-content'][data-state='closed'] {
+  animation: dropdownOut var(--dropdown-close-dur) var(--dropdown-ease) both;
+}
+
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: scale(var(--dropdown-pre-scale));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dropdownOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(var(--dropdown-closing-scale));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='popover-content'],
+  [data-slot='select-content'],
+  [data-slot='dropdown-menu-content'] {
+    animation: none !important;
+  }
 }
 
 /* ─── AI components — pastel "intelligence" gradient ──────────────────────────
@@ -122,7 +208,7 @@ a {
 /* Gradient border + soft pastel glow (white interior). */
 .ai-gradient-border {
   border: 1px solid transparent;
-  background: linear-gradient(#fff, #fff) padding-box, var(--gradient-ai) border-box;
+  background: linear-gradient(var(--color-bg-primary), var(--color-bg-primary)) padding-box, var(--gradient-ai) border-box;
   box-shadow: var(--shadow-ai);
 }
 
@@ -133,6 +219,189 @@ a {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+}
+
+/* Rotating conic variant of --gradient-ai, for input/composer borders that should feel "alive"
+ * without being permanently flashy: invisible at rest, sweeps in on hover/focus. Same 5 color
+ * stops as --gradient-ai (not new literals), so anything AI-flavored on screen at once reads as
+ * one consistent gradient family. Apply to a `position: relative` element with its own
+ * border-radius set — the ring inherits that radius. */
+@property --ai-border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes ai-border-spin {
+  to {
+    --ai-border-angle: 360deg;
+  }
+}
+
+:root {
+  --gradient-ai-conic: conic-gradient(
+    from var(--ai-border-angle),
+    #b1e0f5 0%,
+    #cccde9 23%,
+    #e7b9dd 48%,
+    #e7d0c4 73%,
+    #e7dbb8 100%
+  );
+}
+
+.ai-gradient-border-spin {
+  position: relative;
+  z-index: 0;
+}
+
+.ai-gradient-border-spin::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: var(--gradient-ai-conic);
+  z-index: -1;
+  opacity: 0;
+  animation: ai-border-spin 3s linear infinite;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.ai-gradient-border-spin::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--color-bg-primary);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.ai-gradient-border-spin:hover::before,
+.ai-gradient-border-spin:focus-within::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-gradient-border-spin::before {
+    animation: none;
+  }
+}
+
+/* Ambient dot-grid backdrop for centered hero panels (Promptfolio, the Create page's
+ * "build your own strategy" CTA) — radial dot pattern faded to an ellipse mask so it reads as an
+ * atmosphere behind the content rather than a hard-edged texture block. Needs `position: relative`
+ * on the parent; this element fills it via inset:0. */
+.dot-grid-panel {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(24, 29, 39, 0.1) 1.15px, transparent 1.15px);
+  background-size: 12px 12px;
+  background-position: center;
+  opacity: 0.72;
+  mask-image: radial-gradient(ellipse at center, #000 0%, #000 42%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, #000 42%, transparent 78%);
+}
+
+/* ─── Glass surfaces — Liquid Glass (iOS 26 style) ─────────────────────────────
+ * Shared treatment for floating/elevated surfaces that sit over visual content
+ * (chart headers, floating action bars, nav pills). backdrop-filter blurs
+ * whatever's underneath, so this only reads as "glass" over something with
+ * visual variation — a photo, gradient, or chart, not a flat page background.
+ * Shadow is calibrated soft/low-contrast (5% ambient) rather than heavy, to
+ * match a refined elevated-glass feel instead of a harsh drop shadow.
+ * Use these tokens / utility classes instead of re-declaring the recipe per
+ * component.
+ */
+:root {
+  --glass-blur: blur(40px) saturate(110%);
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-shadow-ambient: 0 8px 24px rgba(0, 0, 0, 0.05);
+  --glass-shadow-edge: inset 0 0 0 0.5px rgba(255, 255, 255, 0.6);
+  --glass-sheen: linear-gradient(315deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 55%);
+}
+
+.glass-surface {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow-ambient), var(--glass-shadow-edge);
+}
+
+.glass-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--glass-sheen);
+  pointer-events: none;
+}
+
+.glass-surface--card {
+  border-radius: var(--radius-2xl, 16px);
+}
+
+.glass-surface--pill {
+  border-radius: var(--radius-full, 9999px);
+}
+
+.glass-surface--circle {
+  border-radius: 50%;
+}
+
+/*
+ * Onboarding hero-card morph — shared element (React <ViewTransition name="onboarding-hero-card">)
+ * between /onboarding/welcome and /onboarding/tour. Grows first / fastest so the box has already
+ * settled by the time the content inside it is still catching up.
+ */
+::view-transition-group(onboarding-hero-card) {
+  animation-duration: 0.3s;
+  animation-delay: 0.1s;
+  animation-timing-function: cubic-bezier(0.75, 0, 0.25, 1.01);
+}
+
+/*
+ * Title / description / CTA travel to their new position as part of the same
+ * navigation — not a crossfade-in-place. Fast/snappy: cubic-bezier(0.7, 0, 0.3, 1), 200ms.
+ */
+::view-transition-group(onboarding-step-title),
+::view-transition-group(onboarding-step-desc),
+::view-transition-group(onboarding-step-cta) {
+  animation-duration: 0.2s;
+  animation-delay: 0.1s;
+  animation-timing-function: cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+/* Welcome icon has no counterpart on the next screen — it disappears first, before anything else moves. */
+::view-transition-group(onboarding-welcome-icon),
+::view-transition-old(onboarding-welcome-icon),
+::view-transition-new(onboarding-welcome-icon) {
+  animation-duration: 0.3s;
+}
+
+/*
+ * The preview panel (Figma node 1728:3594) has no counterpart on the previous screen, so it
+ * doesn't need cross-route shared-element continuity — it's a plain mount animation, handled
+ * by Motion (see tour/page.tsx) instead of the native View Transition machinery. That avoids
+ * a real limitation: a custom transform on ::view-transition-new() for a nested "enter-only"
+ * participant gets clipped by its own ::view-transition-group()'s bounding box, so translateX
+ * never became visible no matter the tuning — this is a still-immature part of the experimental
+ * View Transitions integration, not a timing/easing problem.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(onboarding-hero-card),
+  ::view-transition-group(onboarding-step-title),
+  ::view-transition-group(onboarding-step-desc),
+  ::view-transition-group(onboarding-step-cta),
+  ::view-transition-group(onboarding-welcome-icon),
+  ::view-transition-old(onboarding-welcome-icon),
+  ::view-transition-new(onboarding-welcome-icon) {
+    animation-duration: 0.001s;
+  }
 }
 
 /* Recharts — never show focus rings on charts */

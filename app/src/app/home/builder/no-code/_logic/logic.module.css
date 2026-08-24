@@ -1,0 +1,1528 @@
+/* Matches the lifted-card treatment the Strategy builder tab's panels use (radius-2xl, 6%-alpha
+ * border, soft ambient shadow) so the Logic builder reads as a peer surface on the same page
+ * rather than a differently-styled embed. */
+
+/* 440px, not the old 300 — the condition editor lays its clauses out as a
+ * sentence (badge + capsule + "of" + capsule) and needs the width to keep a row
+ * on one line. Figma draws the panel at 515; 440 holds the same layout while
+ * leaving the canvas usable at 1280.
+ *
+ * Transitions.dev "Card resize", adapted: the canvas has no width of its own to
+ * tween — it's a grid track — so the transition goes on grid-template-columns
+ * instead of width. Same duration and ease, same result: the canvas eases to
+ * its new size instead of jumping when the panel opens.
+ *
+ * overflow: hidden clips the fixed-width panel as its track collapses, so the
+ * panel fades out at full width rather than being squashed on the way. */
+.workspace {
+  --resize-dur: 300ms;
+  --resize-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  overflow: hidden;
+  transition: grid-template-columns var(--resize-dur) var(--resize-ease);
+  will-change: grid-template-columns;
+}
+
+.workspaceWithPanel {
+  grid-template-columns: minmax(0, 1fr) 440px;
+  gap: var(--spacing-xl);
+}
+
+/* Transitions.dev "Panel reveal" — fade and cross-blur on one duration/ease
+ * pair, but travelling on X rather than the reference's Y: the panel enters
+ * from the right edge it's docked to, so a horizontal slide matches where it
+ * actually comes from. Travel is a short 48px — the spec notes a shorter travel
+ * still reads as a full open, and the reference's "half the panel's own size"
+ * would be a 220px flight across the canvas. */
+.panelSlide {
+  --panel-open-dur: 400ms;
+  --panel-close-dur: 350ms;
+  --panel-translate-x: 48px;
+  --panel-blur: 2px;
+  --panel-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Pinned to row 1, column 2. Without this the panel is auto-placed, and the
+   * moment the second track collapses on close it wraps to a new implicit row
+   * and visibly drops below the canvas mid-transition. Held here it stays put
+   * and simply slides out past the workspace's clipped right edge. */
+  grid-area: 1 / 2;
+  width: 440px;
+  transform: translateX(var(--panel-translate-x));
+  opacity: 0;
+  filter: blur(var(--panel-blur));
+  pointer-events: none;
+  transition:
+    transform var(--panel-close-dur) var(--panel-ease),
+    opacity var(--panel-close-dur) var(--panel-ease),
+    filter var(--panel-close-dur) var(--panel-ease);
+  will-change: transform, opacity, filter;
+}
+
+.panelSlide[data-open='true'] {
+  transform: translateX(0);
+  opacity: 1;
+  filter: blur(0);
+  pointer-events: auto;
+  transition:
+    transform var(--panel-open-dur) var(--panel-ease),
+    opacity var(--panel-open-dur) var(--panel-ease),
+    filter var(--panel-open-dur) var(--panel-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workspace,
+  .panelSlide {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  .workspaceWithPanel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto;
+  }
+
+  /* Narrow layout stacks the panel under the canvas, so release the row-1 pin
+   * and let it take the second row at full width. */
+  .panelSlide {
+    grid-area: auto;
+    width: 100%;
+  }
+
+  .panel {
+    height: auto;
+    max-height: 520px;
+  }
+}
+
+/* Fills the viewport below the page chrome (~240px of header, tabs and
+ * padding) but never taller than 960px, so the graph gets room on a large
+ * display without the card becoming unreasonably tall. */
+.canvasWrap {
+  position: relative;
+  height: clamp(480px, calc(100vh - 240px), 960px);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
+}
+
+/* Flat ground, no dot grid — the investing-agent canvas sits the graph on a
+ * plain light surface, and the capsules carry enough weight on their own that
+ * a grid behind them just competes. */
+.canvas {
+  background: var(--color-bg-secondary);
+}
+
+/* ─── Nodes — ported from the investing-agent workflow canvas ───────────────
+ * Source: ~/Surmount/investing-agent/src/components/chat-shell/agent-flow-diagram.tsx
+ *
+ * Three shapes carry the whole graph: a white card for the trigger, a
+ * brand-blue capsule for conditions, a near-black capsule for actions. The
+ * capsules get their raised feel from a paired inset highlight and shade
+ * (.pillInset) rather than a heavier border.
+ *
+ * Brand blue is deliberate here and is the one place it appears in this app's
+ * chrome: in this graph the IF/ELSE capsule is the logic itself, not a control
+ * skin, and it's the visual the investing-agent canvas is known by. */
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--color-fg-quaternary-400);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  z-index: 10;
+}
+
+/* Offset from each node's own left edge instead of centered, so the dots on
+ * the schedule / IF / ELSE spine share an x regardless of pill width. The 4px
+ * overshoot makes the dot straddle the border rather than float outside it. */
+.dotBottom.dotBottom {
+  left: 28px;
+  top: calc(100% - 4px);
+  bottom: auto;
+  transform: translate(-50%, 0);
+}
+
+.dotTop.dotTop {
+  left: 28px;
+  bottom: calc(100% - 4px);
+  top: auto;
+  transform: translate(-50%, 0);
+}
+
+/* Trigger — the only square-cornered node, which is what marks it as the
+ * entry point rather than a step in the logic. */
+.scheduleCard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-xl);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  box-shadow: 0 1px 2px 0 rgba(10, 13, 18, 0.05);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.scheduleCard:hover {
+  background: var(--color-bg-secondary);
+}
+
+.scheduleLead {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary-900);
+}
+
+.scheduleLead svg {
+  width: 20px;
+  height: 20px;
+  color: var(--color-fg-tertiary-600);
+}
+
+.scheduleDivider {
+  align-self: stretch;
+  width: 1px;
+  background: var(--color-border-primary);
+}
+
+.scheduleText {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-text-primary-900);
+}
+
+/* Condition / ELSE capsule */
+.pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  border: 1px solid rgba(10, 13, 18, 0.3);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-brand-solid);
+  color: var(--color-fg-white);
+  /* One line, always. Clauses are separate pills now, so nothing here needs to
+   * wrap — and a wrapped pill reads as two statements rather than one. */
+  white-space: nowrap;
+  box-shadow: 0 3px 8px 0 rgba(34, 88, 241, 0.15), 0 1px 2px 0 rgba(10, 13, 18, 0.05);
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.pill:hover {
+  background: var(--color-bg-brand-solid-hover);
+}
+
+/* ELSE carries no condition text, so it never opens the panel and shouldn't
+ * advertise a click. */
+.pillBare {
+  cursor: default;
+}
+
+.pillBare:hover {
+  background: var(--color-bg-brand-solid);
+}
+
+.pillLabel {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  /* The source uses font-bold; Surmount allows 400/500 only. */
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+
+/* Paired highlight + shade, inset. Reads as a lit top edge on a solid body. */
+.pillInset {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 2px 2px 0 rgba(255, 255, 255, 0.35), inset 0 -2px 0 0 rgba(10, 13, 18, 0.05);
+}
+
+/* Action capsule */
+.actionPill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  border: 1px solid rgba(10, 13, 18, 0.3);
+  border-radius: var(--radius-full);
+  background: rgba(10, 13, 18, 0.8);
+  color: var(--color-fg-white);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 3px 8px 0 rgba(10, 13, 18, 0.1), 0 1px 2px 0 rgba(10, 13, 18, 0.05);
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.actionPill:hover {
+  background: rgba(59, 61, 65, 0.8);
+}
+
+.ticker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.tickerLogo {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.tickerFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xxs);
+  font-weight: 500;
+  color: var(--color-fg-white);
+  letter-spacing: -0.2px;
+}
+
+.actionPlaceholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Selection — a ring rather than a border swap, so nothing reflows by a pixel
+ * when a node is picked. */
+:global(.react-flow__node.selected) .scheduleCard,
+:global(.react-flow__node.selected) .pill,
+:global(.react-flow__node.selected) .actionPill {
+  box-shadow: 0 0 0 3px rgba(10, 13, 18, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scheduleCard,
+  .pill,
+  .actionPill {
+    transition: none;
+  }
+}
+
+/* ─── Side panel ───────────────────────────────────────────────────────────
+ * Every control in here is a design-system component (shadcn Select, Label,
+ * ToggleGroup, Input, Button — src/components/ui/). This module now supplies
+ * layout only; the controls bring their own appearance. The one exception is
+ * .selectTrigger, which stretches the DS trigger to fill its cell — the
+ * component defaults to w-fit. */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: clamp(480px, calc(100vh - 240px), 960px);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  background: var(--color-bg-primary);
+  box-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
+  overflow: hidden;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.panelTitle {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.panelBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+  padding: var(--spacing-xl);
+  overflow-y: auto;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.fieldLabel.fieldLabel {
+  color: var(--color-fg-tertiary-600);
+}
+
+.fieldControl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.fieldRow {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+/* Doubled selector to beat the ported component's own `w-fit`, regardless of
+ * CSS import order — same pattern used in DeployOverlay and PickStocksStep. */
+.selectTrigger.selectTrigger {
+  width: 100%;
+  min-width: 0;
+}
+
+.fieldRow .selectTrigger.selectTrigger {
+  flex: 1;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.editableChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) var(--spacing-2-5);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-tertiary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.editableChip button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-fg-quaternary-400);
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.editableChip button:hover {
+  background: var(--color-border-secondary);
+  color: var(--color-fg-primary-900);
+}
+
+.editableChip svg {
+  width: 8px;
+  height: 8px;
+}
+
+.placeholder {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-quaternary-400);
+}
+
+.quickPicks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.addTickerRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.tickerInput.tickerInput {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editableChip button {
+    transition: none;
+  }
+}
+
+/* ─── Condition editor — Figma 2101:79107 / 2103:85114 / 2103:85186 ─────────
+ * The condition reads as a sentence: IF <fn> of <asset> / IS <comparator> /
+ * <fn> of <asset>. Every value is a brand-blue capsule that opens a popover.
+ * The capsules sit inside a tinted "slot" so the sentence reads as one phrase
+ * rather than three loose controls. */
+
+.conditionRows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+  /* Own stacking context so the per-row z-index below can't escape the panel. */
+  isolation: isolate;
+}
+
+.conditionRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xl);
+}
+
+/* Aligns the third row's slot with the two above it: 36px badge + 20px gap. */
+.conditionRowIndented {
+  padding-left: 56px;
+}
+
+.rowBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-tertiary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  /* Figma specifies semibold; Surmount permits 400/500 only. */
+  font-weight: 500;
+  line-height: var(--line-height-text-sm);
+  color: var(--color-text-secondary-700);
+}
+
+.slot {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  min-width: 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-tertiary);
+}
+
+/* The IF row carries the darker slot in the mock — it's the primary clause. */
+.slotStrong {
+  background: var(--color-bg-quaternary);
+}
+
+.slotJoin {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-md);
+  font-weight: 400;
+  line-height: var(--line-height-text-md);
+  color: var(--color-text-primary-900);
+}
+
+.pillTrigger {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.pillTrigger:focus-visible {
+  outline: 2px solid var(--color-fg-secondary-700);
+  outline-offset: 2px;
+  border-radius: var(--radius-full);
+}
+
+.valuePill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  max-width: 100%;
+  padding: var(--spacing-sm) var(--spacing-xl);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-brand-solid);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  line-height: var(--line-height-text-sm);
+  color: var(--color-fg-white);
+  white-space: nowrap;
+  transition: background-color 140ms ease;
+}
+
+.pillTrigger:hover .valuePill,
+.valuePill[data-open] {
+  background: var(--color-bg-brand-solid-hover);
+}
+
+/* Long indicator names ("10d Cumulative Return") truncate rather than pushing
+ * the capsule past the slot — the caret and icon must stay visible. */
+.valuePillLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.valuePillIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.valuePillCaret {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  transition: transform 140ms ease;
+}
+
+.valuePill[data-open] .valuePillCaret {
+  transform: rotate(180deg);
+}
+
+/* The lit-edge treatment shared with the canvas capsules. */
+.valuePillInset {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 -2px 0 0 rgba(10, 13, 18, 0.05);
+}
+
+/* ─── Popovers ─────────────────────────────────────────────────────────── */
+
+.popover.popover {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  width: 300px;
+  padding: var(--spacing-xl);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  box-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
+}
+
+.popoverLabel {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  line-height: var(--line-height-text-xs);
+  color: var(--color-text-tertiary-600);
+}
+
+.categoryRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.categoryTag {
+  appearance: none;
+  padding: 2px var(--spacing-sm);
+  border: 1px solid var(--color-utility-gray-200);
+  border-radius: var(--radius-sm);
+  background: var(--color-utility-gray-50);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  line-height: var(--line-height-text-xs);
+  color: var(--color-utility-gray-700);
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+
+.categoryTagActive {
+  /* Dark, not brand blue — Figma 2105:85761 moved it, which also lines up with
+   * the standing rule that brand blue is for data, not chrome. */
+  border-color: var(--color-border-primary);
+  background: var(--color-fg-secondary-700);
+  color: var(--color-fg-white);
+}
+
+/* Doubled selector beats the ported SelectTrigger's own `w-fit`. */
+.popoverSelect.popoverSelect {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  border-radius: var(--radius-md);
+}
+
+/* ─── Asset popover ────────────────────────────────────────────────────── */
+
+.assetPopover.assetPopover {
+  gap: var(--spacing-xs);
+  width: 320px;
+  padding: var(--spacing-md);
+}
+
+.assetPopover .popoverLabel {
+  padding: var(--spacing-md) var(--spacing-md) 0;
+}
+
+.assetList {
+  display: flex;
+  flex-direction: column;
+  max-height: 280px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.assetList::-webkit-scrollbar {
+  display: none;
+}
+
+.assetRow {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 140ms ease;
+}
+
+.assetRow:hover,
+.assetRow[data-selected] {
+  background: var(--color-bg-secondary);
+}
+
+.assetInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  min-width: 0;
+}
+
+.assetAvatar {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border: 1px solid rgba(10, 13, 18, 0.08);
+  border-radius: var(--radius-full);
+  object-fit: contain;
+}
+
+.assetAvatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xxs);
+  font-weight: 500;
+  color: var(--color-fg-white);
+}
+
+.assetTicker {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  line-height: var(--line-height-text-sm);
+  color: var(--color-fg-primary-900);
+}
+
+.assetName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+  line-height: var(--line-height-text-xs);
+  color: var(--color-fg-tertiary-600);
+}
+
+.assetPrice {
+  flex-shrink: 0;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  line-height: var(--line-height-text-sm);
+  color: var(--color-fg-primary-900);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Comparator popover ───────────────────────────────────────────────── */
+
+.comparatorList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.comparatorRow {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  color: var(--color-fg-primary-900);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 140ms ease;
+}
+
+.comparatorRow:hover,
+.comparatorRow[data-selected] {
+  background: var(--color-bg-secondary);
+}
+
+.comparatorIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--color-fg-primary-900);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .valuePill,
+  .valuePillCaret,
+  .categoryTag,
+  .assetRow,
+  .comparatorRow {
+    transition: none;
+  }
+}
+
+/* ─── Condition capsule text — Figma 2103:85719 ────────────────────────────
+ * The clause reads as a sentence, so the function carries the emphasis, the
+ * connectives recede, and each ticker gets an inset chip that makes the assets
+ * scannable across a graph of several conditions. */
+.pillText {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  gap: var(--spacing-md);
+}
+
+.pillStrong {
+  font-weight: 500;
+}
+
+.pillJoin {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.pillChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  background: rgba(10, 13, 18, 0.28);
+  box-shadow: inset 0 1px 2px 0 rgba(10, 13, 18, 0.18);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+/* ─── Fixed-value toggle — Figma 2103:85516 / 2103:85588 ───────────────────── */
+
+.fixedToggleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.fixedToggleLabel.fixedToggleLabel {
+  color: var(--color-fg-primary-900);
+  cursor: pointer;
+}
+
+.popoverField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.popoverInput.popoverInput {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--font-size-text-sm);
+}
+
+/* Native number spinners aren't in the design and they crowd a narrow field. */
+.popoverInput.popoverInput::-webkit-outer-spin-button,
+.popoverInput.popoverInput::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.popoverInput.popoverInput {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* ─── Multi-clause conditions ──────────────────────────────────────────────
+ * A condition is a list of clauses joined by AND or OR. One "Any of / All of"
+ * control sets the join, and every clause after the first takes its badge from
+ * that — so the two can't drift out of sync. */
+
+
+
+
+
+/* Each clause is one group; the left rail ties its three rows together so a
+ * list of them stays readable. */
+
+
+
+
+
+
+
+
+
+/* Canvas capsule: clauses run inline, separated by the join word. */
+
+
+@media (prefers-reduced-motion: reduce) {
+  .clause {
+    animation: none;
+  }
+
+  .joinField,
+  .addMenuItem,
+  .clauseRemove,
+  .addClause {
+    transition: none;
+  }
+
+  .addClause:active {
+    scale: 1;
+  }
+}
+
+/* ─── Condition group on the canvas ────────────────────────────────────────
+ * The condition is a group, not a single pill: an All-of / Any-of header, one
+ * capsule per clause down a left rail, and a "+" that appends another. The
+ * structure is edited here; the side panel edits whichever capsule is active. */
+
+.conditionGroup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+/* The leading IF sits in the same column as the and/or connectors below it, so
+ * every pill starts on one left edge no matter how the connectors read. */
+
+
+/* A real field, not a label — clicking flips and↔or in place. */
+
+
+.addMenu.addMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 220px;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  box-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
+}
+
+.addMenuItem {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  line-height: var(--line-height-text-sm);
+  color: var(--color-fg-primary-900);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 150ms ease-out;
+}
+
+.addMenuItem:hover {
+  background: var(--color-bg-secondary);
+}
+
+.addMenuHint {
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+  line-height: var(--line-height-text-xs);
+  color: var(--color-fg-tertiary-600);
+}
+
+
+
+
+/* Left rail ties the clauses to the header they're governed by. */
+
+.clauseRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  /* Enter only — 200ms ease-out on transform + opacity. */
+  animation: clauseIn 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes clauseIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Ring rather than a border swap, so picking a clause doesn't reflow the row. */
+.pill[data-active] {
+  box-shadow: 0 0 0 3px rgba(10, 13, 18, 0.12), 0 3px 8px 0 rgba(34, 88, 241, 0.15);
+}
+
+.clauseRemove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  color: var(--color-fg-quaternary-400);
+  cursor: pointer;
+  transition: background-color 150ms ease-out, color 150ms ease-out;
+}
+
+.clauseRemove:hover {
+  background: var(--color-bg-tertiary);
+  color: var(--color-fg-primary-900);
+}
+
+.clauseRemove svg {
+  width: 12px;
+  height: 12px;
+}
+
+
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  .clauseRow {
+    animation: none;
+  }
+
+  .joinField,
+  .addMenuItem,
+  .clauseRemove,
+  .addClause {
+    transition: none;
+  }
+
+  .addClause:active {
+    scale: 1;
+  }
+}
+
+
+/* ─── Clause rows ──────────────────────────────────────────────────────────
+ * The leading IF reads inside its own pill; every clause after it is indented
+ * under that pill and introduced by a white And/Or chip. */
+
+.pillLead {
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  padding-right: var(--spacing-xs);
+}
+
+/* Indented under the IF pill, on the rail that ties the branch together. */
+
+.joinField {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  flex-shrink: 0;
+  padding: var(--spacing-xs) var(--spacing-lg);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  line-height: var(--line-height-text-sm);
+  color: var(--color-fg-primary-900);
+  cursor: pointer;
+  box-shadow: 0 1px 2px 0 rgba(10, 13, 18, 0.05);
+  transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+
+.joinField:hover {
+  background: var(--color-bg-secondary);
+  border-color: rgba(10, 13, 18, 0.2);
+}
+
+/* Dashed add row — reads as a slot waiting to be filled rather than a button. */
+/* Dashed slot node — reads as a place a statement can go, not a button. */
+.addClause {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  border: 1px dashed rgba(10, 13, 18, 0.22);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+}
+
+/* Root "+" closing the outer spine. */
+.addRoot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(10, 13, 18, 0.3);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-brand-solid);
+  color: var(--color-fg-white);
+  cursor: pointer;
+  box-shadow: 0 3px 8px 0 rgba(34, 88, 241, 0.15), 0 1px 2px 0 rgba(10, 13, 18, 0.05);
+  transition: background-color 150ms ease-out;
+}
+
+.addRoot:hover {
+  background: var(--color-bg-brand-solid-hover);
+}
+
+.addRoot svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Left-edge terminal, matching the spine dots. */
+.dotLeft.dotLeft {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.addClause:hover {
+  border-color: rgba(10, 13, 18, 0.36);
+  background: var(--color-bg-secondary);
+  color: var(--color-fg-primary-900);
+}
+
+.addClause svg {
+  width: 14px;
+  height: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .joinField,
+  .addClause {
+    transition: none;
+  }
+}
+
+/* ─── Branch rail ──────────────────────────────────────────────────────────
+ * The rows nested under the IF pill live inside a single node, so React Flow
+ * can't wire them — the connectors are drawn here instead: one vertical rail
+ * dropping from the pill's bottom-left dot, with a horizontal stub and an
+ * end dot per row, matching the edge treatment used everywhere else.
+ *
+ * The rail stops at the last row's centre (bottom: 50% of the final row)
+ * rather than running to the container's edge, so it terminates on a stub
+ * instead of dangling past the last item. */
+
+
+
+
+
+/* Horizontal stub from the rail into the row. */
+
+/* End dot where the stub meets the row — same 10px white dot as the handles. */
+
+/* Short link between the And/Or chip and its pill. */
+.railLink {
+  width: 20px;
+  height: 1px;
+  flex-shrink: 0;
+  background: var(--color-utility-gray-300);
+}
+
+/* Dashed slot node — reads as a place a statement can go, not a button. */
+.addClause {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  border: 1px dashed rgba(10, 13, 18, 0.22);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+}
+
+/* Root "+" closing the outer spine. */
+.addRoot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(10, 13, 18, 0.3);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-brand-solid);
+  color: var(--color-fg-white);
+  cursor: pointer;
+  box-shadow: 0 3px 8px 0 rgba(34, 88, 241, 0.15), 0 1px 2px 0 rgba(10, 13, 18, 0.05);
+  transition: background-color 150ms ease-out;
+}
+
+.addRoot:hover {
+  background: var(--color-bg-brand-solid-hover);
+}
+
+.addRoot svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Left-edge terminal, matching the spine dots. */
+.dotLeft.dotLeft {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* An added statement node: chip + link + pill, moving as one. */
+.clauseNode {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.clauseNode .joinField {
+  position: relative;
+}
+
+/* ─── Allocation ───────────────────────────────────────────────────────────
+ * The action branch allocates the assets picked on the Strategy builder tab;
+ * the panel edits the weights, the pill shows the result. */
+
+.holdingList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.holdingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.holdingLogo {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.holdingLogoFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xxs);
+  font-weight: 500;
+  color: var(--color-fg-white);
+}
+
+.holdingTicker {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.holdingWeight.holdingWeight {
+  width: 72px;
+  flex-shrink: 0;
+  height: 32px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.holdingWeight.holdingWeight::-webkit-outer-spin-button,
+.holdingWeight.holdingWeight::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.holdingPct {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-tertiary-600);
+}
+
+.holdingRemove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-fg-quaternary-400);
+  cursor: pointer;
+  transition: background-color 150ms ease-out, color 150ms ease-out;
+}
+
+.holdingRemove:hover {
+  background: var(--color-bg-tertiary);
+  color: var(--color-fg-primary-900);
+}
+
+.holdingRemove svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Total turns red off 100% — an unbalanced basket is the one error worth
+ * surfacing without blocking the user mid-edit. */
+.holdingTotal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border-secondary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+  font-variant-numeric: tabular-nums;
+}
+
+.holdingTotal[data-off] {
+  color: var(--color-utility-error-600);
+}
+
+/* On the canvas pill */
+.holding {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.holdingShare {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holdingRemove {
+    transition: none;
+  }
+}
+
+/* Group marker — several rules share one spine, so each needs a visible start
+ * or the pills read as a single continuous list. */
+.groupLabel {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--spacing-md);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  line-height: var(--line-height-text-xs);
+  color: var(--color-fg-tertiary-600);
+  white-space: nowrap;
+}
+
+/* Remove affordances — kept quiet until hover so the graph stays calm. */
+.nodeRemove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-left: var(--spacing-md);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-fg-quaternary-400);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 150ms ease-out, background-color 150ms ease-out, color 150ms ease-out;
+}
+
+.clauseNode:hover .nodeRemove,
+.nodeRemove:focus-visible {
+  opacity: 1;
+}
+
+.nodeRemove:hover {
+  background: var(--color-bg-tertiary);
+  color: var(--color-fg-primary-900);
+}
+
+.nodeRemove svg {
+  width: 12px;
+  height: 12px;
+}
+
+.groupLabel {
+  gap: var(--spacing-xs);
+}
+
+.groupRemove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-fg-quaternary-400);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 150ms ease-out, color 150ms ease-out;
+}
+
+.groupLabel:hover .groupRemove,
+.groupRemove:focus-visible {
+  opacity: 1;
+}
+
+.groupRemove:hover {
+  color: var(--color-utility-error-600);
+}
+
+.groupRemove svg {
+  width: 10px;
+  height: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nodeRemove,
+  .groupRemove {
+    transition: none;
+  }
+}
+
+/* The rule marker is also the only way to delete a group, so it reads as a
+ * control rather than a caption: filled surface, stronger text, and a delete
+ * button that's always visible instead of hover-only. */
+.groupLabel.groupLabel {
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) var(--spacing-lg);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-tertiary);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-secondary-700);
+  box-shadow: 0 1px 2px 0 rgba(10, 13, 18, 0.05);
+}
+
+.groupRemove.groupRemove {
+  width: 18px;
+  height: 18px;
+  opacity: 1;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  color: var(--color-fg-tertiary-600);
+}
+
+.groupRemove.groupRemove:hover {
+  background: var(--color-bg-error-primary);
+  border-color: var(--color-utility-error-200);
+  color: var(--color-utility-error-600);
+}
+
+.scheduleText[data-empty] {
+  color: var(--color-fg-quaternary-400);
+  font-weight: 400;
+}

@@ -64,7 +64,6 @@ export type DemoAccount = {
 
 export const DEMO_ACCOUNTS: DemoAccount[] = [
   { id: 'webull', name: 'Webull', balance: 2423983.56, orderAmount: 3234.45, logo: '/assets/brokers/av-webull.png' },
-  { id: 'robinhood', name: 'Robinhood', balance: 184920.12, orderAmount: 2500, logo: '/assets/brokers/av-robinhood.png' },
   { id: 'schwab', name: 'Schwab IRA', balance: 89340.5, orderAmount: 1500, logo: '/assets/brokers/av-schwab.png' },
   { id: 'ibkr', name: 'IBKR Taxable', balance: 42670.88, orderAmount: 1000, logo: '/assets/brokers/av-ibkr.png' },
 ];

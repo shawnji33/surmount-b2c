@@ -1,6 +1,8 @@
 'use client';
 
 import { type ActiveAgent, type DemoConfig, type DetailTab } from '../_data';
+import { ActivityHeatmap } from './ActivityHeatmap';
+import { ActivityDetails } from './ActivityDetails';
 import s from '../page.module.css';
 
 export function AgentDetailStage({
@@ -88,7 +90,7 @@ export function AgentDetailStage({
               className={[s.agentDetailTab, activeDetailTab === tab ? s.agentDetailTabActive : ''].filter(Boolean).join(' ')}
               onClick={() => setActiveDetailTab(tab)}
             >
-              {tab === 'workflow' ? 'Workflow' : tab === 'activity' ? 'Agent activity' : 'Transaction history'}
+              {tab === 'workflow' ? 'Workflow' : tab === 'activity' ? 'Activities' : 'Transactions'}
             </button>
           ))}
         </div>
@@ -146,40 +148,11 @@ export function AgentDetailStage({
           </div>
         )}
 
-        {/* Agent activity */}
+        {/* Agent activity — heatmap + details, per the Aug 2026 redesign */}
         {activeDetailTab === 'activity' && (
-          <div className={s.activityFeed}>
-            {detailDemoConfig.activity.map((run, ri) => (
-              <div key={ri} className={s.activityRun}>
-                <div className={s.activityRunLabel}>
-                  <span>{run.label}</span>
-                  <div className={s.activityRunLine} aria-hidden="true" />
-                </div>
-                <div className={s.activityList}>
-                  {run.items.map((item) => (
-                    <div key={item.id} className={s.activityItemWrap}>
-                      <div className={s.activityItem}>
-                        <div className={s.activityItemLeft}>
-                          <span className={[s.activityIcon, item.status === 'success' ? s.activityIconSuccess : s.activityIconWarning].join(' ')} aria-hidden="true">
-                            {item.status === 'success' ? (
-                              <svg viewBox="0 0 20 20" fill="none"><path d="M5 10l3.5 3.5L15 7" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                            ) : (
-                              <svg viewBox="0 0 20 20" fill="none"><path d="M10 6v5M10 13.5v.5" stroke="#fff" strokeWidth="2" strokeLinecap="round" /></svg>
-                            )}
-                          </span>
-                          <span className={s.activityTitle}>{item.title}</span>
-                        </div>
-                        <span className={s.activityTime}>{item.time}</span>
-                      </div>
-                      {item.tooltip && (
-                        <div className={s.activityTooltip} role="tooltip">{item.tooltip}</div>
-                      )}
-                      <div className={s.activityDivider} aria-hidden="true" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+          <div className={s.activitiesTabBody}>
+            <ActivityHeatmap data={detailDemoConfig.heatmap} />
+            <ActivityDetails runs={detailDemoConfig.activity} />
           </div>
         )}
 

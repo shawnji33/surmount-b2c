@@ -1,0 +1,141 @@
+/* Figma node 2131:3847 — Back / step pills / Next in one row, replacing the plain topBar and tab
+ * bar this flow used before. Pills stay auto-width rather than Figma's literal 88/120px so a
+ * longer label never clips. */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  max-width: 900px;
+  margin: var(--spacing-2xl) auto var(--spacing-4xl);
+}
+
+.edgeBtn {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease, opacity 120ms ease;
+}
+
+.edgeBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.backBtn {
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-bg-primary);
+  color: var(--color-fg-secondary-700, rgba(10, 13, 18, 0.7));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .backBtn:hover {
+    background: var(--color-bg-secondary);
+  }
+}
+
+.nextBtn {
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  background: var(--color-fg-primary-900);
+  color: var(--color-fg-white);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nextBtn:hover:not(:disabled) {
+    background: var(--color-fg-secondary-hover, #252b37);
+  }
+}
+
+.nextBtn:active:not(:disabled),
+.backBtn:active {
+  transform: scale(0.97);
+}
+
+.nextBtn:disabled {
+  background: var(--color-utility-gray-300, #d5d7da);
+  border-color: transparent;
+  color: var(--color-fg-white);
+  cursor: not-allowed;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-lg);
+}
+
+.pill {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--radius-full);
+  background: #e9eaeb;
+  padding: var(--spacing-xxs) var(--spacing-lg);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.pill svg {
+  width: 20px;
+  height: 20px;
+}
+
+.pill:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.pillActive {
+  border-color: var(--color-border-tertiary);
+  background: var(--color-fg-tertiary-600);
+  color: var(--color-fg-white);
+}
+
+.pillDone {
+  border-color: var(--color-border-tertiary);
+  background: var(--color-fg-tertiary-600);
+  color: var(--color-fg-white);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pill:not(:disabled):not(.pillActive):hover {
+    background: var(--color-bg-tertiary);
+  }
+}
+
+@media (max-width: 900px) {
+  .nav {
+    flex-wrap: wrap;
+  }
+
+  .pills {
+    order: 3;
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edgeBtn,
+  .pill {
+    transition: none;
+  }
+}

@@ -4,6 +4,7 @@ const STEPS: PlansStep[] = [
   'downgrade-confirm',
   'scheduled',
   'scheduled-toast',
+  'cancel-details',
   'renew-confirm',
   'renewed',
   'upgrade-confirm',

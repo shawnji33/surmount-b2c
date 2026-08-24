@@ -43,7 +43,7 @@
   place-items: center;
   width: 34px;
   height: 34px;
-  border-radius: 9px;
+  border-radius: 10px;
   color: var(--fg-600);
   transition: background 0.15s var(--ease);
 }
@@ -77,8 +77,8 @@
   color: var(--color-success-700, #316434);
 }
 .statusDot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--color-success-600, #2f9461);
   box-shadow: 0 0 0 3px rgba(47, 148, 97, 0.16);
@@ -224,13 +224,13 @@
 }
 .windowToggle {
   display: inline-flex;
-  padding: 3px;
+  padding: 4px;
   background: var(--bg-tertiary);
-  border-radius: 9px;
+  border-radius: 10px;
 }
 .winBtn {
-  padding: 5px 14px;
-  border-radius: 7px;
+  padding: 6px 14px;
+  border-radius: 8px;
   font-size: var(--font-size-text-sm);
   font-weight: 500;
   color: var(--fg-500);
@@ -246,7 +246,7 @@
   color: var(--fg-600);
   background: var(--bg-tertiary);
   border-radius: 6px;
-  padding: 4px 9px;
+  padding: 4px 10px;
 }
 
 .disclaimer {
@@ -301,7 +301,7 @@
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-size: var(--font-size-text-sm);
   font-weight: 500;
   color: var(--fg-700);
@@ -320,7 +320,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 9px 0;
+  padding: 10px 0;
   font-size: var(--font-size-text-sm);
 }
 .stripRowLabel {
@@ -331,7 +331,7 @@
   flex: 1;
   border-bottom: 1px dashed var(--border-strong);
   align-self: flex-end;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   min-width: 16px;
 }
 
@@ -345,12 +345,12 @@
 .activate {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   height: 40px;
   padding: 0 18px;
-  border-radius: 9px;
+  border-radius: 10px;
   background: var(--fg-900);
-  color: #fff;
+  color: var(--color-fg-white);
   font-size: var(--font-size-text-sm);
   font-weight: 500;
   transition: transform 0.15s var(--ease);

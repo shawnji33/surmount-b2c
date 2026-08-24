@@ -1,0 +1,36 @@
+.stageStack {
+  display: grid;
+  min-height: 100vh;
+}
+
+.stageStack > * {
+  grid-area: 1 / 1;
+}
+
+.layer {
+  min-height: 100vh;
+  opacity: 1;
+  filter: blur(0);
+  pointer-events: auto;
+  transition: opacity 280ms ease-in-out, filter 280ms ease-in-out;
+}
+
+.layer[data-hidden='true'] {
+  opacity: 0;
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+/* Out of flow while hidden so its taller, data-driven height doesn't inflate the grid-stack cell
+ * (and landing's own scrollable area) while landing is the active stage. */
+.buildingLayer[data-hidden='true'] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer {
+    transition: none;
+  }
+}

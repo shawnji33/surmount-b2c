@@ -1,0 +1,420 @@
+.main {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  background: var(--color-bg-secondary);
+}
+
+.desktopOnly {
+  padding: var(--spacing-3xl) 0 var(--spacing-6xl);
+}
+
+@media (max-width: 760px) {
+  .desktopOnly {
+    display: none;
+  }
+}
+
+/* ─── Page header ─── */
+
+.pageHeader {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.pageHeaderTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+}
+
+.pageTitle {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-text-xl);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  letter-spacing: -0.3px;
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-top: var(--spacing-2xl);
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0 2px var(--spacing-lg);
+  margin-right: 20px;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  position: relative;
+  transition: color 120ms ease;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--color-fg-secondary-700);
+}
+
+.tabActive {
+  color: var(--color-fg-primary-900);
+}
+
+.tabActive::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-fg-primary-900);
+  border-radius: 2px 2px 0 0;
+}
+
+/* ─── Content layout ─── */
+
+.contentGrid {
+  display: flex;
+  gap: var(--home-column-gap, 40px);
+  align-items: flex-start;
+}
+
+/* Transitions.dev page side-by-side. The active page stays in normal flow so the strategy area
+ * keeps its natural height; its outgoing counterpart is layered only for the 250ms handoff. */
+:global(:root) {
+  --page-slide-dur: 250ms;
+  --page-fade-dur: 250ms;
+  --page-slide-distance: 8px;
+  --page-blur: 3px;
+  --page-stagger: 0ms;
+  --page-exit-enabled: 1;
+  --page-slide-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --page-fade-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pageSlide {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.tabPage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(calc(var(--t-page-from-x, 0px) * var(--page-exit-enabled)));
+  filter: blur(calc(var(--page-blur) * var(--page-exit-enabled)));
+  transition:
+    opacity var(--page-fade-dur) var(--page-fade-ease),
+    transform var(--page-slide-dur) var(--page-slide-ease),
+    filter var(--page-slide-dur) var(--page-slide-ease);
+  will-change: opacity, transform, filter;
+}
+
+.tabPage[data-page-id='1'] {
+  --t-page-from-x: calc(var(--page-slide-distance) * -1);
+}
+
+.tabPage[data-page-id='2'] {
+  --t-page-from-x: var(--page-slide-distance);
+}
+
+.pageSlide[data-page='1'] .tabPage[data-page-id='1'],
+.pageSlide[data-page='2'] .tabPage[data-page-id='2'] {
+  position: relative;
+  inset: auto;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+  filter: blur(0);
+  transition-delay: var(--page-stagger);
+}
+
+.strategiesLeft {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-2xl);
+}
+
+/* ─── Strategy card ─── */
+
+.strategyCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: 10px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-2xl);
+  background: var(--color-bg-primary);
+  box-shadow: 0 2px 6px 0 rgb(10 13 18 / 0.03);
+  text-decoration: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .strategyCard:hover {
+    border-color: var(--color-border-primary);
+    box-shadow: 0 3px 8px 0 rgb(10 13 18 / 0.04);
+    transform: translateY(-1px);
+  }
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  min-height: 28px;
+  padding: 2px var(--spacing-xs);
+}
+
+.cardNameGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  flex: 1;
+}
+
+.cardName {
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  line-height: var(--line-height-text-md);
+  color: var(--color-fg-primary-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardNameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.cardNameRow .cardName {
+  flex-shrink: 1;
+}
+
+/* Neutral, not a status color — a draft isn't good or bad news, just a state. */
+.draftBadge {
+  flex-shrink: 0;
+  border-radius: var(--radius-xs);
+  padding: 2px var(--spacing-sm);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+  background: var(--color-bg-tertiary);
+}
+
+.cardDesc {
+  overflow: hidden;
+  color: var(--color-fg-tertiary-600);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cardDivider {
+  height: 1px;
+  background: var(--color-border-tertiary);
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.cardRows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: 14px;
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-tertiary);
+}
+
+.cardRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 20px;
+  gap: var(--spacing-md);
+}
+
+.cardRowLabel {
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-secondary-700);
+  white-space: nowrap;
+}
+
+.cardRowVal {
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-primary-900);
+  white-space: nowrap;
+}
+
+.cardRowValPos {
+  color: var(--color-fg-success-primary);
+}
+
+.cardAvatars {
+  display: flex;
+  align-items: center;
+}
+
+.cardAvatar {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  border: 0.5px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-right: -4px;
+  background: var(--color-bg-tertiary);
+  display: block;
+}
+
+.cardAvatar:last-child {
+  margin-right: 0;
+}
+
+.cardAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cardAvatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 500;
+  color: var(--color-fg-white);
+}
+
+.cardAvatarMore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-tertiary);
+  font-size: 8px;
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+}
+
+.cardDotRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.cardDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-utility-success-600, var(--color-fg-success-primary));
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabPage {
+    transition: none !important;
+  }
+}
+
+/* ─── Build-your-own CTA panel ─── */
+
+.ctaSection {
+  width: 400px;
+  flex: 0 0 400px;
+  position: sticky;
+  top: 24px;
+  align-self: flex-start;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 20px 0 rgba(10, 13, 18, 0.03);
+  overflow: hidden;
+  padding: var(--spacing-6xl) var(--spacing-3xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2xl);
+  background: var(--color-bg-primary);
+}
+
+.ctaGrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(24, 29, 39, 0.1) 1.15px, transparent 1.15px);
+  background-size: 12px 12px;
+  background-position: center;
+  opacity: 0.72;
+  mask-image: radial-gradient(ellipse at center, #000 0%, #000 42%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, #000 42%, transparent 78%);
+}
+
+.ctaBody {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+.ctaIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--color-bg-secondary);
+  color: var(--color-fg-secondary-700);
+}
+
+.ctaIcon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.ctaText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  text-align: center;
+  width: 100%;
+}
+
+.ctaTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  letter-spacing: -0.2px;
+}
+
+.ctaDesc {
+  margin: 0;
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-tertiary-600);
+  line-height: 1.6;
+}

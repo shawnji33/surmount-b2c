@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { PAYMENT_UPDATE_ROUTE, paymentExpiry, paymentLabel } from '@/lib/payment-method';
 import { Button } from './Button';
+import { CancelFlowModal, type CancelFlowStep } from './settings/CancelFlowModal';
 import { GeneralPanel } from './settings/GeneralPanel';
 import { PrivacyPanel } from './settings/PrivacyPanel';
 import { SupportPanel } from './settings/SupportPanel';
@@ -24,7 +25,15 @@ import s from './SettingsModal.module.css';
 type SettingsTab = 'general' | 'privacy' | 'billing' | 'support';
 
 // Lets a preview/handoff route render the Billing tab in a specific state.
-export type BillingStep = 'default' | 'cancel-confirm' | 'scheduled' | 'renew-confirm' | 'toast' | 'renewed';
+export type BillingStep =
+  | 'default'
+  | 'cancel-reason'
+  | 'cancel-reason-picked'
+  | 'cancel-details'
+  | 'scheduled'
+  | 'renew-confirm'
+  | 'toast'
+  | 'renewed';
 
 const NAV_ITEMS: { key: SettingsTab; label: string; icon: Icon }[] = [
   { key: 'billing', label: 'Billing', icon: CreditCard },
@@ -222,10 +231,20 @@ function ConfirmDialog({
 
 function BillingPanel({ previewStep }: { previewStep?: BillingStep }) {
   const router = useRouter();
+  // The three cancel-* steps walk the cancel flow, so every state is
+  // capturable for handoff.
+  const cancelStep: CancelFlowStep | undefined =
+    previewStep === 'cancel-reason'
+      ? 'reason'
+      : previewStep === 'cancel-reason-picked'
+        ? 'reason-picked'
+        : previewStep === 'cancel-details'
+          ? 'details'
+          : undefined;
   const [scheduled, setScheduled] = useState(
     previewStep === 'scheduled' || previewStep === 'renew-confirm' || previewStep === 'toast',
   );
-  const [cancelOpen, setCancelOpen] = useState(previewStep === 'cancel-confirm');
+  const [cancelOpen, setCancelOpen] = useState(cancelStep !== undefined);
   const [renewOpen, setRenewOpen] = useState(previewStep === 'renew-confirm');
 
   const [mounted, setMounted] = useState(false);
@@ -380,19 +399,16 @@ function BillingPanel({ previewStep }: { previewStep?: BillingStep }) {
       </div>
 
       {cancelOpen && (
-        <ConfirmDialog
-          title="Downgrade to the Free plan?"
-          body="Your downgrade to the Free monthly plan is scheduled for Jul 9, 2026. You'll keep Surmount Plus and all its features until then."
-          warning="When your plan changes to Free on Jul 9, 2026, any strategies you invested in through a connected external brokerage will be liquidated, and your external trading connections will be removed."
-          primaryLabel="Cancel plan"
-          primaryVariant="destructive"
-          secondaryLabel="Keep your Plus plan"
-          onPrimary={() => {
+        <CancelFlowModal
+          planName="Plus"
+          endDate="Jul 9, 2026"
+          previewStep={cancelStep}
+          onKeep={() => setCancelOpen(false)}
+          onConfirm={() => {
             setScheduled(true);
             setCancelOpen(false);
             showToast('Downgrade to Surmount Free scheduled');
           }}
-          onSecondary={() => setCancelOpen(false)}
         />
       )}
 

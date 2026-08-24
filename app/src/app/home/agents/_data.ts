@@ -414,6 +414,43 @@ export type ActivityStatus = 'success' | 'warning';
 export interface ActivityItem { id: string; status: ActivityStatus; title: string; time: string; tooltip?: string; }
 export interface ActivityRun { label: string; items: ActivityItem[]; }
 
+/* ─── Activity heatmap ────────────────────────────────────────────────────── */
+export interface HeatmapWeek { base: 0 | 1 | 2 | 3; double: 0 | 1 | 2; skip: 0 | 1 | 2; }
+export interface HeatmapLegend { base: string; double: string; skip: string; }
+export interface HeatmapStats { deployedLabel: string; deployed: string; doubleLabel: string; doubleBuys: number; skipLabel: string; skipped: number; }
+export interface HeatmapData {
+  totalTx: number;
+  periodLabel: string;
+  filterLabel: string;
+  months: string[];
+  weeks: HeatmapWeek[];
+  legend: HeatmapLegend;
+  stats: HeatmapStats;
+}
+
+const HEATMAP_MONTHS = ['Feb', 'March', 'April', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'];
+
+// Deterministic mock pattern — same seeded-LCG approach used for the chart mock data,
+// so each agent gets a stable (not re-randomized on every render) but distinct heatmap.
+function seededHeatmapWeeks(seedKey: string, weekCount = 40): HeatmapWeek[] {
+  let seed = seedKey.split('').reduce((a, c) => a + c.charCodeAt(0), 0) * 3571 + 13;
+  const rand = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  const weeks: HeatmapWeek[] = [];
+  for (let i = 0; i < weekCount; i++) {
+    const baseRoll = rand();
+    const base: HeatmapWeek['base'] = baseRoll > 0.92 ? 3 : baseRoll > 0.78 ? 2 : baseRoll > 0.4 ? 1 : 0;
+    const doubleRoll = rand();
+    const double: HeatmapWeek['double'] = doubleRoll > 0.93 ? 2 : doubleRoll > 0.8 ? 1 : 0;
+    const skipRoll = rand();
+    const skip: HeatmapWeek['skip'] = skipRoll > 0.94 ? 2 : skipRoll > 0.85 ? 1 : 0;
+    weeks.push({ base, double, skip });
+  }
+  return weeks;
+}
+
 const nvdaAgentActivity: ActivityRun[] = [
   {
     label: 'Run completed',
@@ -528,6 +565,7 @@ export interface DemoConfig {
   panelFields: Record<number, PanelFieldDef[]>;
   editableSteps: number[];
   activity: ActivityRun[];
+  heatmap: HeatmapData;
   transactions: TxGroup[];
   txViewLabel: string;
   confirmationText: (answers: Record<number, string>) => string;
@@ -553,6 +591,15 @@ export const demoConfigs: Record<DemoKey, DemoConfig> = {
     panelFields: NVDA_PANEL_STEP_FIELDS,
     editableSteps: [1, 3, 5],
     activity: nvdaAgentActivity,
+    heatmap: {
+      totalTx: 346,
+      periodLabel: 'the last 1 year',
+      filterLabel: 'Last 6 months',
+      months: HEATMAP_MONTHS,
+      weeks: seededHeatmapWeeks('nvda'),
+      legend: { base: 'Buy executed', double: 'Alert sent', skip: 'Cap reached' },
+      stats: { deployedLabel: 'deployed', deployed: '$24,000', doubleLabel: 'alerts', doubleBuys: 6, skipLabel: 'skipped', skipped: 2 },
+    },
     transactions: nvdaAgentTransactions,
     txViewLabel: 'View NVDA',
     confirmationText: (answers) => {
@@ -582,6 +629,15 @@ export const demoConfigs: Record<DemoKey, DemoConfig> = {
     panelFields: CASH_PANEL_STEP_FIELDS,
     editableSteps: [1, 3, 5],
     activity: cashAgentActivity,
+    heatmap: {
+      totalTx: 52,
+      periodLabel: 'the last 1 year',
+      filterLabel: 'Last 6 months',
+      months: HEATMAP_MONTHS,
+      weeks: seededHeatmapWeeks('cash'),
+      legend: { base: 'Swept', double: 'Large sweep', skip: 'Below buffer' },
+      stats: { deployedLabel: 'swept', deployed: '$41,600', doubleLabel: 'large sweeps', doubleBuys: 4, skipLabel: 'skipped', skipped: 9 },
+    },
     transactions: cashAgentTransactions,
     txViewLabel: 'View transfer',
     confirmationText: (answers) => {
@@ -611,6 +667,15 @@ export const demoConfigs: Record<DemoKey, DemoConfig> = {
     panelFields: VIX_PANEL_STEP_FIELDS,
     editableSteps: [1, 3, 4, 5, 6],
     activity: hedgeAgentActivity,
+    heatmap: {
+      totalTx: 18,
+      periodLabel: 'the last 1 year',
+      filterLabel: 'Last 6 months',
+      months: HEATMAP_MONTHS,
+      weeks: seededHeatmapWeeks('hedge'),
+      legend: { base: 'Monitored', double: 'Hedge fired', skip: 'No action' },
+      stats: { deployedLabel: 'spent on protection', deployed: '$8,400', doubleLabel: 'hedges fired', doubleBuys: 3, skipLabel: 'no-action days', skipped: 15 },
+    },
     transactions: hedgeAgentTransactions,
     txViewLabel: 'View SPY puts',
     confirmationText: (answers) => {

@@ -3,7 +3,7 @@ import { type SelectableAccount } from '@/components/AccountSelectorCard';
 import type { TransactionGroup } from '@/components/transactions/TransactionList';
 
 export const STRATEGIES = [
-  { name: 'Quantum Computing Leaders', cover: '/assets/strategy-covers/Quantum Computing Leaders.png', value: '$351,242.54', returnPct: '+5.24%', returnAbs: '+$2,452.26', brokers: ['/assets/brokers/robinhood.png', '/assets/brokers/ibkr.png'], overflow: '+11' },
+  { name: 'Quantum Computing Leaders', cover: '/assets/strategy-covers/Quantum Computing Leaders.png', value: '$351,242.54', returnPct: '+5.24%', returnAbs: '+$2,452.26', brokers: ['/assets/brokers/ibkr.png'], overflow: '+11' },
   { name: 'Artificial Intelligence Innovators', cover: '/assets/strategy-covers/AI Innovators.png', value: '$482,731.16', returnPct: '+7.15%', returnAbs: '+$3,472.89', brokers: ['/assets/brokers/coinbase.png', '/assets/brokers/schwab.png'], overflow: '+10' },
   { name: 'Biotechnology Ventures', cover: '/assets/strategy-covers/Biotech Breakthroughs.png', value: '$265,478.90', returnPct: '+4.89%', returnAbs: '+$1,642.78', brokers: ['/assets/brokers/webull.png'], overflow: '+5' },
 ];

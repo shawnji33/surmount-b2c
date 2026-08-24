@@ -1,0 +1,129 @@
+.shell {
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  padding: 64px var(--container-padding-desktop, 32px);
+  background: var(--color-bg-secondary, #fafafa);
+}
+
+.hero {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.eyebrow {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+  letter-spacing: -0.1px;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+/* My Agents as a thin single-line ticker — no cards, no shadow, no visual weight beyond text. */
+.ticker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 720px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+}
+
+.tickerEmpty {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.tickerItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tickerDivider {
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--color-fg-quaternary-400, #d5d6d9);
+  margin-right: 8px;
+}
+
+.tickerDot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.tickerDot[data-kind='threshold-live'] {
+  background: var(--color-utility-success-700, #316434);
+  animation: tickerPulse 2.2s ease-in-out infinite;
+}
+
+.tickerDot[data-kind='threshold-interval'] {
+  background: var(--color-brand-600, #406ad0);
+}
+
+@keyframes tickerPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tickerDot[data-kind='threshold-live'] {
+    animation: none;
+  }
+}
+
+.tickerName {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.tickerStatus {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+/* Templates — a single quiet text link, deliberately not a visual row. */
+.templatesLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+  text-decoration: none;
+  transition: color 140ms ease;
+}
+
+.templatesLink svg {
+  width: 14px;
+  height: 14px;
+}
+
+.templatesLink:hover {
+  color: var(--color-fg-tertiary-600, #535861);
+}

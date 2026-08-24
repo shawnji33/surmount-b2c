@@ -1,0 +1,189 @@
+.shell {
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 56px;
+  padding: 72px var(--container-padding-desktop, 32px) 96px;
+  background: var(--color-bg-secondary, #fafafa);
+}
+
+.hero {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-family-display, 'Inter');
+  font-size: var(--font-size-display-xs, 24px);
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+  text-align: center;
+}
+
+.agentsSection {
+  width: 100%;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-lg, 18px);
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.agentGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* Card weight roughly matches the chat input card (same radius/shadow language) so it reads as
+   comparably important, not a lightweight footnote. */
+.agentCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: var(--radius-xl, 12px);
+  border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+  background: var(--color-bg-primary, #fff);
+  box-shadow: 0px 8px 16px 0px rgba(130, 130, 130, 0.06);
+}
+
+.agentCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.agentCardIcon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+.agentCardBadge {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: var(--color-bg-success-secondary, #e4f4e5);
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-utility-success-700, #316434);
+}
+
+.agentCardName {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.agentCardStatus {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+.agentsEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 32px;
+  border-radius: var(--radius-xl, 12px);
+  border: 1px dashed var(--color-border-secondary, rgba(0, 0, 0, 0.1));
+  text-align: center;
+}
+
+.agentsEmpty p {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.agentsEmpty span {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+/* Templates — pushed below the fold, visibly secondary: smaller type, muted heading. */
+.templatesSection {
+  width: 100%;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitleQuiet {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.templateRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.templateChip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 200px;
+  max-width: 280px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+  background: var(--color-bg-primary, #fff);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+
+.templateChip:hover {
+  background: var(--color-bg-primary-hover, #fafafa);
+  border-color: rgba(0, 0, 0, 0.14);
+}
+
+.templateChipName {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.templateChipDesc {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+@media (max-width: 900px) {
+  .agentGrid {
+    grid-template-columns: 1fr;
+  }
+}

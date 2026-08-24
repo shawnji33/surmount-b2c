@@ -93,10 +93,10 @@
 .heroName {
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 22px; font-weight: 500; letter-spacing: -0.5px; line-height: 1.15;
-  color: #fff; margin: 0;
+  color: var(--color-fg-white); margin: 0;
 }
 .heroBlurb {
-  font-size: 13px; line-height: 19px; letter-spacing: -0.5px;
+  font-size: 14px; line-height: 20px; letter-spacing: -0.5px;
   color: rgba(255, 255, 255, 0.82); margin: 0;
 }
 
@@ -116,7 +116,7 @@
 .statLabel { font-size: 12px; letter-spacing: -0.5px; color: var(--color-fg-tertiary-600, #535861); }
 .statValue {
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 15px; font-weight: 400; letter-spacing: -0.5px;
+  font-size: 16px; font-weight: 400; letter-spacing: -0.5px;
   color: var(--color-fg-primary-900, #181d27);
 }
 .riskVal { display: inline-flex; align-items: center; gap: 6px; }
@@ -141,20 +141,20 @@
 .rangeTabs {
   display: flex;
   gap: 2px;
-  padding: 3px;
+  padding: 4px;
   background: var(--color-bg-secondary, #fafafa);
   border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.06));
   border-radius: var(--radius-md, 8px);
 }
 .rangeTab {
   flex: 1;
-  padding: 7px 0;
+  padding: 8px 0;
   border: 0;
   border-radius: var(--radius-sm, 6px);
   background: transparent;
   color: var(--color-fg-tertiary-600, #535861);
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 13px; font-weight: 500; letter-spacing: -0.5px;
+  font-size: 14px; font-weight: 500; letter-spacing: -0.5px;
   cursor: pointer;
   transition: background 150ms ease, color 150ms ease;
 }
@@ -168,7 +168,7 @@
 .breakdown { display: flex; flex-direction: column; }
 .breakdownTitle {
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 15px; font-weight: 500; letter-spacing: -0.5px;
+  font-size: 16px; font-weight: 500; letter-spacing: -0.5px;
   color: var(--color-fg-primary-900, #181d27);
   margin: 0 0 12px;
 }
@@ -176,7 +176,7 @@
 .bar { display: flex; flex-direction: column; gap: 6px; }
 .barTop { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .barLabel { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; letter-spacing: -0.5px; color: var(--color-fg-primary-900, #181d27); }
-.barDot { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; }
+.barDot { width: 10px; height: 10px; border-radius: 4px; flex-shrink: 0; }
 .barPct { font-size: 14px; font-weight: 400; letter-spacing: -0.5px; color: var(--color-fg-primary-900, #181d27); }
 .barTrack { height: 8px; border-radius: 9999px; background: var(--color-bg-tertiary, #f0f1f3); overflow: hidden; }
 .barFill { height: 100%; border-radius: 9999px; }
@@ -194,18 +194,18 @@
   padding: 14px;
   border-radius: var(--radius-md, 8px);
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 15px; font-weight: 500; letter-spacing: -0.5px;
+  font-size: 16px; font-weight: 500; letter-spacing: -0.5px;
   cursor: pointer;
   transition: background 150ms ease, transform 150ms ease;
 }
-.addBtn { border: 0; background: var(--color-fg-primary-900, #181d27); color: #fff; }
-.addBtn:hover { background: #252b37; }
+.addBtn { border: 0; background: var(--color-fg-primary-900, #181d27); color: var(--color-fg-white); }
+.addBtn:hover { background: var(--color-utility-gray-800); }
 .addBtn:active { transform: scale(0.99); }
-.addBtn svg { width: 17px; height: 17px; }
+.addBtn svg { width: 18px; height: 18px; }
 .removeBtn {
   border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.12));
   background: var(--color-bg-secondary, #fafafa);
   color: var(--color-fg-primary-900, #181d27);
 }
 .removeBtn:hover { background: var(--color-bg-primary, #fff); border-color: rgba(10, 13, 18, 0.24); }
-.removeBtn svg { width: 17px; height: 17px; color: var(--color-utility-success-700, #316434); }
+.removeBtn svg { width: 18px; height: 18px; color: var(--color-utility-success-700, #316434); }

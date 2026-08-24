@@ -58,25 +58,25 @@
   background: var(--color-bg-primary, #fff);
   color: rgba(10, 13, 18, 0.45);
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   letter-spacing: -0.5px;
   flex-shrink: 0;
   transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
 }
-.stepDot svg { width: 15px; height: 15px; }
+.stepDot svg { width: 16px; height: 16px; }
 .stepDot[data-state='current'],
 .stepDot[data-state='done'] {
   border-color: var(--color-fg-primary-900, #181d27);
   background: var(--color-fg-primary-900, #181d27);
-  color: #fff;
+  color: var(--color-fg-white);
 }
 .stepLabel {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
   letter-spacing: -0.5px;
   color: rgba(10, 13, 18, 0.45);
@@ -91,17 +91,17 @@
   justify-content: center;
   min-width: 18px;
   height: 18px;
-  padding: 0 5px;
+  padding: 0 6px;
   border-radius: 9999px;
   background: var(--color-fg-primary-900, #181d27);
-  color: #fff;
-  font-size: 11px;
+  color: var(--color-fg-white);
+  font-size: 12px;
   font-weight: 400;
 }
 .stepLine {
   flex: 1;
-  height: 1.5px;
-  margin: 13px 12px 0;
+  height: 1px;
+  margin: 14px 12px 0;
   min-width: 16px;
   background: var(--color-border-primary, rgba(0, 0, 0, 0.12));
   transition: background-color 200ms ease;
@@ -119,7 +119,7 @@
   border-radius: var(--radius-xl, 12px);
   box-shadow: 0 1px 12px rgba(10, 13, 18, 0.03);
 }
-.summaryItem { display: flex; flex-direction: column; gap: 3px; }
+.summaryItem { display: flex; flex-direction: column; gap: 4px; }
 .sLabel { font-size: 12px; letter-spacing: -0.5px; color: var(--color-fg-tertiary-600, #535861); }
 .sValue {
   font-family: var(--font-family-body, 'Geist', sans-serif);
@@ -152,7 +152,7 @@
   color: var(--color-fg-primary-900, #181d27); margin: 0;
 }
 .stepSub {
-  font-size: 15px; line-height: 22px; letter-spacing: -0.5px;
+  font-size: 16px; line-height: 22px; letter-spacing: -0.5px;
   color: rgba(10, 13, 18, 0.65); margin: 0;
 }
 .browserArea { height: 480px; display: flex; flex-direction: column; }
@@ -178,7 +178,7 @@
   background: transparent;
   color: var(--color-fg-tertiary-600, #535861);
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: -0.5px;
   cursor: pointer;
@@ -195,18 +195,18 @@
   border: 0;
   border-radius: var(--radius-md, 8px);
   background: var(--color-fg-primary-900, #181d27);
-  color: #fff;
+  color: var(--color-fg-white);
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: -0.5px;
   cursor: pointer;
   transition: background 150ms ease, transform 150ms ease, opacity 150ms ease;
 }
-.continue:hover { background: #252b37; }
+.continue:hover { background: var(--color-utility-gray-800); }
 .continue:active { transform: scale(0.98); }
 .continue:disabled { opacity: 0.4; cursor: not-allowed; }
-.continue svg { width: 17px; height: 17px; }
+.continue svg { width: 18px; height: 18px; }
 
 @media (prefers-reduced-motion: reduce) {
   .stepView { transition: opacity 120ms ease !important; transform: none !important; }

@@ -22,7 +22,7 @@
   cursor: pointer;
   transition: background 150ms ease, color 150ms ease, transform 150ms ease;
 }
-.topbarBtn:hover { background: #fafafa; color: rgba(10, 13, 18, 0.8); }
+.topbarBtn:hover { background: var(--color-bg-secondary); color: rgba(10, 13, 18, 0.8); }
 .topbarBtn:active { transform: scale(0.97); }
 .topbarBtn svg { width: 20px; height: 20px; flex-shrink: 0; }
 .brand { display: flex; align-items: center; gap: 8px; }
@@ -54,7 +54,7 @@
   background: transparent;
   color: var(--color-fg-tertiary-600, #535861);
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: -0.5px;
   cursor: pointer;
@@ -70,17 +70,17 @@
   border: 0;
   border-radius: var(--radius-md, 8px);
   background: var(--color-fg-primary-900, #181d27);
-  color: #fff;
+  color: var(--color-fg-white);
   font-family: var(--font-family-body, 'Geist', sans-serif);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: -0.5px;
   cursor: pointer;
   transition: background 150ms ease, transform 150ms ease;
 }
-.continue:hover { background: #252b37; }
+.continue:hover { background: var(--color-utility-gray-800); }
 .continue:active { transform: scale(0.98); }
-.continue svg { width: 17px; height: 17px; }
+.continue svg { width: 18px; height: 18px; }
 
 /* Section heading used outside cards across layouts */
 .sectionTitle {
@@ -92,7 +92,7 @@
   margin: 0;
 }
 .sectionSub {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 22px;
   letter-spacing: -0.5px;

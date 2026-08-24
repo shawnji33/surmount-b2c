@@ -1,0 +1,119 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-2xl) 0 var(--spacing-lg);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+  min-width: 320px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-text-xl);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+/* ─── Editable-name variant (No-Code Builder — no hero to relocate this into) ─── */
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-tertiary);
+  color: var(--color-fg-tertiary-600);
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.backBtn:hover {
+  background: var(--color-border-secondary);
+  color: var(--color-fg-primary-900);
+}
+
+.backBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.titleGroup {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nameRow,
+.descRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  transition: background 120ms ease;
+}
+
+.rowFocused {
+  background: var(--color-bg-secondary);
+}
+
+.nameInput {
+  border: 0;
+  background: transparent;
+  min-width: 0;
+  max-width: 420px;
+  padding: 2px 6px;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-text-lg);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  letter-spacing: -0.3px;
+}
+
+.descInput {
+  border: 0;
+  background: transparent;
+  min-width: 0;
+  max-width: 420px;
+  padding: 2px 6px;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-tertiary-600);
+}
+
+.nameInput:focus,
+.descInput:focus {
+  outline: none;
+}
+
+.editIcon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: var(--color-fg-quaternary-400);
+}
+
+.counter {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--color-fg-quaternary-400);
+  padding-right: var(--spacing-sm);
+}

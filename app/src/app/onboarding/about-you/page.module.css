@@ -32,7 +32,7 @@
   transition: background 150ms ease, color 150ms ease, transform 150ms ease;
 }
 .topbarBtn:hover {
-  background: #fafafa;
+  background: var(--color-bg-secondary);
   color: rgba(10, 13, 18, 0.8);
 }
 .topbarBtn:active {
@@ -205,7 +205,7 @@
   color: var(--color-text-white, #fff);
 }
 .pillSelected:hover {
-  background: #252b37;
+  background: var(--color-utility-gray-800);
 }
 
 .otherInput {
@@ -304,7 +304,7 @@
   border: 0;
   border-radius: var(--radius-md, 8px);
   background: var(--color-fg-primary-900, #181d27);
-  color: #fff;
+  color: var(--color-fg-white);
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 16px;
   font-weight: 500;
@@ -313,7 +313,7 @@
   transition: background 150ms ease, transform 150ms ease, opacity 150ms ease;
 }
 .cta:hover {
-  background: #252b37;
+  background: var(--color-utility-gray-800);
 }
 .cta:active {
   transform: scale(0.98);

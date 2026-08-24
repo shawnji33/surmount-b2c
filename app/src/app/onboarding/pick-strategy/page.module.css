@@ -3,7 +3,7 @@
   background: var(--color-bg-primary);
   border: 1px solid rgba(0, 0, 0, 0.09);
   border-radius: var(--radius-2xl, 16px);
-  padding: 21px;
+  padding: 22px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -22,7 +22,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--color-fg-white);
 }
 .stepIconDone svg {
   width: 12px;
@@ -66,14 +66,14 @@
   display: inline-flex;
   align-items: center;
   padding: 2px 8px;
-  background: #eef7ee;
-  border: 1px solid #cbe7cc;
+  background: var(--color-bg-success-primary);
+  border: 1px solid var(--color-utility-success-200);
   border-radius: 9999px;
   font-family: var(--font-family-body);
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-  color: #316434;
+  color: var(--color-utility-success-700);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -83,14 +83,14 @@
   display: inline-flex;
   align-items: center;
   padding: 2px 6px;
-  background: #f1f6fd;
-  border: 1px solid #c8dbf5;
+  background: var(--color-bg-brand-primary);
+  border: 1px solid var(--color-utility-brand-200);
   border-radius: var(--radius-sm, 6px);
   font-family: var(--font-family-body);
   font-size: 10px;
   font-weight: 400;
-  line-height: 13px;
-  color: #3757be;
+  line-height: 14px;
+  color: var(--color-text-brand-secondary-700);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -171,7 +171,7 @@
   gap: 4px;
   padding: 8px 10px;
   background: var(--color-fg-primary-900);
-  color: #fff;
+  color: var(--color-fg-white);
   border: 2px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-md, 8px);
   font-family: var(--font-family-body);
@@ -184,7 +184,7 @@
   transition: background 150ms ease;
 }
 .btnStart:hover {
-  background: #252b37;
+  background: var(--color-utility-gray-800);
 }
 .btnStart svg {
   width: 14px;
@@ -278,7 +278,7 @@
   50%       { box-shadow: 0 0 0 4px rgba(64, 106, 208, 0); }
 }
 .tlDotBlue {
-  background: #406ad0;
+  background: var(--color-bg-brand-solid);
   animation: dotBreath 2.4s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -288,7 +288,7 @@
 .tlLine {
   flex: 1;
   width: 2px;
-  margin: 3px 0;
+  margin: 4px 0;
   min-height: 16px;
 }
 .tlLineDone {
@@ -313,7 +313,7 @@
   letter-spacing: -0.5px;
 }
 .tlTitleActive {
-  color: #3757be;
+  color: var(--color-text-brand-secondary-700);
 }
 .tlSub {
   font-size: 12px;
@@ -338,5 +338,5 @@
   text-underline-offset: 2px;
 }
 .supportText a:hover {
-  color: #252b37;
+  color: var(--color-utility-gray-800);
 }

@@ -10,7 +10,7 @@
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 17px;
+  padding: 18px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 16px;
   background: var(--color-bg-primary, #fff);
@@ -166,7 +166,7 @@
 }
 
 .updateBtn {
-  padding: 5px 10px;
+  padding: 6px 10px;
   border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
   border-radius: var(--radius-md, 8px);
   background: var(--color-bg-primary, #fff);
@@ -214,7 +214,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background: var(--color-bg-primary);
 }
 
 .avatar img {
@@ -272,10 +272,10 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--color-bg-primary);
 }
 
 @media (prefers-reduced-motion: reduce) {

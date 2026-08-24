@@ -1,0 +1,105 @@
+/*
+ * shadcn-bridge.css
+ * ───────────────────────────────────────────────────────────────────────────
+ * This is the compatibility layer between Surmount's Untitled-derived tokens
+ * and shadcn's semantic component roles. Figma tokens remain canonical in
+ * tokens.css; shadcn components consume only the roles defined here.
+ *
+ * Legacy UUI utilities use the `uui-*` namespace in globals.css, so shadcn's
+ * conventional `bg-primary`, `text-primary-foreground`, `bg-secondary`, and
+ * related utilities are safe to use in imported or locally maintained
+ * components.
+ *
+ * Load order in globals.css (after tokens.css so --color-* already exist):
+ *   @import "tailwindcss";
+ *   @import "../styles/tokens.css";
+ *   @import "../styles/shadcn-bridge.css";
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  /* Surfaces */
+  --background: var(--color-bg-primary);
+  --foreground: var(--color-fg-primary-900);
+  --card: var(--color-bg-primary);
+  --card-foreground: var(--color-fg-primary-900);
+  --popover: var(--color-bg-primary);
+  --popover-foreground: var(--color-fg-primary-900);
+
+  /* Primary / secondary / accent (dark-gray CTA direction, cool not warm). */
+  --primary: var(--color-fg-primary-900);
+  --primary-foreground: var(--color-fg-white);
+  --secondary: var(--color-bg-secondary);
+  --secondary-foreground: var(--color-fg-primary-900);
+  --muted: var(--color-bg-tertiary);
+  --muted-foreground: var(--color-text-tertiary-600);
+  --accent: var(--color-bg-quaternary);
+  --accent-foreground: var(--color-fg-primary-900);
+
+  /* Status — matches Surmount error red exactly */
+  --destructive: var(--color-utility-error-600);
+  --destructive-foreground: var(--color-fg-white);
+
+  /* Lines (alpha-black so borders read on any surface) */
+  --border: var(--color-border-primary);
+  --input: var(--color-border-primary);
+  --ring: var(--color-fg-secondary-700);   /* gray focus ring, not brand */
+
+  /* Data viz — brand blue is allowed for charts */
+  --chart-1: var(--color-utility-brand-600);
+  --chart-2: var(--color-utility-warning-600);
+  --chart-3: var(--color-fg-quaternary-400);
+  --chart-4: var(--color-fg-disabled-subtle);
+  --chart-5: var(--color-fg-quaternary-hover);
+
+  /* Sidebar mirrors surfaces */
+  --sidebar: var(--color-bg-secondary);
+  --sidebar-foreground: var(--color-fg-primary-900);
+  --sidebar-primary: var(--color-fg-primary-900);
+  --sidebar-primary-foreground: var(--color-fg-white);
+  --sidebar-accent: var(--color-bg-quaternary);
+  --sidebar-accent-foreground: var(--color-fg-primary-900);
+  --sidebar-border: var(--color-border-primary);
+  --sidebar-ring: var(--color-fg-secondary-700);
+
+  /* shadcn's base radius. Nothing reads it today — the ported components use
+     `rounded-xl`/`rounded-2xl`, which globals.css pins to DS values in
+     @theme inline — but a future `shadcn add` will derive its radii from this,
+     so point it at the DS token rather than shadcn's stock 0.5rem. */
+  --radius: var(--radius-md);
+}

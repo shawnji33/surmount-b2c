@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowCircleUp, GearSix, Robot, SignOut } from '@phosphor-icons/react';
+import { ArrowCircleUp, GearSix, ListChecks, Robot, SignOut } from '@phosphor-icons/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -73,6 +73,13 @@ const NAV_ITEMS = [
     ),
   },
   {
+    key: 'onboarding',
+    label: 'Onboarding',
+    tooltip: 'Continue onboarding',
+    href: '/home/get-started',
+    icon: <ListChecks className={s.phosphorNavIcon} weight="regular" />,
+  },
+  {
     key: 'saving',
     label: 'Saving',
     tooltip: 'Go to Saving',
@@ -124,6 +131,7 @@ type NavKey = typeof NAV_ITEMS[number]['key'] | 'activity';
 
 function activeKey(pathname: string): NavKey {
   if (pathname.startsWith('/activity')) return 'activity';
+  if (pathname.startsWith('/home/get-started')) return 'onboarding';
   if (pathname.startsWith(SAVINGS_HREF)) return 'saving';
   if (pathname.startsWith('/home/agents')) return 'agents';
   if (pathname.startsWith('/home/marketplace')) return 'marketplace';

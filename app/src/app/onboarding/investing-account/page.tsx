@@ -57,6 +57,10 @@ export default function InvestingAccountPage() {
                 <polyline points="144 56 216 128 144 200"/>
               </svg>
             </Link>
+
+            <p className={s.entryFinePrint}>
+              A 0.94% annual management fee (AUM) is charged on funds held in your Surmount investing account.
+            </p>
           </div>
         </div>
       </main>

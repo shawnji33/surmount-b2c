@@ -1,0 +1,27 @@
+/* Full-width allocate step (Image 21 reference) dropped the old two-column builderRow, which used
+ * to implicitly cap AllocationSection's width via the 360px right column. Without it the section
+ * stretches to the page's full content column — wider than StepNav's 900px cap — so it needs its
+ * own matching max-width or the header row and the content below it read as misaligned. */
+.stepScreen {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* AllocationSection's method-tab list is hardcoded (Equal/Suggest/Custom) with no prop to hide a
+ * method, and it's a real production component we don't edit. Scoped display:none on the 3rd
+ * tablist child (pill highlight span is 1st, so Equal=2nd, Suggest=3rd, Custom=4th) drops it from
+ * both rendering and tab order without touching AllocationSection.tsx. Scoped under .stepScreen
+ * (not global) so it can't reach StepNav's own role="tablist" pills above it. */
+.stepScreen :global([role='tablist']) button:nth-child(3) {
+  display: none;
+}
+
+/* BuilderHeader's Save/Deploy/Close action row is hardcoded with no prop to omit a button, and
+ * it's a real production component we don't edit. Deploy has no stable hook of its own, but the
+ * adjacent Close button does (aria-label="Close"), so :has() + the sibling combinator targets
+ * "whichever button sits immediately before Close" — i.e. Deploy — without depending on hashed
+ * class names or child order elsewhere on the page. Guided-only: this flow already reaches Deploy
+ * as its own step via StepNav, so the header shortcut is redundant here. */
+.root :global(button:has(+ [aria-label='Close'])) {
+  display: none;
+}

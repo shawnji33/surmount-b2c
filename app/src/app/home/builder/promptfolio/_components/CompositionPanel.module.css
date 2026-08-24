@@ -1,0 +1,202 @@
+/* Lives in a fixed-height two-column row (BuildingView.module.css's .columns) alongside
+ * ConversationPanel — both columns scroll internally rather than the page, so this fills the row
+ * height (flex stretch) and scrolls its own overflow instead of using position:sticky against a
+ * page scroll that doesn't exist here. */
+.root {
+  width: 400px;
+  flex: 0 0 400px;
+  min-height: 0;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 20px 0 rgba(10, 13, 18, 0.03);
+  background: var(--color-bg-primary);
+  padding: var(--spacing-3xl);
+  overflow-y: auto;
+}
+
+/* Skeleton → content reveal, same grid-stack occlusion technique used throughout the builder
+ * (BacktestPanel.module.css / HoldingRow.module.css), self-contained here since this route
+ * doesn't import those modules. */
+.tSkel {
+  position: relative;
+  display: grid;
+}
+
+.tSkelSkeleton,
+.tSkelContent {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.tSkelSkeleton {
+  z-index: 1;
+  opacity: 1;
+  filter: blur(0);
+  display: flex;
+  flex-direction: column;
+  transition: opacity 400ms ease-in-out, filter 400ms ease-in-out;
+}
+
+.tSkelContent {
+  z-index: 2;
+  opacity: 0;
+  filter: blur(2px);
+  pointer-events: none;
+  transition: opacity 400ms ease-in-out, filter 400ms ease-in-out;
+}
+
+.isRevealed .tSkelSkeleton {
+  opacity: 0;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.isRevealed .tSkelContent {
+  opacity: 1;
+  filter: blur(0);
+  pointer-events: auto;
+}
+
+.skelLine {
+  border-radius: var(--radius-xs);
+  background: var(--color-bg-tertiary);
+  animation: skelPulse 1400ms ease-in-out infinite;
+}
+
+.skelDonut {
+  width: 140px;
+  height: 140px;
+  margin: var(--spacing-3xl) auto var(--spacing-xl);
+  border-radius: 50%;
+  background: var(--color-bg-tertiary);
+  animation: skelPulse 1400ms ease-in-out infinite;
+}
+
+.skelRow {
+  height: 56px;
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-tertiary);
+  animation: skelPulse 1400ms ease-in-out infinite;
+  margin-top: var(--spacing-md);
+}
+
+@keyframes skelPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.header {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.name {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-text-xl);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  letter-spacing: -0.5px;
+}
+
+.description {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-tertiary-600);
+  letter-spacing: -0.5px;
+}
+
+.section {
+  opacity: 0;
+  filter: blur(2px);
+  transform: translateY(4px);
+  transition: opacity 320ms ease-out, filter 320ms ease-out, transform 320ms ease-out;
+}
+
+.sectionVisible {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
+.section + .section {
+  margin-top: var(--spacing-2xl);
+  padding-top: var(--spacing-2xl);
+  border-top: 1px solid var(--color-border-primary);
+}
+
+.chartRow {
+  display: flex;
+  justify-content: center;
+}
+
+.holdingsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+}
+
+.sectionTitle {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  margin-bottom: var(--spacing-lg);
+}
+
+.footer {
+  margin-top: var(--spacing-3xl);
+  padding-top: var(--spacing-2xl);
+  border-top: 1px solid var(--color-border-primary);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+}
+
+.progress li {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-quaternary-400);
+  transition: color 200ms ease;
+}
+
+.progressDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-fg-quaternary-400);
+  transition: background 200ms ease;
+}
+
+.progress li.progressDone {
+  color: var(--color-fg-tertiary-600);
+}
+
+.progress li.progressDone .progressDot {
+  background: var(--color-utility-success-600, var(--color-fg-tertiary-600));
+}
+
+.continueBtn {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tSkelSkeleton,
+  .tSkelContent,
+  .section {
+    transition: none;
+  }
+
+  .skelLine,
+  .skelDonut,
+  .skelRow {
+    animation: none;
+  }
+}

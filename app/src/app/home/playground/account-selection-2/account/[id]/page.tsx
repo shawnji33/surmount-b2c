@@ -102,17 +102,6 @@ const ACCOUNTS: ExternalAccount[] = [
     phase: 1.1,
   },
   {
-    id: 'robinhood',
-    label: 'Robinhood',
-    displayName: 'Robinhood',
-    logo: '/assets/brokers/robinhood.png',
-    value: 67213.18,
-    cash: 6820.14,
-    pending: 42.2,
-    change: -384.22,
-    phase: 2.2,
-  },
-  {
     id: 'schwab',
     label: 'Schwab',
     displayName: 'Schwab',

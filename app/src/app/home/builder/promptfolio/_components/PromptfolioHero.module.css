@@ -1,0 +1,58 @@
+.root {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-6xl) var(--spacing-2xl);
+  background: var(--color-bg-secondary);
+  overflow: hidden;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3xl);
+  width: 100%;
+  max-width: 720px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+/* Intrinsic ratio is 111:26 (~4.27:1) — 24px height scales to ~102.5px width; rounded up to 104px
+ * per the DS multiple-of-2 rule (a ~1.5px difference, imperceptible at this size). */
+.badge {
+  width: 104px;
+  height: 24px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Inter, not the reference mockup's serif face — this app's typography contract is Inter for
+ * display/headings, Geist for body, no exceptions (see ~/Surmount/CLAUDE.md). Display xs per spec. */
+.headline {
+  margin: 0;
+  max-width: 560px;
+  text-align: center;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-display-xs);
+  font-weight: 500;
+  line-height: var(--line-height-display-xs);
+  color: var(--color-fg-primary-900);
+  text-wrap: balance;
+}
+
+@media (max-width: 760px) {
+  .root {
+    padding: var(--spacing-3xl) var(--spacing-xl);
+  }
+}

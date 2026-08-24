@@ -20,12 +20,6 @@ export const MOCK_CONNECTED_ACCOUNTS: readonly ConnectedAccount[] = [
     supportsPending: true,
   },
   {
-    id: 'robinhood-individual',
-    name: 'Robinhood Individual',
-    brokerLogo: '/assets/brokers/robinhood.png',
-    supportsPending: true,
-  },
-  {
     id: 'ibkr-margin',
     name: 'Interactive Brokers Margin',
     brokerLogo: '/assets/brokers/ibkr.png',
@@ -39,7 +33,7 @@ export const MOCK_CONNECTED_ACCOUNTS: readonly ConnectedAccount[] = [
   },
 ] as const;
 
-const [surmount, , schwab, , ibkr, coinbase] = MOCK_CONNECTED_ACCOUNTS;
+const [surmount, , schwab, ibkr, coinbase] = MOCK_CONNECTED_ACCOUNTS;
 
 export const MOCK_ACTIVITY_ITEMS: readonly ActivityItem[] = [
   // ── 3 demo pending orders ─────────────────────────────────────────────────
