@@ -59,12 +59,6 @@ function reducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-let turnCounter = 0;
-function nextTurnId() {
-  turnCounter += 1;
-  return `turn-${turnCounter}`;
-}
-
 // Chained-setTimeout choreography, same idiom as home/agents/page.tsx's own scripted
 // thinking→reply→reveal sequence — no backend, deterministic per input. revealStage: 0 = nothing
 // yet, 1 = name/description, 2 = holdings, 3 = rules, 4 = complete (CTA enabled).
@@ -76,6 +70,12 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
   const [matchedTemplateName, setMatchedTemplateName] = useState<string | null>(null);
   const timersRef = useRef<number[]>([]);
   const startedRef = useRef(false);
+  const turnCounterRef = useRef(0);
+
+  function nextTurnId() {
+    turnCounterRef.current += 1;
+    return `turn-${turnCounterRef.current}`;
+  }
 
   function schedule(fn: () => void, delay: number) {
     const id = window.setTimeout(fn, reducedMotion() ? 0 : delay);
@@ -96,6 +96,7 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
     const isRefreshingCompletedDraft = draft !== null && revealStage >= 4;
     if (!isRefreshingCompletedDraft) setRevealStage(0);
     const procedureId = nextTurnId();
+    const userTurnId = nextTurnId();
     setIsThinking(true);
 
     const matched = matchTemplate(trimmed);
@@ -111,7 +112,7 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
     // 400ms later, then gets its own short beat before the first procedure row is revealed.
     setTurns((prev) => [
       ...prev,
-      { id: nextTurnId(), role: 'user', text: describeInput(trimmed) },
+      { id: userTurnId, role: 'user', text: describeInput(trimmed) },
     ]);
 
     function updateProcedure(step: number, complete = false) {
@@ -125,7 +126,8 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
     function finishProcedure() {
       updateProcedure(4, true);
       setIsThinking(false);
-      setTurns((prev) => [...prev, { id: nextTurnId(), role: 'assistant', text: matched.assistantReply }]);
+      const assistantTurnId = nextTurnId();
+      setTurns((prev) => [...prev, { id: assistantTurnId, role: 'assistant', text: matched.assistantReply }]);
 
       if (isRefreshingCompletedDraft) {
         setDraft(nextDraft);
