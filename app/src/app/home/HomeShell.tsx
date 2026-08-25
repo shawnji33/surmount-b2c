@@ -2,10 +2,19 @@
 
 import { Sidebar } from '@/components/Sidebar';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { ToastProvider } from './_components/ToastProvider';
 import styles from './layout.module.css';
 
 export function HomeShell({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={null}>
+      <HomeShellContent>{children}</HomeShellContent>
+    </Suspense>
+  );
+}
+
+function HomeShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isAgentsSurface = pathname.startsWith('/home/agents');
