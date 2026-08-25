@@ -22,6 +22,7 @@ const SECTIONS = [
   {
     label: 'Playground',
     routes: [
+      { href: '/dev/infinity-orb', label: 'Infinity orb tuner' },
       { href: '/home/playground/account-selection', label: 'Account selection — direction 1' },
       { href: '/home/playground/account-selection-1-2', label: 'Account selection — direction 1.1' },
       { href: '/home/playground/account-selection-2', label: 'Account selection — direction 2' },

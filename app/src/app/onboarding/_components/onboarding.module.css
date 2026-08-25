@@ -1083,17 +1083,8 @@
   justify-content: center;
   gap: 20px;
 }
-@keyframes spinnerSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-.loadingSpinner {
-  width: 40px;
-  height: 40px;
-  border: 2.5px solid rgba(10, 13, 18, 0.1);
-  border-top-color: rgba(10, 13, 18, 0.65);
-  border-radius: 50%;
-  animation: spinnerSpin 750ms linear infinite;
+.loadingOrb {
+  flex: none;
 }
 .loadingText {
   font-size: 16px;

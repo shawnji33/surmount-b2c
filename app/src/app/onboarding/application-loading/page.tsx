@@ -3,12 +3,14 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { InfinityThinkingOrb } from '@/components/InfinityThinkingOrb';
 import s from '../_components/onboarding.module.css';
 
 export default function ApplicationLoadingPage() {
   const router = useRouter();
 
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).has('preview')) return;
     const id = setTimeout(() => router.push('/onboarding/application-submitted'), 2800);
     return () => clearTimeout(id);
   }, [router]);
@@ -31,7 +33,16 @@ export default function ApplicationLoadingPage() {
       </header>
 
       <main className={s.loadingMain} aria-live="polite" aria-busy="true">
-        <div className={s.loadingSpinner} aria-hidden="true" />
+        <InfinityThinkingOrb
+          className={s.loadingOrb}
+          width={112}
+          height={72}
+          pathWidth={82}
+          pathHeight={48}
+          dotCount={72}
+          dotScale={1.45}
+          speed={0.9}
+        />
         <p className={s.loadingText}>Submitting your application…</p>
       </main>
     </div>
