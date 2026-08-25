@@ -5,7 +5,10 @@
   padding-left: 92px;
   padding-right: 0;
   min-height: 100vh;
-  background: var(--color-bg-secondary, #fafafa);
+}
+
+.dashboardLayoutNoSidebar {
+  padding-left: 0;
 }
 
 .mainWrapper {
@@ -17,6 +20,16 @@
   min-height: 100vh;
   margin: 0 auto;
   padding: 0 32px 0 8px;
+}
+
+.mainWrapperNoSidebar {
+  max-width: none;
+  padding: 0 32px;
+}
+
+.mainWrapperFullBleed {
+  max-width: none;
+  padding: 0;
 }
 
 @media (min-width: 1660px) {

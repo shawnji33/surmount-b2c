@@ -6,18 +6,18 @@ export default function InvestingAccountPage() {
   return (
     <div className={s.entryShell}>
       <header className={s.topbar}>
-        <span className={s.topbarSpacer} aria-hidden="true">Close</span>
-        <div className={s.topbarBrand}>
-          <img src="https://www.figma.com/api/mcp/asset/3bbd6119-7028-47e5-9a7d-d4fafba87569" alt="" className={s.topbarBrandIcon} />
-          <img src="https://www.figma.com/api/mcp/asset/3297adb2-a615-459c-b3a1-30442b03c519" alt="Surmount" className={s.topbarBrandName} />
-        </div>
-        <Link href="/home" className={s.topbarBtn}>
-          Close
-          <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" strokeWidth="16" strokeLinecap="round" aria-hidden="true">
-            <line x1="200" y1="56" x2="56" y2="200"/>
-            <line x1="200" y1="200" x2="56" y2="56"/>
+        <Link href="/onboarding/start-investing" className={s.topbarBtn}>
+          <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="216" y1="128" x2="40" y2="128"/>
+            <polyline points="112 56 40 128 112 200"/>
           </svg>
+          Back
         </Link>
+        <div className={s.topbarBrand}>
+          <img src="/assets/sidebar/logo-mark.svg" alt="" className={s.topbarBrandIcon} />
+          <img src="/assets/sidebar/wordmark.svg" alt="Surmount" className={s.topbarBrandName} />
+        </div>
+        <span className={s.topbarSpacer} aria-hidden="true">Back</span>
       </header>
 
       <main className={s.entryMainSplit}>
@@ -57,6 +57,10 @@ export default function InvestingAccountPage() {
                 <polyline points="144 56 216 128 144 200"/>
               </svg>
             </Link>
+
+            <p className={s.entryFinePrint}>
+              A 0.94% annual management fee (AUM) is charged on funds held in your Surmount investing account.
+            </p>
           </div>
         </div>
       </main>

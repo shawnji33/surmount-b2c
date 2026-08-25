@@ -1,0 +1,537 @@
+.root {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.rootCompact {
+  max-width: 560px;
+}
+
+.rootPanel {
+  max-width: none;
+}
+
+.anchor {
+  position: relative;
+}
+
+/* border-beam's own wrapper sets overflow:hidden (to clip the traveling beam to the rounded
+ * shape), which would also clip a box-shadow set directly on .card since a shadow bleeds outside
+ * its own box. The shadow lives on .shadowWrap instead — the wrapper one level further out — with
+ * a radius that mirrors .card's own, so the shadow's rounded shape still matches what's visible. */
+.shadowWrap {
+  width: 100%;
+  border-radius: var(--radius-full);
+  /* --shadow-card is a colour-only token (this design system's convention — see tokens.css) built
+   * into the full shadow locally, matching the "Shadows/card" spec exactly. */
+  box-shadow: 0 2px 12px 0 var(--shadow-card);
+  transition: box-shadow 200ms ease, border-radius 150ms ease;
+}
+
+.shadowWrapWithAttach {
+  border-radius: var(--radius-xl);
+}
+
+.rootPanel .shadowWrap,
+.rootPanel .shadowWrapWithAttach,
+.rootPanel .card,
+.rootPanel .cardWithAttach {
+  border-radius: var(--radius-lg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .shadowWrap:hover,
+  .shadowWrap:focus-within {
+    box-shadow: 0 4px 20px 0 var(--shadow-card);
+  }
+}
+
+/* Single-row pill bar by default; expands to a taller shape once .cardWithAttach applies (either
+ * attachments are present, or the controls row has wrapped to two lines). */
+.card {
+  position: relative;
+  width: 100%;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  transition: border-radius 150ms ease;
+}
+
+.cardWithAttach {
+  border-radius: var(--radius-xl);
+}
+
+/* ── attachments ─────────────────────────────────── */
+
+.attachRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.attachChip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  height: 26px;
+  padding: 0 var(--spacing-xs) 0 var(--spacing-md);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  box-shadow: 0 0 0 1px var(--color-border-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-secondary-700);
+  animation: attachIn 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.attachChip svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: var(--color-fg-tertiary-600);
+}
+
+.attachName {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.annotationChip {
+  max-width: 100%;
+}
+
+.annotationChip .attachName {
+  max-width: min(240px, calc(100vw - 168px));
+}
+
+.attachRemove {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: background 100ms ease, color 100ms ease;
+}
+
+.attachRemove svg {
+  width: 10px;
+  height: 10px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .attachRemove:hover {
+    background: var(--color-border-primary);
+    color: var(--color-fg-primary-900);
+  }
+}
+
+@keyframes attachIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── controls row ─────────────────────────────────── */
+
+.measure {
+  position: absolute;
+  visibility: hidden;
+  white-space: pre;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  letter-spacing: -0.3px;
+  pointer-events: none;
+}
+
+.controls {
+  display: grid;
+  align-items: center;
+  gap: var(--spacing-sm);
+  grid-template-columns: 36px minmax(0, 1fr) 36px 36px;
+}
+
+.controlsWide {
+  grid-template-columns: 36px 1fr 36px 36px;
+  row-gap: var(--spacing-sm);
+}
+
+.input {
+  grid-column: 2;
+  grid-row: 1;
+  display: block;
+  width: 100%;
+  min-height: 24px;
+  max-height: 120px;
+  overflow-y: auto;
+  background: transparent;
+  border: 0;
+  outline: none;
+  resize: none;
+  padding: var(--spacing-xs) 0;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  color: var(--color-fg-primary-900);
+  letter-spacing: -0.3px;
+  scrollbar-width: none;
+}
+
+.input::-webkit-scrollbar {
+  display: none;
+}
+
+.input::placeholder {
+  color: var(--color-fg-quaternary-400);
+}
+
+.rootPanel .input {
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .rootPanel .input {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+.controlsWide .input {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  /* Single-row mode gets clearance for free from the buttons + grid gap; once the text spans the
+   * full width, it needs its own inset so wrapped lines don't run up against the rounded corners. */
+  padding-left: var(--spacing-xs);
+  padding-right: var(--spacing-md);
+}
+
+.plusBtn,
+.micBtn,
+.sendBtn {
+  position: relative;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, transform 150ms ease-out;
+}
+
+/* 36px visual size, 40px hit area (desktop floor) via a transparent pseudo-element. */
+.plusBtn::before,
+.micBtn::before,
+.sendBtn::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+}
+
+.rootPanel .micBtn,
+.rootPanel .sendBtn {
+  width: 32px;
+  height: 32px;
+  justify-self: center;
+}
+
+.rootPanel .micBtn::before,
+.rootPanel .sendBtn::before {
+  inset: -4px;
+}
+
+.plusBtn {
+  grid-column: 1;
+  color: var(--color-fg-tertiary-600);
+}
+
+.controlsWide .plusBtn {
+  grid-row: 2;
+}
+
+.iconBtnActive {
+  background: var(--color-bg-secondary);
+  color: var(--color-fg-primary-900);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .plusBtn:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-fg-primary-900);
+  }
+}
+
+.micBtn,
+.sendBtn {
+  grid-column: 3;
+}
+
+.sendBtn {
+  grid-column: 4;
+}
+
+.controlsWide .micBtn {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.controlsWide .sendBtn {
+  grid-column: 4;
+  grid-row: 2;
+}
+
+.micBtn {
+  color: var(--color-fg-tertiary-600);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .micBtn:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-fg-primary-900);
+  }
+}
+
+.micBtnActive {
+  background: color-mix(in oklch, var(--color-brand-600) 12%, transparent);
+  color: var(--color-brand-600);
+}
+
+.eq {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 14px;
+}
+
+.eq span {
+  width: 2px;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: currentColor;
+  animation: eqBounce 900ms ease-in-out infinite;
+}
+
+.eq span:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.eq span:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+@keyframes eqBounce {
+  0%, 100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.plusBtn:focus-visible,
+.micBtn:focus-visible,
+.sendBtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-border-focus, rgba(10, 13, 18, 0.24));
+}
+
+.sendBtn {
+  background: var(--color-fg-primary-900);
+  color: var(--color-fg-white);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sendBtn:hover:not(:disabled) {
+    background: var(--color-fg-secondary-hover, #252b37);
+  }
+}
+
+.sendBtn:active:not(:disabled),
+.micBtn:active,
+.plusBtn:active {
+  transform: scale(0.94);
+}
+
+.sendBtn:disabled {
+  background: var(--color-utility-gray-300);
+  color: var(--color-fg-white);
+  cursor: default;
+}
+
+.plusBtn svg,
+.micBtn svg,
+.sendBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── @ / slash menus ──────────────────────────────── */
+
+.menuPanel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  z-index: 200;
+  margin-bottom: var(--spacing-md);
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-primary);
+  box-shadow: 0 8px 24px 0 rgba(10, 13, 18, 0.1);
+  animation: menuIn 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.menuPanel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.menuPanel::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-xs);
+}
+
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Single gliding highlight — floats to the active/hovered row instead of each row toggling its
+ * own background (ported from the reference composer's technique). Positioned via inline top/
+ * height (measured from the target row's offsetTop/offsetHeight), so this only needs to transition
+ * those two properties plus opacity. */
+.highlight {
+  position: absolute;
+  left: var(--spacing-sm);
+  right: var(--spacing-sm);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  pointer-events: none;
+  transition: top 220ms cubic-bezier(0.23, 1, 0.32, 1), height 220ms cubic-bezier(0.23, 1, 0.32, 1), opacity 150ms ease;
+}
+
+.menuRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  height: 36px;
+  flex-shrink: 0;
+  padding: 0 var(--spacing-md);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.menuIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--color-fg-tertiary-600);
+}
+
+.menuIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.menuLabel {
+  flex-shrink: 0;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.menuDesc {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-tertiary-600);
+}
+
+.menuEmpty {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 var(--spacing-md);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-tertiary-600);
+}
+
+.menuFooter {
+  margin-top: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs);
+  border-top: 1px solid var(--color-border-primary);
+  font-family: var(--font-family-body);
+  font-size: 10px;
+  color: var(--color-fg-quaternary-400);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .plusBtn,
+  .micBtn,
+  .sendBtn,
+  .attachChip,
+  .attachRemove,
+  .menuPanel,
+  .highlight {
+    transition: none;
+    animation: none;
+  }
+
+  .eq span {
+    animation: none;
+  }
+}

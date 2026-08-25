@@ -3,20 +3,20 @@ import type { ActivityItem, ConnectedAccount } from '@/types/activity';
 export const MOCK_CONNECTED_ACCOUNTS: readonly ConnectedAccount[] = [
   {
     id: 'surmount-investing',
-    name: 'Surmount Investing',
-    brokerLogo: '/assets/brokers/surmount.png',
+    name: 'Surmount Brokerage',
+    brokerLogo: '/assets/illustrations/surmount-logo-mark-blue.png',
+    supportsPending: true,
+  },
+  {
+    id: 'surmount-hyca',
+    name: 'Surmount HYCA',
+    brokerLogo: '/assets/illustrations/surmount-logo-mark-blue.png',
     supportsPending: true,
   },
   {
     id: 'schwab-brokerage',
     name: 'Schwab Brokerage',
     brokerLogo: '/assets/brokers/schwab.png',
-    supportsPending: true,
-  },
-  {
-    id: 'robinhood-individual',
-    name: 'Robinhood Individual',
-    brokerLogo: '/assets/brokers/robinhood.png',
     supportsPending: true,
   },
   {
@@ -33,68 +33,52 @@ export const MOCK_CONNECTED_ACCOUNTS: readonly ConnectedAccount[] = [
   },
 ] as const;
 
-const [surmount, schwab, robinhood, ibkr, coinbase] = MOCK_CONNECTED_ACCOUNTS;
+const [surmount, , schwab, ibkr, coinbase] = MOCK_CONNECTED_ACCOUNTS;
 
 export const MOCK_ACTIVITY_ITEMS: readonly ActivityItem[] = [
-  // ── Pending withdrawals ──────────────────────────────────────────────────
+  // ── 3 demo pending orders ─────────────────────────────────────────────────
   {
-    id: 'act-w001',
-    type: 'withdrawal',
-    amount: 800,
-    account: surmount,
-    status: 'submitted',
-    submittedAt: '2026-05-28T10:05:00-04:00',
-    estimatedCompletion: '2026-06-01T17:00:00-04:00',
-    canCancel: true,
-    canModify: false,
-    statusTimeline: [
-      { status: 'submitted', timestamp: '2026-05-28T10:05:00-04:00', note: 'Withdrawal to Chase Total Checking submitted.' },
-    ],
-  },
-  {
-    id: 'act-w002',
-    type: 'withdrawal',
-    amount: 3500,
-    account: surmount,
-    status: 'processing',
-    submittedAt: '2026-05-27T14:20:00-04:00',
-    estimatedCompletion: '2026-05-31T17:00:00-04:00',
-    canCancel: false,
-    canModify: false,
-    statusTimeline: [
-      { status: 'submitted', timestamp: '2026-05-27T14:20:00-04:00', note: 'Withdrawal initiated.' },
-      { status: 'processing', timestamp: '2026-05-27T14:21:10-04:00', note: 'Transfer in progress.' },
-    ],
-  },
-  // ── 5 pending deposit / withdrawal ───────────────────────────────────────
-  {
-    id: 'act-p001',
+    id: 'pend-1',
     type: 'deposit',
     amount: 2500,
     account: surmount,
     status: 'processing',
-    submittedAt: '2026-05-18T09:12:00-04:00',
-    estimatedCompletion: '2026-05-22T17:00:00-04:00',
+    submittedAt: '2026-05-30T10:30:00-04:00',
+    estimatedCompletion: '2026-06-03T17:00:00-04:00',
     canCancel: true,
     canModify: false,
     statusTimeline: [
-      { status: 'submitted', timestamp: '2026-05-18T09:12:00-04:00', note: 'ACH deposit initiated from Chase Total Checking.' },
-      { status: 'processing', timestamp: '2026-05-18T09:12:45-04:00', note: 'Funds are being verified.' },
+      { status: 'submitted', timestamp: '2026-05-30T10:30:00-04:00', note: 'ACH deposit initiated from Chase Total Checking.' },
+      { status: 'processing', timestamp: '2026-05-30T10:30:45-04:00', note: 'Funds are being verified.' },
     ],
   },
   {
-    id: 'act-p002',
+    id: 'pend-withdrawal',
     type: 'withdrawal',
     amount: 1200,
     account: surmount,
-    status: 'awaiting_user',
-    submittedAt: '2026-05-18T08:30:00-04:00',
-    estimatedCompletion: '2026-05-21T17:00:00-04:00',
+    status: 'processing',
+    submittedAt: '2026-05-30T10:15:00-04:00',
+    estimatedCompletion: '2026-06-03T17:00:00-04:00',
     canCancel: true,
     canModify: false,
     statusTimeline: [
-      { status: 'submitted', timestamp: '2026-05-18T08:30:00-04:00', note: 'Withdrawal to Chase Total Checking submitted.' },
-      { status: 'awaiting_user', timestamp: '2026-05-18T08:31:20-04:00', note: 'Identity confirmation required.' },
+      { status: 'submitted', timestamp: '2026-05-30T10:15:00-04:00', note: 'ACH withdrawal initiated to Chase Total Checking.' },
+      { status: 'processing', timestamp: '2026-05-30T10:15:30-04:00', note: 'Funds are being sent to your bank.' },
+    ],
+  },
+  {
+    id: 'pend-3',
+    type: 'strategy_buy',
+    amount: 1000,
+    account: surmount,
+    strategyName: 'Quantum Computing Leaders',
+    status: 'submitted',
+    submittedAt: '2026-05-30T08:45:00-04:00',
+    canCancel: true,
+    canModify: false,
+    statusTimeline: [
+      { status: 'submitted', timestamp: '2026-05-30T08:45:00-04:00', note: 'Strategy buy order submitted.' },
     ],
   },
   // ── Completed history ─────────────────────────────────────────────────────
@@ -195,18 +179,6 @@ export const MOCK_ACTIVITY_ITEMS: readonly ActivityItem[] = [
       { status: 'submitted', timestamp: '2026-05-11T09:00:00-04:00' },
       { status: 'cancelled', timestamp: '2026-05-11T09:05:00-04:00', note: 'Cancelled by user.' },
     ],
-  },
-  {
-    id: 'act-r001',
-    type: 'recurring_buy',
-    symbol: 'NVDA',
-    amount: 500,
-    account: surmount,
-    status: 'submitted',
-    submittedAt: '2026-05-28T09:00:00-04:00',
-    canCancel: true,
-    canModify: true,
-    statusTimeline: [{ status: 'submitted', timestamp: '2026-05-28T09:00:00-04:00' }],
   },
 ] as const;
 

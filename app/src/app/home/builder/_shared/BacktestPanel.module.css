@@ -1,0 +1,545 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+.configCard {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+  flex-wrap: wrap;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.configField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-width: 200px;
+  flex: 1;
+}
+
+.label {
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+}
+
+.textInput {
+  padding: 10px var(--spacing-lg);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-primary-900);
+}
+
+.textInput:focus {
+  outline: none;
+  border-color: var(--color-border-focus, rgba(10, 13, 18, 0.24));
+}
+
+/* ─── Empty state ─── */
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-7xl) var(--spacing-2xl);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.emptyIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-bg-secondary);
+  color: var(--color-fg-tertiary-600);
+  margin-bottom: var(--spacing-sm);
+}
+
+.emptyIcon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.emptyTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.emptyDesc {
+  margin: 0;
+  max-width: 360px;
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-tertiary-600);
+}
+
+/* ─── Results ─── */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+.resultsRow {
+  display: flex;
+  gap: var(--spacing-2xl);
+  /* stretch (not flex-start): the score card reads noticeably shorter now that the "Asset
+   * score" header and bar are gone, so it should match the chart card's height instead of
+   * sizing to its own shorter content. */
+  align-items: stretch;
+  animation: backtestResultsIn 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ─── Skeleton loader + reveal (Transitions.dev pattern) ───
+ * Skeleton and real content stay mounted together as two layers stacked in the same CSS Grid
+ * cell — not position:absolute+inset like the reference snippet, since that needs a hardcoded
+ * height and this card's real height depends on chart/data content we don't want to guess at.
+ * Grid-stacking sizes the cell to whichever layer is taller with no magic numbers, while keeping
+ * the exact same crossfade: revealing toggles .tSkelRevealed, which fades+blurs the skeleton out
+ * and fades+unblurs the content in over the same duration/easing so the swap reads as one motion.
+ * Re-running the backtest needs the reverse (revealed → skeleton) to snap instantly instead of
+ * animating backwards — BacktestPanel.tsx adds .tSkelResetting for one frame to suspend
+ * transitions, forces a reflow, then removes it so the next reveal animates again. */
+.tSkel {
+  --pulse-dur: 1000ms;
+  --pulse-count: infinite;
+  --pulse-min: 0.5;
+  --reveal-dur: 320ms;
+  --reveal-blur: 2px;
+  --reveal-ease: ease-in-out;
+
+  display: grid;
+}
+
+.tSkelSkeleton,
+.tSkelContent {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.tSkelSkeleton {
+  z-index: 1;
+  opacity: 1;
+  filter: blur(0);
+  transition: opacity var(--reveal-dur) var(--reveal-ease), filter var(--reveal-dur) var(--reveal-ease);
+}
+
+.tSkelContent {
+  z-index: 2;
+  opacity: 0;
+  filter: blur(var(--reveal-blur));
+  pointer-events: none;
+  transition: opacity var(--reveal-dur) var(--reveal-ease), filter var(--reveal-dur) var(--reveal-ease);
+}
+
+.tSkelRevealed .tSkelSkeleton {
+  opacity: 0;
+  filter: blur(var(--reveal-blur));
+  pointer-events: none;
+}
+
+.tSkelRevealed .tSkelContent {
+  opacity: 1;
+  filter: blur(0);
+  pointer-events: auto;
+}
+
+.tSkelResetting .tSkelSkeleton,
+.tSkelResetting .tSkelContent {
+  transition: none !important;
+}
+
+.tSkelSkeleton.isPulsing > * {
+  animation: tSkelPulse var(--pulse-dur) ease-in-out var(--pulse-count);
+}
+
+@keyframes tSkelPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: var(--pulse-min); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tSkelSkeleton,
+  .tSkelContent {
+    transition: none;
+  }
+
+  .tSkelSkeleton.isPulsing > * {
+    animation: none;
+  }
+}
+
+.skelBar {
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-tertiary);
+}
+
+.chartSkelHead {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.skelTitleBar {
+  width: 220px;
+  height: 16px;
+}
+
+.skelSubBar {
+  width: 280px;
+  height: 12px;
+}
+
+.chartSkelStats {
+  display: flex;
+  gap: var(--spacing-2xl);
+  margin-bottom: var(--spacing-lg);
+}
+
+.skelStatBar {
+  width: 90px;
+  height: 34px;
+}
+
+.skelChartBar {
+  width: 100%;
+  height: 260px;
+}
+
+.skelGroupBar {
+  width: 100%;
+  height: 88px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.skelGroupBar:last-child {
+  margin-bottom: 0;
+}
+
+/* Mirrors AboutCard's own .card chrome (padding/border/radius/background) — see the comment at
+ * this skeleton's call site in BacktestPanel.tsx for why it lives on the skeleton layer only. */
+.aboutSkelCard {
+  padding: var(--spacing-xl);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+}
+
+.aboutSkelHead {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.skelAboutTitleBar {
+  width: 90px;
+  height: 20px;
+}
+
+.skelAboutTabsBar {
+  width: 220px;
+  height: 32px;
+}
+
+.skelAboutBarBar {
+  width: 100%;
+  height: 40px;
+}
+
+.chartCard {
+  flex: 1;
+  min-width: 0;
+  padding: var(--spacing-xl);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.chartHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.chartTitle {
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.chartSub {
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-tertiary-600);
+  margin-top: 2px;
+}
+
+.rangeTabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  flex-shrink: 0;
+}
+
+.rangeTab {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.rangeTabActive {
+  background: var(--color-bg-primary);
+  color: var(--color-fg-primary-900);
+  box-shadow: 0 1px 2px rgba(10, 13, 18, 0.06);
+}
+
+.statRow {
+  display: flex;
+  gap: var(--spacing-2xl);
+  margin-bottom: var(--spacing-lg);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statLabel {
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-tertiary-600);
+}
+
+.statVal {
+  font-size: var(--font-size-text-lg);
+  font-weight: 500;
+}
+
+.benchVal {
+  display: block;
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-tertiary-600);
+  font-variant-numeric: tabular-nums;
+}
+
+.pos {
+  color: var(--color-fg-success-primary);
+}
+
+.neg {
+  color: var(--color-fg-error-primary);
+}
+
+.scoreCard {
+  width: 340px;
+  flex-shrink: 0;
+  padding: var(--spacing-xl);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.scoreGroup {
+  padding: var(--spacing-lg) 0;
+  border-bottom: 1px solid var(--color-border-tertiary);
+}
+
+.scoreGroupLast {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.scoreGroup:first-of-type {
+  padding-top: 0;
+}
+
+.scoreGroupHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+}
+
+.scoreGroupTitle {
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.scoreGroupScore {
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+}
+
+.titleWithTooltip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* Same hover/focus tooltip mechanics as RuleCards' info tooltips, but opening downward since
+ * these sit at the top of each score group instead of inline with a card header. */
+.tooltipWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.tooltipTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-fg-quaternary-400);
+  cursor: help;
+}
+
+.tooltipTrigger svg {
+  width: 14px;
+  height: 14px;
+}
+
+.tooltipTrigger:focus-visible {
+  outline: 2px solid var(--color-border-focus, rgba(10, 13, 18, 0.24));
+  outline-offset: 2px;
+}
+
+.tooltip {
+  position: absolute;
+  top: calc(100% + var(--spacing-md));
+  left: 0;
+  z-index: 2;
+  width: 240px;
+  transform: translateY(-4px) scale(0.98);
+  transform-origin: 0 0;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-fg-primary-900);
+  font-size: var(--font-size-text-xs);
+  line-height: 1.4;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 2px 6px 0 rgba(0, 0, 0, 0.05),
+    0 4px 42px 0 rgba(0, 0, 0, 0.06);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 50ms ease-out, transform 50ms ease-out;
+}
+
+.tooltipWrap:hover .tooltip,
+.tooltipTrigger:focus-visible + .tooltip {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition-duration: 150ms;
+  transition-delay: 80ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tooltip {
+    transition: none;
+  }
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.scoreRowLabel {
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-tertiary-600);
+}
+
+.scoreRowVal {
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-primary-900);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .configCard:hover,
+  .chartCard:hover,
+  .scoreCard:hover {
+    border-color: var(--color-border-primary);
+    box-shadow: 0 2px 8px rgba(10, 13, 18, 0.03);
+  }
+
+  .rangeTab:hover:not(.rangeTabActive) {
+    color: var(--color-fg-secondary-700);
+    background: var(--color-bg-primary);
+  }
+}
+
+@keyframes backtestResultsIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .configCard,
+  .chartCard,
+  .scoreCard,
+  .rangeTab {
+    transition: none;
+  }
+
+  .resultsRow {
+    animation: none;
+  }
+}

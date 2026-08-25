@@ -7,6 +7,7 @@ import {
 } from '@/components/charts/WealthsimpleNetWorthChart';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { CaretDown, Info } from '@phosphor-icons/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import s from './page.module.css';
@@ -50,12 +51,15 @@ const STRATEGY_DATA: Record<string, {
   },
 };
 
+// `external: true` marks brokerages that aren't the internal Surmount Investing
+// account. Some external brokerages don't support fractional shares, which the
+// review step warns about.
 const ACCOUNTS = [
-  { id: 'robinhood', name: 'Robinhood',  logo: '/assets/brokers/robinhood.png', cash: '$5,231.40',  holdings: '$5,000.00'  },
-  { id: 'webull',    name: 'Webull',     logo: '/assets/brokers/webull.png',    cash: '$2,800.00',  holdings: '$3,200.00'  },
-  { id: 'ibkr',      name: 'IBKR',       logo: '/assets/brokers/ibkr.png',      cash: '$18,450.00', holdings: '$12,500.00' },
-  { id: 'schwab',    name: 'Schwab',     logo: '/assets/brokers/schwab.png',    cash: '$10,000.00', holdings: '$8,750.00'  },
-  { id: 'coinbase',  name: 'Coinbase',   logo: '/assets/brokers/coinbase.png',  cash: '$640.20',    holdings: '$1,200.00'  },
+  { id: 'surmount',  name: 'Surmount Investing', logo: '/assets/brokers/surmount.png',  cash: '$10,432.18', holdings: '$24,918.55', external: false },
+  { id: 'webull',    name: 'Webull',     logo: '/assets/brokers/webull.png',    cash: '$2,800.00',  holdings: '$3,200.00',  external: true },
+  { id: 'ibkr',      name: 'IBKR',       logo: '/assets/brokers/ibkr.png',      cash: '$18,450.00', holdings: '$12,500.00', external: true },
+  { id: 'schwab',    name: 'Schwab',     logo: '/assets/brokers/schwab.png',    cash: '$10,000.00', holdings: '$8,750.00',  external: true },
+  { id: 'coinbase',  name: 'Coinbase',   logo: '/assets/brokers/coinbase.png',  cash: '$640.20',    holdings: '$1,200.00',  external: true },
 ];
 
 const STRATEGY_PRICE = 138.44;
@@ -70,9 +74,10 @@ function BuySellWidget({ stratName }: { stratName: string }) {
   const [selectedAcctId, setSelectedAcctId] = useState<string | null>(null);
   const [amount, setAmount] = useState('');
   const [dropOpen, setDropOpen] = useState(false);
-  const [dropPos, setDropPos] = useState<{ top: number; left: number } | null>(null);
+  const [dropPos, setDropPos] = useState<{ top: number; right: number } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedAt, setSubmittedAt] = useState<Date | null>(null);
+  const [disclosureOpen, setDisclosureOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -85,10 +90,57 @@ function BuySellWidget({ stratName }: { stratName: string }) {
   const isReady = !!selectedAcct && hasAmount;
   const displayAmount = hasAmount ? '$' + parsedAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '$0.00';
 
+  const orderDisclosure = selectedAcct ? (
+    <div className={s.wtDisclosure}>
+      <button
+        type="button"
+        className={s.wtDisclosureToggle}
+        onClick={() => setDisclosureOpen(open => !open)}
+        aria-expanded={disclosureOpen}
+      >
+        <Info className={s.wtDisclosureIcon} weight="regular" aria-hidden="true" />
+        <span className={s.wtDisclosureLabel}>Order &amp; brokerage disclosures</span>
+        <CaretDown
+          className={[s.wtDisclosureCaret, disclosureOpen ? s.wtDisclosureCaretOpen : ''].filter(Boolean).join(' ')}
+          weight="bold"
+          aria-hidden="true"
+        />
+      </button>
+      <div className={[s.wtDisclosureBody, disclosureOpen ? s.wtDisclosureBodyOpen : ''].filter(Boolean).join(' ')}>
+        <div className={s.wtDisclosureBodyClip}>
+          <div className={s.wtDisclosureBodyInner}>
+            <p>
+              Submitting this order authorizes Surmount to buy, sell, and rebalance positions for
+              this strategy in your linked brokerage account.
+            </p>
+            <p>
+              Surmount submits orders to your brokerage; your brokerage executes them. Orders are
+              placed at the next available market price, which may differ from prices shown here.
+              Orders placed outside market hours are submitted when trading next opens.
+            </p>
+            <p>
+              Execution practices differ by brokerage — including whether fractional shares are
+              supported, order minimums, and how quickly funds settle. As a result, a portion of
+              your investment amount may remain un-invested in your account. Un-invested cash is
+              included in the balance used to calculate your Surmount advisory fee. Any interest
+              paid on cash is determined by your brokerage, not by Surmount.
+            </p>
+            <p>
+              Because of these differences, your holdings and returns will differ from the
+              strategy&rsquo;s target allocations and its published performance.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  ) : null;
+
   const openDrop = useCallback(() => {
     if (selectRef.current) {
       const r = selectRef.current.getBoundingClientRect();
-      setDropPos({ top: r.bottom + 4, left: r.left });
+      // Right-align the menu with the trigger's right edge so it doesn't
+      // overflow toward the screen edge.
+      setDropPos({ top: r.bottom + 4, right: window.innerWidth - r.right });
     }
     setDropOpen(true);
   }, []);
@@ -158,6 +210,7 @@ function BuySellWidget({ stratName }: { stratName: string }) {
     setSelectedAcctId(null);
     setAmount('');
     setSubmittedAt(null);
+    setDisclosureOpen(false);
   };
 
   const submittedTimeStr = submittedAt
@@ -174,7 +227,7 @@ function BuySellWidget({ stratName }: { stratName: string }) {
     <div
       ref={menuRef}
       className={s.wtAcctMenu}
-      style={{ top: dropPos.top, left: dropPos.left }}
+      style={{ top: dropPos.top, right: dropPos.right }}
     >
       {ACCOUNTS.map(a => (
         <div
@@ -202,6 +255,10 @@ function BuySellWidget({ stratName }: { stratName: string }) {
         </div>
 
         <div className={s.wtTabs}>
+          <span
+            aria-hidden="true"
+            className={[s.wtTabThumb, tab === 'sell' ? s.wtTabThumbSell : ''].filter(Boolean).join(' ')}
+          />
           <button type="button" className={[s.wtTab, tab === 'buy' ? s.wtTabActive : ''].filter(Boolean).join(' ')} onClick={() => handleTabChange('buy')}>Buy</button>
           <button type="button" className={[s.wtTab, tab === 'sell' ? s.wtTabActive : ''].filter(Boolean).join(' ')} onClick={() => handleTabChange('sell')}>Sell</button>
         </div>
@@ -324,9 +381,7 @@ function BuySellWidget({ stratName }: { stratName: string }) {
           </div>
 
           <div className={s.wtReviewFooter}>
-            <p className={s.wtDisclaimer}>
-              This order will execute at the next available market price. Surmount will rebalance your portfolio according to the strategy's current allocations.
-            </p>
+            {orderDisclosure}
             <button
               type="button"
               className={s.btnSubmit}
@@ -483,6 +538,11 @@ export default function StrategyDetailPage() {
             </div>
           </div>
 
+          {/* Mobile-only Buy/Sell widget — sits directly below the strategy image on narrow screens */}
+          <div className={s.widgetMobile}>
+            <BuySellWidget stratName={strategy.name} />
+          </div>
+
           {/* Chart section */}
           <div className={s.chartSection}>
             <WealthsimpleNetWorthChart
@@ -510,7 +570,6 @@ export default function StrategyDetailPage() {
               {[
                 { logo: '/assets/brokers/ibkr.png',      name: 'IBKR',       shares: '4,491 shares', amount: '$124,152.62', ret: '+5.24%', since: 'Jul 25, 2025' },
                 { logo: '/assets/brokers/kraken.png',    name: 'Kraken',     shares: '1,123 shares', amount: '$678,920.45', ret: '+3.15%', since: 'Aug 10, 2025' },
-                { logo: '/assets/brokers/robinhood.png', name: 'Robinhood',  shares: '856 shares',   amount: '$245,789.30', ret: '+2.85%', since: 'Sep 15, 2025' },
                 { logo: '/assets/brokers/surmount.png',  name: 'Surmount',   shares: '2,034 shares', amount: '$345,654.75', ret: '+4.50%', since: 'Oct 30, 2025' },
               ].map(row => (
                 <div key={row.name} className={s.hRow}>

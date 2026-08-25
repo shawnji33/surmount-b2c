@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 28px 28px 24px;
-  background: var(--color-bg-secondary, #fafafa);
+  background: none;
   z-index: 300;
 }
 
@@ -76,6 +76,11 @@
   stroke: currentColor;
 }
 
+.navBtn svg.phosphorNavIcon {
+  fill: currentColor;
+  stroke: none;
+}
+
 .navBtn:hover {
   background: var(--color-gray-lm-200, #e9e9eb);
   color: var(--color-gray-lm-900, #181d27);
@@ -103,7 +108,7 @@
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 10px;
   line-height: 1;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0;
   box-shadow: 0 2px 5px rgba(10, 13, 18, 0.12);
   pointer-events: none;
@@ -116,10 +121,10 @@
   top: 50%;
   transform: translateY(-50%) translateX(-6px);
   background: var(--color-gray-lm-900, #181d27);
-  color: #fff;
+  color: var(--color-fg-white);
   font-size: 10px;
-  line-height: 13px;
-  font-weight: 600;
+  line-height: 14px;
+  font-weight: 400;
   font-family: var(--font-family-body, 'Geist', sans-serif);
   padding: 8px;
   border-radius: var(--radius-md, 8px);
@@ -167,7 +172,7 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   cursor: pointer;
-  padding: 10px 9px;
+  padding: 10px 10px;
   border-radius: 9999px;
   box-shadow: 0 2px 8px rgba(10, 13, 18, 0.07);
   transition: background 120ms ease, box-shadow 120ms ease;
@@ -180,8 +185,8 @@
 }
 
 .pendingDot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--color-utility-error-600, #b6544c);
   animation: pendingPulse 2s ease-in-out infinite;
@@ -202,7 +207,7 @@
 .pendingCount {
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1;
   letter-spacing: -0.5px;
   color: var(--color-fg-primary-900, #181d27);
@@ -244,8 +249,8 @@
   align-items: center;
   justify-content: center;
   font-size: 10px;
-  font-weight: 500;
-  color: #fff;
+  font-weight: 400;
+  color: var(--color-fg-white);
   font-family: var(--font-family-body, 'Geist', sans-serif);
   letter-spacing: 0;
 }
@@ -269,26 +274,7 @@
 .accountMenuHeader {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md, 10px);
   padding: 8px 10px 10px;
-}
-
-.accountMenuAvatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--color-bg-secondary, #fafafa);
-  border: 0.75px solid rgba(0, 0, 0, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.accountMenuAvatar .avatarInner {
-  width: 20px;
-  height: 20px;
-  font-size: 11px;
 }
 
 .accountMenuUser {
@@ -302,7 +288,7 @@
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm, 14px);
   line-height: var(--line-height-text-sm, 20px);
-  font-weight: 500;
+  font-weight: 400;
   color: var(--color-fg-primary-900, #181d27);
   letter-spacing: -0.2px;
   white-space: nowrap;
@@ -334,7 +320,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 10px;
+  padding: 10px 10px;
   border: 0;
   border-radius: var(--radius-md, 8px);
   background: transparent;
@@ -358,6 +344,17 @@
   transform: scale(0.99);
 }
 
+/* Intentional brand-blue callout — draws attention to upgrading (exception to blue→gray chrome rule). */
+.accountMenuItemUpgrade {
+  color: var(--color-brand-600, #406ad0);
+  font-weight: 500;
+}
+
+.accountMenuItemUpgrade:hover {
+  background: var(--color-bg-brand-primary, #f1f6fd);
+  color: var(--color-brand-600, #406ad0);
+}
+
 .accountMenuItemDanger {
   color: var(--color-utility-error-700, #98443d);
 }
@@ -368,8 +365,8 @@
 }
 
 .accountMenuIcon {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
   color: currentColor;
 }
@@ -383,4 +380,62 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+/* ─── Cancel-order toast (slides in from the right) ─── */
+.toastRegion {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 10090;
+  width: min(380px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-utility-success-200, #abefc6);
+  border-radius: var(--radius-xl, 12px);
+  background: var(--color-bg-success-secondary, #ecfdf3);
+  box-shadow: 0px 8px 24px -6px rgba(10, 13, 18, 0.12), 0px 2px 6px -2px rgba(10, 13, 18, 0.06);
+  pointer-events: auto;
+  animation: toastIn 320ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.toastLeaving {
+  animation: toastOut 220ms cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+.toastIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--color-fg-success-primary, #079455);
+}
+
+.toastText {
+  margin: 0;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: -0.1px;
+  color: var(--color-utility-success-700, #316434);
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(calc(100% + 24px)); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(calc(100% + 24px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast, .toastLeaving { animation: none; }
 }

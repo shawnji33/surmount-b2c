@@ -55,17 +55,17 @@ function simulateUpload(onProgress: (p: number) => void, onDone: () => void) {
 const DOCS = [
   {
     title: 'Government-issued photo ID',
-    subtitle: "Driver's license, passport, or state ID. Front and back if applicable.",
+    subtitle: "Driver's license or passport. Front and back if applicable.",
     reqs: ['All 4 corners visible', 'No glare or blur', 'Text legible'],
     accept: '.pdf,.jpg,.jpeg,.png',
     ariaLabel: 'Upload government-issued photo ID',
   },
   {
-    title: 'Proof of current address',
-    subtitle: 'Utility bill, bank statement, or lease. Must be dated within the last 90 days.',
+    title: 'Proof of residency',
+    subtitle: 'Utility bill, bank statement, or lease. Must be dated within the last 3 months.',
     reqs: [],
     accept: '.pdf,.jpg,.jpeg,.png',
-    ariaLabel: 'Upload proof of current address',
+    ariaLabel: 'Upload proof of residency',
   },
 ];
 
@@ -268,8 +268,8 @@ export default function VerifyDocumentsPage() {
           Back
         </Link>
         <div className={s.topbarBrand}>
-          <img src="https://www.figma.com/api/mcp/asset/3bbd6119-7028-47e5-9a7d-d4fafba87569" alt="" className={s.topbarBrandIcon} />
-          <img src="https://www.figma.com/api/mcp/asset/3297adb2-a615-459c-b3a1-30442b03c519" alt="Surmount" className={s.topbarBrandName} />
+          <img src="/assets/sidebar/logo-mark.svg" alt="" className={s.topbarBrandIcon} />
+          <img src="/assets/sidebar/wordmark.svg" alt="Surmount" className={s.topbarBrandName} />
         </div>
         <Link href="/home" className={s.topbarBtn}>
           Close
@@ -284,7 +284,7 @@ export default function VerifyDocumentsPage() {
         <div className={s.verifyContent}>
           <div className={s.verifyHeader}>
             <h1 className={s.verifyTitle}>Verify your identity</h1>
-            <p className={s.verifySubtitle}>Upload the 2 documents below. We&apos;ll verify and notify you within 1–2 business days.</p>
+            <p className={s.verifySubtitle}>Upload the 2 documents below. Verification can take up to 2 weeks — we&apos;ll email you as soon as it&apos;s done.</p>
           </div>
 
           <div className={s.verifyCards}>

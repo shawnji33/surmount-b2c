@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Growth — Surmount</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --spacing-xs:4px;--spacing-sm:6px;--spacing-md:8px;
+  --spacing-lg:12px;--spacing-xl:16px;--spacing-2xl:20px;
+  --spacing-3xl:24px;--spacing-4xl:32px;--spacing-5xl:40px;
+  --spacing-6xl:48px;
+  --radius-md:8px;--radius-xl:12px;--radius-2xl:16px;
+  --font-family-body:'Geist',sans-serif;
+  --color-fg-primary-900:#181D27;
+  --color-fg-tertiary-600:rgba(10,13,18,0.5);
+  --color-border-primary:rgba(0,0,0,0.086);
+  --color-border-secondary:rgba(0,0,0,0.06);
+}
+html,body{
+  font-family:var(--font-family-body);
+  background:#f5f6f8;
+  color:var(--color-fg-primary-900);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:var(--spacing-6xl);
+}
+
+.card{
+  background:#ffffff;
+  border-radius:var(--radius-2xl);
+  padding:var(--spacing-5xl);
+  max-width:900px;
+  width:100%;
+}
+
+/* ── Title ── */
+.growth-title{
+  font-size:26px;
+  font-weight:500;
+  line-height:1.3;
+  letter-spacing:-0.6px;
+  color:var(--color-fg-primary-900);
+  margin-bottom:var(--spacing-5xl);
+}
+
+/* ── Chart ── */
+.chart-wrap{
+  margin-bottom:var(--spacing-xl);
+  width:100%;
+}
+.chart-svg{
+  width:100%;
+  height:auto;
+  display:block;
+  overflow:visible;
+}
+
+/* ── Legend ── */
+.legend{
+  display:flex;
+  align-items:center;
+  gap:var(--spacing-3xl);
+  margin-bottom:var(--spacing-3xl);
+}
+.legend-item{
+  display:flex;align-items:center;gap:var(--spacing-md);
+  font-size:13px;font-weight:500;color:var(--color-fg-primary-900);
+  letter-spacing:-0.2px;
+}
+.legend-swatch{
+  width:14px;height:14px;border-radius:3px;flex-shrink:0;
+}
+
+/* ── Inputs card ── */
+.inputs-card{
+  border:1px solid var(--color-border-primary);
+  border-radius:var(--radius-2xl);
+  overflow:hidden;
+}
+.inputs-row{display:grid;grid-template-columns:1fr 1fr;}
+.input-cell{padding:var(--spacing-xl) var(--spacing-3xl);}
+.input-cell+.input-cell{border-left:1px solid var(--color-border-secondary);}
+.input-lbl{
+  font-size:11px;font-weight:400;
+  color:var(--color-fg-tertiary-600);letter-spacing:-0.2px;
+  margin-bottom:var(--spacing-xs);
+}
+.input-amount{display:flex;align-items:baseline;gap:6px;}
+.currency{
+  font-size:24px;font-weight:400;
+  color:var(--color-fg-tertiary-600);line-height:1;
+}
+.amount-field{
+  font-size:24px;font-weight:500;letter-spacing:-0.5px;
+  color:var(--color-fg-primary-900);
+  border:none;outline:none;background:transparent;
+  font-family:var(--font-family-body);
+  width:100%;line-height:1.2;
+}
+.input-hint{
+  border-top:1px solid var(--color-border-secondary);
+  padding:var(--spacing-lg) var(--spacing-3xl);
+  font-size:13px;color:var(--color-fg-tertiary-600);
+  letter-spacing:-0.2px;line-height:1.5;
+}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <h2 class="growth-title">
+    In 30 years, your portfolio could grow to <span id="proj-val">$1.43M</span>
+  </h2>
+
+  <!-- Chart -->
+  <div class="chart-wrap">
+    <svg class="chart-svg" viewBox="0 0 840 330" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Less likely outer band (light green) -->
+      <path d="M 36 285
+               C 300 283 530 5 840 14
+               L 840 210
+               C 530 196 300 285 36 285 Z"
+            fill="#a4d4b4" fill-opacity="0.48"/>
+
+      <!-- Likely inner band (medium green) -->
+      <path d="M 36 285
+               C 300 283 530 70 840 84
+               L 840 180
+               C 530 168 300 285 36 285 Z"
+            fill="#4a7c59"/>
+
+      <!-- Subtle median stroke through center of likely band -->
+      <path d="M 36 285 C 300 283 530 118 840 132"
+            fill="none" stroke="#3a6548" stroke-width="1.5" opacity="0.4"/>
+
+      <!-- Today dot -->
+      <circle cx="36" cy="285" r="7" fill="#2b5c3e"/>
+
+      <!-- Dashed vertical line at 30 years (x=700) -->
+      <line x1="700" y1="12" x2="700" y2="308"
+            stroke="rgba(10,13,18,0.3)" stroke-width="1"
+            stroke-dasharray="4 5"/>
+
+      <!-- $1.43M pill label — positioned left of dashed line, at median y≈136 -->
+      <rect x="571" y="123" width="110" height="26" rx="13"
+            fill="white" stroke="rgba(0,0,0,0.11)" stroke-width="1"/>
+      <text x="584" y="140" font-family="Geist,sans-serif"
+            font-size="13" font-weight="500" fill="#181D27"
+            letter-spacing="-0.3">$1.43M</text>
+      <!-- Dot at dashed line on median -->
+      <circle cx="700" cy="136" r="5.5" fill="#2b5c3e" stroke="white" stroke-width="2"/>
+
+      <!-- X-axis labels -->
+      <text x="36" y="322" font-family="Geist,sans-serif"
+            font-size="13" fill="rgba(10,13,18,0.5)" letter-spacing="-0.2">Today</text>
+      <text x="724" y="322" font-family="Geist,sans-serif"
+            font-size="13" fill="rgba(10,13,18,0.5)" letter-spacing="-0.2">In 30 years</text>
+
+    </svg>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:#4a7c59"></span>
+      <span>Likely: $1.21M—$1.69M</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:#a4d4b4"></span>
+      <span>Less likely: $954.3K—$2.13M</span>
+    </div>
+  </div>
+
+  <!-- Inputs -->
+  <div class="inputs-card">
+    <div class="inputs-row">
+      <div class="input-cell">
+        <div class="input-lbl">Invested today</div>
+        <div class="input-amount">
+          <span class="currency">$</span>
+          <input class="amount-field" type="text" id="inp-initial" value="50,000">
+        </div>
+      </div>
+      <div class="input-cell">
+        <div class="input-lbl">Invested monthly</div>
+        <div class="input-amount">
+          <span class="currency">$</span>
+          <input class="amount-field" type="text" id="inp-monthly" value="1,000">
+        </div>
+      </div>
+    </div>
+    <p class="input-hint">Adjust these values to explore different growth scenarios. Your actual contributions can be set later.</p>
+  </div>
+
+</div>
+
+<script>
+const RATE = 0.065 / 12; // 6.5% annual → monthly
+const N = 30 * 12;       // 360 months
+
+function fv(P, pmt) {
+  const f = Math.pow(1 + RATE, N);
+  return P * f + pmt * (f - 1) / RATE;
+}
+
+function fmt(v) {
+  if (v >= 1e6) return '$' + (v / 1e6).toFixed(2) + 'M';
+  if (v >= 1e3) return '$' + (v / 1e3).toFixed(1) + 'K';
+  return '$' + Math.round(v).toLocaleString();
+}
+
+function parse(s) { return parseFloat(s.replace(/,/g, '')) || 0; }
+
+function update() {
+  const P   = parse(document.getElementById('inp-initial').value);
+  const pmt = parse(document.getElementById('inp-monthly').value);
+  document.getElementById('proj-val').textContent = fmt(fv(P, pmt));
+}
+
+['inp-initial','inp-monthly'].forEach(id =>
+  document.getElementById(id).addEventListener('input', update)
+);
+</script>
+</body>
+</html>

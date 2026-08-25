@@ -7,7 +7,9 @@ export type ActivityItemType =
   | 'stop_limit'
   | 'deposit'
   | 'withdrawal'
-  | 'recurring_buy';
+  | 'recurring_buy'
+  | 'transfer'
+  | 'strategy_buy';
 
 export type ActivityStatus =
   | 'submitted'
@@ -38,6 +40,8 @@ export type ActivityItem = {
   quantity?: number;
   amount: number;
   account: ConnectedAccount;
+  toAccount?: ConnectedAccount;
+  strategyName?: string;
   status: ActivityStatus;
   submittedAt: string;
   estimatedCompletion?: string;

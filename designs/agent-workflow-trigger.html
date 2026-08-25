@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Investing Agent · Workflow + Trigger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+:root{
+  --bg-primary:#ffffff; --bg-secondary:#fafafa; --bg-tertiary:#f5f5f5; --bg-quaternary:#e9e9eb;
+  --fg-900:#181d27; --fg-700:#414651; --fg-600:#535861; --fg-500:#717680; --fg-400:#a3a7ae;
+  --text-900:#0a0d12e5; --text-700:#0a0d12b2; --text-600:#0a0d1299; --text-disabled:#0a0d1266;
+  --border:#00000016; --border-2:#00000010; --border-strong:#00000024; --white:#fff;
+  --brand-600:#406ad0; --brand-500:#5585dc; --brand-secondary:#e0eaf9; --brand-bg:#eef2fc;
+  --green-600:#3b7e3f; --green-700:#316434; --amber-600:#de5b18;
+  --purple-600:#6838ee; --purple-soft:#efeafe;
+  --font-body:'Geist',-apple-system,sans-serif; --font-display:'Inter',-apple-system,sans-serif;
+  --shadow-card:0 1px 2px rgba(10,13,18,.04),0 1px 3px rgba(10,13,18,.06);
+  --shadow-pop:0 8px 24px rgba(10,13,18,.10),0 2px 6px rgba(10,13,18,.06);
+  --ease:cubic-bezier(.23,1,.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);letter-spacing:-0.4px;color:var(--text-900);background:var(--bg-primary);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.45;overflow:hidden}
+button{font-family:inherit;letter-spacing:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea{font-family:inherit;letter-spacing:inherit}
+svg{display:block}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* top bar (shared) */
+.top{height:60px;flex:0 0 60px;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid var(--border);background:var(--bg-primary);z-index:30}
+.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--brand-600),var(--purple-600));display:grid;place-items:center;flex:0 0 30px}
+.crumb{display:flex;align-items:center;gap:9px;color:var(--fg-600);font-size:14px}
+.crumb .fld{color:var(--fg-500);display:flex;align-items:center;gap:7px}
+.crumb .cur{color:var(--fg-900);font-weight:500}
+.tabs{flex:1;display:flex;justify-content:center;gap:4px}
+.tab{font-size:14px;font-weight:500;color:var(--fg-500);padding:7px 14px;border-radius:8px}
+.tab.on{color:var(--fg-900);background:var(--bg-tertiary)}
+.tr{display:flex;align-items:center;gap:9px}
+.pill-draft{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--fg-600);padding:5px 10px}
+.pill-draft .d{width:7px;height:7px;border-radius:50%;background:var(--fg-400)}
+.ico{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:var(--fg-600)}
+.ico:hover{background:var(--bg-tertiary)}
+.eye{width:42px;height:24px;border-radius:999px;background:var(--bg-quaternary);position:relative}
+.eye::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border-radius:9px;font-size:13.5px;font-weight:500}
+.btn.run{border:1px solid var(--border-strong);color:var(--fg-900)}
+.btn.pub{background:var(--fg-900);color:#fff}
+.body{flex:1;display:flex;min-height:0}
+.rail{flex:0 0 60px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 0;border-right:1px solid var(--border);background:var(--bg-primary)}
+.rail .ri{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;color:var(--fg-600)}
+.rail .ri.on{background:var(--bg-tertiary);color:var(--fg-900)}
+.rail .ri:hover{background:var(--bg-tertiary)}
+
+/* ── Agent chat panel (left) ──────────────────────────────────────────────*/
+.agent{flex:0 0 420px;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--bg-primary);min-height:0}
+.agent-head{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--border-2)}
+.agent-head .hist{color:var(--fg-500)}
+.agent-head .nm{flex:1;font-size:15px;font-weight:500;color:var(--fg-900)}
+.agent-head .hb{width:30px;height:30px;border-radius:7px;display:grid;place-items:center;color:var(--fg-500)}
+.agent-head .hb:hover{background:var(--bg-tertiary)}
+.agent-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 28px;gap:0;overflow-y:auto}
+.agent-logo{width:56px;height:56px;display:grid;place-items:center;margin-bottom:18px}
+.agent-hero h2{font-family:var(--font-display);font-size:26px;font-weight:500;color:var(--fg-900);letter-spacing:-0.6px;display:flex;align-items:center;gap:9px}
+.beta{font-size:12px;font-weight:500;color:var(--purple-600);background:var(--purple-soft);border-radius:7px;padding:3px 8px}
+.agent-hero p{font-size:15px;color:var(--fg-500);margin-top:8px}
+.agent-foot{padding:14px 16px 16px;border-top:1px solid var(--border-2)}
+.scope{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.scope-chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--fg-700);background:var(--bg-tertiary);border:1px solid var(--border-2);border-radius:8px;padding:6px 10px}
+.scope-chip .x{color:var(--fg-400)}
+.scope-add{width:28px;height:28px;border-radius:8px;border:1px solid var(--border-strong);display:grid;place-items:center;color:var(--fg-600)}
+.agent-field{border:1px solid var(--border-strong);border-radius:12px;padding:13px 13px 10px;position:relative}
+.agent-field textarea{width:100%;border:none;outline:none;resize:none;font-size:14px;color:var(--text-900);min-height:42px}
+.agent-field textarea::placeholder{color:var(--text-disabled)}
+.agent-field .frow{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.agent-field .mic{color:var(--fg-500)}
+.agent-field .send{width:32px;height:32px;border-radius:8px;background:var(--bg-quaternary);color:var(--fg-500);display:grid;place-items:center}
+.sugg{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+.sugg button{display:flex;gap:11px;text-align:left;border:1px solid var(--border);border-radius:11px;padding:13px 14px;font-size:13.5px;color:var(--fg-700);line-height:1.45;transition:background .12s var(--ease)}
+.sugg button:hover{background:var(--bg-secondary)}
+.sugg .ar{color:var(--fg-400);flex:0 0 auto;margin-top:1px}
+
+/* ── Canvas ───────────────────────────────────────────────────────────────*/
+.canvas{flex:1;position:relative;overflow:hidden;background:radial-gradient(circle, rgba(10,13,18,.07) 1px, transparent 1.6px) 0 0 / 18px 18px, var(--bg-tertiary);}
+.cc{position:relative;width:100%;height:100%}
+.runbtn{position:absolute;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border-strong);border-radius:8px;padding:6px 11px;font-size:13px;font-weight:500;color:var(--fg-900);background:var(--bg-primary);box-shadow:var(--shadow-card)}
+.node{position:absolute;width:330px;background:var(--bg-primary);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);overflow:hidden}
+.node.sel{border:1.5px solid var(--brand-500);box-shadow:0 0 0 3px rgba(85,133,220,.18),var(--shadow-card)}
+.nh{display:flex;align-items:center;gap:11px;padding:16px 16px 0}
+.nh .nic{width:30px;height:30px;border-radius:8px;background:var(--bg-tertiary);display:grid;place-items:center;color:var(--fg-700)}
+.nh .nt{font-size:16px;font-weight:500;color:var(--fg-900)}
+.nbig{font-size:15px;color:var(--fg-600);padding:12px 16px 16px}
+.nfoot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border-2);padding:12px 16px;font-size:12.5px;color:var(--fg-500)}
+.nfoot .vr{display:flex;align-items:center;gap:7px;color:var(--fg-600);font-weight:500}
+.hdr-card{position:absolute;border-radius:14px;padding:20px;border:1.5px solid #c9d8f4;background:var(--brand-bg)}
+.hdr-card .ht{font-family:var(--font-display);font-size:19px;font-weight:500;color:var(--fg-900)}
+.chandle{position:absolute;width:20px;height:20px;border-radius:5px;background:var(--bg-primary);border:1.5px solid var(--border-strong)}
+.saved{position:absolute;left:18px;bottom:22px;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--fg-600)}
+.saved .d{width:9px;height:9px;border-radius:50%;background:var(--green-600)}
+.saved b{color:var(--fg-900);font-weight:500}
+.toolbar{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:var(--bg-primary);border:1px solid var(--border);box-shadow:var(--shadow-pop);border-radius:12px;padding:7px;z-index:20}
+.tb-ask{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border:1px solid var(--purple-600);color:var(--purple-600);border-radius:9px;font-size:13.5px;font-weight:500}
+.tb-add{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 15px;background:var(--fg-900);color:#fff;border-radius:9px;font-size:13.5px;font-weight:500}
+.tb-div{width:1px;height:20px;background:var(--border)}
+.tb-i{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--fg-600)}
+
+/* ── Trigger inspector (right) ────────────────────────────────────────────*/
+.insp{flex:0 0 510px;display:flex;flex-direction:column;border-left:1px solid var(--border);background:var(--bg-primary);min-height:0}
+.insp-head{display:flex;align-items:center;gap:11px;padding:18px 20px 16px}
+.insp-head .ic{width:30px;height:30px;border-radius:8px;background:var(--bg-tertiary);display:grid;place-items:center;color:var(--fg-700)}
+.insp-head .t{font-size:18px;font-weight:500;color:var(--fg-900)}
+.insp-head .code{font-family:ui-monospace,monospace;font-size:12.5px;color:var(--fg-600);background:var(--bg-tertiary);border-radius:6px;padding:3px 8px}
+.insp-head .sp{flex:1}
+.insp-head .hb{width:30px;height:30px;border-radius:7px;display:grid;place-items:center;color:var(--fg-500)}
+.insp-body{flex:1;overflow-y:auto;padding:6px 20px 30px}
+.insp-body .lede{font-size:15px;color:var(--fg-700);margin:6px 0 26px}
+.cat{font-size:12px;letter-spacing:1px;color:var(--fg-500);margin-bottom:14px}
+.search{display:flex;align-items:center;gap:9px;border:1px solid var(--border-strong);border-radius:10px;padding:11px 13px;color:var(--fg-500);font-size:14px;margin-bottom:8px}
+.prov{display:flex;align-items:center;gap:13px;padding:14px 6px;border-bottom:1px solid var(--border-2);cursor:pointer;transition:background .1s var(--ease)}
+.prov:hover{background:var(--bg-secondary)}
+.prov .plogo{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex:0 0 40px;color:#fff;font-weight:500;font-size:15px}
+.prov .pt{font-size:14.5px;font-weight:500;color:var(--fg-900)}
+.prov .ps{font-size:13px;color:var(--fg-500);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:360px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="logo"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="#fff" stroke-width="16" stroke-linejoin="round"><polygon points="128 24 224 80 224 176 128 232 32 176 32 80 128 24"/><polyline points="32 80 128 136 224 80"/><line x1="128" y1="136" x2="128" y2="232"/></svg></div>
+    <div class="crumb"><span class="fld"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M32 200V64a8 8 0 0 1 8-8h61.3a8 8 0 0 1 5 1.7l25.4 19.6a8 8 0 0 0 5 1.7H216a8 8 0 0 1 8 8v24"/><path d="M32 200l30.2-90.6a8 8 0 0 1 7.6-5.4H240a8 8 0 0 1 7.6 10.5L218 200Z"/></svg>Surmount Org's General</span><span class="fld">/</span><span class="cur">NVDA Dip-Buyer</span></div>
+    <nav class="tabs"><button class="tab on">Workflow</button><button class="tab">Interface</button><button class="tab">Analytics</button><button class="tab">Manager</button><button class="tab">Evaluator</button></nav>
+    <div class="tr">
+      <span class="pill-draft"><span class="d"></span>Draft</span><span class="eye"></span>
+      <button class="ico"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="40"/><path d="M130 24h-4a16 16 0 0 0-16 14l-2 14-18 10-14-6a16 16 0 0 0-20 6l-4 8a16 16 0 0 0 4 20l10 10v20l-10 10a16 16 0 0 0-4 20l4 8a16 16 0 0 0 20 6l14-6 18 10 2 14a16 16 0 0 0 16 14h4a16 16 0 0 0 16-14l2-14 18-10 14 6a16 16 0 0 0 20-6l4-8a16 16 0 0 0-4-20l-10-10v-20l10-10a16 16 0 0 0 4-20l-4-8a16 16 0 0 0-20-6l-14 6-18-10-2-14a16 16 0 0 0-16-14Z"/></svg></button>
+      <button class="ico"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M216 80v136a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8V40a8 8 0 0 1 8-8h120Z"/><polyline points="152 32 152 88 208 88"/></svg></button>
+      <button class="btn run"><svg width="13" height="13" viewBox="0 0 256 256" fill="currentColor"><path d="M232.4 114.5 88.3 26.4a16 16 0 0 0-24.3 13.5v176.2a16 16 0 0 0 24.3 13.5l144.1-88.1a15.8 15.8 0 0 0 0-27Z"/></svg>Run</button>
+      <button class="btn pub">Publish <svg width="13" height="13" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></button>
+      <button class="ico"><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor"><circle cx="128" cy="64" r="14"/><circle cx="128" cy="128" r="14"/><circle cx="128" cy="192" r="14"/></svg></button>
+    </div>
+  </header>
+
+  <div class="body">
+    <nav class="rail">
+      <button class="ri on"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><circle cx="116" cy="116" r="84"/><line x1="175" y1="175" x2="224" y2="224"/></svg></button>
+      <button class="ri"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><line x1="128" y1="144" x2="128" y2="32"/><polyline points="80 96 128 144 176 96"/><path d="M40 144v64a8 8 0 0 0 8 8h160a8 8 0 0 0 8-8v-64"/></svg></button>
+      <button class="ri"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><line x1="128" y1="32" x2="128" y2="144"/><polyline points="80 80 128 32 176 80"/><path d="M40 144v64a8 8 0 0 0 8 8h160a8 8 0 0 0 8-8v-64"/></svg></button>
+      <button class="ri"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><rect x="36" y="60" width="184" height="136" rx="16"/><circle cx="92" cy="128" r="12"/><circle cx="164" cy="128" r="12"/><line x1="128" y1="28" x2="128" y2="60"/></svg></button>
+      <button class="ri"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polygon points="160 16 144 96 208 96 96 240 112 144 48 144 160 16"/></svg></button>
+      <button class="ri"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="64 88 16 128 64 168"/><polyline points="192 88 240 128 192 168"/><line x1="152" y1="40" x2="104" y2="216"/></svg></button>
+      <button class="ri"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M226 110a64 64 0 0 1-86 60l-72 72a24 24 0 0 1-34-34l72-72a64 64 0 0 1 84-78l-40 40 16 40 40 16Z"/></svg></button>
+    </nav>
+
+    <!-- Agent chat panel -->
+    <aside class="agent">
+      <div class="agent-head"><span class="hist"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="128 80 128 128 168 152"/><path d="M48 120a80 80 0 1 1 18 64M48 120v-40M48 120h40"/></svg></span><span class="nm">Surmount Agent</span><button class="hb"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M92 216H48a8 8 0 0 1-8-8v-44a8 8 0 0 1 2.3-5.6l120-120a8 8 0 0 1 11.4 0l44 44a8 8 0 0 1 0 11.4l-120 120A8 8 0 0 1 92 216Z"/></svg></button></div>
+      <div class="agent-hero">
+        <div class="agent-logo"><svg width="50" height="50" viewBox="0 0 256 256" fill="var(--fg-900)"><polygon points="128 24 224 80 224 176 128 232 32 176 32 80" opacity=".15"/><polygon points="128 24 224 80 128 136 32 80"/><polygon points="32 80 128 136 128 232 32 176" opacity=".55"/></svg></div>
+        <h2>Surmount Agent <span class="beta">Beta</span></h2>
+        <p>Ask me any question about this strategy</p>
+      </div>
+      <div class="agent-foot">
+        <div class="scope"><span class="scope-chip"><svg width="13" height="13" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linejoin="round"><polygon points="128 24 224 80 224 176 128 232 32 176 32 80 128 24"/></svg> Entire Workflow <span class="x"><svg width="11" height="11" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round"><line x1="200" y1="56" x2="56" y2="200"/><line x1="56" y1="56" x2="200" y2="200"/></svg></span></span><span class="scope-add"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round"><line x1="40" y1="128" x2="216" y2="128"/><line x1="128" y1="40" x2="128" y2="216"/></svg></span></div>
+        <div class="agent-field">
+          <textarea rows="1" placeholder="Write a message…"></textarea>
+          <div class="frow"><span class="mic"><svg width="17" height="17" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><rect x="88" y="24" width="80" height="128" rx="40"/><path d="M200 128a72 72 0 0 1-144 0M128 200v32"/></svg></span><span class="send"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><line x1="128" y1="216" x2="128" y2="60"/><polyline points="60 128 128 60 196 128"/></svg></span></div>
+        </div>
+        <div class="sugg">
+          <button><span class="ar"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><line x1="128" y1="216" x2="128" y2="60"/><polyline points="60 128 128 60 196 128"/></svg></span>Give me an overview of how this strategy works.</button>
+          <button><span class="ar"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><line x1="128" y1="216" x2="128" y2="60"/><polyline points="60 128 128 60 196 128"/></svg></span>What risk controls could be added to this strategy?</button>
+          <button><span class="ar"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><line x1="128" y1="216" x2="128" y2="60"/><polyline points="60 128 128 60 196 128"/></svg></span>Generate a workflow that buys NVDA on a 5% dip and alerts me by email.</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Canvas -->
+    <main class="canvas">
+      <div class="cc">
+        <button class="runbtn" style="left:300px;top:60px"><svg width="11" height="11" viewBox="0 0 256 256" fill="currentColor"><path d="M232.4 114.5 88.3 26.4a16 16 0 0 0-24.3 13.5v176.2a16 16 0 0 0 24.3 13.5l144.1-88.1a15.8 15.8 0 0 0 0-27Z"/></svg> Run <svg width="11" height="11" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></button>
+        <div class="node sel" style="left:300px;top:108px">
+          <div class="nh"><span class="nic" style="color:var(--purple-600)"><svg width="17" height="17" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polygon points="160 16 144 96 208 96 96 240 112 144 48 144 160 16"/></svg></span><span class="nt">Trigger</span></div>
+          <div class="nbig">Start your workflow given an event</div>
+          <div class="nfoot"><span class="vr"><svg width="12" height="12" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg> View Results</span><span>0.00 sec</span></div>
+        </div>
+        <span class="chandle" style="left:648px;top:160px"></span>
+        <div class="hdr-card" style="left:300px;top:330px;width:330px"><div class="ht">User Message</div></div>
+        <button class="runbtn" style="left:300px;top:440px"><svg width="11" height="11" viewBox="0 0 256 256" fill="currentColor"><path d="M232.4 114.5 88.3 26.4a16 16 0 0 0-24.3 13.5v176.2a16 16 0 0 0 24.3 13.5l144.1-88.1a15.8 15.8 0 0 0 0-27Z"/></svg> Run <svg width="11" height="11" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></button>
+        <div class="node" style="left:300px;top:488px">
+          <div class="nh"><span class="nic"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M92 216H48a8 8 0 0 1-8-8v-44a8 8 0 0 1 2.3-5.6l120-120a8 8 0 0 1 11.4 0l44 44a8 8 0 0 1 0 11.4l-120 120A8 8 0 0 1 92 216Z"/><line x1="136" y1="64" x2="192" y2="120"/></svg></span><span class="nt">Text Input</span></div>
+          <div class="nbig">The basic input node for the flow.<div style="margin-top:12px;background:var(--bg-secondary);border:1px solid var(--border-2);border-radius:9px;padding:12px;font-size:13.5px;color:var(--fg-900)">What are you capable of?</div></div>
+        </div>
+      </div>
+      <div class="saved"><span class="d"></span>Auto-saved draft <b>1 second ago</b></div>
+      <div class="toolbar">
+        <button class="tb-ask"><svg width="15" height="15" viewBox="0 0 256 256" fill="currentColor"><path d="m208 144-32 11-11 32-11-32-32-11 32-11 11-32 11 32Z"/></svg> Ask AI</button>
+        <button class="tb-add"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="40" y1="128" x2="216" y2="128"/><line x1="128" y1="40" x2="128" y2="216"/></svg> Add</button>
+        <span class="tb-div"></span>
+        <button class="tb-i"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="76 104 36 144 76 184"/><path d="M36 144h132a52 52 0 0 0 52-52v-12"/></svg></button>
+        <button class="tb-i"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="180 104 220 144 180 184"/><path d="M220 144H88a52 52 0 0 1-52-52v-12"/></svg></button>
+        <span class="tb-div"></span>
+        <button class="tb-i"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><circle cx="116" cy="116" r="80"/><line x1="84" y1="116" x2="148" y2="116"/><line x1="116" y1="84" x2="116" y2="148"/><line x1="173" y1="173" x2="224" y2="224"/></svg></button>
+        <button class="tb-i"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><circle cx="116" cy="116" r="80"/><line x1="84" y1="116" x2="148" y2="116"/><line x1="173" y1="173" x2="224" y2="224"/></svg></button>
+      </div>
+    </main>
+
+    <!-- Trigger inspector -->
+    <aside class="insp">
+      <div class="insp-head"><span class="ic" style="color:var(--purple-600)"><svg width="17" height="17" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polygon points="160 16 144 96 208 96 96 240 112 144 48 144 160 16"/></svg></span><span class="t">Trigger</span><span class="code">trigger-0</span><span class="sp"></span><button class="hb"><svg width="17" height="17" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M128 88a48 48 0 0 1 48-48h56v152h-56a48 48 0 0 0-48 48 48 48 0 0 0-48-48H24V40h56a48 48 0 0 1 48 48ZM128 88v120"/></svg></button><button class="hb"><svg width="17" height="17" viewBox="0 0 256 256" fill="currentColor"><circle cx="128" cy="64" r="13"/><circle cx="128" cy="128" r="13"/><circle cx="128" cy="192" r="13"/></svg></button><button class="hb"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="200" y1="56" x2="56" y2="200"/><line x1="56" y1="56" x2="200" y2="200"/></svg></button></div>
+      <div class="insp-body">
+        <div class="lede">Please select an integration for your trigger.</div>
+        <div class="cat">PROVIDERS IN ALL CATEGORIES</div>
+        <div class="search"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><circle cx="116" cy="116" r="80"/><line x1="173" y1="173" x2="224" y2="224"/></svg> Search for a provider in all categories</div>
+        <div class="prov"><span class="plogo" style="background:#1f6feb">A</span><div><div class="pt">Alpaca</div><div class="ps">Commission-free trading API for stocks and crypto…</div></div></div>
+        <div class="prov"><span class="plogo" style="background:#00c805">R</span><div><div class="pt">Robinhood</div><div class="ps">Place and manage orders in your brokerage account…</div></div></div>
+        <div class="prov"><span class="plogo" style="background:#d4123b">IB</span><div><div class="pt">Interactive Brokers</div><div class="ps">Global trading and market data via the IBKR API…</div></div></div>
+        <div class="prov"><span class="plogo" style="background:#1a5cff">CS</span><div><div class="pt">Charles Schwab</div><div class="ps">Brokerage accounts, positions, and order routing…</div></div></div>
+        <div class="prov"><span class="plogo" style="background:#5b3df5">P</span><div><div class="pt">Polygon.io</div><div class="ps">Real-time and historical market data feeds…</div></div></div>
+        <div class="prov"><span class="plogo" style="background:#611f69">SL</span><div><div class="pt">Slack</div><div class="ps">Send trade alerts and approvals to a channel…</div></div></div>
+        <div class="prov"><span class="plogo" style="background:#ea4335">G</span><div><div class="pt">Gmail</div><div class="ps">Email notifications when an order fills…</div></div></div>
+        <div class="prov"><span class="plogo" style="background:#0f9d58">GS</span><div><div class="pt">Google Sheets</div><div class="ps">Log every trade to a spreadsheet automatically…</div></div></div>
+      </div>
+    </aside>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('.tabs .tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');});
+</script>
+</body>
+</html>

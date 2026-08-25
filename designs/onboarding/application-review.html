@@ -128,7 +128,7 @@ main{flex:1;padding:var(--spacing-5xl) var(--spacing-3xl)}
 .badge-completed{flex-shrink:0;display:inline-flex;align-items:center;padding:var(--spacing-xxs) var(--spacing-md);background:var(--color-utility-success-50);border:1px solid var(--color-utility-success-200);border-radius:var(--radius-full);font-size:var(--font-size-text-xs);font-weight:500;line-height:var(--line-height-text-xs);color:var(--color-utility-success-700);white-space:nowrap;letter-spacing:0}
 
 /* ─── Review active step ─────────────────────────────────────────── */
-.step-review{display:flex;align-items:flex-start;gap:var(--spacing-xl)}
+.step-review{display:flex;align-items:flex-start;gap:var(--spacing-xl);background:linear-gradient(100deg,#F7F8FA 2.49%,#F5F7FA 99.18%)}
 .step-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--spacing-xl)}
 .step-heading{display:flex;flex-direction:column;gap:var(--spacing-xs)}
 .step-title{font-size:var(--font-size-text-md);font-weight:500;line-height:var(--line-height-text-md);color:var(--color-fg-primary-900)}
@@ -175,17 +175,20 @@ main{flex:1;padding:var(--spacing-5xl) var(--spacing-3xl)}
 .tl-item{display:flex;gap:var(--spacing-lg)}
 .tl-track{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:14px}
 .tl-dot{width:12px;height:12px;border-radius:var(--radius-full);flex-shrink:0;margin-top:4px}
-.tl-dot-done{background:var(--color-utility-brand-600)}
-.tl-dot-future{background:var(--color-bg-primary);border:1.5px dashed var(--color-fg-quaternary-400)}
-.tl-line{flex:1;width:1.5px;background:var(--color-border-secondary);margin:3px 0;min-height:16px}
+.tl-dot-done{background:#535862}
+.tl-dot-blue{background:#406ad0;animation:dotBreath 2.4s ease-in-out infinite}
+.tl-dot-future{background:#d5d7da;border:none}
+.tl-line{flex:1;width:2px;margin:3px 0;min-height:16px}
+.tl-line-done{background:#535862}
+.tl-line-blue{background:#406ad0}
 .tl-content{padding-bottom:18px;display:flex;flex-direction:column;gap:2px}
 .tl-item:last-child .tl-content{padding-bottom:0}
 .tl-step-title{font-size:var(--font-size-text-sm);font-weight:500;line-height:var(--line-height-text-sm);color:var(--color-fg-primary-900)}
-.tl-step-title.muted{color:var(--color-fg-quaternary-400)}
-.tl-step-title.in-review{color:var(--color-utility-brand-700)}
-.tl-step-sub{font-size:var(--font-size-text-xs);font-weight:400;line-height:var(--line-height-text-xs);color:var(--color-fg-tertiary-600)}
-.tl-step-sub.muted{color:var(--color-fg-quaternary-400)}
-.tl-step-sub.in-review{color:var(--color-utility-brand-600)}
+.tl-step-title.muted{color:rgba(10,13,18,0.4)}
+.tl-step-title.in-review{color:#3757be}
+.tl-step-sub{font-size:var(--font-size-text-xs);font-weight:400;line-height:var(--line-height-text-xs);color:rgba(10,13,18,0.6)}
+.tl-step-sub.muted{color:rgba(10,13,18,0.4)}
+.tl-step-sub.in-review{color:#406ad0}
 
 /* ─── Questions link ─────────────────────────────────────────────── */
 .questions{font-size:var(--font-size-text-sm);font-weight:400;letter-spacing:-0.2px;line-height:var(--line-height-text-sm);color:var(--color-fg-tertiary-600)}
@@ -193,7 +196,11 @@ main{flex:1;padding:var(--spacing-5xl) var(--spacing-3xl)}
 .questions a:hover{text-decoration-color:rgba(10,13,18,0.6)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){.content{animation:none}.spinner,.spinner-sm{animation:none}}
+@keyframes dotBreath{
+  0%,100%{box-shadow:0 0 0 0 rgba(64,106,208,0.35)}
+  50%{box-shadow:0 0 0 4px rgba(64,106,208,0)}
+}
+@media(prefers-reduced-motion:reduce){.content{animation:none}.spinner,.spinner-sm,.tl-dot-blue{animation:none}}
 @media(max-width:960px){.layout{flex-direction:column}.steps-col{flex:1 1 auto;width:100%}.sidebar-col{flex:1 1 auto;width:100%}}
 </style>
 </head>
@@ -307,7 +314,7 @@ main{flex:1;padding:var(--spacing-5xl) var(--spacing-3xl)}
             <div class="tl-item">
               <div class="tl-track">
                 <div class="tl-dot tl-dot-done"></div>
-                <div class="tl-line"></div>
+                <div class="tl-line tl-line-done"></div>
               </div>
               <div class="tl-content">
                 <span class="tl-step-title">Application submitted</span>
@@ -317,12 +324,12 @@ main{flex:1;padding:var(--spacing-5xl) var(--spacing-3xl)}
 
             <div class="tl-item">
               <div class="tl-track">
-                <div class="spinner-sm" role="status" aria-label="In review"></div>
-                <div class="tl-line"></div>
+                <div class="tl-dot tl-dot-blue"></div>
+                <div class="tl-line tl-line-blue"></div>
               </div>
               <div class="tl-content">
-                <span class="tl-step-title in-review">In review</span>
-                <span class="tl-step-sub in-review">Takes 1–2 business days</span>
+                <span class="tl-step-title in-review">Reviewing documents</span>
+                <span class="tl-step-sub in-review">Usually takes 1-2 days</span>
               </div>
             </div>
 
@@ -331,8 +338,7 @@ main{flex:1;padding:var(--spacing-5xl) var(--spacing-3xl)}
                 <div class="tl-dot tl-dot-future"></div>
               </div>
               <div class="tl-content">
-                <span class="tl-step-title muted">Account ready</span>
-                <span class="tl-step-sub muted">After verification</span>
+                <span class="tl-step-title muted">Ready to invest</span>
               </div>
             </div>
 

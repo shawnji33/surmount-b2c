@@ -197,6 +197,37 @@ function formatCurrency(value: number) {
   });
 }
 
+// Animate a number from its previous value to a new target on change
+function useAnimatedValue(target: number, duration = 380): number {
+  const [displayed, setDisplayed] = useState(target);
+  const stateRef = useRef({ current: target, rafId: 0 as number });
+
+  useEffect(() => {
+    const from = stateRef.current.current;
+    if (Math.abs(from - target) < 0.01) return;
+    if (stateRef.current.rafId) cancelAnimationFrame(stateRef.current.rafId);
+    const startTime = performance.now();
+    function tick(now: number) {
+      const t = Math.min((now - startTime) / duration, 1);
+      const ease = 1 - (1 - t) ** 3;
+      const next = from + (target - from) * ease;
+      stateRef.current.current = next;
+      setDisplayed(next);
+      if (t < 1) {
+        stateRef.current.rafId = requestAnimationFrame(tick);
+      } else {
+        stateRef.current.current = target;
+        setDisplayed(target);
+        stateRef.current.rafId = 0;
+      }
+    }
+    stateRef.current.rafId = requestAnimationFrame(tick);
+    return () => { if (stateRef.current.rafId) cancelAnimationFrame(stateRef.current.rafId); };
+  }, [target, duration]);
+
+  return displayed;
+}
+
 function cssVar(styles: CSSStyleDeclaration, name: string, fallback: string) {
   return styles.getPropertyValue(name).trim() || fallback;
 }
@@ -233,6 +264,9 @@ export function WealthsimpleNetWorthChart({
   const [activeTab, setActiveTab] = useState<(typeof VIEW_TABS)[number]>('Return');
   const [chartWidth, setChartWidth] = useState(0);
   const [baselineY, setBaselineY] = useState<number | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const animatedValue = useAnimatedValue(value, 380);
   const [crosshair, setCrosshair] = useState<CrosshairState>({
     visible: false,
     left: 0,
@@ -298,7 +332,7 @@ export function WealthsimpleNetWorthChart({
     hoverReturn !== null ? (hoverReturn + rangeStartRaw) * scaleFactor : null;
 
   const displayTopValue =
-    hoveredAbsoluteScaled !== null ? formatCurrency(hoveredAbsoluteScaled) : formatCurrency(value);
+    hoveredAbsoluteScaled !== null ? formatCurrency(hoveredAbsoluteScaled) : formatCurrency(animatedValue);
 
   const displayChangeText =
     crosshair.visible && hoverReturn !== null
@@ -524,6 +558,11 @@ export function WealthsimpleNetWorthChart({
     future.setData([]);
     setCrosshair({ visible: false, left: 0, time: null, value: null });
     chart.timeScale().fitContent();
+
+    // Brief opacity dip to signal data refresh
+    if (transitionTimerRef.current !== null) clearTimeout(transitionTimerRef.current);
+    setIsTransitioning(true);
+    transitionTimerRef.current = setTimeout(() => setIsTransitioning(false), 220);
   }, [returnData]);
 
   // Update visible window when range changes
@@ -591,8 +630,8 @@ export function WealthsimpleNetWorthChart({
           ))}
         </div>
 
-        <div className={s.controlsRow}>
-          <div className={[s.changeRow, !isHoverPositive ? s.changeRowNegative : ''].filter(Boolean).join(' ')}>
+        <div className={[s.controlsRow, isTransitioning ? s.controlsRowFading : ''].filter(Boolean).join(' ')}>
+          <div key={changeText} className={[s.changeRow, !isHoverPositive ? s.changeRowNegative : ''].filter(Boolean).join(' ')}>
             {isHoverPositive ? (
               <ArrowUpRight weight="regular" aria-hidden="true" />
             ) : (
@@ -620,7 +659,7 @@ export function WealthsimpleNetWorthChart({
 
       <div
         ref={chartShellRef}
-        className={s.chartShell}
+        className={[s.chartShell, isTransitioning ? s.chartShellFading : ''].filter(Boolean).join(' ')}
         style={{ height }}
         onPointerMove={handleChartPointerMove}
         onPointerLeave={clearHover}

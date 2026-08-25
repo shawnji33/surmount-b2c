@@ -4,27 +4,77 @@ import { useEffect, useLayoutEffect, useRef, useState, type DependencyList } fro
 import { createPortal } from 'react-dom';
 import {
   ArrowDown,
+  ArrowRight,
   ArrowUp,
+  ArrowsLeftRight,
   CaretLeft,
-  CaretRight,
+  Headset,
+  TrendUp,
   Warning,
 } from '@phosphor-icons/react';
-import type { ActivityItem, ActivityItemType, ActivityStatus } from '@/types/activity';
+import type { ActivityItem, ActivityItemType } from '@/types/activity';
 import { isPendingActivityStatus } from '@/types/activity';
+import { ContactModal } from '../settings/ContactSupportModal';
 import s from './PendingPanel.module.css';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function titleForItem(item: ActivityItem): string {
-  return item.type === 'deposit' ? 'Deposit' : 'Withdrawal';
+  switch (item.type) {
+    case 'deposit':      return 'Deposit';
+    case 'withdrawal':   return 'Withdrawal';
+    case 'transfer':     return 'Transfer';
+    case 'strategy_buy': return item.strategyName ?? 'Strategy buy';
+    case 'market_buy':   return item.symbol ?? 'Market buy';
+    case 'market_sell':  return item.symbol ?? 'Market sell';
+    case 'limit_buy':    return item.symbol ?? 'Limit buy';
+    case 'limit_sell':   return item.symbol ?? 'Limit sell';
+    default:             return 'Order';
+  }
 }
 
-function statusLabel(status: ActivityStatus): string {
+function typeBadgeLabel(item: ActivityItem): string {
+  switch (item.type) {
+    case 'deposit':      return 'Deposit';
+    case 'withdrawal':   return 'Withdrawal';
+    case 'transfer':     return 'Transfer';
+    case 'strategy_buy': return 'Strategy buy';
+    case 'market_buy':   return 'Market buy';
+    case 'market_sell':  return 'Market sell';
+    case 'limit_buy':    return 'Limit buy';
+    case 'limit_sell':   return 'Limit sell';
+    case 'recurring_buy': return 'Recurring buy';
+    case 'stop_loss':    return 'Stop loss';
+    case 'stop_limit':   return 'Stop limit';
+    default:             return 'Order';
+  }
+}
+
+function subtitleForItem(item: ActivityItem): string {
+  switch (item.type) {
+    case 'deposit':      return `Chase Total Checking → ${item.account.name}`;
+    case 'withdrawal':   return `${item.account.name} → Chase Total Checking`;
+    case 'transfer':     return `${item.account.name} → ${item.toAccount?.name ?? 'Brokerage'}`;
+    case 'strategy_buy': return item.account.name;
+    case 'market_buy':
+    case 'market_sell':
+    case 'limit_buy':
+    case 'limit_sell':
+      return [item.quantity ? `${item.quantity} shares` : '', item.account.name].filter(Boolean).join(' · ');
+    default:
+      return item.account.name;
+  }
+}
+
+function statusLabel(status: string): string {
   switch (status) {
     case 'submitted':     return 'Submitted';
     case 'processing':    return 'Processing';
     case 'partial_fill':  return 'Partially filled';
     case 'awaiting_user': return 'Action required';
+    case 'completed':     return 'Completed';
+    case 'cancelled':     return 'Cancelled';
+    case 'failed':        return 'Failed';
     default:              return status;
   }
 }
@@ -41,20 +91,16 @@ function fmtTime(iso: string): string {
   return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 }
 
-function amountClass(type: ActivityItemType): string {
-  return type === 'deposit' ? s.amountDeposit : s.amountWithdrawal;
+function amountColorClass(type: ActivityItemType): string {
+  if (type === 'deposit') return s.amountDeposit;
+  if (type === 'withdrawal') return s.amountWithdrawal;
+  return s.amountNeutral;
 }
 
 function amountSign(type: ActivityItemType): string {
-  return type === 'deposit' ? '+' : '−';
-}
-
-function transferFromLabel(item: ActivityItem): string {
-  return item.type === 'deposit' ? 'Chase Total Checking' : item.account.name;
-}
-
-function transferToLabel(item: ActivityItem): string {
-  return item.type === 'deposit' ? item.account.name : 'Chase Total Checking';
+  if (type === 'deposit') return '+';
+  if (type === 'withdrawal') return '−';
+  return '';
 }
 
 function useAnimatedHeight<T extends HTMLElement>(dependencies: DependencyList) {
@@ -126,36 +172,81 @@ function useAnimatedHeight<T extends HTMLElement>(dependencies: DependencyList) 
 // ── Item avatar ───────────────────────────────────────────────────────────────
 
 function ItemAvatar({ item, size = 38 }: { item: ActivityItem; size?: number }) {
-  const Icon = item.type === 'deposit' ? ArrowDown : ArrowUp;
-  const bgClass = item.type === 'deposit' ? s.iconDeposit : s.iconWithdrawal;
-
-  return (
-    <div className={`${s.itemLogoFallback} ${bgClass}`} style={{ width: size, height: size }}>
-      <Icon weight="bold" aria-hidden="true" />
-    </div>
-  );
+  switch (item.type) {
+    case 'deposit':
+      return (
+        <div className={`${s.itemLogoFallback} ${s.iconDeposit}`} style={{ width: size, height: size }}>
+          <ArrowDown weight="bold" aria-hidden="true" />
+        </div>
+      );
+    case 'withdrawal':
+      return (
+        <div className={`${s.itemLogoFallback} ${s.iconWithdrawal}`} style={{ width: size, height: size }}>
+          <ArrowUp weight="bold" aria-hidden="true" />
+        </div>
+      );
+    case 'transfer':
+      return (
+        <div className={`${s.itemLogoFallback} ${s.iconTransfer}`} style={{ width: size, height: size }}>
+          <ArrowsLeftRight weight="bold" aria-hidden="true" />
+        </div>
+      );
+    case 'strategy_buy': {
+      const coverSrc = item.strategyName
+        ? `/assets/strategy-covers/${item.strategyName}.png`
+        : null;
+      if (coverSrc) {
+        return (
+          <div className={s.strategyCover} style={{ width: size, height: size }} aria-hidden="true">
+            <img src={coverSrc} alt="" />
+          </div>
+        );
+      }
+      return (
+        <div className={`${s.itemLogoFallback} ${s.iconStrategyBuy}`} style={{ width: size, height: size }}>
+          <TrendUp weight="bold" aria-hidden="true" />
+        </div>
+      );
+    }
+    case 'market_buy':
+    case 'limit_buy':
+      return (
+        <div className={`${s.itemLogoFallback} ${s.iconDeposit}`} style={{ width: size, height: size }}>
+          <ArrowDown weight="bold" aria-hidden="true" />
+        </div>
+      );
+    case 'market_sell':
+    case 'limit_sell':
+      return (
+        <div className={`${s.itemLogoFallback} ${s.iconWithdrawal}`} style={{ width: size, height: size }}>
+          <ArrowUp weight="bold" aria-hidden="true" />
+        </div>
+      );
+    default:
+      return (
+        <div className={`${s.itemLogoFallback} ${s.iconWithdrawal}`} style={{ width: size, height: size }}>
+          <ArrowUp weight="bold" aria-hidden="true" />
+        </div>
+      );
+  }
 }
 
 // ── Panel ─────────────────────────────────────────────────────────────────────
 
-type PanelView = 'list' | 'detail' | 'cancel-confirm';
+type PanelView = 'list' | 'detail';
 
 export type PendingPanelProps = {
   items: ActivityItem[];
   pendingCount: number;
   onClose: () => void;
   onViewAll: () => void;
+  onCancelled?: (item: ActivityItem) => void;
 };
 
 export function PendingPanel({ items, pendingCount, onClose, onViewAll }: PendingPanelProps) {
-  // Only deposit/withdrawal in this panel
-  const pendingItems = items.filter(
-    (item) => isPendingActivityStatus(item.status) &&
-      (item.type === 'deposit' || item.type === 'withdrawal'),
-  );
-
   const [view, setView]         = useState<PanelView>('list');
   const [selected, setSelected] = useState<ActivityItem | null>(null);
+  const [contactOpen, setContactOpen] = useState(false);
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const panelRef = useAnimatedHeight<HTMLDivElement>([view, selected?.id]);
@@ -167,23 +258,19 @@ export function PendingPanel({ items, pendingCount, onClose, onViewAll }: Pendin
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') {
-        if (view === 'cancel-confirm') switchView('detail');
-        else if (view === 'detail') switchView('list');
+        // Let the contact-support modal handle its own Escape first.
+        if (contactOpen) return;
+        if (view === 'detail') switchView('list');
         else onClose();
       }
     }
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [onClose, view]);
+  }, [onClose, view, contactOpen]);
 
   function switchView(next: PanelView, item?: ActivityItem) {
     if (item) setSelected(item);
     setView(next);
-  }
-
-  function handleCancelConfirmed() {
-    // In real app: call cancel API
-    switchView('list');
   }
 
   const modal = (
@@ -193,12 +280,11 @@ export function PendingPanel({ items, pendingCount, onClose, onViewAll }: Pendin
       onClick={handleOverlayClick}
       role="presentation"
     >
-      <div ref={panelRef} className={s.panel} role="dialog" aria-modal="true" aria-label="Pending transactions">
+      <div ref={panelRef} className={s.panel} role="dialog" aria-modal="true" aria-label="Pending orders">
         <div key={`${view}-${selected?.id ?? 'list'}`} className={s.content}>
           {view === 'list' && (
             <ListView
-              items={pendingItems}
-              pendingCount={pendingCount}
+              allItems={items}
               onViewAll={onViewAll}
               onSelect={(item) => switchView('detail', item)}
             />
@@ -207,18 +293,13 @@ export function PendingPanel({ items, pendingCount, onClose, onViewAll }: Pendin
             <DetailView
               item={selected}
               onBack={() => switchView('list')}
-              onCancelRequest={() => switchView('cancel-confirm')}
-            />
-          )}
-          {view === 'cancel-confirm' && selected && (
-            <CancelConfirmView
-              item={selected}
-              onBack={() => switchView('detail')}
-              onConfirm={handleCancelConfirmed}
+              onContactSupport={() => setContactOpen(true)}
             />
           )}
         </div>
       </div>
+
+      {contactOpen && <ContactModal onClose={() => setContactOpen(false)} />}
     </div>
   );
 
@@ -228,60 +309,49 @@ export function PendingPanel({ items, pendingCount, onClose, onViewAll }: Pendin
 // ── List view ─────────────────────────────────────────────────────────────────
 
 function ListView({
-  items,
-  pendingCount,
+  allItems,
   onViewAll,
   onSelect,
 }: {
-  items: ActivityItem[];
-  pendingCount: number;
+  allItems: ActivityItem[];
   onViewAll: () => void;
   onSelect: (item: ActivityItem) => void;
 }) {
+  const pendingItems = allItems.filter((item) => isPendingActivityStatus(item.status));
+
   return (
     <>
       <div className={s.listHeader}>
-        <div className={s.listHeaderLeft}>
-          <span className={s.listTitle}>Pending transactions</span>
-          {pendingCount > 0 && (
-            <span className={s.listBadge}>{pendingCount}</span>
-          )}
-        </div>
+        <span className={s.listTitle}>Pending orders</span>
         <button className={s.viewAllBtn} onClick={onViewAll} type="button">
           View all
-          <CaretRight weight="bold" aria-hidden="true" />
+          <ArrowRight weight="bold" aria-hidden="true" />
         </button>
       </div>
 
       <ul className={s.list} role="list">
-        {items.map((item) => (
+        {pendingItems.map((item) => (
           <li key={item.id}>
             <button type="button" className={s.item} onClick={() => onSelect(item)}>
               <ItemAvatar item={item} />
-
               <div className={s.itemBody}>
-                <div className={s.itemTitle}>{titleForItem(item)}</div>
-                <div className={s.itemMeta}>{item.account.name}</div>
-              </div>
-
-              <div className={s.itemRight}>
-                <div className={[s.itemAmount, amountClass(item.type)].join(' ')}>
-                  {amountSign(item.type)}{fmtUSD(item.amount)}
+                <div className={s.itemTitleRow}>
+                  <span className={s.itemTitle}>{titleForItem(item)}</span>
+                  {item.type === 'strategy_buy' && (
+                    <span className={s.buyBadge}>Buy</span>
+                  )}
                 </div>
-                <div className={[
-                  s.itemStatus,
-                  item.status === 'awaiting_user' ? s.itemStatusUrgent : '',
-                ].filter(Boolean).join(' ')}>
-                  {statusLabel(item.status)}
-                </div>
+                <div className={s.itemMeta}>{subtitleForItem(item)}</div>
               </div>
-
-              <div className={s.itemChevron}>
-                <CaretRight weight="bold" aria-hidden="true" />
+              <div className={[s.itemAmount, amountColorClass(item.type)].join(' ')}>
+                {amountSign(item.type)}{fmtUSD(item.amount)}
               </div>
             </button>
           </li>
         ))}
+        {pendingItems.length === 0 && (
+          <li className={s.emptyState}>No pending orders</li>
+        )}
       </ul>
     </>
   );
@@ -292,11 +362,11 @@ function ListView({
 function DetailView({
   item,
   onBack,
-  onCancelRequest,
+  onContactSupport,
 }: {
   item: ActivityItem;
   onBack: () => void;
-  onCancelRequest: () => void;
+  onContactSupport: () => void;
 }) {
   const urgent = item.status === 'awaiting_user';
 
@@ -306,11 +376,10 @@ function DetailView({
         <button type="button" className={s.detailBackBtn} onClick={onBack} aria-label="Back">
           <CaretLeft weight="bold" aria-hidden="true" />
         </button>
-
-        <div className={s.detailHeaderInfo}>
-          <div className={s.detailHeaderTitle}>{titleForItem(item)} details</div>
-        </div>
+        <span className={s.detailHeaderName}>{titleForItem(item)}</span>
       </div>
+
+      <div className={s.detailDivider} />
 
       {urgent && (
         <div className={s.urgentNotice}>
@@ -318,50 +387,143 @@ function DetailView({
             <Warning weight="fill" aria-hidden="true" />
           </div>
           <p className={s.urgentNoticeText}>
-            Action required — please verify your identity to release this withdrawal.
+            Action required — please verify your identity to release this transaction.
           </p>
         </div>
       )}
 
       <div className={s.detailBody}>
-        <div className={s.detailCard}>
-          <div className={s.detailRow}>
-            <span className={s.detailRowLabel}>From</span>
-            <div className={s.detailRowWithLogo}>
-              <div className={item.type === 'deposit' ? s.detailRowLogoBank : s.detailRowLogo}>
-                <img src={item.type === 'deposit' ? '/assets/illustrations/bank-chase.png' : item.account.brokerLogo} alt="" />
+        <div className={s.orderDetailLabel}>Order details</div>
+
+        <div className={s.detailRows}>
+
+          {/* deposit: From bank → To account */}
+          {item.type === 'deposit' && (
+            <>
+              <div className={s.detailRow}>
+                <span className={s.detailRowLabel}>From</span>
+                <div className={s.detailRowWithLogo}>
+                  <div className={s.detailRowLogoBank}>
+                    <img src="/assets/illustrations/bank-chase.png" alt="" />
+                  </div>
+                  <span className={s.detailRowValue}>Chase Total Checking</span>
+                </div>
               </div>
-              <span className={s.detailRowValue}>{transferFromLabel(item)}</span>
+              <div className={s.detailRow}>
+                <span className={s.detailRowLabel}>To</span>
+                <div className={s.detailRowWithLogo}>
+                  <div className={s.detailRowLogo}>
+                    <img src={item.account.brokerLogo} alt="" />
+                  </div>
+                  <span className={s.detailRowValue}>{item.account.name}</span>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* withdrawal: From account → To bank */}
+          {item.type === 'withdrawal' && (
+            <>
+              <div className={s.detailRow}>
+                <span className={s.detailRowLabel}>From</span>
+                <div className={s.detailRowWithLogo}>
+                  <div className={s.detailRowLogo}>
+                    <img src={item.account.brokerLogo} alt="" />
+                  </div>
+                  <span className={s.detailRowValue}>{item.account.name}</span>
+                </div>
+              </div>
+              <div className={s.detailRow}>
+                <span className={s.detailRowLabel}>To</span>
+                <div className={s.detailRowWithLogo}>
+                  <div className={s.detailRowLogoBank}>
+                    <img src="/assets/illustrations/bank-chase.png" alt="" />
+                  </div>
+                  <span className={s.detailRowValue}>Chase Total Checking</span>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* transfer: From one account → To another */}
+          {item.type === 'transfer' && (
+            <>
+              <div className={s.detailRow}>
+                <span className={s.detailRowLabel}>From</span>
+                <div className={s.detailRowWithLogo}>
+                  <div className={s.detailRowLogo}>
+                    <img src={item.account.brokerLogo} alt="" />
+                  </div>
+                  <span className={s.detailRowValue}>{item.account.name}</span>
+                </div>
+              </div>
+              <div className={s.detailRow}>
+                <span className={s.detailRowLabel}>To</span>
+                <div className={s.detailRowWithLogo}>
+                  <div className={s.detailRowLogo}>
+                    <img src={item.toAccount?.brokerLogo ?? ''} alt="" />
+                  </div>
+                  <span className={s.detailRowValue}>{item.toAccount?.name ?? '—'}</span>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* strategy_buy: order type, strategy, account */}
+          {item.type === 'strategy_buy' && (
+            <>
+              <div className={s.detailRow}>
+                <span className={s.detailRowLabel}>Order type</span>
+                <span className={s.detailRowValue}>Strategy buy</span>
+              </div>
+              <div className={s.detailRow}>
+                <span className={s.detailRowLabel}>Strategy</span>
+                <span className={s.detailRowValue}>{item.strategyName ?? '—'}</span>
+              </div>
+              <div className={s.detailRow}>
+                <span className={s.detailRowLabel}>Account</span>
+                <div className={s.detailRowWithLogo}>
+                  <div className={s.detailRowLogo}>
+                    <img src={item.account.brokerLogo} alt="" />
+                  </div>
+                  <span className={s.detailRowValue}>{item.account.name}</span>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Submitted date + time */}
+          <div className={s.detailRow}>
+            <span className={s.detailRowLabel}>Submitted</span>
+            <div className={s.detailRowValueStack}>
+              <span className={s.detailRowValue}>{fmtDate(item.submittedAt)}</span>
+              <span className={s.detailRowValueSmall}>{fmtTime(item.submittedAt)}</span>
             </div>
           </div>
 
-          <div className={s.detailRow}>
-            <span className={s.detailRowLabel}>To</span>
-            <div className={s.detailRowWithLogo}>
-              <div className={item.type === 'deposit' ? s.detailRowLogo : s.detailRowLogoBank}>
-                <img src={item.type === 'deposit' ? item.account.brokerLogo : '/assets/illustrations/bank-chase.png'} alt="" />
-              </div>
-              <span className={s.detailRowValue}>{transferToLabel(item)}</span>
+          {/* Processing time */}
+          {(item.type === 'deposit' || item.type === 'withdrawal') && (
+            <div className={s.detailRow}>
+              <span className={s.detailRowLabel}>Processing time</span>
+              <span className={s.detailRowValue}>1–4 business days</span>
             </div>
-          </div>
+          )}
+          {item.type === 'transfer' && (
+            <div className={s.detailRow}>
+              <span className={s.detailRowLabel}>Processing time</span>
+              <span className={s.detailRowValue}>Same day</span>
+            </div>
+          )}
 
-          <div className={s.detailRow}>
-            <span className={s.detailRowLabel}>Date</span>
-            <span className={s.detailRowValue}>{fmtDate(item.submittedAt)}</span>
-          </div>
-
-          <div className={s.detailRow}>
-            <span className={s.detailRowLabel}>Processing</span>
-            <span className={s.detailRowValue}>1–4 business days</span>
-          </div>
-
-          {item.estimatedCompletion && (
+          {/* Est. arrival */}
+          {item.estimatedCompletion && item.type !== 'strategy_buy' && (
             <div className={s.detailRow}>
               <span className={s.detailRowLabel}>Est. arrival</span>
               <span className={s.detailRowValue}>{fmtDate(item.estimatedCompletion)}</span>
             </div>
           )}
 
+          {/* Status */}
           <div className={s.detailRow}>
             <span className={s.detailRowLabel}>Status</span>
             <span className={[
@@ -372,70 +534,24 @@ function DetailView({
             </span>
           </div>
 
-          <div className={s.detailRow}>
-            <span className={s.detailRowLabel}>Amount</span>
-            <span className={[s.detailRowValue, s.detailRowAmount, amountClass(item.type)].join(' ')}>
-              {amountSign(item.type)}{fmtUSD(item.amount)}
-            </span>
+        </div>
+      </div>
+
+      <div className={s.detailFooter}>
+        <div className={s.detailFooterSplit}>
+          <div className={s.footerTotal}>
+            <span className={s.footerTotalLabel}>Total amount</span>
+            <span className={s.footerTotalValue}>{fmtUSD(item.amount)}</span>
           </div>
+          {item.canCancel && (
+            <button type="button" className={s.supportPill} onClick={onContactSupport}>
+              <Headset weight="regular" aria-hidden="true" />
+              Contact support
+            </button>
+          )}
         </div>
       </div>
-
-      {item.canCancel && (
-        <div className={s.detailFooter}>
-          <button type="button" className={s.cancelBtn} onClick={onCancelRequest}>
-            Cancel {item.type === 'deposit' ? 'deposit' : 'withdrawal'}
-          </button>
-        </div>
-      )}
     </>
   );
 }
 
-// ── Cancel confirmation view ──────────────────────────────────────────────────
-
-function CancelConfirmView({
-  item,
-  onBack,
-  onConfirm,
-}: {
-  item: ActivityItem;
-  onBack: () => void;
-  onConfirm: () => void;
-}) {
-  const label = item.type === 'deposit' ? 'deposit' : 'withdrawal';
-
-  return (
-    <>
-      <div className={s.detailHeader}>
-        <button type="button" className={s.detailBackBtn} onClick={onBack} aria-label="Back">
-          <CaretLeft weight="bold" aria-hidden="true" />
-        </button>
-        <div className={s.detailHeaderInfo}>
-          <div className={s.detailHeaderTitle}>Cancel {label}?</div>
-        </div>
-      </div>
-
-      <div className={s.cancelConfirmBody}>
-        <div className={s.cancelConfirmIcon}>
-          <Warning weight="fill" aria-hidden="true" />
-        </div>
-        <p className={s.cancelConfirmTitle}>
-          Cancel this {label}?
-        </p>
-        <p className={s.cancelConfirmText}>
-          Your {label} of {fmtUSD(item.amount)} will be cancelled. This action cannot be undone.
-        </p>
-      </div>
-
-      <div className={s.cancelConfirmActions}>
-        <button type="button" className={s.cancelConfirmYes} onClick={onConfirm}>
-          Yes, cancel {label}
-        </button>
-        <button type="button" className={s.cancelConfirmBack} onClick={onBack}>
-          Keep {label}
-        </button>
-      </div>
-    </>
-  );
-}

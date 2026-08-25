@@ -43,6 +43,7 @@ export type DSInputProps = {
   helperText?: ReactNode;
   iconTrailing?: ReactNode;
   phonePrefix?: boolean;
+  suffixText?: ReactNode;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'size'>;
 
 export const DSInput = forwardRef<HTMLInputElement, DSInputProps>(function DSInput(
@@ -53,6 +54,7 @@ export const DSInput = forwardRef<HTMLInputElement, DSInputProps>(function DSInp
     helperText,
     iconTrailing,
     phonePrefix = false,
+    suffixText,
     id: idProp,
     value,
     defaultValue,
@@ -123,8 +125,8 @@ export const DSInput = forwardRef<HTMLInputElement, DSInputProps>(function DSInp
             {...props}
           />
         </div>
-        {iconTrailing != null && (
-          <span className={s.dsTrailing}>{iconTrailing}</span>
+        {(iconTrailing != null || suffixText != null) && (
+          <span className={s.dsTrailing}>{iconTrailing ?? suffixText}</span>
         )}
       </label>
       {msg && (

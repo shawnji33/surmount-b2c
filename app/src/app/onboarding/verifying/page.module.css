@@ -1,0 +1,88 @@
+.shell {
+  position: relative;
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: var(--color-bg-quaternary, #e9eaeb);
+}
+
+/* Demo-only control — replays the splash animation + redirect timer without a full page reload. */
+.replayButton {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  appearance: none;
+  border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+  border-radius: 9999px;
+  background: var(--color-bg-primary, #fff);
+  color: var(--color-text-secondary-700, rgba(10, 13, 18, 0.7));
+  cursor: pointer;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.replayButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+.replayButton:hover {
+  background: var(--color-bg-primary-hover, #fafafa);
+  color: var(--color-text-primary-900, rgba(10, 13, 18, 0.9));
+}
+
+.container {
+  flex: 1 0 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--container-padding-desktop, 32px);
+}
+
+.logo {
+  width: 138px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.logoIcon {
+  width: 32px;
+  height: 32px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.logoWordmark {
+  width: 98px;
+  height: 16px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--spacing-4xl, 32px);
+}
+
+.copyright {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: 400;
+  color: var(--color-text-tertiary-600, rgba(10, 13, 18, 0.6));
+  white-space: nowrap;
+}

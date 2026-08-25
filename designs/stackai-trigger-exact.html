@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StackAI — Trigger Inspector (Exact)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+:root{
+  --ink:#0d0f12; --g900:#1a1d23; --g700:#3f444d; --g600:#5a606b; --g500:#838995; --g400:#a8adb7;
+  --line:#00000014; --line2:#0000000e; --line3:#00000022;
+  --bg:#fff; --bg2:#f7f8f9; --bg3:#f1f2f4; --chip:#eceef0;
+  --green:#16a34a; --purple:#7c4dff;
+  --font:'Inter',-apple-system,sans-serif;
+  --sc:0 1px 2px rgba(13,15,18,.04),0 1px 3px rgba(13,15,18,.07);
+  --sp:0 12px 34px rgba(13,15,18,.12),0 4px 10px rgba(13,15,18,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);color:var(--g900);background:var(--bg);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.45;overflow:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+textarea{font-family:inherit}
+svg{display:block}
+.gmail{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 384'%3E%3Cpath fill='%234285f4' d='M58 384h74V212L26 133v218c0 18 14 33 32 33z'/%3E%3Cpath fill='%2334a853' d='M380 384h74c18 0 32-15 32-33V133l-106 79z'/%3E%3Cpath fill='%23fbbc04' d='M380 65v147l106-79v-52c0-49-56-76-95-47z'/%3E%3Cpath fill='%23ea4335' d='M132 212V65l124 93 124-93v147L256 305z'/%3E%3Cpath fill='%23c5221f' d='M26 81v52l106 79V65l-11-8c-39-29-95-2-95 24z'/%3E%3C/svg%3E");background-size:contain;background-repeat:no-repeat;background-position:center}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* top bar */
+.top{height:64px;flex:0 0 64px;display:flex;align-items:center;gap:14px;padding:0 18px 0 26px;border-bottom:1px solid var(--line);z-index:40;background:var(--bg)}
+.tabs{display:flex;gap:6px}
+.tab{font-size:16px;font-weight:500;color:var(--g500);padding:8px 16px;border-radius:9px}
+.tab.on{color:var(--g900);background:var(--bg3)}
+.spacer{flex:1}
+.draft{display:inline-flex;align-items:center;gap:7px;font-size:15px;color:var(--g700)}
+.draft .d{width:7px;height:7px;border-radius:50%;background:var(--g400)}
+.eye{width:46px;height:26px;border-radius:999px;background:var(--chip);position:relative}
+.eye::after{content:"";position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.tbtn{width:42px;height:42px;border-radius:10px;border:1px solid var(--line3);display:grid;place-items:center;color:var(--g700)}
+.run{display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 20px;border:1px solid var(--line3);border-radius:11px;font-size:15px;font-weight:500;color:var(--g900)}
+.pub{position:relative;display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 20px;border-radius:11px;background:var(--ink);color:#fff;font-size:15px;font-weight:500}
+.pub .bdot{position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:50%;background:#3b82f6;border:2px solid #fff}
+.kebab{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--g600)}
+
+.stage{flex:1;position:relative;overflow:hidden;background:radial-gradient(circle, rgba(13,15,18,.06) 1px, transparent 1.5px) 0 0 / 20px 20px, var(--bg2);}
+
+/* run pill above nodes */
+.runpill{position:absolute;display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line3);border-radius:9px;padding:7px 11px;font-size:14px;font-weight:500;color:var(--g900);background:var(--bg);box-shadow:var(--sc)}
+.skip{position:absolute;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line3);border-radius:10px;padding:9px 14px;font-size:15px;color:var(--g600);background:var(--bg);box-shadow:var(--sc)}
+
+.node{position:absolute;width:525px;background:var(--bg);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sc);overflow:hidden}
+.node.sel{border:2.5px solid var(--ink)}
+.nh{display:flex;align-items:center;gap:16px;padding:22px 24px 8px}
+.nh .nic{width:46px;height:46px;flex:0 0 46px;border:1px solid var(--line2);border-radius:11px;display:grid;place-items:center}
+.nh .nt{font-size:21px;font-weight:600;color:var(--g900)}
+.ndesc{font-size:18px;color:var(--g600);padding:0 24px 20px;line-height:1.4}
+.nfield{margin:0 24px 20px;background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:18px;font-size:17px;color:var(--g900);min-height:120px}
+.nfoot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line2);padding:18px 24px;font-size:16px;color:var(--g600)}
+.nfoot .vr{display:flex;align-items:center;gap:9px}
+.nfoot .meta{display:flex;gap:18px;color:var(--g500)}
+.handle{position:absolute;width:26px;height:26px;border-radius:7px;background:var(--bg);border:1.5px solid var(--line3)}
+.connector{position:absolute;height:2px;background:var(--line3)}
+
+/* partial nodes behind panel */
+.pnode{position:absolute;width:300px;background:var(--bg);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sc);overflow:hidden}
+.pnode.glow{box-shadow:0 0 0 3px #c7f0d6, var(--sc)}
+.pnode .nh{padding:18px 22px 6px}
+.pnode .nic{width:40px;height:40px;flex:0 0 40px}
+.pnode .nt{font-size:19px}
+.codebtn{position:absolute;width:42px;height:34px;border-radius:9px;border:1px solid var(--line3);background:var(--bg);display:grid;place-items:center;color:var(--g600);box-shadow:var(--sc);z-index:25}
+
+/* inspector */
+.insp{position:absolute;top:18px;right:14px;bottom:14px;width:865px;background:var(--bg);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sp);z-index:30;display:flex;flex-direction:column}
+.ih{display:flex;align-items:center;gap:14px;padding:26px 28px 18px}
+.ih .ic{width:34px;height:34px;flex:0 0 34px}
+.ih .t{font-size:26px;font-weight:600;color:var(--g900)}
+.ih .code{font-family:ui-monospace,monospace;font-size:16px;color:var(--g600);background:var(--bg3);border-radius:8px;padding:6px 12px}
+.ih .sp{flex:1}
+.ih .hb{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;color:var(--g600)}
+.ih .hb:hover{background:var(--bg3)}
+.ibody{flex:1;overflow-y:auto;padding:6px 28px 28px}
+.lede{font-size:19px;color:var(--g600);margin:8px 0 30px}
+.flabel{font-size:18px;font-weight:600;color:var(--g900);border-bottom:1.5px dotted var(--line3);padding-bottom:6px;display:inline-block;margin-bottom:14px}
+.fld{display:flex;align-items:center;gap:13px;border:1px solid var(--line3);border-radius:13px;padding:18px 20px;margin-bottom:28px;font-size:19px;color:var(--g900);box-shadow:var(--sc)}
+.fld .fi{width:26px;height:26px;flex:0 0 26px}
+.fld .sp{flex:1}
+.fld .healthy{color:var(--green);font-size:17px;margin-right:6px}
+.fld .chev{color:var(--g500)}
+.creds{font-size:18px;color:var(--g600);line-height:1.5;margin-bottom:26px}
+.creds u{text-decoration:underline;text-underline-offset:3px}
+.idiv{border-top:1px solid var(--line2);margin:4px 0}
+.irow{display:flex;align-items:center;gap:14px;padding:24px 0;font-size:20px;font-weight:500;color:var(--g900);border-bottom:1px solid var(--line2)}
+.irow .ri{color:var(--g600)}
+.irow .sp{flex:1}
+.irow .chev{color:var(--g500)}
+
+/* bottom */
+.bl{position:absolute;left:26px;bottom:30px;font-size:18px;color:var(--g700)}
+.bl b{font-weight:600;color:var(--g900)}
+.toolbar{position:absolute;left:660px;bottom:26px;display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);box-shadow:var(--sp);border-radius:14px;padding:9px;z-index:20}
+.tb-ask{display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 18px;border:1px solid var(--purple);color:var(--purple);border-radius:12px;font-size:17px;font-weight:500}
+.tb-add{display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 20px;background:var(--ink);color:#fff;border-radius:12px;font-size:17px;font-weight:500}
+.tb-div{width:1px;height:24px;background:var(--line)}
+.tb-i{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;color:var(--g600)}
+.scroll{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:90px;height:6px;border-radius:999px;background:var(--chip)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <nav class="tabs"><button class="tab on">Workflow</button><button class="tab">Interface</button><button class="tab">Analytics</button><button class="tab">Manager</button><button class="tab">Evaluator</button></nav>
+    <div class="spacer"></div>
+    <span class="draft"><span class="d"></span>Draft</span>
+    <span class="eye"></span>
+    <button class="tbtn"><svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="40"/><path d="M130 24h-4a16 16 0 0 0-16 14l-2 14-18 10-14-6a16 16 0 0 0-20 6l-4 8a16 16 0 0 0 4 20l10 10v20l-10 10a16 16 0 0 0-4 20l4 8a16 16 0 0 0 20 6l14-6 18 10 2 14a16 16 0 0 0 16 14h4a16 16 0 0 0 16-14l2-14 18-10 14 6a16 16 0 0 0 20-6l4-8a16 16 0 0 0-4-20l-10-10v-20l10-10a16 16 0 0 0 4-20l-4-8a16 16 0 0 0-20-6l-14 6-18-10-2-14a16 16 0 0 0-16-14Z"/></svg></button>
+    <button class="tbtn"><svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M216 80v136a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8V40a8 8 0 0 1 8-8h120Z"/><polyline points="152 32 152 88 208 88"/></svg></button>
+    <button class="run"><svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M232.4 114.5 88.3 26.4a16 16 0 0 0-24.3 13.5v176.2a16 16 0 0 0 24.3 13.5l144.1-88.1a15.8 15.8 0 0 0 0-27Z"/></svg> Run</button>
+    <button class="pub">Publish <svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg><span class="bdot"></span></button>
+    <button class="kebab"><svg width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><circle cx="128" cy="64" r="14"/><circle cx="128" cy="128" r="14"/><circle cx="128" cy="192" r="14"/></svg></button>
+  </header>
+
+  <div class="stage">
+    <!-- partial nodes behind panel -->
+    <button class="runpill" style="left:980px;top:528px">▶ Run <svg width="12" height="12" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></button>
+    <div class="pnode glow" style="left:980px;top:575px">
+      <div class="nh"><span class="nic" style="border:1px solid var(--line2);border-radius:10px;display:grid;place-items:center;color:var(--g700)"><svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M16 14v2.2l1.6 1" transform="scale(10.6)"/></svg></span><span class="nt">Sc…</span></div>
+      <div class="ndesc" style="font-size:16px;padding:0 22px 16px">Trigger a…<br>specific t…</div>
+      <div class="nfoot" style="font-size:14px;padding:14px 22px"><span class="vr">▾ View Re…</span></div>
+    </div>
+    <button class="runpill" style="left:980px;top:868px">▶ Run <svg width="12" height="12" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></button>
+    <div class="pnode glow" style="left:980px;top:945px">
+      <div class="nh"><span class="nic" style="border:1px solid var(--line2);border-radius:10px;display:grid;place-items:center;color:var(--g700)"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M92 216H48a8 8 0 0 1-8-8v-44a8 8 0 0 1 2.3-5.6l120-120a8 8 0 0 1 11.4 0l44 44a8 8 0 0 1 0 11.4l-120 120A8 8 0 0 1 92 216Z"/><line x1="136" y1="64" x2="192" y2="120"/></svg></span><span class="nt"> </span></div>
+      <div class="ndesc" style="font-size:16px;padding:0 22px 12px">The basi…</div>
+      <div class="nfield" style="margin:0 22px 14px;min-height:70px;font-size:15px">Summari…</div>
+      <div class="nfoot" style="font-size:14px;padding:14px 22px"><span class="vr">▾ View Re…</span></div>
+    </div>
+    <button class="runpill" style="left:980px;top:1298px">▶ Run</button>
+    <div class="pnode" style="left:980px;top:1375px">
+      <div class="nh"><span class="nic" style="border:1px solid var(--line2);border-radius:10px;display:grid;place-items:center;color:var(--g700)"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><rect x="40" y="40" width="176" height="176" rx="12"/></svg></span><span class="nt">Ev…</span></div>
+      <div class="ndesc" style="font-size:16px;padding:0 22px 16px">Trigger a…<br>specific t…</div>
+    </div>
+
+    <!-- connector from recipient to text input behind panel -->
+    <div class="connector" style="left:822px;top:1188px;width:160px"></div>
+
+    <!-- On Email Received (selected) -->
+    <button class="runpill" style="left:282px;top:780px">▶ Run <svg width="12" height="12" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></button>
+    <span class="skip" style="left:660px;top:778px"><svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M40 128a8 8 0 0 1 4-7l112-64a8 8 0 0 1 12 7v128a8 8 0 0 1-12 7L44 135a8 8 0 0 1-4-7Z"/><rect x="176" y="48" width="20" height="160" rx="4"/></svg> Skipped</span>
+    <div class="node sel" style="left:270px;top:838px">
+      <div class="nh"><span class="nic gmail" style="background-size:60%;background-position:center;background-repeat:no-repeat"></span><span class="nt">On Email Received</span></div>
+      <div class="ndesc">Start this workflow whenever a new email arrives.</div>
+      <div class="nfoot"><span class="vr"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg> View Results</span><span class="meta"><span>0.00 sec</span></span></div>
+    </div>
+    <span class="handle" style="left:808px;top:872px"></span>
+
+    <!-- Recipient Email -->
+    <button class="runpill" style="left:282px;top:1090px">▶ Run <svg width="12" height="12" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></button>
+    <div class="node" style="left:270px;top:1148px">
+      <div class="nh"><span class="nic" style="display:grid;place-items:center;color:var(--g700)"><svg width="22" height="22" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M92 216H48a8 8 0 0 1-8-8v-44a8 8 0 0 1 2.3-5.6l120-120a8 8 0 0 1 11.4 0l44 44a8 8 0 0 1 0 11.4l-120 120A8 8 0 0 1 92 216Z"/><line x1="136" y1="64" x2="192" y2="120"/></svg></span><span class="nt">Recipient Email</span></div>
+      <div class="ndesc">The basic input node for the flow.</div>
+      <div class="nfield">user@example.com</div>
+      <div class="nfoot"><span class="vr"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg> View Results</span><span class="meta"><span>9 tokens</span><span>0.00 sec</span></span></div>
+    </div>
+    <span class="handle" style="left:808px;top:1185px"></span>
+
+    <button class="codebtn" style="left:1078px;top:944px"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="80 96 32 144 80 192" transform="scale(.83) translate(20 8)"/><polyline points="176 96 224 144 176 192" transform="scale(.83) translate(20 8)"/></svg></button>
+
+    <!-- inspector -->
+    <aside class="insp">
+      <div class="ih"><span class="ic gmail"></span><span class="t">On Email Received</span><span class="code">trigger-0</span><span class="sp"></span>
+        <button class="hb"><svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M128 88a48 48 0 0 1 48-48h56v152h-56a48 48 0 0 0-48 48 48 48 0 0 0-48-48H24V40h56a48 48 0 0 1 48 48ZM128 88v120"/></svg></button>
+        <button class="hb"><svg width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><circle cx="128" cy="64" r="14"/><circle cx="128" cy="128" r="14"/><circle cx="128" cy="192" r="14"/></svg></button>
+        <button class="hb"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="200" y1="56" x2="56" y2="200"/><line x1="56" y1="56" x2="200" y2="200"/></svg></button>
+      </div>
+      <div class="ibody">
+        <div class="lede">Start this workflow whenever a new email arrives.</div>
+        <div><span class="flabel">Provider</span></div>
+        <div class="fld"><span class="fi gmail"></span>Gmail<span class="sp"></span><span class="chev"><svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></span></div>
+        <div><span class="flabel">Trigger</span></div>
+        <div class="fld"><span class="fi gmail"></span>On Email Received<span class="sp"></span><span class="chev"><svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></span></div>
+        <div><span class="flabel">Connection</span></div>
+        <div class="fld">Shawn's Gmail connection<span class="sp"></span><span class="healthy">Healthy</span><span class="chev"><svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></span></div>
+        <div class="creds"><u>Your credentials are encrypted and can be removed at any time</u>. You can manage all your connections <u>here</u>.</div>
+        <div class="irow"><span class="ri"><svg width="22" height="22" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="40"/><path d="M130 24h-4a16 16 0 0 0-16 14l-2 14-18 10-14-6a16 16 0 0 0-20 6l-4 8a16 16 0 0 0 4 20l10 10v20l-10 10a16 16 0 0 0-4 20l4 8a16 16 0 0 0 20 6l14-6 18 10 2 14a16 16 0 0 0 16 14h4a16 16 0 0 0 16-14l2-14 18-10 14 6a16 16 0 0 0 20-6l4-8a16 16 0 0 0-4-20l-10-10v-20l10-10a16 16 0 0 0 4-20l-4-8a16 16 0 0 0-20-6l-14 6-18-10-2-14a16 16 0 0 0-16-14Z"/></svg></span>Configuration<span class="sp"></span><span class="chev"><svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></span></div>
+        <div class="irow"><span class="ri"><svg width="22" height="22" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M88 152h80M128 112v40"/><path d="M40 56h176v144a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8Z"/><polyline points="40 56 128 128 216 56"/></svg></span>Outputs<span class="sp"></span><span class="chev"><svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></span></div>
+      </div>
+    </aside>
+
+    <!-- bottom -->
+    <div class="bl">Auto-saved draft <b>1 second ago</b></div>
+    <div class="toolbar">
+      <button class="tb-ask"><svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor"><path d="m208 144-32 11-11 32-11-32-32-11 32-11 11-32 11 32Zm-96-40 24-8 8-24 8 24 24 8-24 8-8 24-8-24Z"/></svg> Ask AI</button>
+      <button class="tb-add"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="40" y1="128" x2="216" y2="128"/><line x1="128" y1="40" x2="128" y2="216"/></svg> Add</button>
+      <span class="tb-div"></span>
+      <button class="tb-i"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="76 104 36 144 76 184"/><path d="M36 144h132a52 52 0 0 0 52-52v-12"/></svg></button>
+      <button class="tb-i"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="180 104 220 144 180 184"/><path d="M220 144H88a52 52 0 0 1-52-52v-12"/></svg></button>
+      <span class="tb-div"></span>
+      <button class="tb-i"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><circle cx="116" cy="116" r="80"/><line x1="84" y1="116" x2="148" y2="116"/><line x1="116" y1="84" x2="116" y2="148"/><line x1="173" y1="173" x2="224" y2="224"/></svg></button>
+      <button class="tb-i"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><circle cx="116" cy="116" r="80"/><line x1="84" y1="116" x2="148" y2="116"/><line x1="173" y1="173" x2="224" y2="224"/></svg></button>
+    </div>
+    <div class="scroll"></div>
+  </div>
+</div>
+</body>
+</html>

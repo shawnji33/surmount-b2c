@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Investing Agent · Full Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+:root{
+  --bg-primary:#ffffff; --bg-secondary:#fafafa; --bg-tertiary:#f5f5f5; --bg-quaternary:#e9e9eb;
+  --fg-900:#181d27; --fg-700:#414651; --fg-600:#535861; --fg-500:#717680; --fg-400:#a3a7ae;
+  --text-900:#0a0d12e5; --text-700:#0a0d12b2; --text-600:#0a0d1299; --text-disabled:#0a0d1266;
+  --border:#00000016; --border-2:#00000010; --border-strong:#00000024; --white:#ffffff;
+  --brand-600:#406ad0; --brand-700:#3757be; --brand-500:#5585dc; --brand-secondary:#e0eaf9; --brand-bg:#f1f6fd;
+  --green-600:#3b7e3f; --green-700:#316434; --green-secondary:#e4f4e5; --green-bg:#eef7ee;
+  --amber-600:#de5b18; --amber-secondary:#fdedd7; --amber-bg:#fef7ee;
+  --purple-600:#6838ee; --purple-700:#5925db; --red-600:#b6544c;
+  --font-body:'Geist',-apple-system,sans-serif; --font-display:'Inter',-apple-system,sans-serif;
+  --r-sm:6px; --r-md:8px; --r-lg:10px; --r-xl:12px; --r-2xl:16px;
+  --shadow-card:0 1px 2px rgba(10,13,18,0.04),0 1px 3px rgba(10,13,18,0.06);
+  --shadow-pop:0 8px 24px rgba(10,13,18,0.10),0 2px 6px rgba(10,13,18,0.06);
+  --shadow-lift:0 4px 14px rgba(10,13,18,.08),0 1px 3px rgba(10,13,18,.06);
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-body);letter-spacing:-0.5px;color:var(--text-900);background:var(--bg-secondary);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.45;overflow:hidden}
+button{font-family:inherit;letter-spacing:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea{font-family:inherit;letter-spacing:inherit}
+::selection{background:var(--brand-secondary)}
+svg{display:block}
+
+/* ── Screen system ─────────────────────────────────────────────────────────*/
+.screen{position:fixed;inset:0;opacity:0;visibility:hidden;transition:opacity .45s var(--ease-out),visibility .45s}
+.screen.active{opacity:1;visibility:visible}
+
+/* ── Welcome / Typing screen ───────────────────────────────────────────────*/
+#welcome{display:flex;flex-direction:column;background:
+  radial-gradient(1200px 500px at 50% -10%, #f1f6fd 0%, transparent 60%), var(--bg-primary)}
+.wel-top{display:flex;align-items:center;gap:9px;padding:18px 24px}
+.brand{display:flex;align-items:center;gap:9px}
+.brand .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--brand-600),var(--purple-600));display:grid;place-items:center}
+.brand .nm{font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--fg-900);letter-spacing:-0.3px}
+.brand .tag{font-size:11px;color:var(--fg-500);background:var(--bg-tertiary);border:1px solid var(--border-2);border-radius:999px;padding:2px 8px;margin-left:2px}
+.wel-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 24px 80px;gap:26px}
+.wel-hero{text-align:center;animation:rise .5s var(--ease-out) both}
+.wel-hero h1{font-family:var(--font-display);font-size:30px;font-weight:500;color:var(--fg-900);letter-spacing:-1px}
+.wel-hero p{font-size:15px;color:var(--fg-500);margin-top:8px}
+.prompt{width:100%;max-width:680px;background:var(--bg-primary);border:1px solid var(--border-strong);border-radius:18px;box-shadow:var(--shadow-pop);padding:16px 18px;transition:border-color .14s var(--ease-out),box-shadow .14s var(--ease-out);animation:rise .5s var(--ease-out) .06s both}
+.prompt:focus-within{border-color:var(--brand-500);box-shadow:0 0 0 4px rgba(85,133,220,.14),var(--shadow-pop)}
+.prompt textarea{width:100%;border:none;outline:none;resize:none;font-size:16px;line-height:1.5;color:var(--text-900);background:transparent;min-height:28px;max-height:160px}
+.prompt textarea::placeholder{color:var(--text-disabled)}
+.prompt .row{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.prompt .lefttools{display:flex;align-items:center;gap:8px}
+.ptool{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 11px;border:1px solid var(--border);border-radius:999px;font-size:12.5px;color:var(--fg-700);transition:background .12s var(--ease-out)}
+.ptool:hover{background:var(--bg-tertiary)}
+.psend{width:34px;height:34px;border-radius:50%;background:var(--fg-900);color:#fff;display:grid;place-items:center;transition:all .14s var(--ease-out)}
+.psend:hover{background:#000}.psend:active{transform:scale(.93)}
+.psend:disabled{background:var(--bg-quaternary);color:var(--fg-400);cursor:default}
+.chips{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;max-width:680px;animation:rise .5s var(--ease-out) .12s both}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--fg-700);border:1px solid var(--border);background:var(--bg-primary);border-radius:999px;padding:8px 13px;transition:all .14s var(--ease-out)}
+.chip:hover{background:var(--bg-tertiary);border-color:var(--border-strong);transform:translateY(-1px)}
+.chip .ci{display:grid;place-items:center}
+.cursor{display:inline-block;width:1.5px;height:18px;background:var(--brand-600);margin-left:1px;vertical-align:-3px;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ── Builder ───────────────────────────────────────────────────────────────*/
+.app{display:flex;flex-direction:column;height:100vh}
+.topbar{height:56px;flex:0 0 56px;display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--bg-primary);border-bottom:1px solid var(--border);z-index:30}
+.tb-back{width:30px;height:30px;border-radius:var(--r-md);display:grid;place-items:center;color:var(--fg-600);transition:background .12s var(--ease-out)}
+.tb-back:hover{background:var(--bg-tertiary)}
+.tb-title{display:flex;align-items:center;gap:8px;min-width:0}
+.tb-title h1{font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--fg-900);letter-spacing:-0.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px}
+.tb-title .caret{color:var(--fg-500)}
+.tb-saved{font-size:12.5px;color:var(--fg-500);white-space:nowrap}
+.tb-spacer{flex:1}
+.status-pill{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 12px;border:1px solid var(--border);border-radius:999px;font-size:12.5px;color:var(--fg-600);background:var(--bg-primary)}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--fg-400)}
+.status-pill.on .status-dot{background:var(--green-600)}
+.toggle{width:34px;height:20px;border-radius:999px;background:var(--bg-quaternary);position:relative;transition:background .16s var(--ease-out)}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.18);transition:transform .18s var(--ease-out)}
+.toggle.on{background:var(--green-600)}.toggle.on::after{transform:translateX(14px)}
+.btn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;border-radius:var(--r-md);font-size:13px;font-weight:500;transition:all .12s var(--ease-out);white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn-ghost{color:var(--fg-700);border:1px solid var(--border)}.btn-ghost:hover{background:var(--bg-tertiary)}
+.btn-primary{background:var(--fg-900);color:#fff}.btn-primary:hover{background:#000}
+.workspace{flex:1;display:flex;min-height:0}
+
+.chat{flex:0 0 372px;display:flex;flex-direction:column;background:var(--bg-primary);border-right:1px solid var(--border);min-height:0}
+.chat-head{display:flex;align-items:center;gap:9px;padding:14px 18px;border-bottom:1px solid var(--border-2)}
+.chat-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--brand-600),var(--purple-600));display:grid;place-items:center;flex:0 0 26px}
+.chat-head .name{font-size:13.5px;font-weight:500;color:var(--fg-900)}
+.chat-head .sub{font-size:11.5px;color:var(--fg-500)}
+.chat-log{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:16px}
+.msg{display:flex;gap:10px;max-width:100%;animation:rise .4s var(--ease-out) both}
+.msg .ava{width:24px;height:24px;border-radius:50%;flex:0 0 24px;display:grid;place-items:center;margin-top:1px}
+.msg.agent .ava{background:linear-gradient(135deg,var(--brand-600),var(--purple-600))}
+.msg.user{flex-direction:row-reverse}
+.msg.user .ava{background:var(--bg-quaternary);color:var(--fg-600)}
+.bubble{padding:10px 13px;border-radius:13px;font-size:13.5px;line-height:1.5;color:var(--text-900)}
+.msg.agent .bubble{background:var(--bg-tertiary);border-bottom-left-radius:4px}
+.msg.user .bubble{background:var(--brand-600);color:#fff;border-bottom-right-radius:4px}
+.bubble strong{font-weight:500}
+.bubble .draft{margin-top:9px;display:flex;flex-direction:column;gap:6px}
+.bubble .draft .line{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-700);opacity:0;animation:rise .35s var(--ease-out) both}
+.bubble .draft .dot{width:6px;height:6px;border-radius:50%;flex:0 0 6px}
+.thinking{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--fg-500)}
+.dots{display:inline-flex;gap:3px}
+.dots i{width:5px;height:5px;border-radius:50%;background:var(--fg-400);animation:bounce 1.2s var(--ease-out) infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;padding:0 18px 12px}
+.suggest{font-size:12.5px;color:var(--fg-700);border:1px solid var(--border);border-radius:999px;padding:6px 11px;background:var(--bg-primary);transition:all .12s var(--ease-out)}
+.suggest:hover{background:var(--bg-tertiary);border-color:var(--border-strong)}
+.composer{padding:14px 16px 16px;border-top:1px solid var(--border-2)}
+.composer .field{border:1px solid var(--border-strong);border-radius:var(--r-xl);padding:10px 12px;background:var(--bg-primary);transition:border-color .12s var(--ease-out)}
+.composer .field:focus-within{border-color:var(--brand-500);box-shadow:0 0 0 3px rgba(85,133,220,.16)}
+.composer textarea{width:100%;border:none;outline:none;resize:none;font-size:13.5px;color:var(--text-900);background:transparent;max-height:120px}
+.composer textarea::placeholder{color:var(--text-disabled)}
+.composer .row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.model{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--fg-600)}
+.send{width:30px;height:30px;border-radius:50%;background:var(--fg-900);color:#fff;display:grid;place-items:center;transition:all .12s var(--ease-out)}
+.send:hover{background:#000}.send:active{transform:scale(.94)}
+
+.canvas-wrap{flex:1;position:relative;min-width:0;overflow:hidden;background:
+  radial-gradient(circle, rgba(10,13,18,0.08) 1px, transparent 1.6px) 0 0 / 16px 16px,
+  #f3f3f4;}
+.canvas-scroll{position:absolute;inset:0;overflow:auto}
+.flow{min-height:100%;display:flex;flex-direction:column;align-items:center;padding:56px 24px 120px;transform-origin:top center;transition:transform .18s var(--ease-out)}
+.stage-label{font-size:11.5px;font-weight:500;display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.stage-label .sq{width:14px;height:14px;border-radius:4px;display:grid;place-items:center}
+.group{display:flex;flex-direction:column;align-items:center}
+.node{width:308px;background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--r-2xl);box-shadow:var(--shadow-card);overflow:hidden;cursor:pointer;position:relative;transition:transform .14s var(--ease-out),box-shadow .14s var(--ease-out),border-color .14s var(--ease-out);animation:pop .42s var(--ease-out) both}
+.node:hover{transform:translateY(-1px);box-shadow:var(--shadow-lift)}
+.node.selected{border-color:var(--border-strong);box-shadow:0 0 0 3px rgba(10,13,18,.08),var(--shadow-card)}
+.node-top{display:flex;align-items:center;gap:11px;padding:13px 14px}
+.node-icon{width:34px;height:34px;border-radius:10px;flex:0 0 34px;display:grid;place-items:center}
+.node-tt{flex:1;min-width:0}
+.node-tt .t{font-size:13.5px;font-weight:500;color:var(--fg-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.node-tt .s{font-size:12px;color:var(--fg-500);margin-top:1px}
+.node-menu{width:26px;height:26px;border-radius:var(--r-sm);display:grid;place-items:center;color:var(--fg-400);transition:all .12s var(--ease-out);opacity:0}
+.node:hover .node-menu{opacity:1}.node-menu:hover{background:var(--bg-tertiary);color:var(--fg-600)}
+.node-body{padding:0 14px 13px}
+.param{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 11px;background:var(--bg-secondary);border:1px solid var(--border-2);border-radius:var(--r-md);font-size:12.5px}
+.param + .param{margin-top:6px}
+.param .k{color:var(--fg-600)}.param .v{color:var(--fg-900);font-weight:500;font-variant-numeric:tabular-nums}
+.param .v.pos{color:var(--green-700)}.param .v.neg{color:var(--red-600)}
+.joiner{display:flex;align-items:center;justify-content:center;height:34px;position:relative}
+.joiner::before{content:"";position:absolute;top:0;bottom:0;width:2px;background:var(--border-strong)}
+.joiner .pill{position:relative;font-size:10.5px;font-weight:500;color:var(--fg-600);background:var(--bg-primary);border:1px solid var(--border);border-radius:999px;padding:2px 9px}
+.connector{display:flex;align-items:center;justify-content:center;height:48px;position:relative}
+.connector::before{content:"";position:absolute;top:0;bottom:0;width:2px;background:var(--border-strong)}
+.add-btn{position:relative;width:24px;height:24px;border-radius:50%;background:var(--bg-primary);border:1px solid var(--border-strong);color:var(--fg-500);display:grid;place-items:center;transition:all .14s var(--ease-out)}
+.add-btn:hover{border-color:var(--fg-900);color:var(--fg-900);transform:scale(1.08)}
+.start-cap{width:46px;height:46px;border-radius:50%;background:var(--bg-primary);border:1px dashed var(--border-strong);display:grid;place-items:center;color:var(--fg-400)}
+
+/* skeleton (loading phase) */
+.sk-node{width:308px;height:84px;background:var(--bg-primary);border:1px solid var(--border-2);border-radius:var(--r-2xl);box-shadow:var(--shadow-card);padding:13px 14px;display:flex;gap:11px;align-items:center;opacity:0;animation:pop .4s var(--ease-out) both}
+.sk-ico{width:34px;height:34px;border-radius:10px;flex:0 0 34px;background:var(--bg-tertiary)}
+.sk-lines{flex:1;display:flex;flex-direction:column;gap:8px}
+.sk-bar{height:10px;border-radius:6px;background:linear-gradient(90deg,#eee 25%,#f6f6f6 37%,#eee 63%);background-size:400% 100%;animation:shimmer 1.4s linear infinite}
+.sk-bar.w1{width:60%}.sk-bar.w2{width:85%}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+.gen-chip{position:absolute;top:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:9px;background:var(--bg-primary);border:1px solid var(--border);box-shadow:var(--shadow-pop);border-radius:999px;padding:8px 14px 8px 12px;font-size:12.5px;color:var(--fg-700);z-index:15}
+.gen-chip .spin{width:14px;height:14px;border-radius:50%;border:2px solid var(--brand-secondary);border-top-color:var(--brand-600);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.inspector{flex:0 0 340px;background:var(--bg-primary);border-left:1px solid var(--border);display:flex;flex-direction:column;min-height:0;transform:translateX(100%);transition:transform .26s var(--ease-out)}
+.inspector.open{transform:translateX(0)}
+.insp-head{display:flex;align-items:center;gap:11px;padding:15px 16px;border-bottom:1px solid var(--border-2)}
+.insp-head .node-icon{width:30px;height:30px;flex:0 0 30px;border-radius:8px}
+.insp-head .t{flex:1;font-size:14px;font-weight:500;color:var(--fg-900)}
+.insp-close{width:28px;height:28px;border-radius:var(--r-sm);display:grid;place-items:center;color:var(--fg-500)}
+.insp-close:hover{background:var(--bg-tertiary)}
+.insp-body{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:16px}
+.insp-stage{font-size:11px;color:var(--fg-500)}
+.fieldset{display:flex;flex-direction:column;gap:6px}
+.fieldset label{font-size:12px;color:var(--fg-700);font-weight:500}
+.control{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--border-strong);border-radius:var(--r-md);padding:9px 11px;font-size:13px;color:var(--fg-900);background:var(--bg-primary);transition:border-color .12s var(--ease-out)}
+.control:hover{border-color:var(--fg-400)}
+.insp-note{font-size:12px;color:var(--fg-600);background:var(--brand-bg);border:1px solid #d8e6fb;border-radius:var(--r-md);padding:10px 12px;line-height:1.5}
+.insp-foot{padding:14px 16px;border-top:1px solid var(--border-2);display:flex;gap:8px}
+.toolbar{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:var(--bg-primary);border:1px solid var(--border);box-shadow:var(--shadow-pop);border-radius:999px;padding:6px;z-index:20}
+.tool{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;font-size:12.5px;font-weight:500;color:var(--fg-700);transition:background .12s var(--ease-out)}
+.tool:hover{background:var(--bg-tertiary)}
+.tool.primary{background:var(--fg-900);color:#fff}.tool.primary:hover{background:#000}
+.tool-ico{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--fg-600)}
+.tool-ico:hover{background:var(--bg-tertiary)}
+.zoom{font-size:12px;color:var(--fg-600);min-width:42px;text-align:center;font-variant-numeric:tabular-nums}
+.tb-div{width:1px;height:18px;background:var(--border)}
+.popover{position:fixed;z-index:60;width:288px;background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--r-xl);box-shadow:var(--shadow-pop);padding:6px;opacity:0;transform:translateY(4px) scale(.98);pointer-events:none;transition:opacity .14s var(--ease-out),transform .14s var(--ease-out)}
+.popover.open{opacity:1;transform:none;pointer-events:auto}
+.pop-title{font-size:11px;color:var(--fg-500);padding:8px 10px 6px}
+.pop-item{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:var(--r-md);transition:background .1s var(--ease-out)}
+.pop-item:hover{background:var(--bg-tertiary)}
+.pop-item .pi-ico{width:30px;height:30px;border-radius:8px;flex:0 0 30px;display:grid;place-items:center}
+.pop-item .pi-t{font-size:13px;font-weight:500;color:var(--fg-900)}
+.pop-item .pi-s{font-size:11.5px;color:var(--fg-500)}
+.scrim{position:fixed;inset:0;z-index:55;display:none}.scrim.show{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ══ SCREEN 1+2 · WELCOME / TYPING ════════════════════════════════════════ -->
+<section class="screen active" id="welcome">
+  <div class="wel-top">
+    <div class="brand">
+      <div class="logo"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="#fff" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="224 200 144 120 104 160 32 88"/><polyline points="224 144 224 200 168 200"/></svg></div>
+      <span class="nm">Surmount</span><span class="tag">Investing agent</span>
+    </div>
+  </div>
+  <div class="wel-center">
+    <div class="wel-hero">
+      <h1 id="greeting">Good evening, Shawn</h1>
+      <p>What should your investing agent automate?</p>
+    </div>
+    <div class="prompt">
+      <textarea id="welInput" rows="1" placeholder="Describe an automation… e.g. buy NVIDIA when it dips"></textarea>
+      <div class="row">
+        <div class="lefttools">
+          <button class="ptool"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round"><line x1="40" y1="128" x2="216" y2="128"/><line x1="128" y1="40" x2="128" y2="216"/></svg>Context</button>
+          <button class="ptool"><svg width="13" height="13" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="40"/><path d="M128 24a104 104 0 1 0 104 104" opacity=".4"/></svg>Surmount AI</button>
+        </div>
+        <button class="psend" id="welSend" disabled><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><line x1="128" y1="216" x2="128" y2="60"/><polyline points="60 128 128 60 196 128"/></svg></button>
+      </div>
+    </div>
+    <div class="chips" id="welChips">
+      <button class="chip" data-prompt="Buy NVIDIA when it drops 5%"><span class="ci"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="var(--brand-600)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="224 200 144 120 104 160 32 88"/><polyline points="224 144 224 200 168 200"/></svg></span>Buy the NVIDIA dip</button>
+      <button class="chip" data-prompt="Take profit on TSLA when it's up 20%"><span class="ci"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="var(--green-700)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="224 56 144 136 104 96 32 168"/><polyline points="168 56 224 56 224 112"/></svg></span>Take profit on TSLA at +20%</button>
+      <button class="chip" data-prompt="Invest $200 into VOO every Friday"><span class="ci"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="var(--purple-600)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="96"/><polyline points="128 72 128 128 168 152"/></svg></span>DCA $200 into VOO weekly</button>
+      <button class="chip" data-prompt="Trim any holding that grows past 30% of my portfolio"><span class="ci"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="var(--amber-600)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><circle cx="64" cy="80" r="24"/><circle cx="64" cy="176" r="24"/><circle cx="192" cy="176" r="24"/><path d="M64 104v8a24 24 0 0 0 24 24h80"/><line x1="192" y1="80" x2="192" y2="152"/></svg></span>Trim winners over 30%</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SCREEN 3+4 · BUILDER (loading → details) ═════════════════════════════ -->
+<section class="screen" id="builderScreen">
+<div class="app">
+  <header class="topbar">
+    <button class="tb-back" id="backBtn" title="New automation"><svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><polyline points="160 208 80 128 160 48"/></svg></button>
+    <div class="tb-title"><h1 id="wfTitle">Untitled automation</h1><svg class="caret" width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg></div>
+    <span class="tb-saved" id="savedText">· Generating…</span>
+    <div class="tb-spacer"></div>
+    <div class="status-pill" id="statusPill"><span class="status-dot"></span><span id="statusText">Off</span><span class="toggle" id="statusToggle"></span></div>
+    <button class="btn btn-ghost"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><circle cx="64" cy="128" r="24"/><circle cx="176" cy="64" r="24"/><circle cx="176" cy="192" r="24"/><line x1="85.7" y1="116.3" x2="154.3" y2="75.7"/><line x1="85.7" y1="139.7" x2="154.3" y2="180.3"/></svg>Share</button>
+    <button class="btn btn-primary">Activate</button>
+  </header>
+  <div class="workspace">
+    <aside class="chat">
+      <div class="chat-head">
+        <div class="chat-avatar"><svg width="14" height="14" viewBox="0 0 256 256" fill="#fff"><path d="M200,48H136V16a8,8,0,0,0-16,0V48H56A32,32,0,0,0,24,80V192a32,32,0,0,0,32,32H200a32,32,0,0,0,32-32V80A32,32,0,0,0,200,48ZM104,140a12,12,0,1,1-12-12A12,12,0,0,1,104,140Zm72,0a12,12,0,1,1-12-12A12,12,0,0,1,176,140Z"/></svg></div>
+        <div><div class="name">Investing agent</div><div class="sub" id="chatSub">Building your automation</div></div>
+      </div>
+      <div class="chat-log" id="chatLog"></div>
+      <div class="chip-row" id="quickChips" style="display:none">
+        <button class="suggest" data-send="Only buy if I have cash available">+ cash check</button>
+        <button class="suggest" data-send="Cap it at $500 per dip">Cap at $500</button>
+        <button class="suggest" data-send="Also notify me by email">Email me too</button>
+      </div>
+      <div class="composer">
+        <div class="field">
+          <textarea id="chatInput" rows="1" placeholder="Describe a change… e.g. “sell if it rebounds 10%”"></textarea>
+          <div class="row">
+            <span class="model"><svg width="13" height="13" viewBox="0 0 256 256" fill="none" stroke="var(--fg-500)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="40"/><path d="M128 24a104 104 0 1 0 104 104" opacity=".4"/></svg>Surmount AI</span>
+            <button class="send" id="sendBtn"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><line x1="128" y1="216" x2="128" y2="60"/><polyline points="60 128 128 60 196 128"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <main class="canvas-wrap">
+      <div class="gen-chip" id="genChip" style="display:none"><span class="spin"></span><span id="genText">Designing your automation…</span></div>
+      <div class="canvas-scroll" id="canvasScroll"><div class="flow" id="flow"></div></div>
+      <div class="toolbar">
+        <button class="tool primary" id="runBtn"><svg width="13" height="13" viewBox="0 0 256 256" fill="currentColor"><path d="M232.4 114.49 88.32 26.35a16 16 0 0 0-16.2-.3A15.86 15.86 0 0 0 64 39.87V216.13A15.94 15.94 0 0 0 80 232a16.07 16.07 0 0 0 8.36-2.35L232.4 141.51a15.81 15.81 0 0 0 0-27Z"/></svg>Test run</button>
+        <div class="tb-div"></div>
+        <button class="tool" id="addStepBtn"><svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="40" y1="128" x2="216" y2="128"/><line x1="128" y1="40" x2="128" y2="216"/></svg>Add step</button>
+        <div class="tb-div"></div>
+        <button class="tool-ico" id="zoomOut"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="40" y1="128" x2="216" y2="128"/></svg></button>
+        <span class="zoom" id="zoomVal">100%</span>
+        <button class="tool-ico" id="zoomIn"><svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="40" y1="128" x2="216" y2="128"/><line x1="128" y1="40" x2="128" y2="216"/></svg></button>
+        <button class="tool-ico" id="zoomFit" title="Fit"><svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="48 96 48 48 96 48"/><polyline points="160 48 208 48 208 96"/><polyline points="208 160 208 208 160 208"/><polyline points="96 208 48 208 48 160"/></svg></button>
+      </div>
+    </main>
+    <aside class="inspector" id="inspector"></aside>
+  </div>
+</div>
+</section>
+
+<div class="scrim" id="scrim"></div>
+<div class="popover" id="popover"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const ICONS={
+  trigger:'<svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="224 200 144 120 104 160 32 88"/><polyline points="224 144 224 200 168 200"/></svg>',
+  condition:'<svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="64" cy="80" r="24"/><circle cx="64" cy="176" r="24"/><circle cx="192" cy="176" r="24"/><path d="M64 104v8a24 24 0 0 0 24 24h80"/><line x1="192" y1="80" x2="192" y2="152"/></svg>',
+  action:'<svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="224 56 144 136 104 96 32 168"/><polyline points="168 56 224 56 224 112"/></svg>',
+  notification:'<svg width="17" height="17" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M56 104a72 72 0 0 1 144 0c0 35.82 8.3 56.6 14.9 68A8 8 0 0 1 208 184H48a8 8 0 0 1-6.9-12C47.7 160.6 56 139.82 56 104Z"/><path d="M96 184a32 32 0 0 0 64 0"/></svg>',
+  dots:'<svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><circle cx="128" cy="128" r="14"/><circle cx="64" cy="128" r="14"/><circle cx="192" cy="128" r="14"/></svg>',
+  plus:'<svg width="13" height="13" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round"><line x1="40" y1="128" x2="216" y2="128"/><line x1="128" y1="40" x2="128" y2="216"/></svg>',
+  x:'<svg width="15" height="15" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><line x1="200" y1="56" x2="56" y2="200"/><line x1="56" y1="56" x2="200" y2="200"/></svg>',
+  chev:'<svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="var(--fg-500)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><polyline points="208 96 128 176 48 96"/></svg>',
+  bot:'<svg width="13" height="13" viewBox="0 0 256 256" fill="#fff"><path d="M200,48H136V16a8,8,0,0,0-16,0V48H56A32,32,0,0,0,24,80V192a32,32,0,0,0,32,32H200a32,32,0,0,0,32-32V80A32,32,0,0,0,200,48ZM104,140a12,12,0,1,1-12-12A12,12,0,0,1,104,140Zm72,0a12,12,0,1,1-12-12A12,12,0,0,1,176,140Z"/></svg>',
+  usr:'<svg width="13" height="13" viewBox="0 0 256 256" fill="currentColor"><path d="M230.92 212c-15.23-26.33-38.7-45.21-66.09-54.16a72 72 0 1 0-73.66 0C63.78 166.78 40.31 185.66 25.08 212a8 8 0 1 0 13.85 8c18.84-32.56 52.14-52 89.07-52s70.23 19.44 89.07 52a8 8 0 1 0 13.85-8Z"/></svg>'
+};
+const STAGE={
+  trigger:{label:'Trigger',color:'var(--brand-600)',bg:'var(--brand-secondary)',join:'OR'},
+  condition:{label:'Condition',color:'var(--purple-600)',bg:'rgba(104,56,238,.10)',join:'AND'},
+  action:{label:'Action',color:'var(--green-700)',bg:'var(--green-secondary)',join:'AND'},
+  notification:{label:'Notification',color:'var(--amber-600)',bg:'var(--amber-secondary)',join:'AND'}
+};
+const FLOW_TEMPLATE=()=>[
+  {stage:'trigger',items:[
+    {id:'t1',title:'Intraday price drop',sub:'Market event',fields:[['Asset','NVDA'],['Move','Intraday %'],['Threshold','−5%','neg']]},
+    {id:'t2',title:'Weekly drawdown',sub:'Market event',fields:[['Asset','NVDA'],['Window','5 trading days'],['Threshold','−8%','neg']]}
+  ]},
+  {stage:'condition',items:[
+    {id:'c1',title:'Momentum oversold',sub:'Technical filter',fields:[['Indicator','RSI (14)'],['Operator','below'],['Value','35']]},
+    {id:'c2',title:'Buying power',sub:'Account check',fields:[['Check','Available cash'],['Operator','≥'],['Value','$500']]}
+  ]},
+  {stage:'action',items:[
+    {id:'a1',title:'Buy NVDA',sub:'Place order',fields:[['Order','Market'],['Amount','$500'],['Account','Individual']]}
+  ]},
+  {stage:'notification',items:[
+    {id:'n1',title:'Confirm the trade',sub:'Alert me',fields:[['Channels','Push + Email'],['When','On execution']]}
+  ]}
+];
+let flow=[], selectedId=null, zoom=1, generated=false;
+const flowEl=$('#flow'), inspector=$('#inspector'), popover=$('#popover'), scrim=$('#scrim'), chatLog=$('#chatLog');
+
+/* ── SCREEN 1/2: welcome + typewriter ──────────────────────────────────────*/
+(function greet(){const h=new Date().getHours();$('#greeting').textContent=(h<12?'Good morning':h<18?'Good afternoon':'Good evening')+', Shawn';})();
+const welInput=$('#welInput'), welSend=$('#welSend');
+function welResize(){welInput.style.height='auto';welInput.style.height=welInput.scrollHeight+'px';welSend.disabled=!welInput.value.trim();}
+welInput.addEventListener('input',welResize);
+welInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();if(welInput.value.trim())launch(welInput.value.trim());}});
+welSend.onclick=()=>{if(welInput.value.trim())launch(welInput.value.trim());};
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>typeThenLaunch(c.dataset.prompt));
+function typeThenLaunch(text){
+  welInput.value='';welResize();welInput.focus();
+  let i=0;
+  (function step(){
+    if(i<=text.length){welInput.value=text.slice(0,i);welResize();i++;setTimeout(step,18+Math.random()*26);}
+    else{welSend.disabled=false;setTimeout(()=>launch(text),420);}
+  })();
+}
+
+/* ── Transition to builder + generation (loading) ──────────────────────────*/
+function launch(prompt){
+  $('#welcome').classList.remove('active');
+  $('#builderScreen').classList.add('active');
+  // title from prompt
+  $('#wfTitle').textContent=titleFrom(prompt);
+  $('#savedText').textContent='· Generating…';
+  $('#chatSub').textContent='Designing your automation';
+  chatLog.innerHTML='';
+  addMsg('user',escapeHtml(prompt));
+  const think=addThinking();
+  // canvas loading skeletons
+  $('#genChip').style.display='flex';
+  renderSkeleton();
+  const steps=['Understanding your goal','Setting up the triggers','Adding safety conditions','Placing the order','Configuring alerts'];
+  let s=0;const gt=$('#genText');
+  const iv=setInterval(()=>{gt.textContent=steps[s]+'…';s++;if(s>=steps.length)clearInterval(iv);},520);
+  // reveal
+  setTimeout(()=>{
+    clearInterval(iv);$('#genChip').style.display='none';
+    think.remove();
+    flow=FLOW_TEMPLATE();generated=true;render();
+    addMsg('agent',`Done — I built a <strong>“buy the dip”</strong> automation for NVDA:
+      <div class="draft">
+        <div class="line" style="animation-delay:.05s"><span class="dot" style="background:var(--brand-600)"></span>Triggers when NVDA drops 5% intraday (or 8% in a week)</div>
+        <div class="line" style="animation-delay:.13s"><span class="dot" style="background:var(--purple-600)"></span>Only if RSI is oversold and cash is available</div>
+        <div class="line" style="animation-delay:.21s"><span class="dot" style="background:var(--green-600)"></span>Buys $500 of NVDA at market</div>
+        <div class="line" style="animation-delay:.29s"><span class="dot" style="background:var(--amber-600)"></span>Notifies you on execution</div>
+      </div>
+      Tap any step to see its details, or tell me what to change.`);
+    $('#chatSub').textContent='Ready · tap a step to edit';
+    $('#savedText').textContent='· Saved';
+    $('#quickChips').style.display='flex';
+    // showcase the "details of each step" panel
+    setTimeout(()=>{const a=flow.find(s=>s.stage==='action');if(a)select('action',a.items[0],STAGE.action);},650);
+  },2700);
+}
+function titleFrom(p){
+  const t=p.trim().replace(/\.$/,'');
+  return t.charAt(0).toUpperCase()+t.slice(1,60);
+}
+
+/* ── Canvas render ─────────────────────────────────────────────────────────*/
+function render(){
+  flowEl.innerHTML='';
+  const cap=document.createElement('div');cap.className='start-cap';
+  cap.innerHTML='<svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="96"/><circle cx="128" cy="128" r="8" fill="currentColor"/></svg>';
+  flowEl.appendChild(cap);flowEl.appendChild(connector('start'));
+  flow.forEach((st,si)=>{
+    const meta=STAGE[st.stage];
+    const lbl=document.createElement('div');lbl.className='stage-label';lbl.style.color=meta.color;
+    lbl.innerHTML=`<span class="sq" style="background:${meta.bg};color:${meta.color}">${ICONS[st.stage]}</span>${meta.label}`;
+    const sv=lbl.querySelector('svg');sv.setAttribute('width','9');sv.setAttribute('height','9');
+    flowEl.appendChild(lbl);
+    const group=document.createElement('div');group.className='group';
+    st.items.forEach((it,ii)=>{
+      if(ii>0){const j=document.createElement('div');j.className='joiner';j.innerHTML=`<span class="pill">${meta.join}</span>`;group.appendChild(j);}
+      group.appendChild(nodeEl(st.stage,it,meta));
+    });
+    flowEl.appendChild(group);flowEl.appendChild(connector(st.stage));
+  });
+}
+function renderSkeleton(){
+  flowEl.innerHTML='';
+  for(let i=0;i<4;i++){
+    const s=document.createElement('div');s.className='sk-node';s.style.animationDelay=(i*0.45)+'s';
+    s.innerHTML='<div class="sk-ico"></div><div class="sk-lines"><div class="sk-bar w1"></div><div class="sk-bar w2"></div></div>';
+    flowEl.appendChild(s);
+    if(i<3){const c=document.createElement('div');c.className='connector';c.style.opacity=0;c.style.animation=`pop .4s var(--ease-out) ${i*0.45+0.2}s both`;flowEl.appendChild(c);}
+  }
+}
+function nodeEl(stage,it,meta){
+  const n=document.createElement('div');n.className='node'+(it.id===selectedId?' selected':'');n.dataset.id=it.id;
+  const params=it.fields.slice(0,2).map(f=>`<div class="param"><span class="k">${f[0]}</span><span class="v ${f[2]||''}">${f[1]}</span></div>`).join('');
+  n.innerHTML=`<div class="node-top"><div class="node-icon" style="background:${meta.bg};color:${meta.color}">${ICONS[stage]}</div><div class="node-tt"><div class="t">${it.title}</div><div class="s">${it.sub}</div></div><button class="node-menu">${ICONS.dots}</button></div><div class="node-body">${params}</div>`;
+  n.addEventListener('click',e=>{e.stopPropagation();select(stage,it,meta);});
+  return n;
+}
+function connector(){const c=document.createElement('div');c.className='connector';const b=document.createElement('button');b.className='add-btn';b.innerHTML=ICONS.plus;b.addEventListener('click',e=>{e.stopPropagation();openAddPopover(b);});c.appendChild(b);return c;}
+
+/* ── Inspector (details of each step) ──────────────────────────────────────*/
+function select(stage,it,meta){
+  selectedId=it.id;
+  document.querySelectorAll('.node').forEach(n=>n.classList.toggle('selected',n.dataset.id===it.id));
+  const fields=it.fields.map(f=>`<div class="fieldset"><label>${f[0]}</label><div class="control"><span style="${f[2]==='neg'?'color:var(--red-600)':f[2]==='pos'?'color:var(--green-700)':''}">${f[1]}</span>${ICONS.chev}</div></div>`).join('');
+  inspector.innerHTML=`<div class="insp-head"><div class="node-icon" style="background:${meta.bg};color:${meta.color}">${ICONS[stage]}</div><div class="t">${it.title}</div><button class="insp-close" id="inspClose">${ICONS.x}</button></div>
+    <div class="insp-body"><div class="insp-stage">${meta.label} · configure how this step behaves</div>${fields}<div class="insp-note">${noteFor(stage)}</div></div>
+    <div class="insp-foot"><button class="btn btn-ghost" style="flex:1" id="dupBtn">Duplicate</button><button class="btn btn-ghost" style="flex:1;color:var(--red-600)" id="delBtn">Remove</button></div>`;
+  inspector.classList.add('open');
+  $('#inspClose').onclick=closeInspector;
+  $('#delBtn').onclick=()=>{removeItem(it.id);closeInspector();};
+  $('#dupBtn').onclick=()=>duplicateItem(stage,it);
+}
+function noteFor(s){return{trigger:'This fires the automation when the market condition is met. Combine triggers with “OR” to react to multiple events.',condition:'Conditions must all pass (“AND”) before the action runs — they keep you from buying into a falling knife.',action:'The order placed when triggers fire and conditions pass. Runs automatically once the automation is active.',notification:'How you’re told the automation ran — delivered the moment the order fills.'}[s];}
+function closeInspector(){inspector.classList.remove('open');selectedId=null;document.querySelectorAll('.node').forEach(n=>n.classList.remove('selected'));}
+function removeItem(id){flow.forEach(st=>st.items=st.items.filter(i=>i.id!==id));flow=flow.filter(st=>st.items.length);render();}
+function duplicateItem(stage,it){const st=flow.find(s=>s.stage===stage);const c={...it,id:it.id+'_'+Date.now(),fields:it.fields.map(f=>[...f])};st.items.push(c);render();flash(c.id);}
+function flash(id){requestAnimationFrame(()=>{const n=document.querySelector(`.node[data-id="${id}"]`);if(n)n.scrollIntoView({behavior:'smooth',block:'center'});});}
+
+/* ── Add popover ───────────────────────────────────────────────────────────*/
+const ADD_OPTS=[['trigger','Trigger','React to a market event or schedule'],['condition','Condition','Only continue if a rule passes'],['action','Action','Place an order or rebalance'],['notification','Notification','Alert you when it runs']];
+function openAddPopover(anchor){
+  popover.innerHTML='<div class="pop-title">Add a step</div>'+ADD_OPTS.map(o=>{const m=STAGE[o[0]];return `<div class="pop-item" data-stage="${o[0]}"><div class="pi-ico" style="background:${m.bg};color:${m.color}">${ICONS[o[0]]}</div><div><div class="pi-t">${o[1]}</div><div class="pi-s">${o[2]}</div></div></div>`;}).join('');
+  const r=anchor.getBoundingClientRect();
+  popover.style.left=Math.min(r.left-130,window.innerWidth-300)+'px';
+  popover.style.top=(r.bottom+8)+'px';
+  popover.classList.add('open');scrim.classList.add('show');
+  popover.querySelectorAll('.pop-item').forEach(el=>el.onclick=()=>{addStep(el.dataset.stage);closePopover();});
+}
+function closePopover(){popover.classList.remove('open');scrim.classList.remove('show');}
+function addStep(stage){
+  const defaults={trigger:{title:'New trigger',sub:'Market event',fields:[['Asset','NVDA'],['Move','Intraday %'],['Threshold','—']]},condition:{title:'New condition',sub:'Filter',fields:[['Indicator','—'],['Operator','below'],['Value','—']]},action:{title:'New action',sub:'Place order',fields:[['Order','Market'],['Amount','—'],['Account','Individual']]},notification:{title:'New notification',sub:'Alert me',fields:[['Channels','Push'],['When','On execution']]}}[stage];
+  const item={id:stage[0]+Date.now(),...defaults};
+  let st=flow.find(s=>s.stage===stage);
+  if(st)st.items.push(item);
+  else{const order=['trigger','condition','action','notification'];flow.push({stage,items:[item]});flow.sort((a,b)=>order.indexOf(a.stage)-order.indexOf(b.stage));}
+  render();flash(item.id);
+}
+$('#addStepBtn').onclick=e=>openAddPopover(e.currentTarget);
+scrim.onclick=closePopover;
+
+/* ── Zoom / status / run ───────────────────────────────────────────────────*/
+function setZoom(z){zoom=Math.max(.5,Math.min(1.5,z));flowEl.style.transform=`scale(${zoom})`;$('#zoomVal').textContent=Math.round(zoom*100)+'%';}
+$('#zoomIn').onclick=()=>setZoom(zoom+.1);$('#zoomOut').onclick=()=>setZoom(zoom-.1);$('#zoomFit').onclick=()=>setZoom(1);
+$('#statusToggle').onclick=()=>{const t=$('#statusToggle'),p=$('#statusPill');const on=t.classList.toggle('on');p.classList.toggle('on',on);$('#statusText').textContent=on?'Active':'Off';};
+$('#runBtn').onclick=function(){const old=this.innerHTML;this.innerHTML='<svg width="13" height="13" viewBox="0 0 256 256" fill="currentColor"><circle cx="128" cy="128" r="96" opacity=".3"/></svg> Running…';setTimeout(()=>{this.innerHTML=old;addMsg('agent','Test run complete — the trigger matched and a simulated <strong>$500 NVDA</strong> buy would have filled at <strong>$118.40</strong>. No real order was placed.');},1400);};
+$('#backBtn').onclick=()=>{$('#builderScreen').classList.remove('active');$('#welcome').classList.add('active');welInput.value='';welResize();closeInspector();$('#quickChips').style.display='none';};
+
+/* ── Chat ──────────────────────────────────────────────────────────────────*/
+function addMsg(who,html){
+  const m=document.createElement('div');m.className='msg '+who;
+  m.innerHTML=`<div class="ava">${who==='agent'?ICONS.bot:ICONS.usr}</div><div class="bubble">${html}</div>`;
+  chatLog.appendChild(m);chatLog.scrollTop=chatLog.scrollHeight;return m;
+}
+function addThinking(){
+  const m=document.createElement('div');m.className='msg agent';
+  m.innerHTML=`<div class="ava">${ICONS.bot}</div><div class="bubble"><div class="thinking">Thinking<span class="dots"><i></i><i></i><i></i></span></div></div>`;
+  chatLog.appendChild(m);chatLog.scrollTop=chatLog.scrollHeight;return m;
+}
+function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+const cInput=$('#chatInput');
+function send(text){
+  if(!text.trim())return;addMsg('user',escapeHtml(text));cInput.value='';cInput.style.height='auto';
+  const think=addThinking();
+  setTimeout(()=>{
+    think.remove();let reply='Updated the automation on the canvas. Anything else?';const t=text.toLowerCase();
+    if(t.includes('cash')){reply='Added a <strong>Buying power</strong> condition — it won’t buy unless cash is available.';if(!flow.find(s=>s.stage==='condition')?.items.some(i=>i.title.includes('Buying')))addStep('condition');}
+    else if(t.includes('email')){reply='Your notification now goes to <strong>Push + Email</strong>.';}
+    else if(t.includes('sell')||t.includes('rebound')){reply='Added an <strong>Action</strong>: sell if NVDA rebounds 10% from your entry.';addStep('action');}
+    else if(t.includes('$')||t.includes('cap')||t.includes('500')){reply='Capped each dip-buy at <strong>$500</strong> — see the Action step.';}
+    addMsg('agent',reply);
+  },650);
+}
+$('#sendBtn').onclick=()=>send(cInput.value);
+cInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(cInput.value);}});
+cInput.addEventListener('input',()=>{cInput.style.height='auto';cInput.style.height=Math.min(cInput.scrollHeight,120)+'px';});
+document.querySelectorAll('#quickChips .suggest').forEach(b=>b.onclick=()=>send(b.dataset.send));
+$('#canvasScroll').addEventListener('click',()=>{if(selectedId)closeInspector();});
+
+/* ── Deep-link router — lets Figma capture each screen as its own URL ───────*/
+/*   ?screen=welcome | typing | loading | details                            */
+(function route(){
+  const p=new URLSearchParams(location.search).get('screen');
+  if(!p||p==='welcome')return;
+  const demo='Buy NVIDIA when it drops 5%';
+  if(p==='typing'){welInput.value=demo;welResize();welInput.focus();return;}
+  $('#welcome').classList.remove('active');
+  $('#builderScreen').classList.add('active');
+  $('#wfTitle').textContent=titleFrom(demo);
+  chatLog.innerHTML='';
+  addMsg('user',escapeHtml(demo));
+  if(p==='loading'){
+    $('#savedText').textContent='· Generating…';
+    $('#chatSub').textContent='Designing your automation';
+    addThinking();
+    $('#genChip').style.display='flex';
+    $('#genText').textContent='Adding safety conditions…';
+    renderSkeleton();
+  } else if(p==='details'){
+    $('#savedText').textContent='· Saved';
+    $('#chatSub').textContent='Ready · tap a step to edit';
+    flow=FLOW_TEMPLATE();generated=true;render();
+    addMsg('agent',`Done — I built a <strong>“buy the dip”</strong> automation for NVDA:
+      <div class="draft">
+        <div class="line" style="animation-delay:.05s"><span class="dot" style="background:var(--brand-600)"></span>Triggers when NVDA drops 5% intraday (or 8% in a week)</div>
+        <div class="line" style="animation-delay:.13s"><span class="dot" style="background:var(--purple-600)"></span>Only if RSI is oversold and cash is available</div>
+        <div class="line" style="animation-delay:.21s"><span class="dot" style="background:var(--green-600)"></span>Buys $500 of NVDA at market</div>
+        <div class="line" style="animation-delay:.29s"><span class="dot" style="background:var(--amber-600)"></span>Notifies you on execution</div>
+      </div>Tap any step to see its details, or tell me what to change.`);
+    $('#quickChips').style.display='flex';
+    const a=flow.find(s=>s.stage==='action');if(a)select('action',a.items[0],STAGE.action);
+  }
+})();
+</script>
+</body>
+</html>

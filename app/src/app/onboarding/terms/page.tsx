@@ -10,7 +10,6 @@ const DOCS = [
   'Client Agreement.pdf',
   'Form CRS.pdf',
   'Form ADV Part 2A.pdf',
-  'Form ADV Part 2B.pdf',
   'ADR Disclosure.pdf',
 ];
 
@@ -47,7 +46,7 @@ export default function TermsPage() {
   }
 
   const TERMS = [
-    'I have reviewed the Surmount Client Agreement, Form CRS, Form ADV Part 2A, and Form ADV Part 2B and understand I am signing this agreement electronically. My electronic signature is the legal equivalent of my manual signature on the Alpaca Customer Agreement and the Surmount Client Agreement.',
+    'I have reviewed the Surmount Client Agreement, Form CRS, and Form ADV Part 2A and understand I am signing this agreement electronically. My electronic signature is the legal equivalent of my manual signature on the Alpaca Customer Agreement and the Surmount Client Agreement.',
     'I have read, understood, and agree to be bound by Alpaca Securities LLC and Surmount, Inc. account terms, and all other terms, disclosures, and disclaimers applicable to me. I also acknowledge that the Alpaca Customer Agreement contains a pre-dispute arbitration clause in Section 43.',
     'By clicking I agree, I understand I am signing this agreement electronically, and that my electronic signature will have the same effect as physically signing and returning the Application Agreement.',
   ];

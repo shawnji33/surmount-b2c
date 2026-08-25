@@ -1,0 +1,857 @@
+/* Post-application account-progress flow — Figma "Surmount investing account",
+ * section "Step 1 - Verify your identity" (file 2wwYoRpClncFrrJzqUqKFf, node 2068:2816).
+ *
+ * Scenario: the user submitted their application but never finished identity
+ * verification. They re-enter from the dashboard entry card and resume here.
+ * Three screens share this module: the status hub, the upload screen, and the
+ * received confirmation.
+ *
+ * Figma carries sub-pixel export noise (padding 21/25px, gaps 11.969/16.141px,
+ * widths 102.594px). Those are snapped onto the DS scales per
+ * ~/Surmount/CLAUDE.md § "Numeric scales" — geometry is preserved, the odd
+ * values are not. Colors are tokens throughout; see the note on the warning
+ * ramp at .timelineDotWarn. */
+
+/* ─── Shell ─────────────────────────────────────────────────────────────── */
+
+.page {
+  min-height: 100vh;
+  background: var(--color-bg-secondary);
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  padding: var(--spacing-xl) var(--spacing-3xl);
+  background: var(--color-bg-secondary);
+}
+
+/* The header centres the logo by balancing it against the Close button, so the
+ * left side carries an inert copy of that button reserving the same width. */
+.headerSpacer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.brandIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.brandName {
+  width: 98px;
+  height: 16px;
+}
+
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  height: 48px;
+  padding: 0 var(--spacing-xl);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  line-height: var(--line-height-text-md);
+  color: var(--color-text-secondary-700);
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.closeBtn:hover {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border-secondary);
+}
+
+.closeBtn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ─── Shared type ───────────────────────────────────────────────────────── */
+
+.title {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-display-md);
+  font-weight: 500;
+  line-height: var(--line-height-display-md);
+  letter-spacing: -1px;
+  color: var(--color-fg-primary-900);
+}
+
+.subtitle {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-md);
+  font-weight: 400;
+  line-height: var(--line-height-text-md);
+  letter-spacing: -0.3px;
+  color: var(--color-fg-tertiary-600);
+}
+
+/* Dark pill CTA. The 2px inset light border is the Figma treatment — it reads
+ * as a highlight on the dark fill rather than as a border. */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  background: var(--color-fg-primary-900);
+  color: var(--color-fg-white);
+  font-family: var(--font-family-body);
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+  transition: background-color 150ms ease, transform 150ms ease-out;
+}
+
+.cta:hover {
+  background: var(--color-utility-gray-800);
+}
+
+.cta:active {
+  transform: scale(0.98);
+}
+
+.ctaSm {
+  height: 40px;
+  padding: var(--spacing-2-5) var(--spacing-3-5);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+}
+
+.ctaLg {
+  height: 48px;
+  padding: var(--spacing-lg) var(--spacing-4-5);
+  font-size: var(--font-size-text-md);
+  line-height: var(--line-height-text-md);
+}
+
+.support {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  line-height: var(--line-height-text-sm);
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600);
+}
+
+.supportLink {
+  color: var(--color-fg-primary-900);
+  text-decoration: underline;
+}
+
+/* ─── Hub: "You're almost ready to invest" ──────────────────────────────── */
+
+.hubMain {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-3xl) var(--spacing-6xl);
+}
+
+.hubContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4xl);
+  width: 860px;
+  max-width: 100%;
+}
+
+.hubHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.hubBody {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-5xl);
+}
+
+.stepsCol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+/* Resting step row — completed and upcoming both use it; only the marker and
+ * label colour differ. */
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+  min-height: 68px;
+  padding: var(--spacing-2-5) 22px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  background: var(--color-bg-primary);
+}
+
+.stepMarker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-secondary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--color-text-secondary-700);
+}
+
+.stepMarkerDone {
+  background: var(--color-fg-tertiary-600);
+  border-color: transparent;
+  color: var(--color-fg-white);
+}
+
+.stepMarkerDone svg {
+  width: 12px;
+  height: 12px;
+}
+
+.stepLabel {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  line-height: var(--line-height-text-md);
+  letter-spacing: -0.5px;
+  color: var(--color-fg-primary-900);
+}
+
+.stepLabelDone {
+  color: var(--color-text-disabled);
+}
+
+.badgeDone {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--spacing-2-5);
+  border: 1px solid var(--color-utility-success-200);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-success-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  line-height: var(--line-height-text-xs);
+  color: var(--color-utility-success-700);
+}
+
+/* Active step — warm gradient card, the one thing on the page asking for action. */
+.stepActive {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xl);
+  padding: 22px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  background: linear-gradient(134deg, #faf8f7 10.64%, #faf7f5 90.75%);
+}
+
+.stepActiveIcon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--color-fg-warning-primary);
+}
+
+.stepActiveIcon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.stepActiveBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.stepActiveHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.stepActiveTitle {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  line-height: var(--line-height-text-md);
+  letter-spacing: -0.5px;
+  color: var(--color-fg-primary-900);
+}
+
+.stepActiveDesc {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  line-height: var(--line-height-text-sm);
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600);
+}
+
+.reqList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  list-style: none;
+}
+
+.reqItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  line-height: var(--line-height-text-sm);
+  letter-spacing: -0.5px;
+  color: var(--color-fg-secondary-700);
+}
+
+.reqItem svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  color: var(--color-fg-tertiary-600);
+}
+
+.stepActiveCta {
+  align-self: flex-start;
+}
+
+/* ─── Hub: right rail ───────────────────────────────────────────────────── */
+
+.rail {
+  flex-shrink: 0;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+.timelineCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  padding: 22px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  background: var(--color-bg-primary);
+  box-shadow: 0 2px 3px rgba(10, 13, 18, 0.03);
+}
+
+.timelineTitle {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  line-height: var(--line-height-text-sm);
+  letter-spacing: -0.5px;
+  color: var(--color-text-secondary-700);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.timelineRow {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.timelineRail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  width: 14px;
+  padding-top: var(--spacing-xs);
+}
+
+.timelineDot {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-fg-tertiary-600);
+}
+
+/* The Figma frame predates the current warning ramp (it uses #de5b18/#b84416;
+ * tokens.css now resolves warning-600/700 to #bb7013/#955013). Tokens win per
+ * the no-hardcoded-hex rule, so this renders a deeper amber than the mock. */
+.timelineDotWarn {
+  background: var(--color-utility-warning-600);
+}
+
+.timelineDotIdle {
+  background: var(--color-fg-disabled-subtle);
+}
+
+.timelineLine {
+  flex: 1;
+  width: 2px;
+  min-height: 36px;
+  background: var(--color-fg-tertiary-600);
+}
+
+.timelineLineWarn {
+  background: var(--color-utility-warning-600);
+}
+
+.timelineText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: var(--spacing-4-5);
+}
+
+.timelineRow:last-child .timelineText {
+  padding-bottom: 0;
+}
+
+.timelineLabel {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  line-height: var(--line-height-text-sm);
+  letter-spacing: -0.5px;
+  color: var(--color-fg-primary-900);
+}
+
+.timelineLabelWarn {
+  color: var(--color-utility-warning-700);
+}
+
+.timelineLabelIdle {
+  color: var(--color-text-disabled);
+}
+
+.timelineMeta {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+  line-height: var(--line-height-text-xs);
+  letter-spacing: -0.5px;
+  color: var(--color-text-tertiary-600);
+}
+
+.timelineMetaWarn {
+  color: var(--color-utility-warning-600);
+}
+
+/* ─── Verify: upload screen ─────────────────────────────────────────────── */
+
+.verifyMain {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-3xl) var(--spacing-3xl) var(--spacing-6xl);
+}
+
+.verifyContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4xl);
+  width: 560px;
+  max-width: 100%;
+}
+
+.verifyHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  text-align: center;
+}
+
+.verifyHeadCopy {
+  width: 440px;
+  max-width: 100%;
+}
+
+.docCards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+  width: 100%;
+}
+
+.docCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  padding: 26px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  background: var(--color-bg-primary);
+  box-shadow: 0 2px 6px rgba(10, 13, 18, 0.03);
+}
+
+.docHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.docTitle {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  line-height: var(--line-height-text-md);
+  letter-spacing: -0.3px;
+  color: var(--color-fg-primary-900);
+}
+
+.docDesc {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  line-height: var(--line-height-text-sm);
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600);
+}
+
+.docHints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xl);
+  list-style: none;
+}
+
+.docHint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+  line-height: var(--line-height-text-xs);
+  letter-spacing: -0.1px;
+  color: var(--color-success-800);
+}
+
+.docHint svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Dropzone. Figma draws a 1.5px dash; border widths are 1 or 2 only, and 1px
+ * holds the light treatment the mock is going for. */
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: 34px 26px;
+  border: 1px dashed rgba(10, 13, 18, 0.12);
+  border-radius: var(--radius-xl);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.dropzone:hover,
+.dropzone[data-dragging='true'] {
+  border-color: rgba(10, 13, 18, 0.24);
+  background: rgba(10, 13, 18, 0.02);
+}
+
+.dropzone:focus-visible {
+  outline: 2px solid var(--color-fg-secondary-700);
+  outline-offset: 2px;
+}
+
+.dropIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: rgba(10, 13, 18, 0.04);
+  color: var(--color-fg-secondary-700);
+}
+
+.dropIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.dropCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.dropPrompt {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  line-height: var(--line-height-text-sm);
+  letter-spacing: -0.2px;
+  color: var(--color-fg-tertiary-600);
+}
+
+.dropPromptStrong {
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+
+.dropMeta {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+  line-height: var(--line-height-text-xs);
+  letter-spacing: -0.1px;
+  color: var(--color-fg-quaternary-400);
+}
+
+.fileInput {
+  display: none;
+}
+
+/* Filled state — the mock only specifies the empty dropzone, so this reuses the
+ * dropzone box and swaps the contents rather than inventing a new surface. */
+.dropzoneFilled {
+  border-style: solid;
+  border-color: var(--color-border-primary);
+  background: var(--color-bg-secondary);
+}
+
+.fileName {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  line-height: var(--line-height-text-sm);
+  letter-spacing: -0.2px;
+  color: var(--color-fg-primary-900);
+  word-break: break-all;
+}
+
+.fileReplace {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+  line-height: var(--line-height-text-xs);
+  color: var(--color-fg-tertiary-600);
+  text-decoration: underline;
+}
+
+.dropIconDone {
+  color: var(--color-utility-success-700);
+  background: var(--color-bg-success-primary);
+  border-color: var(--color-utility-success-200);
+}
+
+.verifySubmit {
+  display: flex;
+  justify-content: center;
+}
+
+.cta:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.cta:disabled:active {
+  transform: none;
+}
+
+/* ─── Received: confirmation ────────────────────────────────────────────── */
+
+.receivedHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  padding: var(--spacing-xl) var(--spacing-3xl);
+  background: var(--color-bg-secondary);
+}
+
+.receivedMain {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-6xl) var(--spacing-3xl);
+}
+
+.receivedContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4xl);
+  width: 640px;
+  max-width: 100%;
+  text-align: center;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  height: 34px;
+  padding: 0 var(--spacing-lg);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  box-shadow: 0 2px 6px rgba(10, 13, 18, 0.03);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-md);
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: var(--color-fg-primary-900);
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-brand-solid-hover);
+  box-shadow: 0 0 10px 0 rgba(55, 87, 190, 0.18);
+}
+
+.receivedHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.receivedTitle {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-display-lg);
+  font-weight: 500;
+  line-height: var(--line-height-display-lg);
+  letter-spacing: -1.2px;
+  color: var(--color-fg-primary-900);
+}
+
+.receivedSubtitle {
+  width: 560px;
+  max-width: 100%;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-md);
+  font-weight: 400;
+  line-height: var(--line-height-text-md);
+  letter-spacing: -0.3px;
+  color: var(--color-fg-tertiary-600);
+}
+
+.receivedList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-4-5) 26px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-primary);
+  list-style: none;
+}
+
+.receivedItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-md);
+  font-weight: 400;
+  line-height: var(--line-height-text-md);
+  letter-spacing: -0.3px;
+  color: var(--color-fg-secondary-700);
+}
+
+.receivedItem svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--color-utility-success-700);
+}
+
+/* ─── Motion ────────────────────────────────────────────────────────────── */
+
+.enter {
+  animation: statusEnter 300ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@keyframes statusEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enter {
+    animation: none;
+  }
+
+  .cta:active {
+    transform: none;
+  }
+}
+
+/* ─── Narrow viewports ──────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .hubBody {
+    flex-direction: column;
+    gap: var(--spacing-4xl);
+  }
+
+  .rail {
+    width: 100%;
+  }
+
+  .title {
+    font-size: var(--font-size-display-sm);
+    line-height: var(--line-height-display-sm);
+  }
+
+  .receivedTitle {
+    font-size: var(--font-size-display-md);
+    line-height: var(--line-height-display-md);
+  }
+}

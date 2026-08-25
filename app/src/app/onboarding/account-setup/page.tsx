@@ -6,9 +6,9 @@ export default function AccountSetupPage() {
     <div className={s.shell}>
       <header className={s.topbar}>
         <span className={s.topbarSpacer} aria-hidden="true">Close</span>
-        <Link href="/home" className={s.topbarBrand}>
-          <img src="https://www.figma.com/api/mcp/asset/3bbd6119-7028-47e5-9a7d-d4fafba87569" alt="" className={s.topbarBrandIcon} />
-          <img src="https://www.figma.com/api/mcp/asset/3297adb2-a615-459c-b3a1-30442b03c519" alt="Surmount" className={s.topbarBrandName} />
+        <Link href="/home" className={s.topbarBrand} aria-label="Return to dashboard">
+          <img src="/assets/sidebar/logo-mark.svg" alt="" width="32" height="32" className={s.topbarBrandIcon} />
+          <img src="/assets/sidebar/wordmark.svg" alt="" width="98" height="16" className={s.topbarBrandName} />
         </Link>
         <Link href="/home" className={s.topbarBtn}>
           Close
@@ -22,8 +22,8 @@ export default function AccountSetupPage() {
       <main className={s.postAppMain}>
         <div className={s.postAppContent}>
           <div className={s.postAppHero}>
-            <h1 className={s.postAppTitle}>You&apos;re almost ready to invest</h1>
-            <p className={s.postAppSubtitle}>Complete the steps below to activate your account</p>
+            <h1 className={s.postAppTitle}>Your application needs further verification</h1>
+            <p className={s.postAppSubtitle}>We couldn&apos;t verify your identity from the information you submitted. Upload two documents to finish your application.</p>
           </div>
 
           <div className={s.postAppLayout}>
@@ -48,12 +48,12 @@ export default function AccountSetupPage() {
                   </svg>
                 </span>
                 <div className={s.stepBody}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div className={s.stepHeading}>
                     <span className={s.stepTitle}>Verify your identity</span>
-                    <p className={s.stepDesc}>To comply with financial regulations, we need two documents to verify your identity.</p>
+                    <p className={s.stepDesc}>Our brokerage partner requires two additional documents to approve your application. Verification can take up to 2 weeks once submitted.</p>
                   </div>
                   <ul className={s.stepChecklist}>
-                    {['Government-issued photo ID', 'Proof of current address'].map(item => (
+                    {['Photo ID — driver’s license or passport', 'Proof of residency from the last 3 months'].map(item => (
                       <li key={item} className={s.stepCheckItem}>
                         <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" strokeWidth="24" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <polyline points="40 144 96 200 224 72"/>
@@ -64,6 +64,10 @@ export default function AccountSetupPage() {
                   </ul>
                   <Link href="/onboarding/verify-documents" className={s.btnUpload}>
                     Upload documents
+                    <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" strokeWidth="18" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <line x1="40" y1="128" x2="208" y2="128" />
+                      <polyline points="136 56 208 128 136 200" />
+                    </svg>
                   </Link>
                 </div>
               </div>
@@ -111,7 +115,7 @@ export default function AccountSetupPage() {
                       <div className={`${s.tlLine} ${s.tlLineWarning}`} />
                     </div>
                     <div className={s.tlContent}>
-                      <span className={`${s.tlStepTitle} ${s.tlStepTitleWarning}`}>Identity verification</span>
+                      <span className={`${s.tlStepTitle} ${s.tlStepTitleWarning}`}>Further verification</span>
                       <span className={`${s.tlStepSub} ${s.tlStepSubWarning}`}>Action needed</span>
                     </div>
                   </div>
@@ -121,7 +125,7 @@ export default function AccountSetupPage() {
                     </div>
                     <div className={s.tlContent}>
                       <span className={`${s.tlStepTitle} ${s.tlStepTitleMuted}`}>Account ready</span>
-                      <span className={s.tlStepSub}>After verification</span>
+                      <span className={s.tlStepSub}>Up to 2 weeks after upload</span>
                     </div>
                   </div>
                 </div>

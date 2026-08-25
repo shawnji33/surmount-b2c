@@ -1,0 +1,111 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xl, 16px);
+  background: var(--color-bg-secondary, #fafafa);
+  padding: var(--spacing-4xl, 32px);
+}
+
+.backdrop {
+  position: relative;
+  width: 430px;
+  height: 480px;
+  border-radius: var(--radius-3xl, 20px);
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 15% 10%, #ffb703 0%, transparent 55%),
+    radial-gradient(110% 90% at 90% 20%, #ff5c8a 0%, transparent 55%),
+    radial-gradient(120% 100% at 50% 100%, #4361ee 0%, transparent 60%),
+    linear-gradient(160deg, #1b1f3b, #0a0d12);
+}
+
+.navCircle,
+.navCircleRight {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-fg-white);
+}
+
+.navCircle { top: 20px; left: 20px; }
+.navCircleRight { top: 20px; right: 20px; }
+
+.navPill {
+  position: absolute;
+  top: 20px;
+  left: 72px;
+  right: 72px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md, 8px);
+}
+
+.pillLabel {
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+  color: var(--color-fg-white);
+}
+
+.pillValue {
+  font-size: var(--font-size-text-xs, 12px);
+  font-weight: 500;
+  color: #b6f0b8;
+}
+
+.tradeCard {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 24px;
+  padding: var(--spacing-lg, 12px);
+}
+
+.tradeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg, 12px);
+}
+
+.brokerChip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 6px);
+  color: var(--color-fg-white);
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+}
+
+.tradeBtn {
+  border: none;
+  border-radius: var(--radius-lg, 10px);
+  background: var(--color-bg-primary);
+  color: #0a0d12;
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+  padding: var(--spacing-md, 8px) var(--spacing-xl, 16px);
+  cursor: pointer;
+}
+
+.caption {
+  max-width: 430px;
+  text-align: center;
+  color: var(--color-text-tertiary-600, #535862);
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+}
+
+.caption code {
+  font-family: monospace;
+  background: var(--color-bg-tertiary, #f0f0f0);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs, 4px);
+}

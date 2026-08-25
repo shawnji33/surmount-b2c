@@ -88,20 +88,14 @@ body{
 .topbar-brand svg{width:28px;height:28px;display:block}
 .topbar-brand-name{font-family:var(--font-family-display);font-size:20px;font-weight:500;letter-spacing:-0.4px}
 
-/* ─── 3-segment flow progress bar ────────────────────────────────────── */
+/* ─── Single-bar flow progress ───────────────────────────────────────── */
 .flow-progress{
-  display:flex;align-items:center;gap:12px;
   flex-shrink:0;height:2px;width:100%;
-  padding:0 var(--spacing-3xl);
-}
-.flow-progress-seg{
-  flex:1;position:relative;height:100%;
   background:rgba(10,13,18,0.08);
   border-radius:9999px;overflow:hidden;
 }
 .flow-progress-fill{
-  position:absolute;left:0;top:0;bottom:0;
-  width:0%;
+  height:100%;width:0%;
   background:var(--color-fg-primary-900);
   border-radius:9999px;
   transition:width 500ms cubic-bezier(0.16,1,0.3,1);
@@ -118,7 +112,7 @@ main{
 .stack{
   display:flex;flex-direction:column;align-items:center;
   gap:var(--spacing-5xl);
-  width:100%;max-width:520px;
+  width:100%;max-width:640px;
 }
 .hero{
   display:flex;flex-direction:column;align-items:center;gap:var(--spacing-md);
@@ -215,6 +209,38 @@ main{
   border-left:2px solid #fff;
   border-bottom:2px solid #fff;
   transform:rotate(-45deg) translate(1px,-1px);
+}
+
+/* ─── Pill / chip layout (themes question) ───────────────────────────── */
+.theme-group{
+  display:flex;flex-wrap:wrap;gap:var(--spacing-sm);
+  justify-content:center;
+  width:100%;
+}
+.theme-chip{
+  display:inline-flex;align-items:center;gap:var(--spacing-sm);
+  padding:10px var(--spacing-xl);
+  background:var(--color-bg-primary);
+  border:1px solid var(--color-border-primary);
+  border-radius:9999px;
+  cursor:pointer;
+  transition:background 150ms ease,border-color 150ms ease;
+  white-space:nowrap;
+}
+.theme-chip:hover{background:var(--color-bg-primary-hover)}
+.theme-chip:has(input:checked){
+  background:var(--color-fg-primary-900);
+  border-color:var(--color-fg-primary-900);
+}
+.theme-chip:has(input:checked) .chip-label{color:#fff}
+.theme-chip input[type="checkbox"]{
+  position:absolute;opacity:0;width:0;height:0;pointer-events:none;
+}
+.chip-label{
+  font-family:var(--font-family-body);
+  font-size:var(--font-size-text-sm);font-weight:500;
+  line-height:var(--line-height-text-sm);letter-spacing:0;
+  color:var(--color-fg-primary-900);
 }
 
 /* ─── Option label styles ─────────────────────────────────────────────── */
@@ -361,11 +387,9 @@ main.enter-backward{ opacity:0;transform:translateX(-16px); transition:none; poi
   </button>
 </header>
 
-<!-- ── 3-segment progress bar ──────────────────────────────────────────── -->
+<!-- ── Progress bar ─────────────────────────────────────────────────────── -->
 <div class="flow-progress" aria-hidden="true">
-  <div class="flow-progress-seg"><div class="flow-progress-fill" id="seg1"></div></div>
-  <div class="flow-progress-seg"><div class="flow-progress-fill" id="seg2"></div></div>
-  <div class="flow-progress-seg"><div class="flow-progress-fill" id="seg3"></div></div>
+  <div class="flow-progress-fill" id="progressFill"></div>
 </div>
 
 <!-- ── Quiz main ───────────────────────────────────────────────────────── -->
@@ -461,33 +485,31 @@ const QUESTIONS = [
     q: 'What themes interest you?',
     sub: 'Pick as many as you like',
     type: 'multi',
+    layout: 'pills',
     options: [
-      { label: 'AI & Tech',           count: 8 },
-      { label: 'Sustainability',      count: 4 },
-      { label: 'Healthcare',          count: 3 },
-      { label: 'Real Estate',         count: 2 },
-      { label: 'Income & Dividends',  count: 3 },
-      { label: 'Diversified',         count: 4 },
+      { label: 'Top gainers',                        count: 12 },
+      { label: 'Most popular',                       count: 18 },
+      { label: 'Equity focused',                     count: 9  },
+      { label: 'Crypto and blockchain',              count: 6  },
+      { label: 'Dividend and income strategies',     count: 7  },
+      { label: 'Sustainable and impact investing',   count: 5  },
+      { label: 'AI and disruptive tech',             count: 11 },
+      { label: 'Trading strategies',                 count: 8  },
+      { label: 'Value investing',                    count: 6  },
+      { label: 'Biotech and healthcare innovation',  count: 4  },
+      { label: 'Emerging markets and global exposure', count: 5 },
+      { label: 'Market volatility and hedging',      count: 4  },
     ]
   },
 ];
 
-/* ── Progress mapping: 5 questions → 3 segments (2/2/1) ─────────────── */
-const PROGRESS = [
-  [50,  0,  0],
-  [100, 0,  0],
-  [100, 50, 0],
-  [100, 100,0],
-  [100, 100,50],
-];
+const TOTAL_STEPS = 5;
 
 /* ── State ───────────────────────────────────────────────────────────── */
 let step = 0;
 const answers = {};
 
-const seg1 = document.getElementById('seg1');
-const seg2 = document.getElementById('seg2');
-const seg3 = document.getElementById('seg3');
+const progressFill = document.getElementById('progressFill');
 const quizMain  = document.getElementById('quizMain');
 const quizStack = document.getElementById('quizStack');
 const loadingScreen  = document.getElementById('loadingScreen');
@@ -515,10 +537,7 @@ document.addEventListener('keydown', e => {
 
 /* ── Progress bar ────────────────────────────────────────────────────── */
 function setProgress(s) {
-  const [p1,p2,p3] = PROGRESS[s] || [100,100,100];
-  seg1.style.width = p1 + '%';
-  seg2.style.width = p2 + '%';
-  seg3.style.width = p3 + '%';
+  progressFill.style.width = ((s + 1) / TOTAL_STEPS * 100) + '%';
 }
 
 /* ── Exp bars SVG ────────────────────────────────────────────────────── */
@@ -541,33 +560,45 @@ function buildHTML(q) {
 
   let optionsHTML = '';
   const inputType = q.type === 'multi' ? 'checkbox' : 'radio';
-  const rowClass  = q.type === 'multi' ? 'checkbox-row' : 'radio-row';
-  const groupClass = q.type === 'multi' ? 'checkbox-group' : 'radio-group';
 
-  optionsHTML = q.options.map((opt, i) => {
-    const barsHTML = opt.bars
-      ? `<span style="display:flex;align-items:center;margin-right:4px">${expBarsSVG(opt.bars)}</span>`
-      : '';
+  if (q.layout === 'pills') {
+    optionsHTML = q.options.map((opt, i) =>
+      `<label class="theme-chip">
+        <input type="checkbox" name="${q.id}" value="${i}">
+        <span class="chip-label">${opt.label}</span>
+      </label>`
+    ).join('');
+  } else {
+    const rowClass   = q.type === 'multi' ? 'checkbox-row' : 'radio-row';
 
-    const tagHTML = opt.tag
-      ? `<span class="horizon-tag" style="color:${opt.tagColor};background:${opt.tagBg}">${opt.tag}</span>`
-      : '';
+    optionsHTML = q.options.map((opt, i) => {
+      const barsHTML = opt.bars
+        ? `<span style="display:flex;align-items:center;margin-right:4px">${expBarsSVG(opt.bars)}</span>`
+        : '';
 
-    const hasDetails = opt.sub || tagHTML;
-    const labelInner = hasDetails
-      ? `<div class="${q.type === 'multi' ? 'check-label-group' : 'radio-label-group'}">
-           ${tagHTML}
-           <span class="${q.type === 'multi' ? 'check-label' : 'radio-label'}">${opt.label}</span>
-           ${opt.sub ? `<span class="${q.type === 'multi' ? 'check-sublabel' : 'radio-sublabel'}">${opt.sub}</span>` : ''}
-         </div>`
-      : `<span class="${q.type === 'multi' ? 'check-label' : 'radio-label'}">${opt.label}</span>`;
+      const tagHTML = opt.tag
+        ? `<span class="horizon-tag" style="color:${opt.tagColor};background:${opt.tagBg}">${opt.tag}</span>`
+        : '';
 
-    return `<label class="${rowClass}">
-      <input type="${inputType}" name="${q.id}" value="${i}">
-      ${barsHTML}
-      ${labelInner}
-    </label>`;
-  }).join('');
+      const hasDetails = opt.sub || tagHTML;
+      const labelInner = hasDetails
+        ? `<div class="${q.type === 'multi' ? 'check-label-group' : 'radio-label-group'}">
+             ${tagHTML}
+             <span class="${q.type === 'multi' ? 'check-label' : 'radio-label'}">${opt.label}</span>
+             ${opt.sub ? `<span class="${q.type === 'multi' ? 'check-sublabel' : 'radio-sublabel'}">${opt.sub}</span>` : ''}
+           </div>`
+        : `<span class="${q.type === 'multi' ? 'check-label' : 'radio-label'}">${opt.label}</span>`;
+
+      return `<label class="${rowClass}">
+        <input type="${inputType}" name="${q.id}" value="${i}">
+        ${barsHTML}
+        ${labelInner}
+      </label>`;
+    }).join('');
+  }
+
+  const groupClass = q.layout === 'pills' ? 'theme-group' : (q.type === 'multi' ? 'checkbox-group' : 'radio-group');
+  const groupTag   = q.type === 'multi' || q.layout === 'pills' ? 'div' : 'fieldset';
 
   const ctaHTML = q.type === 'multi'
     ? `<button class="cta" id="btnNext" type="button" disabled>
@@ -581,9 +612,9 @@ function buildHTML(q) {
       <h1 class="title">${q.q}</h1>
       ${subHTML}
     </div>
-    <${q.type === 'multi' ? 'div' : 'fieldset'} class="${groupClass}" aria-label="${q.q}">
+    <${groupTag} class="${groupClass}" aria-label="${q.q}">
       ${optionsHTML}
-    </${q.type === 'multi' ? 'div' : 'fieldset'}>
+    </${groupTag}>
     ${ctaHTML}`;
 }
 
@@ -668,9 +699,7 @@ document.getElementById('btnBack').addEventListener('click', () => {
 
 /* ── Loading screen ──────────────────────────────────────────────────── */
 function startLoading() {
-  seg1.style.width = '100%';
-  seg2.style.width = '100%';
-  seg3.style.width = '100%';
+  progressFill.style.width = '100%';
 
   loadingScreen.removeAttribute('aria-hidden');
   loadingScreen.classList.add('visible');
@@ -682,7 +711,8 @@ function startLoading() {
 }
 
 /* ── Init ────────────────────────────────────────────────────────────── */
-showQuestion(0, 0);
+const _startQ = parseInt(new URLSearchParams(location.search).get('q') || '0', 10);
+showQuestion(isNaN(_startQ) ? 0 : Math.min(_startQ, QUESTIONS.length - 1), 0);
 </script>
 </body>
 </html>

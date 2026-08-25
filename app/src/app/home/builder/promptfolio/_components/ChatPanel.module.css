@@ -1,0 +1,148 @@
+.root {
+  --font-family-body: var(--font-inter), Inter, system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  font-family: var(--font-family-body);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+  box-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
+  overflow: hidden;
+}
+
+.header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border-tertiary);
+}
+
+.headerLabel {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-secondary-700);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.iconBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-fg-quaternary-400);
+  cursor: pointer;
+  transition: background 100ms ease, color 100ms ease;
+}
+
+.iconBtn::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+}
+
+.iconBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .iconBtn:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-fg-secondary-700);
+  }
+}
+
+.iconBtn:focus-visible {
+  outline: 2px solid var(--color-border-focus, rgba(10, 13, 18, 0.24));
+  outline-offset: 2px;
+}
+
+.feed {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-xl) var(--spacing-lg);
+  scrollbar-width: thin;
+}
+
+.feed::-webkit-scrollbar {
+  width: 8px;
+}
+
+.feed::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-xs);
+}
+
+.assistantMessage {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  color: var(--color-fg-primary-900);
+  letter-spacing: -0.3px;
+}
+
+.thinkingStatic {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-tertiary-600);
+}
+
+/* ── composer ─────────────────────────────────────── */
+
+.composerWrap {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  padding: var(--spacing-md);
+  background: var(--color-bg-primary);
+}
+
+.composerWrap::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: 32px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--color-bg-primary) 12%, transparent) 24%,
+    color-mix(in srgb, var(--color-bg-primary) 42%, transparent) 52%,
+    color-mix(in srgb, var(--color-bg-primary) 78%, transparent) 78%,
+    var(--color-bg-primary) 100%
+  );
+  pointer-events: none;
+}
+
+.composerWrap > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconBtn,
+  .composerWrap {
+    transition: none;
+  }
+}

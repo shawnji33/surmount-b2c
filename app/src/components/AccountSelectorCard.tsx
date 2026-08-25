@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { Button } from './Button';
 import s from './AccountSelectorCard.module.css';
 
 export interface SelectableAccount {
@@ -14,6 +15,7 @@ export interface SelectableAccount {
 export interface AccountGroup {
   label: string;
   accounts: SelectableAccount[];
+  headerAction?: { label: string; onClick?: () => void };
 }
 
 interface AccountSelectorCardProps {
@@ -21,6 +23,8 @@ interface AccountSelectorCardProps {
   onChange?: (account: SelectableAccount) => void;
   groups?: AccountGroup[];
   readOnly?: boolean;
+  /** Optional trailing action (e.g. "Update") shown on read-only cards. */
+  trailingAction?: { label: string; onClick?: () => void };
 }
 
 export function AccountSelectorCard({
@@ -28,6 +32,7 @@ export function AccountSelectorCard({
   onChange,
   groups = [],
   readOnly = false,
+  trailingAction,
 }: AccountSelectorCardProps) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -96,6 +101,11 @@ export function AccountSelectorCard({
         <div key={group.label}>
           <div className={s.sectionRow}>
             <span className={s.sectionLabel}>{group.label}</span>
+            {group.headerAction && (
+              <button type="button" className={s.updateBtn} onClick={group.headerAction.onClick}>
+                {group.headerAction.label}
+              </button>
+            )}
           </div>
           {group.accounts.map(account => (
             <button
@@ -118,6 +128,39 @@ export function AccountSelectorCard({
       ))}
     </div>
   );
+
+  if (readOnly) {
+    return (
+      <div className={s.root}>
+        <div className={[s.card, s.cardReadonly].join(' ')}>
+          {selected ? (
+            <>
+              <div className={[s.logoWrap, s.logoWrapContained].join(' ')}>
+                <img src={selected.logoSrc} alt={selected.name} />
+              </div>
+              <div className={s.info}>
+                <span className={s.name}>{selected.name}</span>
+                <span className={s.meta}>{selected.meta}</span>
+              </div>
+            </>
+          ) : (
+            <span className={s.placeholder}>Select an account</span>
+          )}
+          {trailingAction && (
+            <Button
+              variant="secondary"
+              size="sm"
+              fullWidth={false}
+              className={s.trailingAction}
+              onClick={trailingAction.onClick}
+            >
+              {trailingAction.label}
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={s.root}>

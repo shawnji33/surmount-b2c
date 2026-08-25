@@ -1,0 +1,45 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--color-bg-secondary, #fafafa);
+}
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+.container {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 16px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+.header { display: flex; flex-direction: column; gap: 8px; }
+.title {
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.8px;
+  color: var(--color-fg-primary-900, #181d27);
+  margin: 0;
+}
+.subtitle {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.5px;
+  color: rgba(10, 13, 18, 0.7);
+  margin: 0;
+  max-width: 620px;
+}
+.section { display: flex; flex-direction: column; gap: 16px; }
+.sectionHead { display: flex; flex-direction: column; }
+.browserArea {
+  height: 480px;
+  display: flex;
+  flex-direction: column;
+}
+.padCard { padding: 24px; }

@@ -1,0 +1,252 @@
+.shell {
+  position: relative;
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-bg-secondary, #fafafa);
+}
+
+/* Demo-only state switcher — not part of the design, just makes the adaptive logic visible. */
+.demoToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 32px;
+  padding: 6px;
+  border-radius: 9999px;
+  background: var(--color-bg-tertiary, #f5f5f5);
+  border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+}
+
+.demoToggleOption {
+  appearance: none;
+  border: 0;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  background: transparent;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+  opacity: 0.5;
+  cursor: pointer;
+  transition: background 140ms ease, opacity 140ms ease;
+}
+
+.demoToggleOptionActive {
+  background: var(--color-bg-primary, #fff);
+  opacity: 1;
+  box-shadow: 0px 1px 1px rgba(10, 13, 18, 0.08);
+}
+
+/* ── Empty / new-user state — input is the entire hero ─────────────────────────────── */
+
+.emptyHero {
+  width: 100%;
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 48px var(--container-padding-desktop, 32px) 80px;
+}
+
+.emptyTitle {
+  margin: 0;
+  font-family: var(--font-family-display, 'Inter');
+  font-size: var(--font-size-display-sm, 30px);
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+  text-align: center;
+}
+
+.templatesGenerous {
+  width: 100%;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.templatesGenerousTitle {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: 500;
+  color: var(--color-fg-secondary-700, #414651);
+}
+
+.templateGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+}
+
+.templateCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  border-radius: var(--radius-xl, 12px);
+  border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+  background: var(--color-bg-primary, #fff);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+
+.templateCard:hover {
+  background: var(--color-bg-primary-hover, #fafafa);
+  border-color: rgba(0, 0, 0, 0.14);
+}
+
+.templateCardName {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.templateCardDesc {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+/* ── Returning-user state — input recedes, My Agents leads ─────────────────────────── */
+
+.activeLayout {
+  width: 100%;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 32px var(--container-padding-desktop, 32px) 80px;
+}
+
+.compactBar {
+  display: flex;
+  justify-content: center;
+}
+
+.agentsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--font-family-display, 'Inter');
+  font-size: var(--font-size-display-xs, 24px);
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.agentGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.agentCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  border-radius: var(--radius-xl, 12px);
+  border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+  background: var(--color-bg-primary, #fff);
+  box-shadow: 0px 8px 16px 0px rgba(130, 130, 130, 0.06);
+}
+
+.agentCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.agentCardIcon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+.agentCardBadge {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: var(--color-bg-success-secondary, #e4f4e5);
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-utility-success-700, #316434);
+}
+
+.agentCardName {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-md, 16px);
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.agentCardStatus {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+/* Templates — present but visually quiet now that there's something more relevant to show. */
+.templatesQuiet {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.templatesQuietTitle {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.templateChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.templateChip {
+  appearance: none;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+  background: var(--color-bg-primary, #fff);
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 500;
+  color: var(--color-fg-secondary-700, #414651);
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+
+.templateChip:hover {
+  background: var(--color-bg-primary-hover, #fafafa);
+  border-color: rgba(0, 0, 0, 0.14);
+}
+
+@media (max-width: 900px) {
+  .templateGrid,
+  .agentGrid {
+    grid-template-columns: 1fr;
+  }
+}

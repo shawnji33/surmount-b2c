@@ -238,7 +238,7 @@
   font-family: var(--font-family-body, 'Geist', sans-serif);
   font-size: var(--font-size-text-md, 16px);
   line-height: var(--line-height-text-md, 24px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0;
   color: var(--color-fg-primary-900, #181d27);
 }
@@ -256,13 +256,13 @@
   height: 16px;
   display: inline-flex;
   align-items: flex-end;
-  gap: 3px;
+  gap: 4px;
   margin-right: 2px;
   flex-shrink: 0;
 }
 
 .expBar {
-  width: 5px;
+  width: 6px;
   border-radius: 2px;
   flex-shrink: 0;
 }
@@ -600,7 +600,7 @@
 
 .loadingTrack {
   width: 200px;
-  height: 3px;
+  height: 4px;
   overflow: hidden;
   border-radius: var(--radius-full, 9999px);
   background: rgba(10, 13, 18, 0.08);

@@ -1,0 +1,123 @@
+.filters {
+  --elevation-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.bar {
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-primary);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  box-shadow: var(--elevation-shadow);
+}
+
+.stack {
+  gap: var(--spacing-md);
+}
+
+.classGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  width: fit-content;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-secondary);
+}
+
+.stack .classGroup {
+  width: 100%;
+}
+
+.stack .classGroup .classChip {
+  flex: 1;
+  text-align: center;
+}
+
+.classChip {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-full);
+  padding: var(--spacing-xs) var(--spacing-lg);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .classChip:hover:not(.classChipActive) {
+    color: var(--color-fg-primary-900);
+  }
+}
+
+.classChipActive {
+  background: var(--color-bg-primary);
+  color: var(--color-fg-primary-900);
+  box-shadow: var(--elevation-shadow);
+}
+
+.selectRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--spacing-lg);
+}
+
+.stack .selectRow {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-md);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.fieldLabel {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xxs);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+}
+
+.select {
+  min-width: 140px;
+}
+
+.stack .select {
+  min-width: 0;
+  width: 100%;
+}
+
+.clearBtn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: var(--spacing-sm) var(--spacing-xs);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+
+.clearBtn:hover {
+  color: var(--color-fg-primary-900);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .classChip,
+  .clearBtn {
+    transition: none;
+  }
+}

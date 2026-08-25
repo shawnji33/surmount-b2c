@@ -1,11 +1,13 @@
 'use client';
 
-import { GearSix, SignOut } from '@phosphor-icons/react';
+import { ArrowCircleUp, GearSix, ListChecks, Robot, SignOut } from '@phosphor-icons/react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ActivityNavItem } from './sidebar/ActivityNavItem';
+import { PendingNavItem } from './sidebar/PendingNavItem';
+import { SettingsModal, type BillingStep } from './SettingsModal';
 import s from './Sidebar.module.css';
 
 function SurmountIcon() {
@@ -71,6 +73,13 @@ const NAV_ITEMS = [
     ),
   },
   {
+    key: 'onboarding',
+    label: 'Onboarding',
+    tooltip: 'Continue onboarding',
+    href: '/home/get-started',
+    icon: <ListChecks className={s.phosphorNavIcon} weight="regular" />,
+  },
+  {
     key: 'saving',
     label: 'Saving',
     tooltip: 'Go to Saving',
@@ -83,6 +92,13 @@ const NAV_ITEMS = [
         <path d="M6.5 8.75V11.06C6.5 11.94 7.95 12.65 9.75 12.65" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
+  },
+  {
+    key: 'agents',
+    label: 'Agents',
+    tooltip: 'Go to Agents',
+    href: '/home/agents',
+    icon: <Robot className={s.phosphorNavIcon} weight="regular" />,
   },
   {
     key: 'marketplace',
@@ -115,20 +131,45 @@ type NavKey = typeof NAV_ITEMS[number]['key'] | 'activity';
 
 function activeKey(pathname: string): NavKey {
   if (pathname.startsWith('/activity')) return 'activity';
+  if (pathname.startsWith('/home/get-started')) return 'onboarding';
   if (pathname.startsWith(SAVINGS_HREF)) return 'saving';
+  if (pathname.startsWith('/home/agents')) return 'agents';
   if (pathname.startsWith('/home/marketplace')) return 'marketplace';
   if (pathname.startsWith('/home/builder')) return 'builder';
   return 'investing';
 }
 
 function AccountMenu() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsStep, setSettingsStep] = useState<BillingStep | undefined>(undefined);
   const [mounted, setMounted] = useState(false);
   const [pos, setPos] = useState<{ bottom: number; left: number } | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    // Reopen Settings (Billing) when returning from a flow that requested it (e.g. the Plans page back button).
+    try {
+      if (sessionStorage.getItem('surmount:openSettings')) {
+        sessionStorage.removeItem('surmount:openSettings');
+        setSettingsOpen(true);
+      }
+    } catch {
+      /* ignore */
+    }
+    // Open Settings → Billing in a specific state via `?settings=billing&step=...` (used by the flows handoff).
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('settings') === 'billing') {
+        const step = params.get('step');
+        if (step) setSettingsStep(step as BillingStep);
+        setSettingsOpen(true);
+      }
+    }
+  }, []);
 
   const openMenu = useCallback(() => {
     if (triggerRef.current) {
@@ -142,6 +183,14 @@ function AccountMenu() {
     setOpen(false);
     setPos(null);
   }, []);
+
+  // Auto-open the menu for screenshots/captures via `?menu=open`.
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    if (new URLSearchParams(window.location.search).get('menu') !== 'open') return undefined;
+    const t = window.setTimeout(() => openMenu(), 80);
+    return () => window.clearTimeout(t);
+  }, [openMenu]);
 
   useEffect(() => {
     if (!open) return;
@@ -167,9 +216,6 @@ function AccountMenu() {
       aria-label="Account menu"
     >
       <div className={s.accountMenuHeader}>
-        <div className={s.accountMenuAvatar}>
-          <div className={s.avatarInner}>L</div>
-        </div>
         <div className={s.accountMenuUser}>
           <span className={s.accountMenuName}>Logan</span>
           <span className={s.accountMenuEmail}>logan@surmount.com</span>
@@ -178,10 +224,39 @@ function AccountMenu() {
 
       <div className={s.accountMenuDivider} role="separator" />
 
-      <button type="button" className={s.accountMenuItem} role="menuitem" onClick={closeMenu}>
+      <button
+        type="button"
+        className={[s.accountMenuItem, s.accountMenuItemUpgrade].join(' ')}
+        role="menuitem"
+        onClick={() => {
+          closeMenu();
+          // Came from the menu — back should just return to this page (no Settings reopen).
+          try {
+            sessionStorage.setItem('surmount:plansReturn', 'back');
+          } catch {
+            /* ignore */
+          }
+          router.push('/plans');
+        }}
+      >
+        <ArrowCircleUp className={s.accountMenuIcon} weight="regular" aria-hidden="true" />
+        <span>Upgrade plan</span>
+      </button>
+
+      <button
+        type="button"
+        className={s.accountMenuItem}
+        role="menuitem"
+        onClick={() => {
+          closeMenu();
+          setSettingsOpen(true);
+        }}
+      >
         <GearSix className={s.accountMenuIcon} weight="regular" aria-hidden="true" />
         <span>Settings</span>
       </button>
+
+      <div className={s.accountMenuDivider} role="separator" />
 
       <button type="button" className={[s.accountMenuItem, s.accountMenuItemDanger].join(' ')} role="menuitem" onClick={closeMenu}>
         <SignOut className={s.accountMenuIcon} weight="regular" aria-hidden="true" />
@@ -204,6 +279,7 @@ function AccountMenu() {
         <div className={s.avatarInner}>L</div>
       </button>
       {mounted && open && pos && createPortal(menu, document.body)}
+      {settingsOpen && <SettingsModal onClose={() => setSettingsOpen(false)} previewStep={settingsStep} />}
     </>
   );
 }
@@ -235,16 +311,7 @@ export function Sidebar() {
               </li>
             ))}
             <ActivityNavItem active={active === 'activity'} />
-            <li className={s.navItem}>
-              <Link
-                href="/activity?filter=pending"
-                className={s.pendingBtn}
-                aria-label="View 5 pending orders"
-              >
-                <span className={s.pendingDot} aria-hidden="true" />
-                <span className={s.pendingCount}>5</span>
-              </Link>
-            </li>
+            <PendingNavItem />
           </ul>
         </nav>
       </div>

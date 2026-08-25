@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import OnboardingFlow from '../_components/OnboardingFlow';
+import { CONNECTED_BANK } from '@/app/home/_data';
 import s from '../_components/onboarding.module.css';
 
 function LinkBankContent() {
@@ -42,6 +43,41 @@ function LinkBankContent() {
               </p>
             </div>
 
+            {isUpdate && (
+              <div className={s.currentBank}>
+                <span className={s.currentBankLabel}>Current bank account</span>
+                <div className={s.currentBankCard}>
+                  <div className={s.currentBankRow}>
+                    <div className={s.currentBankLogo}>
+                      <Image
+                        src="/assets/illustrations/bank-chase.png"
+                        alt={CONNECTED_BANK.institution}
+                        width={36}
+                        height={36}
+                      />
+                    </div>
+                    <div className={s.currentBankInfo}>
+                      <span className={s.currentBankName}>{CONNECTED_BANK.name}</span>
+                      <span className={s.currentBankMeta}>
+                        {CONNECTED_BANK.type} · {CONNECTED_BANK.last4}
+                      </span>
+                    </div>
+                  </div>
+                  <div className={s.currentBankNotice}>
+                    <span className={s.currentBankNoticeIcon} aria-hidden="true">
+                      <svg viewBox="0 0 256 256" fill="currentColor">
+                        <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z"/>
+                      </svg>
+                    </span>
+                    <p>
+                      Surmount supports one connected bank account at a time. Connecting a new bank below will replace this one.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {!isUpdate && (
             <div className={s.featureGrid}>
               <div className={s.featureCard}>
                 <span className={s.featureCardIcon}>
@@ -76,6 +112,7 @@ function LinkBankContent() {
                 <span className={s.featureCardDesc}>Set recurring deposits</span>
               </div>
             </div>
+            )}
 
             <div className={s.plaidTrustRow}>
               <div className={s.plaidTrustLabel}>
@@ -86,19 +123,6 @@ function LinkBankContent() {
                 Bank-level encryption · Used by 11,000+ apps · Never shares your password
               </p>
             </div>
-
-            {isUpdate && (
-              <div className={s.bankUpdateNotice}>
-                <span className={s.bankUpdateNoticeIcon} aria-hidden="true">
-                  <svg viewBox="0 0 256 256" fill="currentColor">
-                    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z"/>
-                  </svg>
-                </span>
-                <p>
-                  Surmount supports one connected bank account at a time. Updating will remove your current Chase connection and replace it with the new bank you choose.
-                </p>
-              </div>
-            )}
 
             <button
               type="button"

@@ -1,0 +1,66 @@
+.shell {
+  min-height: 100vh;
+  background: var(--color-bg-secondary, #fafafa);
+  display: flex;
+  justify-content: center;
+}
+.container {
+  width: 100%;
+  max-width: 720px;
+  padding: 64px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.header { display: flex; flex-direction: column; gap: 8px; }
+.title {
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.8px;
+  color: var(--color-fg-primary-900, #181d27);
+  margin: 0;
+}
+.subtitle {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.5px;
+  color: rgba(10, 13, 18, 0.7);
+  margin: 0;
+}
+.grid { display: flex; flex-direction: column; gap: 12px; }
+.cardLink {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px 24px;
+  background: var(--color-bg-primary, #fff);
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.06));
+  border-radius: var(--radius-xl, 12px);
+  box-shadow: 0 1px 12px rgba(10, 13, 18, 0.03);
+  text-decoration: none;
+  transition: border-color 150ms ease, transform 150ms ease;
+}
+.cardLink:hover { border-color: rgba(10, 13, 18, 0.18); transform: translateY(-1px); }
+.cardNum {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 9999px;
+  background: var(--color-fg-primary-900, #181d27);
+  color: var(--color-fg-white);
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 14px; font-weight: 400;
+}
+.cardBody { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.cardName {
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  font-size: 18px; font-weight: 500; letter-spacing: -0.5px;
+  color: var(--color-fg-primary-900, #181d27);
+}
+.cardDesc {
+  font-size: 14px; line-height: 20px; letter-spacing: -0.5px;
+  color: rgba(10, 13, 18, 0.65);
+}
+.cardArrow { width: 20px; height: 20px; color: var(--color-fg-tertiary-600, #535861); flex-shrink: 0; }

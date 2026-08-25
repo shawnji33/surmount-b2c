@@ -1,0 +1,263 @@
+.shell {
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: var(--color-bg-quaternary, #e9eaeb);
+}
+
+.container {
+  flex: 1 0 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--container-padding-desktop, 32px);
+}
+
+.stack {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.hero {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-xl, 20px);
+  line-height: var(--line-height-text-xl, 30px);
+  font-weight: 500;
+  white-space: nowrap;
+  background: linear-gradient(45deg, var(--color-utility-gray-900, #181d27), var(--color-utility-gray-600, #535861));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.subtitle {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: 400;
+  color: var(--color-text-secondary-700, rgba(10, 13, 18, 0.7));
+}
+
+/* ─── Plan card ───────────────────────────────────────────────────────────── */
+
+.card {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 12px;
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  background: var(--color-bg-secondary, #fafafa);
+  overflow: clip;
+}
+
+.cardHeader {
+  position: relative;
+  width: 100%;
+  display: flex;
+  gap: var(--spacing-4xl, 32px);
+  align-items: center;
+  padding: 32px;
+  border-bottom: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  overflow: clip;
+}
+
+.cardHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 380px;
+}
+
+.cardHeaderTitle {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-lg, 18px);
+  line-height: var(--line-height-text-lg, 28px);
+  font-weight: 500;
+  white-space: nowrap;
+  background: linear-gradient(45deg, var(--color-utility-gray-900, #181d27), var(--color-utility-gray-600, #535861));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.cardHeaderDesc {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: 400;
+  color: var(--color-text-secondary-700, rgba(10, 13, 18, 0.7));
+}
+
+/* Decorative branded plan-card preview, pinned top-right of the header */
+
+.planPreview {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px 24px;
+  border-radius: 12px 12px 0 0;
+  border: 1px solid rgba(203, 203, 203, 0.28);
+  background: linear-gradient(180deg, #0c0c0c 13.97%, #066ee5 100%);
+  overflow: clip;
+}
+
+.planPreviewTexture {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 222px;
+  height: 222px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.planPreviewTextureInner {
+  position: relative;
+  flex-shrink: 0;
+  width: 172px;
+  height: 172px;
+  opacity: 0.14;
+  transform: rotate(111.02deg);
+}
+
+.planPreviewTextureImage {
+  position: absolute;
+  inset: 0;
+  background-image: url('/assets/onboarding/plan-card-texture.png');
+  background-size: 500px 560px;
+  background-position: top left;
+}
+
+.planPreviewWordmark {
+  position: relative;
+  width: 98px;
+  height: 16px;
+  display: block;
+}
+
+.planPreviewIcon {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  display: block;
+}
+
+/* Radio options */
+
+.options {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-5xl, 40px);
+  padding: 32px;
+}
+
+.option {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-lg, 12px);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.optionIndicator {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  background: var(--color-bg-primary, #fff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.optionIndicatorSelected {
+  border-color: var(--color-fg-primary-900, #181d27);
+  background: var(--color-fg-primary-900, #181d27);
+}
+
+.optionIndicatorSelected::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--color-bg-primary);
+}
+
+.optionText {
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+}
+
+.optionTitle {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.optionDesc {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--spacing-4xl, 32px);
+}
+
+.copyright {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+  font-weight: 400;
+  color: var(--color-text-tertiary-600, rgba(10, 13, 18, 0.6));
+  white-space: nowrap;
+}

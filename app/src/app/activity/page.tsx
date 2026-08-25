@@ -47,6 +47,8 @@ const TYPE_LABELS: Record<ActivityItemType, string> = {
   deposit: 'Deposit',
   withdrawal: 'Withdrawal',
   recurring_buy: 'Buy',
+  transfer: 'Transfer',
+  strategy_buy: 'Buy',
 };
 
 const STATUS_LABELS: Record<ActivityStatus, string> = {
@@ -125,6 +127,7 @@ function formatDetailDate(isoTimestamp: string): string {
     year: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
+    timeZone: 'America/New_York',
   }).format(new Date(isoTimestamp));
 }
 

@@ -1,0 +1,468 @@
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.stage > * {
+  grid-area: 1 / 1;
+}
+
+.mockLayer {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 360ms cubic-bezier(0.4, 0, 0.2, 1), transform 360ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mockLayer[data-hidden='true'] {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: scale(0.98);
+  pointer-events: none;
+  transition-duration: 280ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mockLayer {
+    transition: none;
+  }
+}
+
+/* Liquid-glass material shared by every mock card — translucent white over the dot-grid so the
+ * texture shows through the blur, tight+soft shadow stack for depth, inset top line for a
+ * specular highlight instead of one flat drop shadow. */
+.glassCard {
+  position: relative;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    0 2px 8px rgba(10, 13, 18, 0.06),
+    0 16px 40px rgba(10, 13, 18, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.cardLabel {
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+  margin-bottom: var(--spacing-md);
+}
+
+/* ─── ETF mock ─── */
+
+.etfCard {
+  width: 280px;
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ─── Avatar group hover — Transitions.dev pattern ────────────────────────────
+ * Hovering one avatar lifts it (translateY + scale) while sibling avatars lift by a distance-
+ * decayed fraction of the same amount, creating a wave that fades outward. Hover-in eases with
+ * --avatar-ease-in; leaving the whole group (not per-avatar) resets every avatar back to rest on
+ * the springier --avatar-ease-out. React computes --shift/--scale-active per row (JS side of the
+ * original vanilla-JS recipe); the CSS side — transform + transition + reduced-motion guard — is
+ * unchanged from the source pattern. */
+.allocList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  --avatar-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.allocList[data-leaving='true'] {
+  --avatar-ease: cubic-bezier(0.34, 3.85, 0.64, 1);
+}
+
+.allocRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+.avatar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transform-origin: center;
+  /* translateY before scale so scale doesn't amplify the lift offset. */
+  transform: translateY(var(--shift, 0px)) scale(var(--scale-active, 1));
+  transition: transform 320ms var(--avatar-ease);
+  will-change: transform;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+.allocTicker {
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.allocTrack {
+  flex: 1;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: rgba(24, 29, 39, 0.08);
+  overflow: hidden;
+}
+
+.allocFill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-full);
+}
+
+.allocPct {
+  font-size: var(--font-size-text-xs);
+  color: var(--color-fg-tertiary-600);
+  font-variant-numeric: tabular-nums;
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ─── No-Code mock — IF/ELSE rule diagram (Figma 2193:14503) ─────────────────
+ * Pills are absolutely positioned within a fixed-size stage; the connector lines are one hand-
+ * authored SVG behind them (straight IF→ELSE spine + two rounded-elbow branches to the Buy
+ * pills), matching investing-agent's chat-build-card node diagram without pulling in React Flow
+ * for four pills that never move. */
+.logicStage {
+  position: relative;
+  width: 270px;
+  height: 200px;
+}
+
+.connectors {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.conditionPill,
+.actionPill {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  white-space: nowrap;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(10, 13, 18, 0.3);
+  padding: 8px var(--spacing-xl);
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-white);
+}
+
+.conditionPill {
+  background: var(--color-utility-brand-600);
+  box-shadow: 0px 3px 8px 0px rgba(34, 88, 241, 0.15), 0px 1px 2px 0px rgba(10, 13, 18, 0.05);
+}
+
+.actionPill {
+  gap: var(--spacing-md);
+  font-weight: 500;
+  background: rgba(10, 13, 18, 0.8);
+  box-shadow: 0px 3px 8px 0px rgba(10, 13, 18, 0.1), 0px 1px 2px 0px rgba(10, 13, 18, 0.05);
+}
+
+.ifPill {
+  top: 0;
+  left: 0;
+}
+
+.buy1Pill {
+  top: 52px;
+  left: 40px;
+}
+
+.elsePill {
+  top: 104px;
+  left: 0;
+}
+
+.buy2Pill {
+  top: 156px;
+  left: 40px;
+}
+
+.pillLabel {
+  font-weight: 700;
+}
+
+.pillText {
+  font-weight: 500;
+}
+
+/* Skeuomorphic highlight: bright inset top edge + faint inset bottom shadow, layered over the
+ * pill's own outer shadow and border via a second full-cover child so it always matches the
+ * pill's radius without repeating the value. */
+.pillHighlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.35), inset 0px -2px 0px 0px rgba(10, 13, 18, 0.05);
+}
+
+.actionDetail {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.actionAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--color-fg-white);
+}
+
+/* ─── Code mock ─── */
+
+.codeCard {
+  width: 300px;
+  overflow: hidden;
+}
+
+.codeBar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.codeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(24, 29, 39, 0.16);
+}
+
+.codeBody {
+  margin: 0;
+  padding: var(--spacing-lg);
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: var(--font-size-text-xs);
+  line-height: 1.7;
+  color: var(--color-fg-primary-900);
+  white-space: pre;
+}
+
+.tokKeyword {
+  color: var(--color-utility-purple-600);
+}
+
+.tokFunction {
+  color: var(--color-utility-blue-600);
+}
+
+.tokString {
+  color: var(--color-utility-success-600);
+}
+
+.tokComment {
+  color: var(--color-fg-quaternary-400);
+}
+
+/* ─── Promptfolio mock ─── */
+
+.promptfolioStack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-md);
+  width: 280px;
+}
+
+/* BorderBeam's wrapper clips descendant box-shadow with overflow:hidden, so the outward tight+soft
+ * shadow layers live on .chatBubbleShadowWrap (one level further out, radius mirrors .glassCard's)
+ * instead — the inset specular highlight is unaffected since it never extends past the card's own
+ * box. Same fix as the composer's .shadowWrap. */
+.chatBubbleShadowWrap {
+  border-radius: var(--radius-xl);
+  box-shadow: 0 2px 8px rgba(10, 13, 18, 0.06), 0 16px 40px rgba(10, 13, 18, 0.1);
+}
+
+.chatBubble {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  font-size: var(--font-size-text-sm);
+  line-height: 1.5;
+  color: var(--color-fg-primary-900);
+  border-radius: var(--radius-xl);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 14px;
+  margin-left: 2px;
+  vertical-align: -2px;
+  background: var(--color-fg-primary-900);
+  animation: cursorBlink 1s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.statusRow {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-fg-primary-900);
+  animation: statusPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* ─── Thinking states — Transitions.dev pattern ───────────────────────────────
+ * Cycles a line of copy on a hold/swap timer: the outgoing line (.isExit) fades/blurs/lifts out
+ * while the incoming line mounts pre-offset (.isEnterStart, transition:none) then has that class
+ * released a tick later so it transitions in instead of popping. Both lines are absolutely
+ * positioned over a hidden sizer holding the longest state, so the row never resizes mid-swap. A
+ * shimmer sweep runs on ::before (content: attr(data-text), background-clip: text) the whole time
+ * a state holds. */
+.think {
+  --think-swap: 150ms;
+  --think-gap: 50ms;
+  --think-distance: 8px;
+  --think-blur: 2px;
+  --think-shimmer: 2000ms;
+  --think-base: var(--color-fg-tertiary-600);
+  --think-highlight: var(--color-fg-primary-900);
+  --think-ease: ease-in-out;
+  position: relative;
+  display: inline-block;
+  text-align: left;
+}
+
+.thinkSizer {
+  display: block;
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+.thinkText {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  color: var(--think-base);
+  white-space: nowrap;
+  transform: translateY(0);
+  filter: blur(0);
+  opacity: 1;
+  transition:
+    transform var(--think-swap) var(--think-ease),
+    filter var(--think-swap) var(--think-ease),
+    opacity var(--think-swap) var(--think-ease);
+  will-change: transform, filter, opacity;
+}
+
+.thinkText::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 40%,
+    var(--think-highlight) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size: 400% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: thinkShimmer var(--think-shimmer) linear infinite;
+}
+
+@keyframes thinkShimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0% 0; }
+}
+
+.isExit {
+  transform: translateY(calc(var(--think-distance) * -1));
+  filter: blur(var(--think-blur));
+  opacity: 0;
+}
+
+.isEnterStart {
+  transition: none;
+  transform: translateY(var(--think-distance));
+  filter: blur(var(--think-blur));
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor,
+  .statusDot {
+    animation: none;
+  }
+
+  .thinkText {
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .thinkText::before {
+    display: none !important;
+  }
+}

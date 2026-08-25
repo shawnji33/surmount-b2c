@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, CheckCircle, EnvelopeSimple, Eye, EyeSlash, Password, WarningCircle, X } from '@phosphor-icons/react';
+import { ArrowLeft, CheckCircle, Circle, EnvelopeSimple, Eye, EyeSlash, Password, WarningCircle, X } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from 'react';
 import { Button } from './Button';
@@ -14,6 +14,14 @@ type ToastTone = 'success' | 'error';
 const EMAIL_SENT_MESSAGE = 'Email has been sent for verification.';
 const RESEND_COOLDOWN_SECONDS = 60;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const PASSWORD_REQS: { id: string; label: string; test: (p: string) => boolean }[] = [
+  { id: 'length', label: 'At least 8 characters', test: (p) => p.length >= 8 },
+  { id: 'uppercase', label: 'One uppercase letter', test: (p) => /[A-Z]/.test(p) },
+  { id: 'number', label: 'One number', test: (p) => /[0-9]/.test(p) },
+  { id: 'special', label: 'One special character', test: (p) => /[^A-Za-z0-9]/.test(p) },
+];
+const passwordMeetsAll = (p: string) => PASSWORD_REQS.every((r) => r.test(p));
 
 function GoogleIcon() {
   return (
@@ -50,6 +58,8 @@ export default function LoginPage() {
   const [showSignInPassword, setShowSignInPassword] = useState(false);
   const [showSignUpPassword, setShowSignUpPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [signUpPassword, setSignUpPassword] = useState('');
+  const [signUpPasswordFocused, setSignUpPasswordFocused] = useState(false);
   const cardContentRef = useRef<HTMLDivElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const toastTimerRef = useRef<number | undefined>(undefined);
@@ -196,7 +206,7 @@ export default function LoginPage() {
       else setSignUpEmailError('');
 
       if (!password) { setSignUpPasswordError('Password is required.'); hasError = true; }
-      else if (password.length < 8) { setSignUpPasswordError('Password must be at least 8 characters.'); hasError = true; }
+      else if (!passwordMeetsAll(password)) { setSignUpPasswordError('Your password doesn’t meet all the requirements below.'); hasError = true; }
       else setSignUpPasswordError('');
 
       if (!confirmPassword) { setConfirmPasswordError('Please confirm your password.'); hasError = true; }
@@ -359,7 +369,7 @@ export default function LoginPage() {
                     <div className={styles.verifyHeader}>
                       <EnvelopeSimple
                         className={styles.verifyIcon}
-                        weight="duotone"
+                        weight="regular"
                         aria-hidden="true"
                       />
                       <h1 className={styles.cardTitle}>Check your email</h1>
@@ -371,6 +381,12 @@ export default function LoginPage() {
                     </div>
 
                     <div className={styles.verifyActions}>
+                      <Button
+                        type="button"
+                        onClick={() => router.push(`/onboarding/email-link?email=${encodeURIComponent(verificationEmail)}`)}
+                      >
+                        Open verification link
+                      </Button>
                       <p className={styles.authSwitchLine}>
                         Didn&apos;t receive a link?
                         <button
@@ -397,7 +413,7 @@ export default function LoginPage() {
                     <div className={styles.verifyHeader}>
                       <EnvelopeSimple
                         className={styles.verifyIcon}
-                        weight="duotone"
+                        weight="regular"
                         aria-hidden="true"
                       />
                       <h1 className={styles.cardTitle}>Check your email</h1>
@@ -435,7 +451,7 @@ export default function LoginPage() {
                     <div className={styles.verifyHeader}>
                       <Password
                         className={styles.verifyIcon}
-                        weight="duotone"
+                        weight="regular"
                         aria-hidden="true"
                       />
                       <div className={styles.cardHeader}>
@@ -517,29 +533,63 @@ export default function LoginPage() {
                             onChange={() => setSignUpEmailError('')}
                           />
 
-                          <Input
-                            size="sm"
-                            label="Password"
-                            name="password"
-                            type={showSignUpPassword ? 'text' : 'password'}
-                            autoComplete="new-password"
-                            error={Boolean(signUpPasswordError)}
-                            errorText={signUpPasswordError || undefined}
-                            onChange={() => setSignUpPasswordError('')}
-                            iconTrailing={
-                              <button
-                                type="button"
-                                className={styles.eyeButton}
-                                aria-label={showSignUpPassword ? 'Hide password' : 'Show password'}
-                                onClick={() => setShowSignUpPassword((v) => !v)}
+                          <div className={styles.pwField}>
+                            <Input
+                              size="sm"
+                              label="Password"
+                              name="password"
+                              type={showSignUpPassword ? 'text' : 'password'}
+                              autoComplete="new-password"
+                              value={signUpPassword}
+                              error={Boolean(signUpPasswordError)}
+                              errorText={signUpPasswordError || undefined}
+                              aria-describedby="password-requirements"
+                              onChange={(e) => { setSignUpPassword(e.target.value); setSignUpPasswordError(''); }}
+                              onFocus={() => setSignUpPasswordFocused(true)}
+                              onBlur={() => setSignUpPasswordFocused(false)}
+                              iconTrailing={
+                                <button
+                                  type="button"
+                                  className={styles.eyeButton}
+                                  aria-label={showSignUpPassword ? 'Hide password' : 'Show password'}
+                                  onClick={() => setShowSignUpPassword((v) => !v)}
+                                >
+                                  {showSignUpPassword
+                                    ? <EyeSlash weight="regular" aria-hidden="true" />
+                                    : <Eye weight="regular" aria-hidden="true" />
+                                  }
+                                </button>
+                              }
+                            />
+
+                            {(signUpPasswordFocused || Boolean(signUpPasswordError)) && (
+                              <div
+                                id="password-requirements"
+                                className={styles.pwReqs}
+                                role="status"
+                                aria-live="polite"
                               >
-                                {showSignUpPassword
-                                  ? <EyeSlash weight="regular" aria-hidden="true" />
-                                  : <Eye weight="regular" aria-hidden="true" />
-                                }
-                              </button>
-                            }
-                          />
+                                <span className={styles.pwReqsTitle}>Your password must include:</span>
+                                <ul className={styles.pwReqsList}>
+                                  {PASSWORD_REQS.map((req) => {
+                                    const met = req.test(signUpPassword);
+                                    return (
+                                      <li
+                                        key={req.id}
+                                        className={met ? `${styles.pwReqItem} ${styles.pwReqItemMet}` : styles.pwReqItem}
+                                      >
+                                        {met
+                                          ? <CheckCircle weight="fill" className={styles.pwReqIcon} aria-hidden="true" />
+                                          : <Circle weight="regular" className={styles.pwReqIcon} aria-hidden="true" />
+                                        }
+                                        <span>{req.label}</span>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
 
                           <Input
                             size="sm"

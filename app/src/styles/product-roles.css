@@ -1,0 +1,49 @@
+/*
+ * Surmount product roles
+ * ────────────────────────────────────────────────────────────────────────────
+ * Composed semantic roles built exclusively from the canonical Figma tokens.
+ *
+ * tokens.css owns primitive values. This file gives recurring product patterns
+ * stable names so CSS Modules and shadcn components can share the same intent
+ * without copying screen-specific values.
+ */
+
+:root {
+  /* Typography roles */
+  --type-page-title-size: var(--font-size-display-xs);
+  --type-page-title-line-height: var(--line-height-display-xs);
+  --type-section-title-size: var(--font-size-text-md);
+  --type-section-title-line-height: var(--line-height-text-md);
+  --type-card-title-size: var(--font-size-text-sm);
+  --type-card-title-line-height: var(--line-height-text-sm);
+  --type-supporting-size: var(--font-size-text-xs);
+  --type-supporting-line-height: var(--line-height-text-xs);
+  --type-display-tracking: -0.5px;
+  --type-body-tracking: normal;
+
+  /* Guided onboarding / checklist layout */
+  --guided-flow-max-width: calc(var(--width-lg) + var(--spacing-2-5));
+  --guided-flow-rail-width: var(--spacing-5xl);
+  --guided-flow-column-gap: var(--spacing-2xl);
+  --guided-flow-content-inset: calc(var(--spacing-5xl) + var(--spacing-2xl));
+  --guided-flow-section-gap: var(--spacing-2xl);
+  --guided-flow-card-padding-block: var(--spacing-2xl);
+  --guided-flow-card-padding-inline: var(--spacing-3xl);
+
+  /* Quiet product surfaces */
+  --surface-card-background: var(--color-bg-primary);
+  --surface-card-border: var(--color-border-secondary);
+  --surface-card-radius: var(--radius-xl);
+  --surface-control-radius: var(--radius-lg);
+  --surface-pill-radius: var(--radius-full);
+  --surface-card-shadow:
+    0 0 0 1px var(--color-border-tertiary),
+    0 2px 12px var(--shadow-card);
+  --surface-accent-subtle: var(--color-bg-brand-primary);
+  --surface-accent-subtle-hover: var(--color-bg-brand-secondary);
+
+  /* Interaction roles */
+  --motion-feedback-duration: 150ms;
+  --motion-feedback-easing: ease-out;
+  --motion-press-scale: 0.96;
+}

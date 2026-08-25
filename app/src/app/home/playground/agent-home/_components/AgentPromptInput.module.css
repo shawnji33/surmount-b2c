@@ -1,0 +1,220 @@
+.stack {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.stackCompact {
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Identical treatment to the shipped /home/agents prompt input — a calm white card with a
+   pastel "AI" gradient border that only reveals itself on hover/focus (see --gradient-ai in
+   globals.css), rather than a permanent flashy outline. */
+@property --agent-prompt-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes promptBorderSpin {
+  to {
+    --agent-prompt-angle: 360deg;
+  }
+}
+
+.wrap {
+  width: 100%;
+  max-width: 720px;
+  background: var(--color-bg-primary, #fff);
+  border: 0.5px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  border-radius: var(--radius-xl, 12px);
+  box-shadow: 0px 8px 16px 0px rgba(130, 130, 130, 0.06);
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.45s ease, box-shadow 0.45s ease;
+}
+
+.wrap::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: calc(var(--radius-xl, 12px) + 2px);
+  background: conic-gradient(
+    from var(--agent-prompt-angle),
+    #b1e0f5 0%,
+    #cccde9 23%,
+    #e7b9dd 48%,
+    #e7d0c4 73%,
+    #e7dbb8 100%
+  );
+  z-index: -1;
+  opacity: 0;
+  animation: promptBorderSpin 3s linear infinite;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-xl, 12px);
+  background: var(--color-bg-primary, #fff);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.wrap:hover,
+.wrap:focus-within {
+  border-color: transparent;
+  box-shadow: 0px 8px 16px 0px rgba(130, 130, 130, 0.14);
+}
+
+.wrap:hover::before,
+.wrap:focus-within::before {
+  opacity: 1;
+}
+
+.wrapCompact {
+  max-width: 560px;
+}
+
+.wrapCompact .inputUpper {
+  padding: 10px 12px 0;
+}
+
+.wrapCompact .inputLower {
+  padding: 6px 10px 10px;
+  height: 40px;
+}
+
+.inputUpper {
+  padding: 16px 16px 0;
+  overflow-y: auto;
+  max-height: 200px;
+  cursor: text;
+  scrollbar-width: none;
+}
+
+.inputUpper::-webkit-scrollbar {
+  display: none;
+}
+
+.inputLower {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 8px 16px 16px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  min-height: 24px;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-md, 16px);
+  line-height: var(--line-height-text-md, 24px);
+  font-weight: 400;
+  color: var(--color-fg-primary-900, #181d27);
+  letter-spacing: -0.3px;
+  display: block;
+}
+
+.wrapCompact .input {
+  font-size: var(--font-size-text-sm, 14px);
+  line-height: var(--line-height-text-sm, 20px);
+}
+
+.input::placeholder {
+  color: var(--color-fg-quaternary-400, rgba(10, 13, 18, 0.5));
+}
+
+.sendBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  color: var(--color-fg-quaternary-400, rgba(10, 13, 18, 0.5));
+  transition: background 0.1s, border-color 0.1s, color 0.1s, transform 0.1s;
+  padding: 6px;
+}
+
+.wrapCompact .sendBtn {
+  width: 28px;
+  height: 28px;
+}
+
+.sendBtn:hover {
+  background: var(--color-bg-secondary, #fafafa);
+  border-color: rgba(0, 0, 0, 0.14);
+  color: var(--color-fg-secondary-700, rgba(10, 13, 18, 0.8));
+}
+
+.sendBtn:active {
+  transform: scale(0.88);
+}
+
+.sendBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Guided-path nudge — deliberately understated: a plain inline text affordance, not a button
+   or card, so it never competes with the input itself for attention. */
+.nudge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 4px 2px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: var(--font-size-text-sm, 14px);
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+  cursor: pointer;
+  transition: color 140ms ease;
+}
+
+.nudge svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.nudge:hover {
+  color: var(--color-fg-primary-900, #181d27);
+}

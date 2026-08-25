@@ -1,0 +1,216 @@
+/* Same height as the neighboring methodTabs pill group — computed to match exactly: 4px outer
+ * padding + 6px tab padding + 18px line-height (--line-height-text-xs, now set explicitly on
+ * .methodTab for this reason) on both sides = 38px. Width is the thing that morphs —
+ * overflow:hidden clips the swap from compact label to full search row, and also masks the brief
+ * horizontal overflow of the search row's fixed-width children (icon, filter trigger, close
+ * button) during the first frames of the expand transition, before the container has grown wide
+ * enough to hold them without crowding. */
+.root {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  width: 116px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  transition: width 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.root[data-open='true'] {
+  width: 300px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}
+
+/* Same shadow recipe as the neighboring methodTabs pill group and totalBadge, so the whole
+ * header row reads as one family of pills at rest. */
+.trigger {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  padding: 0 var(--spacing-lg);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-secondary-700, rgba(10, 13, 18, 0.7));
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0px 2px 6px rgba(10, 13, 18, 0.03);
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease, transform 150ms ease-out;
+}
+
+.trigger svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .trigger:hover {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-fg-tertiary-600);
+  }
+}
+
+.trigger:active {
+  transform: scale(0.96);
+}
+
+/* Inset ring, not outline: .root clips overflow for the width-morph effect above, and a default
+ * outline (which paints outside the border box) would get cut off at the top/bottom edges. */
+.trigger:focus-visible {
+  outline: none;
+  box-shadow: 0px 2px 6px rgba(10, 13, 18, 0.03), inset 0 0 0 2px var(--color-border-focus, rgba(10, 13, 18, 0.24));
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  width: 100%;
+  height: 100%;
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-xs);
+  border: 1px solid var(--color-border-focus, rgba(10, 13, 18, 0.24));
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  box-shadow: 0px 2px 6px rgba(10, 13, 18, 0.03);
+}
+
+.searchIcon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--color-fg-tertiary-600);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-primary-900);
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+.closeBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-tertiary);
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, transform 150ms ease-out;
+}
+
+/* Visual size stays 22px so it doesn't crowd the compact search row, but the hit area grows to
+ * fill .root's own 38px height — as far as it can extend without .root's overflow:hidden (needed
+ * for the width-morph) clipping it. */
+.closeBtn::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+}
+
+.closeBtn:hover {
+  background: var(--color-border-secondary);
+  color: var(--color-fg-primary-900);
+}
+
+.closeBtn:active {
+  transform: scale(0.96);
+}
+
+.closeBtn:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--color-border-focus, rgba(10, 13, 18, 0.24));
+}
+
+.closeBtn svg {
+  width: 10px;
+  height: 10px;
+}
+
+/* Viewport-measured + portaled (see AddAssetPill.tsx), same technique as AssetFilterPopover's own
+ * panel — never gets clipped by a scrolling ancestor or the bottom of the viewport, which is
+ * exactly the problem the old bottom-of-list trigger had. */
+.panel {
+  position: fixed;
+  width: 320px;
+  max-height: 420px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-primary);
+  box-shadow: 0 8px 24px 0 rgba(10, 13, 18, 0.1);
+  z-index: 200;
+  animation: panelIn 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Scoped scrollbar — never touch the page scrollbar, only small internal scrollers like this. */
+.panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.panel::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.empty {
+  margin: 0;
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  text-align: center;
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-tertiary-600);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger,
+  .closeBtn {
+    transition: none;
+  }
+
+  .panel {
+    animation: none;
+  }
+}

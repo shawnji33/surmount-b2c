@@ -1,0 +1,224 @@
+/* Ported from designs/create/promptfolio.html (.prompt-suggestions and friends). Alpha-black
+ * literals (rgba(10,13,18,…)) are kept as-is rather than swapped for a token — they're this app's
+ * own established shadow/overlay convention (see PromptComposer.module.css), and several don't
+ * have an exact-value token match anyway. */
+.root {
+  width: 100%;
+  background: var(--color-bg-primary);
+  border: 1px solid rgba(0, 0, 0, 0.065);
+  box-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.02);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.header {
+  background: var(--color-bg-tertiary);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding: var(--spacing-md) var(--spacing-2-5);
+}
+
+.label {
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  line-height: var(--line-height-text-sm);
+  white-space: nowrap;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 13, 18, 0.6) 0%,
+    rgba(10, 13, 18, 0.6) 35%,
+    rgba(10, 13, 18, 0.98) 50%,
+    rgba(10, 13, 18, 0.6) 65%,
+    rgba(10, 13, 18, 0.6) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmerText 3.2s ease-in-out infinite;
+}
+
+@keyframes shimmerText {
+  0% {
+    background-position: 150% center;
+  }
+  38% {
+    background-position: -50% center;
+  }
+  100% {
+    background-position: -50% center;
+  }
+}
+
+/* ── Category tabs — horizontally scrollable with edge fades ── */
+
+.tabsWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.tabsWrap::before,
+.tabsWrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--spacing-6xl);
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 200ms ease;
+}
+
+.tabsWrap::before {
+  left: 0;
+  background: linear-gradient(to right, var(--color-bg-primary) 30%, rgba(255, 255, 255, 0));
+  opacity: 0;
+}
+
+.tabsWrap::after {
+  right: 0;
+  background: linear-gradient(to left, var(--color-bg-primary) 30%, rgba(255, 255, 255, 0));
+  opacity: 1;
+}
+
+.tabsWrap.atStart::before {
+  opacity: 0;
+}
+
+.tabsWrap.scrolled::before {
+  opacity: 1;
+}
+
+.tabsWrap.atEnd::after {
+  opacity: 0;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg) var(--spacing-2-5);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-2-5);
+  background: var(--color-bg-secondary);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  cursor: pointer;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  color: rgba(10, 13, 18, 0.6);
+  line-height: var(--line-height-text-sm);
+  white-space: nowrap;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.tabActive {
+  background: var(--color-bg-tertiary);
+  border-color: rgba(0, 0, 0, 0.09);
+  color: rgba(10, 13, 18, 0.9);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tab:hover:not(.tabActive) {
+    background: #f0f0f0;
+  }
+}
+
+/* ── Prompt list ── */
+
+.list {
+  padding: 0 var(--spacing-md) var(--spacing-md);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-md);
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  /* Inter here (not Geist) would match the source verbatim, but this project's typography
+   * contract reserves Inter for display/headings — Geist for all UI text, no exceptions. Same
+   * deviation already made for the hero headline. */
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  color: rgba(10, 13, 18, 0.6);
+  line-height: normal;
+  letter-spacing: -0.3px;
+  transition: background 100ms ease, color 100ms ease;
+  user-select: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .item:hover {
+    background: rgba(0, 0, 0, 0.03);
+    color: rgba(10, 13, 18, 0.9);
+  }
+}
+
+.item.entering {
+  animation: promptInBwd 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.item.exiting {
+  animation: promptOutBwd 120ms ease-in both;
+  pointer-events: none;
+}
+
+@keyframes promptInBwd {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes promptOutBwd {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .label {
+    animation: none;
+  }
+
+  .tabsWrap::before,
+  .tabsWrap::after,
+  .tab {
+    transition: none;
+  }
+
+  .item {
+    transition: none;
+  }
+
+  .item.entering,
+  .item.exiting {
+    animation: none;
+  }
+}

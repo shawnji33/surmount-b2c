@@ -1,0 +1,195 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(10, 13, 18, 0.5);
+  animation: overlayIn 180ms ease;
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.sheet {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  padding: 100px 40px 40px;
+  border-radius: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  background-color: var(--color-bg-primary, #fff);
+  box-shadow: 0px 24px 48px 0px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  animation: sheetIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .sheet {
+    animation: none;
+  }
+}
+
+.texture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.3;
+  background-image: url('/assets/unlocked-modal/texture-pixels.png');
+  background-size: 400px 400px;
+  background-position: top left;
+  background-repeat: repeat;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60px;
+  width: 100%;
+}
+
+.headerRow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.headerWordmark {
+  width: 148px;
+  height: 24px;
+  display: block;
+}
+
+.headerTitleDim {
+  font-family: var(--font-family-display, 'Inter');
+  font-size: 30px;
+  font-weight: 600;
+  line-height: normal;
+  color: rgba(11, 10, 18, 0.6);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+
+.unlockedLabel {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 500;
+  color: rgba(10, 13, 18, 0.7);
+  text-align: center;
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.featureCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 200px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(250, 250, 250, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  overflow: hidden;
+}
+
+.glowLine {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 178px;
+  height: 12px;
+  transform: translateX(-50%);
+  filter: blur(15px);
+  pointer-events: none;
+}
+
+.featureIcon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-fg-secondary-700);
+}
+
+.featureIcon svg,
+.featureIcon img {
+  width: 20px;
+  height: 20px;
+}
+
+.featureTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.featureTitle {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: rgba(10, 13, 18, 0.9);
+}
+
+.featureDesc {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: rgba(10, 13, 18, 0.6);
+}
+
+.footerRow {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}

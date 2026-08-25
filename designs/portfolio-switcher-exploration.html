@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio switcher — design exploration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-white: #ffffff;
+  --color-gray-lm-25: #fcfcfc;
+  --color-gray-lm-50: #fafafa;
+  --color-gray-lm-100: #f5f5f5;
+  --color-gray-lm-200: #e9e9eb;
+  --color-gray-lm-300: #d5d6d9;
+  --color-gray-lm-400: #a3a7ae;
+  --color-gray-lm-500: #717680;
+  --color-gray-lm-600: #535861;
+  --color-gray-lm-700: #414651;
+  --color-gray-lm-800: #252b37;
+  --color-gray-lm-900: #181d27;
+  --color-brand-50: #f1f6fd;
+  --color-brand-100: #e0eaf9;
+  --color-brand-200: #c8dbf5;
+  --color-brand-600: #406ad0;
+  --color-brand-700: #3757be;
+  --color-success-300: #a2d3a5;
+  --color-success-600: #3b7e3f;
+  --color-success-700: #316434;
+  --color-error-300: #eabbb7;
+  --color-error-700: #98443d;
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #fafafa;
+  --color-fg-primary-900: #181d27;
+  --color-fg-secondary-700: #414651;
+  --color-fg-tertiary-600: #535861;
+  --color-fg-quaternary-500: #717680;
+  --color-border-primary: rgba(0,0,0,0.086);
+  --color-border-secondary: rgba(0,0,0,0.06);
+  --font-family-display: 'Inter', sans-serif;
+  --font-family-body: 'Geist', sans-serif;
+  --font-size-text-xs: 12px;
+  --font-size-text-sm: 14px;
+  --font-size-text-md: 16px;
+  --font-size-text-lg: 18px;
+  --font-size-display-xs: 24px;
+  --line-height-text-xs: 18px;
+  --line-height-text-sm: 20px;
+  --line-height-text-md: 24px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 6px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-2xl: 20px;
+  --spacing-3xl: 24px;
+  --spacing-4xl: 32px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+
+body {
+  font-family: var(--font-family-body);
+  background: var(--color-bg-secondary);
+  color: var(--color-fg-primary-900);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  letter-spacing: -0.5px;
+}
+
+/* ── Exploration bar ── */
+.exp-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: 52px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4xl);
+  padding: 0 var(--spacing-4xl);
+}
+.exp-label {
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-quaternary-500);
+  white-space: nowrap;
+}
+.exp-tabs { display: flex; gap: var(--spacing-xs); }
+.exp-tab {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  background: none;
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: all 150ms ease;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+.exp-tab:hover { color: var(--color-fg-secondary-700); background: var(--color-gray-lm-100); }
+.exp-tab.active { color: var(--color-brand-600); background: var(--color-brand-50); border-color: var(--color-brand-100); }
+.exp-badge {
+  font-size: 10px;
+  font-weight: 500;
+  background: var(--color-gray-lm-200);
+  color: var(--color-fg-quaternary-500);
+  border-radius: var(--radius-full);
+  padding: 1px 6px;
+  letter-spacing: 0;
+}
+.exp-tab.active .exp-badge { background: var(--color-brand-100); color: var(--color-brand-700); }
+
+/* ── Direction container ── */
+.direction { display: none; padding-top: 52px; }
+.direction.active { display: block; }
+
+/* ── Direction annotation strip ── */
+.dir-strip {
+  background: var(--color-gray-lm-900);
+  color: rgba(255,255,255,0.6);
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+  padding: 10px var(--spacing-4xl);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+  letter-spacing: -0.3px;
+}
+.dir-strip-label {
+  color: var(--color-white);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* ── Homepage shell ── */
+.homepage {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-4xl);
+}
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-4xl);
+  gap: var(--spacing-4xl);
+  min-height: 40px;
+}
+.greeting {
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+}
+.search-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  padding: 7px 12px;
+  width: 260px;
+  cursor: text;
+  flex-shrink: 0;
+}
+.search-inner { display: flex; align-items: center; gap: var(--spacing-md); }
+.search-icon { width: 14px; height: 14px; color: var(--color-fg-quaternary-500); flex-shrink: 0; }
+.search-placeholder { font-size: var(--font-size-text-sm); color: var(--color-fg-quaternary-500); }
+.search-shortcut { font-size: 11px; color: var(--color-fg-quaternary-500); background: var(--color-gray-lm-100); padding: 2px 6px; border-radius: 4px; }
+
+/* ── Layout grid ── */
+.content-area {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--spacing-4xl);
+  align-items: start;
+}
+
+/* ── Section ── */
+.section { margin-bottom: var(--spacing-4xl); }
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-2xl);
+  min-height: 32px;
+}
+.section-title-row { display: flex; align-items: center; gap: var(--spacing-lg); }
+.section-title { font-size: var(--font-size-text-sm); font-weight: 500; color: var(--color-fg-primary-900); }
+.section-actions { display: flex; align-items: center; gap: var(--spacing-md); }
+.action-link {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-tertiary-600);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+.action-link:hover { color: var(--color-fg-primary-900); }
+.btn-secondary {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-secondary-700);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  transition: all 150ms ease;
+}
+.btn-secondary:hover { background: var(--color-gray-lm-50); }
+.btn-secondary svg { width: 14px; height: 14px; }
+
+/* ── Portfolio card ── */
+.portfolio-card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+}
+.portfolio-card-top { padding: var(--spacing-3xl) var(--spacing-3xl) 0; }
+.portfolio-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin-bottom: var(--spacing-lg);
+}
+.pv-whole {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-display-xs);
+  font-weight: 400;
+  color: var(--color-fg-primary-900);
+  letter-spacing: -1px;
+  transition: opacity 200ms ease;
+}
+.pv-cents {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-text-lg);
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600);
+  letter-spacing: -0.5px;
+  transition: opacity 200ms ease;
+}
+.chart-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+.chart-perf { display: flex; align-items: center; gap: var(--spacing-sm); }
+.perf-arrow { width: 16px; height: 16px; transition: color 200ms ease; flex-shrink: 0; }
+.perf-value { font-size: var(--font-size-text-sm); font-weight: 500; transition: color 200ms ease; }
+.perf-period { font-size: var(--font-size-text-sm); color: var(--color-fg-quaternary-500); }
+.time-selector {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--color-gray-lm-100);
+  border-radius: var(--radius-md);
+  padding: 3px;
+}
+.time-btn {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  color: var(--color-fg-quaternary-500);
+  background: none;
+  border: none;
+  border-radius: 5px;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  letter-spacing: -0.5px;
+}
+.time-btn.active { background: var(--color-bg-primary); color: var(--color-fg-primary-900); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+.chart-svg { width: 100%; height: 160px; display: block; }
+
+/* ── Direction A: header dropdown trigger ── */
+.acct-trigger {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  padding: 4px 8px 4px 6px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-bg-primary);
+  color: var(--color-fg-secondary-700);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  white-space: nowrap;
+  transition: all 150ms ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.acct-trigger:hover { background: var(--color-gray-lm-50); border-color: var(--color-gray-lm-300); }
+.acct-trigger.open { background: var(--color-brand-50); border-color: var(--color-brand-200); color: var(--color-brand-700); }
+.trigger-avatars { display: flex; align-items: center; }
+.trigger-av {
+  width: 18px; height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--color-bg-primary);
+  object-fit: cover;
+  background: var(--color-gray-lm-200);
+  flex-shrink: 0;
+}
+.trigger-av + .trigger-av { margin-left: -5px; }
+.trigger-chevron { width: 13px; height: 13px; color: var(--color-fg-quaternary-500); transition: transform 150ms ease; flex-shrink: 0; }
+.acct-trigger.open .trigger-chevron { transform: rotate(180deg); }
+
+/* ── Dropdown panel ── */
+.dropdown-wrap { position: relative; }
+.acct-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 272px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+  z-index: 200;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+  transform-origin: top left;
+  pointer-events: none;
+  transition: opacity 140ms cubic-bezier(0.23,1,0.32,1), transform 140ms cubic-bezier(0.23,1,0.32,1);
+}
+.acct-dropdown.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+.dropdown-all-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  cursor: pointer;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  transition: background 100ms ease;
+  user-select: none;
+}
+.dropdown-all-row:hover { background: var(--color-gray-lm-50); }
+.dropdown-divider { height: 1px; background: var(--color-border-primary); }
+.dropdown-acct-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-xl);
+  cursor: pointer;
+  transition: background 100ms ease;
+  user-select: none;
+}
+.dropdown-acct-row:hover { background: var(--color-gray-lm-50); }
+.dropdown-acct-logo {
+  width: 28px; height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-primary);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.dropdown-acct-info { flex: 1; min-width: 0; }
+.dropdown-acct-name { font-size: var(--font-size-text-sm); font-weight: 500; color: var(--color-fg-primary-900); display: block; }
+.dropdown-acct-val { font-size: var(--font-size-text-xs); color: var(--color-fg-quaternary-500); display: block; margin-top: 1px; }
+.chk {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid var(--color-gray-lm-300);
+  background: var(--color-bg-primary);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 150ms ease;
+}
+.chk.on { background: var(--color-brand-600); border-color: var(--color-brand-600); }
+.chk.on::after {
+  content: '';
+  display: block;
+  width: 8px; height: 5px;
+  border-left: 1.5px solid white;
+  border-bottom: 1.5px solid white;
+  transform: rotate(-45deg) translateY(-1px);
+}
+.chk.partial { border-color: var(--color-brand-600); }
+.chk.partial::after {
+  content: '';
+  display: block;
+  width: 8px; height: 1.5px;
+  background: var(--color-brand-600);
+}
+
+/* ── Direction B: pills row ── */
+.pills-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-2xl);
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.pills-row::-webkit-scrollbar { display: none; }
+.acct-pill {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  padding: 5px 11px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-bg-primary);
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 150ms ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  user-select: none;
+}
+.acct-pill:hover { border-color: var(--color-gray-lm-300); color: var(--color-fg-secondary-700); }
+.acct-pill.on { background: var(--color-brand-50); border-color: var(--color-brand-200); color: var(--color-brand-700); }
+.acct-pill img { width: 16px; height: 16px; border-radius: 3px; object-fit: cover; }
+.pill-dot { width: 6px; height: 6px; border-radius: var(--radius-full); background: var(--color-brand-600); flex-shrink: 0; }
+
+/* ── Direction C: page-level context switcher ── */
+.ctx-switcher {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  cursor: pointer;
+  padding: 7px 10px 7px 10px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-bg-primary);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  transition: all 150ms ease;
+  flex-shrink: 0;
+}
+.ctx-switcher:hover { border-color: var(--color-gray-lm-300); background: var(--color-gray-lm-25); }
+.ctx-switcher.open { background: var(--color-brand-50); border-color: var(--color-brand-200); }
+.ctx-logos { display: flex; align-items: center; }
+.ctx-logo {
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  border: 2px solid var(--color-bg-primary);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.ctx-logo + .ctx-logo { margin-left: -8px; }
+.ctx-info { display: flex; flex-direction: column; gap: 1px; align-items: flex-start; }
+.ctx-name { font-size: var(--font-size-text-xs); font-weight: 500; color: var(--color-fg-secondary-700); white-space: nowrap; }
+.ctx-meta { font-size: 11px; color: var(--color-fg-quaternary-500); white-space: nowrap; }
+.ctx-chevron { width: 13px; height: 13px; color: var(--color-fg-quaternary-500); flex-shrink: 0; transition: transform 150ms ease; }
+.ctx-switcher.open .ctx-chevron { transform: rotate(180deg); }
+
+/* ── Right column placeholder ── */
+.right-card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  padding: var(--spacing-3xl);
+  margin-bottom: var(--spacing-3xl);
+}
+.right-card-title { font-size: var(--font-size-text-sm); font-weight: 500; color: var(--color-fg-primary-900); margin-bottom: var(--spacing-xs); }
+.right-card-sub { font-size: var(--font-size-text-xs); color: var(--color-fg-quaternary-500); }
+.right-card-value { font-family: var(--font-family-display); font-size: var(--font-size-display-xs); font-weight: 400; color: var(--color-fg-primary-900); margin-top: var(--spacing-lg); letter-spacing: -0.5px; }
+
+/* ── Empty state (zero accounts) ── */
+.chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 160px;
+  gap: var(--spacing-md);
+  color: var(--color-fg-quaternary-500);
+  font-size: var(--font-size-text-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Exploration bar ── -->
+<div class="exp-bar">
+  <span class="exp-label">Portfolio switcher — design exploration</span>
+  <div class="exp-tabs">
+    <button class="exp-tab active" onclick="showDir('a',this)">
+      <span class="exp-badge">A</span>Header dropdown
+    </button>
+    <button class="exp-tab" onclick="showDir('b',this)">
+      <span class="exp-badge">B</span>Pills row
+    </button>
+    <button class="exp-tab" onclick="showDir('c',this)">
+      <span class="exp-badge">C</span>Page context
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     DIRECTION A — compact dropdown in section header
+     ════════════════════════════════════════ -->
+<div class="direction active" id="dir-a">
+  <div class="dir-strip">
+    <span class="dir-strip-label">Direction A</span>
+    <span>Compact multi-select dropdown lives in the "Portfolio" section header. The trigger shows selected account logos + count. Selecting multiple accounts aggregates the chart view.</span>
+  </div>
+  <div class="homepage">
+    <header class="page-header">
+      <span class="greeting">Good morning, Logan</span>
+      <div class="search-box">
+        <div class="search-inner">
+          <svg class="search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6"/><path d="M16.5 16.5l-3.5-3.5"/></svg>
+          <span class="search-placeholder">Find an investment</span>
+        </div>
+        <span class="search-shortcut">⌘K</span>
+      </div>
+    </header>
+    <div class="content-area">
+      <div>
+        <section class="section">
+          <div class="section-header">
+            <div class="section-title-row">
+              <span class="section-title">Portfolio</span>
+              <!-- A: dropdown trigger -->
+              <div class="dropdown-wrap" id="a-wrap">
+                <button class="acct-trigger" id="a-trigger" onclick="toggleDD('a')">
+                  <div class="trigger-avatars" id="a-avs"></div>
+                  <span id="a-label">All accounts</span>
+                  <svg class="trigger-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+                </button>
+                <div class="acct-dropdown" id="a-dd">
+                  <div class="dropdown-all-row" onclick="toggleAll('a')">
+                    <div class="chk on" id="a-all-chk"></div>
+                    <span style="flex:1;font-size:var(--font-size-text-sm);font-weight:500;">All accounts</span>
+                    <span style="font-size:var(--font-size-text-xs);color:var(--color-fg-quaternary-500);" id="a-total"></span>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <div id="a-list"></div>
+                </div>
+              </div>
+            </div>
+            <div class="section-actions">
+              <button class="action-link">Edit</button>
+              <button class="btn-secondary">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+                Connect accounts
+              </button>
+            </div>
+          </div>
+          <div class="portfolio-card">
+            <div class="portfolio-card-top">
+              <div class="portfolio-value-row">
+                <span class="pv-whole" id="a-val-whole">$332,801</span>
+                <span class="pv-cents" id="a-val-cents">.24</span>
+              </div>
+              <div class="chart-controls-row">
+                <div class="chart-perf">
+                  <svg class="perf-arrow" id="a-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15L15 5M15 5H8M15 5v7"/></svg>
+                  <span class="perf-value" id="a-ret"></span>
+                  <span class="perf-period">all time</span>
+                </div>
+                <div class="time-selector">
+                  <button class="time-btn active" onclick="setT(this)">1D</button>
+                  <button class="time-btn" onclick="setT(this)">1W</button>
+                  <button class="time-btn" onclick="setT(this)">1M</button>
+                  <button class="time-btn" onclick="setT(this)">3M</button>
+                  <button class="time-btn" onclick="setT(this)">1Y</button>
+                </div>
+              </div>
+            </div>
+            <div id="a-chart"></div>
+          </div>
+        </section>
+      </div>
+      <div>
+        <div class="right-card">
+          <div class="right-card-title">Dividend management</div>
+          <div class="right-card-sub">Jan 2026</div>
+          <div class="right-card-value">$256.25</div>
+        </div>
+        <div class="right-card" style="background:var(--color-brand-50);border-color:var(--color-brand-100);">
+          <div class="right-card-title" style="color:var(--color-brand-700);">Boost your savings</div>
+          <div class="right-card-sub" style="color:var(--color-brand-600);">4.35% APY on uninvested cash</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     DIRECTION B — pills row above chart
+     ════════════════════════════════════════ -->
+<div class="direction" id="dir-b">
+  <div class="dir-strip">
+    <span class="dir-strip-label">Direction B</span>
+    <span>Horizontal pill row sits above the chart card. "All accounts" pill is a toggle-all. Individual account pills can be selected or deselected — all active = "All" highlights. Scrollable when many accounts.</span>
+  </div>
+  <div class="homepage">
+    <header class="page-header">
+      <span class="greeting">Good morning, Logan</span>
+      <div class="search-box">
+        <div class="search-inner">
+          <svg class="search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6"/><path d="M16.5 16.5l-3.5-3.5"/></svg>
+          <span class="search-placeholder">Find an investment</span>
+        </div>
+        <span class="search-shortcut">⌘K</span>
+      </div>
+    </header>
+    <div class="content-area">
+      <div>
+        <section class="section">
+          <div class="section-header">
+            <span class="section-title">Portfolio</span>
+            <div class="section-actions">
+              <button class="action-link">Edit</button>
+              <button class="btn-secondary">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+                Connect accounts
+              </button>
+            </div>
+          </div>
+          <!-- B: pills row -->
+          <div class="pills-row" id="b-pills"></div>
+          <div class="portfolio-card">
+            <div class="portfolio-card-top">
+              <div class="portfolio-value-row">
+                <span class="pv-whole" id="b-val-whole">$332,801</span>
+                <span class="pv-cents" id="b-val-cents">.24</span>
+              </div>
+              <div class="chart-controls-row">
+                <div class="chart-perf">
+                  <svg class="perf-arrow" id="b-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15L15 5M15 5H8M15 5v7"/></svg>
+                  <span class="perf-value" id="b-ret"></span>
+                  <span class="perf-period">all time</span>
+                </div>
+                <div class="time-selector">
+                  <button class="time-btn active" onclick="setT(this)">1D</button>
+                  <button class="time-btn" onclick="setT(this)">1W</button>
+                  <button class="time-btn" onclick="setT(this)">1M</button>
+                  <button class="time-btn" onclick="setT(this)">3M</button>
+                  <button class="time-btn" onclick="setT(this)">1Y</button>
+                </div>
+              </div>
+            </div>
+            <div id="b-chart"></div>
+          </div>
+        </section>
+      </div>
+      <div>
+        <div class="right-card">
+          <div class="right-card-title">Dividend management</div>
+          <div class="right-card-sub">Jan 2026</div>
+          <div class="right-card-value">$256.25</div>
+        </div>
+        <div class="right-card" style="background:var(--color-brand-50);border-color:var(--color-brand-100);">
+          <div class="right-card-title" style="color:var(--color-brand-700);">Boost your savings</div>
+          <div class="right-card-sub" style="color:var(--color-brand-600);">4.35% APY on uninvested cash</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     DIRECTION C — page-level context switcher in header
+     ════════════════════════════════════════ -->
+<div class="direction" id="dir-c">
+  <div class="dir-strip">
+    <span class="dir-strip-label">Direction C</span>
+    <span>Portfolio context lives in the page header alongside the greeting — signals this is a global filter for the whole page, not just the chart. Shows stacked broker logos + account count + total value.</span>
+  </div>
+  <div class="homepage">
+    <header class="page-header">
+      <span class="greeting">Good morning, Logan</span>
+      <div style="display:flex;align-items:center;gap:var(--spacing-lg);">
+        <!-- C: page-level context switcher -->
+        <div class="dropdown-wrap" id="c-wrap">
+          <button class="ctx-switcher" id="c-trigger" onclick="toggleDD('c')">
+            <div class="ctx-logos" id="c-logos"></div>
+            <div class="ctx-info">
+              <span class="ctx-name" id="c-label">All accounts</span>
+              <span class="ctx-meta" id="c-meta"></span>
+            </div>
+            <svg class="ctx-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="acct-dropdown" id="c-dd" style="left:auto;right:0;transform-origin:top right;">
+            <div class="dropdown-all-row" onclick="toggleAll('c')">
+              <div class="chk on" id="c-all-chk"></div>
+              <span style="flex:1;font-size:var(--font-size-text-sm);font-weight:500;">All accounts</span>
+              <span style="font-size:var(--font-size-text-xs);color:var(--color-fg-quaternary-500);" id="c-total"></span>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div id="c-list"></div>
+          </div>
+        </div>
+        <div class="search-box">
+          <div class="search-inner">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="6"/><path d="M16.5 16.5l-3.5-3.5"/></svg>
+            <span class="search-placeholder">Find an investment</span>
+          </div>
+          <span class="search-shortcut">⌘K</span>
+        </div>
+      </div>
+    </header>
+    <div class="content-area">
+      <div>
+        <section class="section">
+          <div class="section-header">
+            <span class="section-title">Portfolio</span>
+            <div class="section-actions">
+              <button class="action-link">Edit</button>
+              <button class="btn-secondary">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+                Connect accounts
+              </button>
+            </div>
+          </div>
+          <div class="portfolio-card">
+            <div class="portfolio-card-top">
+              <div class="portfolio-value-row">
+                <span class="pv-whole" id="c-val-whole">$332,801</span>
+                <span class="pv-cents" id="c-val-cents">.24</span>
+              </div>
+              <div class="chart-controls-row">
+                <div class="chart-perf">
+                  <svg class="perf-arrow" id="c-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15L15 5M15 5H8M15 5v7"/></svg>
+                  <span class="perf-value" id="c-ret"></span>
+                  <span class="perf-period">all time</span>
+                </div>
+                <div class="time-selector">
+                  <button class="time-btn active" onclick="setT(this)">1D</button>
+                  <button class="time-btn" onclick="setT(this)">1W</button>
+                  <button class="time-btn" onclick="setT(this)">1M</button>
+                  <button class="time-btn" onclick="setT(this)">3M</button>
+                  <button class="time-btn" onclick="setT(this)">1Y</button>
+                </div>
+              </div>
+            </div>
+            <div id="c-chart"></div>
+          </div>
+        </section>
+      </div>
+      <div>
+        <div class="right-card">
+          <div class="right-card-title">Dividend management</div>
+          <div class="right-card-sub">Jan 2026</div>
+          <div class="right-card-value">$256.25</div>
+        </div>
+        <div class="right-card" style="background:var(--color-brand-50);border-color:var(--color-brand-100);">
+          <div class="right-card-title" style="color:var(--color-brand-700);">Boost your savings</div>
+          <div class="right-card-sub" style="color:var(--color-brand-600);">4.35% APY on uninvested cash</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ACCOUNTS = [
+  { id:'surmount', name:'Surmount',             logo:'assets/brokers/surmount.png', value:85420.54,  ret:12540.20,  on:true },
+  { id:'ibkr',     name:'Interactive Brokers',  logo:'assets/brokers/ibkr.png',     value:142350.30, ret:18240.60,  on:true },
+  { id:'coinbase', name:'Coinbase',             logo:'assets/brokers/coinbase.png', value:45180.90,  ret:-3240.10,  on:true },
+  { id:'kraken',   name:'Kraken',               logo:'assets/brokers/kraken.png',   value:28650.00,  ret:1820.40,   on:true },
+  { id:'schwab',   name:'Schwab',               logo:'assets/brokers/schwab.png',   value:31200.50,  ret:4150.00,   on:true },
+];
+
+// Independent state per direction
+const S = {
+  a: ACCOUNTS.map(a=>({...a})),
+  b: ACCOUNTS.map(a=>({...a})),
+  c: ACCOUNTS.map(a=>({...a})),
+};
+
+const CHART_LINE = "M6,166.77C11,166.77,17,166.77,23,166.77C29,166.77,35,166.77,41,166.77C47,166.77,53,166.77,59,166.77C65,166.77,68,166.79,74,166.89C79,166.66,85,167.00,91,166.78C96,166.75,102,166.47,108,166.32C113,166.66,119,166.90,125,166.94C130,167.12,136,167.05,141,166.65C147,166.56,153,166.40,158,165.98C164,165.71,170,165.96,175,166.18C181,166.50,187,166.64,192,166.96C198,167.03,204,166.86,209,167.46C215,167.33,220,167.28,226,167.53C232,167.73,237,167.31,243,167.15C249,166.79,254,166.99,260,166.94C266,167.29,271,167.51,277,167.47C283,167.08,288,167.11,294,166.99C300,166.48,305,166.27,311,166.13C316,166.47,322,166.61,328,166.11C333,166.79,339,166.58,345,166.42C350,166.24,356,166.35,362,166.40C367,166.20,373,166.24,379,165.94C384,165.97,390,166.12,396,169.89C401,164.35,407,162.27,412,164.82C418,163.59,424,159.85,429,160.24C435,155.67,441,157.17,446,159.26C452,160.26,458,162.44,463,160.32C469,161.09,474,160.01,480,160.62C486,164.00,491,165.23,497,162.18C503,160.09,508,163.11,514,166.31C520,161.33,525,157.62,531,156.26C537,155.96,542,156.46,548,158.06C554,155.07,559,154.13,565,153.79C570,153.89,576,153.17,582,153.36C587,151.25,593,153.54,599,150.83C604,150.51,610,152.09,616,150.27C621,147.86,627,146.97,633,146.59C638,146.82,644,146.90,649,147.12C655,148.11,661,148.01,666,146.76C672,145.50,678,144.71,683,144.30C689,143.58,695,142.20,700,141.37C706,140.64,712,140.69,717,138.40C723,136.83,729,138.53,734,140.73C740,140.29,745,143.58,751,141.97C757,139.95,762,141.13,768,142.10C774,142.14,779,141.26,785,138.69C791,138.63,796,135.01,802,135.37C808,135.99,813,132.80,819,130.10C825,125.56,830,127.57,836,131.25C841,126.17,847,126.07,853,129.70C858,125.92,864,129.12,870,128.41C875,128.58,881,124.42,887,128.86C892,129.54,898,127.83,904,122.04C909,134.55,915,140.14,921,149.13C926,147.06,932,145.13,937,146.75C943,151.49,949,164.58,954,158.75C960,150.92,966,146.16,971,123.94C977,127.55,983,124.90,988,122.45C994,120.83,999,119.73,1005,115.04C1011,112.53,1016,112.24,1022,108.32C1028,101.54,1033,90.35,1039,85.40C1045,75.48,1050,85.68,1056,81.05C1062,82.13,1067,67.77,1073,53.52C1079,49.32,1084,45.87,1090,32.09C1095,48.57,1101,59.68,1107,44.67C1112,74.07,1118,77.81,1124,137.92C1129,113.19,1135,104.28,1141,85.83C1146,141.53,1152,123.39,1158,136.97C1163,107.46,1169,95.65,1175,116.60C1180,166.25,1186,221.72,1191,221.59C1197,219.27,1203,204.03,1208,207.94C1214,218.91,1220,226.24,1225,229.55C1231,233.91";
+
+const CHART_FILL = CHART_LINE.replace(/C1231,233\.91$/,
+  'L1231,248C1225,248,1220,248,1214,248,1208,248,1203,248,1197,248,1191,248,1186,248,1180,248,1175,248,1169,248,1163,248,1158,248,1152,248,1146,248,1141,248,1135,248,1129,248,1124,248,1118,248,1112,248,1107,248,1101,248,1095,248,1090,248,1084,248,1079,248,1073,248,1067,248,1062,248,1056,248,1050,248,1045,248,1039,248,1033,248,1028,248,1022,248,1016,248,1011,248,1005,248,999,248,994,248,988,248,983,248,977,248,971,248,966,248,960,248,954,248,949,248,943,248,937,248,932,248,926,248,921,248,915,248,909,248,904,248,898,248,892,248,887,248,881,248,875,248,870,248,864,248,858,248,853,248,847,248,841,248,836,248,830,248,825,248,819,248,813,248,808,248,802,248,796,248,791,248,785,248,779,248,774,248,768,248,762,248,757,248,751,248,745,248,740,248,734,248,729,248,723,248,717,248,712,248,706,248,700,248,695,248,689,248,683,248,678,248,672,248,666,248,661,248,655,248,649,248,644,248,638,248,633,248,627,248,621,248,616,248,610,248,604,248,599,248,593,248,587,248,582,248,576,248,570,248,565,248,559,248,554,248,548,248,542,248,537,248,531,248,525,248,520,248,514,248,508,248,503,248,497,248,491,248,486,248,480,248,474,248,469,248,463,248,458,248,452,248,446,248,441,248,435,248,429,248,424,248,418,248,412,248,407,248,401,248,396,248,390,248,384,248,379,248,373,248,367,248,362,248,356,248,350,248,345,248,339,248,333,248,328,248,322,248,316,248,311,248,305,248,300,248,294,248,288,248,283,248,277,248,271,248,266,248,260,248,254,248,249,248,243,248,237,248,232,248,226,248,220,248,215,248,209,248,204,248,198,248,192,248,187,248,181,248,175,248,170,248,164,248,158,248,153,248,147,248,141,248,136,248,130,248,125,248,119,248,113,248,108,248,102,248,96,248,91,248,85,248,79,248,74,248,68,248,65,248,59,248,53,248,47,248,41,248,35,248,29,248,23,248,17,248,11,248,6,248Z');
+
+function buildChart(uid, pos) {
+  const stroke = pos ? '#3B7E3F' : '#98443d';
+  const fill   = pos ? '#A2D3A5' : '#eabbb7';
+  return `<svg viewBox="0 0 1237 248" preserveAspectRatio="none" class="chart-svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="cg${uid}" x1="0%" x2="0%" y1="0%" y2="100%">
+        <stop stop-color="${fill}" stop-opacity="1"/>
+        <stop offset="100%" stop-color="${fill}" stop-opacity="0"/>
+      </linearGradient>
+      <pattern id="cp${uid}" x="0" y="0" width="2" height="2" patternUnits="userSpaceOnUse">
+        <circle cx="1" cy="1" r="0.5" fill="white"/>
+      </pattern>
+      <mask id="cm${uid}"><rect width="100%" height="100%" fill="url(#cp${uid})"/></mask>
+    </defs>
+    <path d="${CHART_FILL}" fill="url(#cg${uid})" mask="url(#cm${uid})" stroke-width="0"/>
+    <path d="${CHART_LINE}" stroke="${stroke}" stroke-width="4" opacity="0.15" fill="transparent"/>
+    <path d="${CHART_LINE}" stroke="${stroke}" stroke-width="1.5" fill="transparent"/>
+    <line x1="4" x2="1233" y1="166.77" y2="166.77" stroke-dasharray="4 4" stroke-width="1" stroke="#A4A7AE" stroke-opacity="0.5" stroke-linecap="butt"/>
+  </svg>`;
+}
+
+function agg(d) {
+  const sel = S[d].filter(a=>a.on);
+  if (!sel.length) return {val:0,ret:0,pct:0,pos:true};
+  const val = sel.reduce((s,a)=>s+a.value,0);
+  const ret = sel.reduce((s,a)=>s+a.ret,0);
+  const cost = val - ret;
+  const pct  = cost > 0 ? (ret/cost)*100 : 0;
+  return {val,ret,pct,pos:ret>=0};
+}
+
+function fmt(n) {
+  const s = Math.abs(n).toFixed(2);
+  const [w,c] = s.split('.');
+  const wf = w.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  return {whole:(n<0?'-$':'$')+wf, cents:'.'+c};
+}
+
+function fmtShort(n) {
+  const s = Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  return (n<0?'-':'+')+s;
+}
+
+let chartCounter = 0;
+
+function updateAll(d) {
+  const g = agg(d);
+  const {whole,cents} = fmt(g.val);
+  const chartEl = document.getElementById(d+'-chart');
+  const wEl = document.getElementById(d+'-val-whole');
+  const cEl = document.getElementById(d+'-val-cents');
+  const rEl = document.getElementById(d+'-ret');
+  const arEl= document.getElementById(d+'-arrow');
+
+  if (wEl) wEl.textContent = whole;
+  if (cEl) cEl.textContent = cents;
+
+  if (chartEl) {
+    if (S[d].every(a=>!a.on)) {
+      chartEl.innerHTML = '<div class="chart-empty"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>No accounts selected</span></div>';
+    } else {
+      chartCounter++;
+      chartEl.innerHTML = buildChart('u'+chartCounter, g.pos);
+    }
+  }
+
+  if (rEl) {
+    if (S[d].every(a=>!a.on)) {
+      rEl.textContent = '—';
+      rEl.style.color = 'var(--color-fg-quaternary-500)';
+    } else {
+      rEl.textContent = (g.pos?'+':'')+fmtShort(g.ret)+' ('+Math.abs(g.pct).toFixed(2)+'%)';
+      rEl.style.color = g.pos ? 'var(--color-success-700)' : 'var(--color-error-700)';
+    }
+  }
+  if (arEl) {
+    arEl.style.color = g.pos ? 'var(--color-success-700)' : 'var(--color-error-700)';
+    const path = arEl.querySelector('path');
+    if (path) path.setAttribute('d', g.pos ? 'M5 15L15 5M15 5H8M15 5v7' : 'M5 5L15 15M15 15H8M15 15v-7');
+  }
+
+  // Update switcher UI
+  if (d==='a') updateTriggerA();
+  if (d==='b') renderPillsB();
+  if (d==='c') updateTriggerC();
+}
+
+// ── Direction A ──
+function updateTriggerA() {
+  const sel = S.a.filter(a=>a.on);
+  const all = S.a.length;
+  const labelEl = document.getElementById('a-label');
+  const avsEl   = document.getElementById('a-avs');
+  const allChk  = document.getElementById('a-all-chk');
+  const totalEl = document.getElementById('a-total');
+
+  // Avatar stack (max 3)
+  if (avsEl) {
+    avsEl.innerHTML = sel.slice(0,3).map(a=>`<img class="trigger-av" src="${a.logo}" alt="${a.name}">`).join('');
+  }
+  if (labelEl) {
+    if (!sel.length) labelEl.textContent = 'No accounts';
+    else if (sel.length===all) labelEl.textContent = 'All accounts';
+    else labelEl.textContent = sel.length+' account'+(sel.length>1?'s':'');
+  }
+  if (allChk) allChk.className = 'chk'+(sel.length===all?' on':sel.length>0?' partial':'');
+  if (totalEl) {
+    const t = S.a.reduce((s,a)=>s+a.value,0);
+    totalEl.textContent = '$'+t.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  }
+}
+
+function renderListA() {
+  const el = document.getElementById('a-list');
+  if (!el) return;
+  el.innerHTML = S.a.map(a=>`
+    <div class="dropdown-acct-row" onclick="toggleAcct('a','${a.id}')">
+      <img class="dropdown-acct-logo" src="${a.logo}" alt="${a.name}">
+      <div class="dropdown-acct-info">
+        <span class="dropdown-acct-name">${a.name}</span>
+        <span class="dropdown-acct-val">$${a.value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',')}</span>
+      </div>
+      <div class="chk${a.on?' on':''}"></div>
+    </div>
+  `).join('');
+}
+
+// ── Direction B ──
+function renderPillsB() {
+  const el = document.getElementById('b-pills');
+  if (!el) return;
+  const allOn = S.b.every(a=>a.on);
+  el.innerHTML =
+    `<button class="acct-pill${allOn?' on':''}" onclick="toggleAll('b')">${allOn?'<div class="pill-dot"></div>':''}All accounts</button>` +
+    S.b.map(a=>`<button class="acct-pill${a.on?' on':''}" onclick="toggleAcct('b','${a.id}')">
+      <img src="${a.logo}" alt="${a.name}">${a.name}
+    </button>`).join('');
+}
+
+// ── Direction C ──
+function updateTriggerC() {
+  const sel = S.c.filter(a=>a.on);
+  const all = S.c.length;
+  const labelEl = document.getElementById('c-label');
+  const metaEl  = document.getElementById('c-meta');
+  const logosEl = document.getElementById('c-logos');
+  const allChk  = document.getElementById('c-all-chk');
+  const totalEl = document.getElementById('c-total');
+
+  if (logosEl) logosEl.innerHTML = sel.slice(0,4).map(a=>`<img class="ctx-logo" src="${a.logo}" alt="${a.name}">`).join('');
+  if (labelEl) {
+    if (!sel.length) labelEl.textContent = 'No accounts';
+    else if (sel.length===all) labelEl.textContent = 'All accounts';
+    else if (sel.length===1) labelEl.textContent = sel[0].name;
+    else labelEl.textContent = sel.length+' accounts';
+  }
+  if (metaEl) {
+    const t = sel.reduce((s,a)=>s+a.value,0);
+    metaEl.textContent = sel.length+' account'+(sel.length!==1?'s':'')+' · $'+t.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  }
+  if (allChk) allChk.className = 'chk'+(sel.length===all?' on':sel.length>0?' partial':'');
+  if (totalEl) {
+    const t = S.c.reduce((s,a)=>s+a.value,0);
+    totalEl.textContent = '$'+t.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  }
+}
+
+function renderListC() {
+  const el = document.getElementById('c-list');
+  if (!el) return;
+  el.innerHTML = S.c.map(a=>`
+    <div class="dropdown-acct-row" onclick="toggleAcct('c','${a.id}')">
+      <img class="dropdown-acct-logo" src="${a.logo}" alt="${a.name}">
+      <div class="dropdown-acct-info">
+        <span class="dropdown-acct-name">${a.name}</span>
+        <span class="dropdown-acct-val">$${a.value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',')}</span>
+      </div>
+      <div class="chk${a.on?' on':''}"></div>
+    </div>
+  `).join('');
+}
+
+// ── Interactions ──
+function toggleAcct(d, id) {
+  const a = S[d].find(x=>x.id===id);
+  if (a) { a.on = !a.on; updateAll(d); }
+  if (d==='a') renderListA();
+  if (d==='c') renderListC();
+}
+
+function toggleAll(d) {
+  const allOn = S[d].every(a=>a.on);
+  S[d].forEach(a=>a.on=!allOn);
+  updateAll(d);
+  if (d==='a') renderListA();
+  if (d==='c') renderListC();
+}
+
+function toggleDD(d) {
+  const trig = document.getElementById(d+'-trigger');
+  const dd   = document.getElementById(d+'-dd');
+  if (!trig||!dd) return;
+  const open = dd.classList.contains('open');
+  dd.classList.toggle('open',!open);
+  trig.classList.toggle('open',!open);
+}
+
+document.addEventListener('click', e => {
+  ['a','c'].forEach(d=>{
+    const wrap = document.getElementById(d+'-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      const dd   = document.getElementById(d+'-dd');
+      const trig = document.getElementById(d+'-trigger');
+      if (dd)   dd.classList.remove('open');
+      if (trig) trig.classList.remove('open');
+    }
+  });
+});
+
+function showDir(d, btn) {
+  document.querySelectorAll('.direction').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.exp-tab').forEach(x=>x.classList.remove('active'));
+  document.getElementById('dir-'+d).classList.add('active');
+  btn.classList.add('active');
+}
+
+function setT(btn) {
+  btn.closest('.time-selector').querySelectorAll('.time-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── Init ──
+function init() {
+  ['a','b','c'].forEach(d => updateAll(d));
+  renderListA();
+  renderListC();
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

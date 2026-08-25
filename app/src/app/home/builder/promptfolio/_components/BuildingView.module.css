@@ -1,0 +1,155 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 0;
+  padding: var(--spacing-4xl) 0;
+  overflow: hidden;
+}
+
+/* BuildingView owns the screen inset, so remove the shared header's additional top padding. */
+.root > :first-child {
+  flex-shrink: 0;
+  padding-top: 0;
+}
+
+.badge {
+  display: block;
+  width: auto;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.columns {
+  --conversation-width: 360px;
+
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  gap: var(--spacing-2xl);
+  overflow: hidden;
+}
+
+.chatColumn {
+  position: relative;
+  z-index: 2;
+  width: var(--conversation-width);
+  flex: 0 0 var(--conversation-width);
+  min-height: 0;
+  transition:
+    width 150ms ease-out,
+    flex-basis 150ms ease-out;
+}
+
+.columns[data-resizing='true'] {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.columns[data-resizing='true'] .chatColumn {
+  transition: none;
+}
+
+.resizeHandle {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: -12px;
+  bottom: 0;
+  width: 24px;
+  border-radius: 0;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.resizeHandle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--color-fg-quaternary-400);
+  opacity: 0.8;
+  transform: translate(-50%, -50%);
+  transition:
+    background-color 150ms ease-out,
+    opacity 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.resizeHandle::after {
+  z-index: 1;
+  content: 'Drag to resize';
+  position: absolute;
+  top: 50%;
+  right: calc(50% + 8px);
+  left: auto;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  box-shadow: 0 4px 20px 0 var(--shadow-card);
+  color: var(--color-fg-secondary-700);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  line-height: 16px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-4px, -50%);
+  transition:
+    opacity 120ms ease-out 180ms,
+    transform 120ms ease-out 180ms;
+}
+
+.resizeHandle:hover::before,
+.resizeHandle:focus-visible::before,
+.columns[data-resizing='true'] .resizeHandle::before {
+  background: var(--color-fg-quaternary-hover);
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.resizeHandle:hover::after,
+.resizeHandle:focus-visible::after,
+.columns[data-resizing='true'] .resizeHandle::after {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.resizeHandle:focus-visible {
+  outline: 2px solid var(--color-border-focus, rgba(10, 13, 18, 0.24));
+  outline-offset: -3px;
+}
+
+.dashboardColumn {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+@media (max-width: 1199px), (hover: none), (pointer: coarse) {
+  .chatColumn {
+    width: 360px;
+    flex-basis: 360px;
+    transition: none;
+  }
+
+  .resizeHandle {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chatColumn,
+  .resizeHandle::before,
+  .resizeHandle::after {
+    transition: none;
+  }
+}

@@ -1,0 +1,625 @@
+.shell {
+  min-height: 100vh;
+  padding: var(--spacing-3xl) 0 104px;
+  background: var(--color-bg-secondary);
+}
+
+.stage {
+  min-height: 760px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-3xl);
+}
+
+.header > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.eyebrow,
+.portfolioEyebrow,
+.rhythmTopline,
+.snapshotMetrics span,
+.portfolioSplit span,
+.rhythmSchedule span,
+.rhythmPerformance span {
+  color: var(--color-fg-tertiary-600);
+  font-size: var(--font-size-text-xs);
+}
+
+.eyebrow {
+  margin: 0;
+  font-weight: 500;
+}
+
+.header h1 {
+  margin: 0;
+  color: var(--color-fg-primary-900);
+  font-family: var(--font-family-display);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.detail {
+  margin: 0;
+  color: var(--color-fg-tertiary-600);
+  font-size: var(--font-size-text-sm);
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-top: var(--spacing-2xl);
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.tab,
+.tabActive {
+  position: relative;
+  min-height: 44px;
+  margin-right: 20px;
+  padding: 0 var(--spacing-sm);
+  border: 0;
+  background: transparent;
+  color: var(--color-fg-tertiary-600);
+  font: inherit;
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: color 150ms ease-out;
+}
+
+.tabActive {
+  color: var(--color-fg-primary-900);
+}
+
+.tabActive::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--color-fg-primary-900);
+}
+
+.tab:focus-visible,
+.tabActive:focus-visible,
+.favoriteButton:focus-visible,
+.viewLink:focus-visible {
+  outline: 2px solid rgba(10, 13, 18, 0.5);
+  outline-offset: 2px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-2xl);
+  margin-top: var(--spacing-3xl);
+}
+
+.cardGrid:empty::before {
+  content: 'No favorite strategies yet. Star a strategy to keep it close.';
+  grid-column: 1 / -1;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl);
+  border: 1px dashed var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  color: var(--color-fg-tertiary-600);
+  font-size: var(--font-size-text-sm);
+  text-align: center;
+}
+
+.card {
+  display: flex;
+  min-width: 0;
+  min-height: 258px;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-xl);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+  box-shadow:
+    0 0 0 1px rgb(10 13 18 / 0.02),
+    0 1px 3px rgb(10 13 18 / 0.03),
+    0 10px 20px -18px rgb(10 13 18 / 0.22);
+  color: var(--color-fg-primary-900);
+  transition: background-color 150ms ease-out, border-color 150ms ease-out, box-shadow 150ms ease-out, transform 150ms ease-out;
+}
+
+.cardHeader,
+.cardFooter,
+.cardActions,
+.rhythmTopline,
+.rhythmBody,
+.rhythmPerformance,
+.portfolioSplit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.cardHeader {
+  align-items: flex-start;
+}
+
+.cardHeader > div,
+.rhythmBody > div {
+  min-width: 0;
+}
+
+.card h2 {
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-fg-primary-900);
+  font-size: var(--font-size-text-md);
+  font-weight: 500;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card p {
+  display: -webkit-box;
+  max-width: 34ch;
+  margin: var(--spacing-xs) 0 0;
+  overflow: hidden;
+  color: var(--color-fg-tertiary-600);
+  font-size: var(--font-size-text-xs);
+  line-height: 1.5;
+  text-wrap: pretty;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.favoriteButton {
+  position: relative;
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color 150ms ease-out, color 150ms ease-out, transform 150ms ease-out;
+}
+
+.favoriteButton::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
+
+.favoriteButton svg {
+  width: 17px;
+  height: 17px;
+}
+
+.favoriteButton:active {
+  transform: scale(0.96);
+}
+
+.favoriteButtonActive {
+  color: var(--color-brand-600);
+}
+
+.snapshotMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) 0;
+  border-top: 1px solid var(--color-border-secondary);
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.snapshotMetrics > div,
+.portfolioAccounts,
+.portfolioValue,
+.rhythmSchedule {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.snapshotMetrics strong,
+.portfolioValue strong,
+.rhythmSchedule strong {
+  overflow: hidden;
+  color: var(--color-fg-primary-900);
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.positive {
+  color: var(--color-fg-success-primary) !important;
+}
+
+.positive small {
+  color: inherit;
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+}
+
+.cardFooter {
+  margin-top: auto;
+}
+
+.accountMeta {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--color-fg-tertiary-600);
+  font-size: var(--font-size-text-xs);
+  white-space: nowrap;
+}
+
+.brokerStack {
+  display: inline-flex;
+  align-items: center;
+  padding-right: var(--spacing-xs);
+}
+
+.brokerAvatar {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin-right: -5px;
+  overflow: hidden;
+  border: 1px solid var(--color-bg-primary);
+  border-radius: 50%;
+  background: var(--color-bg-tertiary);
+}
+
+.brokerAvatar:last-child {
+  margin-right: 0;
+}
+
+.brokerAvatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.viewLink {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-fg-secondary-700);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  touch-action: manipulation;
+  transition: color 150ms ease-out;
+}
+
+.viewLink svg {
+  width: 15px;
+  height: 15px;
+}
+
+.rhythmCard {
+  border-color: var(--color-brand-200);
+}
+
+.rhythmTopline {
+  justify-content: flex-start;
+  min-height: 32px;
+}
+
+.rhythmTopline > span:nth-child(2) {
+  color: var(--color-brand-700);
+  font-weight: 500;
+}
+
+.rhythmTopline .favoriteButton {
+  margin-left: auto;
+}
+
+.rhythmIcon {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-brand-50);
+  color: var(--color-brand-700);
+}
+
+.rhythmIcon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.rhythmBody {
+  align-items: flex-start;
+}
+
+.rhythmSchedule {
+  flex: 0 0 122px;
+  padding-left: var(--spacing-lg);
+  border-left: 1px solid var(--color-border-secondary);
+}
+
+.rhythmSchedule small {
+  color: var(--color-fg-tertiary-600);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.rhythmPerformance {
+  margin-top: auto;
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border-secondary);
+}
+
+.rhythmPerformance span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.rhythmPerformance span svg {
+  width: 15px;
+  height: 15px;
+}
+
+.rhythmPerformance strong {
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.cardActions {
+  min-height: 32px;
+}
+
+.cardActions .favoriteButton {
+  display: none;
+}
+
+.portfolioEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-fg-secondary-700);
+  font-weight: 500;
+}
+
+.portfolioEyebrow svg {
+  width: 14px;
+  height: 14px;
+}
+
+.portfolioSplit {
+  align-items: stretch;
+  margin-top: auto;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+}
+
+.portfolioAccounts {
+  justify-content: space-between;
+}
+
+.portfolioAccounts strong {
+  color: var(--color-fg-primary-900);
+  font-size: var(--font-size-text-xs);
+  font-weight: 500;
+}
+
+.portfolioValue {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.portfolioValue small {
+  font-size: var(--font-size-text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    border-color: var(--color-border-primary);
+    box-shadow:
+      0 0 0 1px rgb(10 13 18 / 0.04),
+      0 3px 8px rgb(10 13 18 / 0.05),
+      0 18px 30px -22px rgb(10 13 18 / 0.26);
+    transform: translateY(-2px);
+  }
+
+  .favoriteButton:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-fg-primary-900);
+  }
+
+  .favoriteButtonActive:hover {
+    color: var(--color-brand-700);
+  }
+
+  .viewLink:hover {
+    color: var(--color-brand-700);
+  }
+}
+
+@media (max-width: 1320px) {
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: calc(100% - 64px);
+    margin-left: 64px;
+    padding-top: var(--spacing-2xl);
+  }
+
+  .stage {
+    min-height: 0;
+  }
+
+  .header {
+    align-items: center;
+  }
+
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .header :global(button) {
+    display: none;
+  }
+
+  .tabs {
+    overflow-x: auto;
+  }
+
+  .tab,
+  .tabActive {
+    flex: 0 0 auto;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .snapshotMetrics {
+    gap: var(--spacing-sm);
+  }
+
+  .snapshotMetrics strong {
+    font-size: var(--font-size-text-xs);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell *,
+  .shell *::before,
+  .shell *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.shell :global(.proto-picker) {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(10, 10, 10, 0.82);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 8px 24px rgba(0, 0, 0, 0.24),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.shell :global(.proto-picker-highlight) {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  will-change: transform;
+}
+
+.shell :global(.proto-picker[data-ready] .proto-picker-highlight) {
+  transition:
+    transform 250ms cubic-bezier(0.23, 1, 0.32, 1),
+    width 250ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.shell :global(.proto-picker-item) {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  font: inherit;
+  cursor: pointer;
+  transition: color 150ms ease-out;
+}
+
+.shell :global(.proto-picker-item:hover) {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.shell :global(.proto-picker-item:active) {
+  transform: scale(0.97);
+}
+
+.shell :global(.proto-picker-item:focus-visible) {
+  outline: 2px solid rgba(255, 255, 255, 0.4);
+  outline-offset: 2px;
+}
+
+.shell :global(.proto-picker-item[data-active]) {
+  color: #fff;
+}
+
+.shell :global(.proto-picker-divider) {
+  width: 1px;
+  height: 16px;
+  margin: 0 4px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.shell :global(.proto-picker-replay) {
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell :global(.proto-picker[data-ready] .proto-picker-highlight) {
+    transition: none;
+  }
+}

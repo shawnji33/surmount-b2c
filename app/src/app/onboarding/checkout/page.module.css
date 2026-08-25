@@ -1,0 +1,597 @@
+.shell {
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  background: var(--color-bg-primary, #ffffff);
+}
+
+.grid {
+  flex: 1 0 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.left,
+.right {
+  display: flex;
+  justify-content: center;
+  padding: 64px 40px;
+}
+
+.right {
+  border-left: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+}
+
+@media (max-width: 900px) {
+  .right {
+    border-left: none;
+    border-top: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+  }
+}
+
+.leftInner,
+.rightInner {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.rightInner {
+  gap: 20px;
+}
+
+/* ── Back button ── */
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-left: -6px;
+  color: var(--color-fg-tertiary-600, #535861);
+  cursor: pointer;
+}
+
+.backButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+.backButton:hover {
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+/* ── Brand row ── */
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandLogo {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.brandName {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.sandboxBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--color-bg-tertiary, #f5f5f5);
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-fg-secondary-700, #414651);
+}
+
+/* ── Price summary ── */
+.summaryHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summaryLabel {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+.priceRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.priceValue {
+  font-family: var(--font-family-display, 'Inter');
+  font-size: 44px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.priceMeta {
+  margin-top: 4px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+/* ── Line items ── */
+.lineItems {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lineItemRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lineItemLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lineItemName {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.lineItemSub {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+.lineItemPrice {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-fg-primary-900, #181d27);
+  white-space: nowrap;
+}
+
+.lineDivider {
+  height: 1px;
+  background: var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+}
+
+.promoButton {
+  align-self: flex-start;
+  appearance: none;
+  border: none;
+  background: var(--color-bg-tertiary, #f5f5f5);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-fg-secondary-700, #414651);
+  cursor: pointer;
+}
+
+.promoButton:hover {
+  background: var(--color-bg-tertiary-hover, #ececec);
+}
+
+.totalLabel {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.totalPrice {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+  white-space: nowrap;
+}
+
+/* ── Wallet buttons ── */
+.walletRow {
+  display: flex;
+  gap: 12px;
+}
+
+.applePayButton,
+.linkButton {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 44px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.applePayButton {
+  background: #000000;
+  color: var(--color-fg-white);
+}
+
+.applePayButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.applePayButton:hover {
+  background: #1a1a1a;
+}
+
+.linkButton {
+  background: #00d66f;
+  color: var(--color-fg-white);
+}
+
+.linkButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+.linkButton:hover {
+  background: #00c065;
+}
+
+.orDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.orDivider::before,
+.orDivider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+}
+
+/* ── Form sections ── */
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formSectionTitle {
+  margin: 0;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-fg-secondary-700, #414651);
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  background: var(--color-bg-primary, #ffffff);
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  color: var(--color-fg-primary-900, #181d27);
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-fg-primary-900, #181d27);
+  box-shadow: 0 0 0 3px rgba(10, 13, 18, 0.08);
+}
+
+.input::placeholder {
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+/* ── Unified card box (Stripe's grouped payment element) ── */
+.cardBox {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+}
+
+.cardTab {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--color-bg-secondary, #fafafa);
+  border: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.cardTab svg {
+  width: 16px;
+  height: 16px;
+}
+
+.cardGroup {
+  border-radius: 8px;
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  overflow: visible;
+  position: relative;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.cardGroup:focus-within {
+  border-color: var(--color-fg-primary-900, #181d27);
+  box-shadow: 0 0 0 3px rgba(10, 13, 18, 0.08);
+}
+
+.cardNumberRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+}
+
+.cardNumberRow input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.cardNumberRow input::placeholder {
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.cardBrandIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.cardSplitRow {
+  display: flex;
+}
+
+.cardSplitRow input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px 12px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.cardSplitRow input::placeholder {
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.cardSplitRow input:first-child {
+  border-right: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+}
+
+.soloInput {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 10px 12px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  color: var(--color-fg-primary-900, #181d27);
+  background: transparent;
+}
+
+.soloInput::placeholder {
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.selectRow {
+  position: relative;
+  border-bottom: 1px solid var(--color-border-secondary, rgba(0, 0, 0, 0.06));
+}
+
+.selectTrigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 10px 12px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  color: var(--color-fg-primary-900, #181d27);
+  cursor: pointer;
+}
+
+.selectTrigger svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+.selectPopover {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--color-bg-primary, #ffffff);
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  border-radius: 8px;
+  box-shadow: 0px 8px 24px 0px rgba(10, 13, 18, 0.08);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.selectOption {
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-fg-primary-900, #181d27);
+  cursor: pointer;
+}
+
+.selectOption:hover {
+  background: var(--color-bg-secondary, #fafafa);
+}
+
+.selectOptionActive {
+  font-weight: 500;
+  background: var(--color-bg-secondary, #fafafa);
+}
+
+/* ── Save info checkbox row ── */
+.saveRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-primary, rgba(0, 0, 0, 0.09));
+  cursor: pointer;
+}
+
+.saveCheckbox {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--color-fg-primary-900, #181d27);
+  cursor: pointer;
+}
+
+.saveText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.saveTitle {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-fg-primary-900, #181d27);
+}
+
+.saveDesc {
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+/* ── Disclaimer / footer ── */
+.disclaimer {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--color-fg-tertiary-600, #535861);
+}
+
+.poweredBy {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-family-body, 'Geist');
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-fg-quaternary-400, #a3a7ae);
+}
+
+/* Processing state: button content crossfades to a spinner + "Processing..." */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: var(--color-fg-white);
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 1400ms;
+  }
+}

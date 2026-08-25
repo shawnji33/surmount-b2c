@@ -1,0 +1,94 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+/* Production's resultsRow uses align-items:flex-start, so chartCard and scoreCard each size to
+ * their own content — the scoreCard reads noticeably shorter now that the "Asset score" header
+ * and bar are gone. Doubled selector wins specificity over the single-class production rule
+ * regardless of module import order. */
+.resultsRow.resultsRow {
+  align-items: stretch;
+}
+
+.benchVal {
+  display: block;
+  font-size: var(--font-size-text-sm);
+  color: var(--color-fg-tertiary-600);
+  font-variant-numeric: tabular-nums;
+}
+
+.titleWithTooltip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* Same hover/focus tooltip mechanics as RuleCards' info tooltips, but opening downward since
+ * these sit at the top of each score group instead of inline with a card header. */
+.tooltipWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.tooltipTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-fg-quaternary-400);
+  cursor: help;
+}
+
+.tooltipTrigger svg {
+  width: 14px;
+  height: 14px;
+}
+
+.tooltipTrigger:focus-visible {
+  outline: 2px solid var(--color-border-focus, rgba(10, 13, 18, 0.24));
+  outline-offset: 2px;
+}
+
+.tooltip {
+  position: absolute;
+  top: calc(100% + var(--spacing-md));
+  left: 0;
+  z-index: 2;
+  width: 240px;
+  transform: translateY(-4px) scale(0.98);
+  transform-origin: 0 0;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-fg-primary-900);
+  font-size: var(--font-size-text-xs);
+  line-height: 1.4;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 2px 6px 0 rgba(0, 0, 0, 0.05),
+    0 4px 42px 0 rgba(0, 0, 0, 0.06);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 50ms ease-out, transform 50ms ease-out;
+}
+
+.tooltipWrap:hover .tooltip,
+.tooltipTrigger:focus-visible + .tooltip {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition-duration: 150ms;
+  transition-delay: 80ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tooltip {
+    transition: none;
+  }
+}

@@ -1,0 +1,368 @@
+/* ===== React Flow workflow canvas — ports the exact Figma node cards ===== */
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg-primary);
+}
+
+/* ---- white node card (trigger / notification) — Figma 1265:1288 / 1265:1299 ---- */
+.wcard {
+  background: var(--color-bg-primary);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(10, 13, 18, 0.04);
+  /* no overflow:hidden — it clips the React Flow connection handles */
+  transition: box-shadow 0.16s cubic-bezier(0.32, 0.72, 0, 1), transform 0.16s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.wcHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 16px 8px;
+}
+.wcIc {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  background: #e9eaeb;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+}
+.wcIc img {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+.wcT {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: var(--color-fg-primary-900);
+  line-height: 20px;
+  letter-spacing: -0.5px;
+}
+.wcD {
+  padding: 0 16px 12px;
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  color: var(--color-utility-gray-500);
+  line-height: 20px;
+  letter-spacing: -0.5px;
+}
+
+/* ---- gray branch node (get NVDA) — Figma 1265:1233 ---- */
+.gcard {
+  background: var(--color-bg-quaternary);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 24px;
+  box-shadow: 0 1px 1px rgba(10, 13, 18, 0.04);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: box-shadow 0.16s cubic-bezier(0.32, 0.72, 0, 1), transform 0.16s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.gcTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+}
+.gcIc {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.gcIc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.gcT {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: rgba(10, 13, 18, 0.9);
+  letter-spacing: -0.5px;
+}
+.gcBranches {
+  display: flex;
+  gap: 8px;
+}
+.branchw {
+  background: var(--color-bg-secondary);
+  border-radius: 22px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 0 0 auto; /* hug content (IF) */
+}
+/* the Else branch fills the remaining width */
+.branchFill {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.bwPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(10, 13, 18, 0.3);
+  border-radius: 9999px;
+  padding: 4px 12px;
+  align-self: flex-start;
+}
+.bwIf {
+  background: var(--color-bg-brand-solid);
+  box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.35), inset 0 -2px 0 rgba(10, 13, 18, 0.05);
+}
+.bwK {
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+  color: var(--color-fg-white);
+  line-height: 18px;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+.bwV {
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+  color: var(--color-fg-white);
+  line-height: 18px;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+.bwElse {
+  background: var(--color-bg-primary);
+  box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.35), inset 0 -2px 0 rgba(10, 13, 18, 0.05);
+}
+.bwKElse {
+  font-size: var(--font-size-text-xs);
+  font-weight: 400;
+  color: rgba(10, 13, 18, 0.7);
+  line-height: 18px;
+  letter-spacing: -0.5px;
+}
+.bwT {
+  font-size: var(--font-size-text-sm);
+  font-weight: 500;
+  color: rgba(10, 13, 18, 0.9);
+  line-height: 20px;
+  letter-spacing: -0.5px;
+}
+.bwS {
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  color: rgba(10, 13, 18, 0.6);
+  line-height: 20px;
+  letter-spacing: -0.5px;
+}
+
+/* node entrance — pop in place. Animates the CARD (not the React Flow
+   wrapper), so it never touches the wrapper's positioning transform. */
+.wcard,
+.gcard {
+  animation: cardEnter 0.26s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(4px);
+  }
+}
+
+/* ---- hover kebab (⋮) menu ---- */
+.kebab {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  color: var(--color-utility-gray-500);
+  opacity: 0;
+  transition: opacity 0.12s ease, background 0.12s ease;
+}
+:global(.react-flow__node):hover .kebab {
+  opacity: 1;
+}
+.kebab:hover {
+  background: rgba(10, 13, 18, 0.06);
+}
+.kebabOpen {
+  opacity: 1;
+  background: rgba(10, 13, 18, 0.06);
+}
+.nodeMenu {
+  position: fixed;
+  z-index: 1000;
+  min-width: 184px;
+  background: var(--color-bg-primary);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(10, 13, 18, 0.14), 0 2px 6px rgba(10, 13, 18, 0.06);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-family-body, 'Geist', sans-serif);
+  letter-spacing: -0.5px;
+  animation: nodeMenuIn 0.14s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+@keyframes nodeMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+.nodeMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: var(--font-size-text-sm);
+  font-weight: 400;
+  color: var(--color-fg-secondary-700);
+  text-align: left;
+  cursor: pointer;
+}
+.nodeMenuItem:hover {
+  background: var(--color-bg-tertiary);
+}
+.nodeMenuItem svg {
+  flex: 0 0 16px;
+  color: var(--color-utility-gray-500);
+}
+.nodeMenuDanger {
+  color: var(--color-fg-error-primary);
+}
+.nodeMenuDanger svg {
+  color: var(--color-fg-error-primary);
+}
+.nodeMenuDivider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.07);
+  margin: 4px 2px;
+}
+
+/* ---- inline-editable text (node title / description) ---- */
+.editable {
+  cursor: text;
+  border-radius: 6px;
+  padding: 1px 6px;
+  margin: -1px -5px;
+  transition: background 0.12s ease;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.editable:hover {
+  background: rgba(10, 13, 18, 0.06);
+}
+.editInput {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  background: var(--color-bg-primary);
+  border: 1px solid rgba(10, 13, 18, 0.2);
+  border-radius: 8px;
+  padding: 2px 6px;
+  margin: -3px -7px;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(10, 13, 18, 0.05);
+  field-sizing: content;
+  width: auto;
+  max-width: 100%;
+  resize: none;
+}
+.editArea {
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-width: 180px;
+  overflow: hidden;
+}
+.editPlaceholder {
+  color: var(--fg-400);
+}
+
+/* ---- React Flow handles — square Figma ports ---- */
+.handle.handle {
+  width: 16px;
+  height: 16px;
+  background: var(--color-bg-primary);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(10, 13, 18, 0.04);
+  transition: border-color 0.14s ease, box-shadow 0.14s ease;
+}
+.handle.handle:hover {
+  border-color: rgba(10, 13, 18, 0.4);
+  box-shadow: 0 0 0 3px rgba(10, 13, 18, 0.1);
+}
+
+/* ---- hover lift on nodes ---- */
+:global(.react-flow__node):hover .wcard,
+:global(.react-flow__node):hover .gcard {
+  box-shadow: 0 5px 16px rgba(10, 13, 18, 0.09), 0 1px 3px rgba(10, 13, 18, 0.06);
+}
+:global(.react-flow__node.selected) .wcard,
+:global(.react-flow__node.selected) .gcard {
+  box-shadow: 0 0 0 2px rgba(10, 13, 18, 0.1), 0 5px 16px rgba(10, 13, 18, 0.08);
+}
+
+/* ---- edges ---- */
+:global(.react-flow__edge-path) {
+  stroke: #c8ccd2;
+  stroke-width: 1.5;
+}
+:global(.react-flow__edge.selected .react-flow__edge-path),
+:global(.react-flow__edge:hover .react-flow__edge-path) {
+  stroke: var(--color-utility-gray-500);
+}
+/* connection line while dragging a new edge — gray, not blue */
+:global(.react-flow__connectionline path),
+:global(.react-flow__connection-path) {
+  stroke: var(--color-utility-gray-500);
+}
+:global(.react-flow__edge.animated .react-flow__edge-path) {
+  stroke-dasharray: 6;
+}
+
+/* ---- controls themed to match the design system ---- */
+:global(.react-flow__controls) {
+  box-shadow: 0 4px 16px rgba(10, 13, 18, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+:global(.react-flow__controls-button) {
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  width: 32px;
+  height: 32px;
+}
+:global(.react-flow__controls-button svg) {
+  fill: var(--color-fg-tertiary-600);
+}
+:global(.react-flow__controls-button:hover) {
+  background: var(--color-bg-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wcard,
+  .gcard,
+  .handle.handle {
+    transition: none;
+  }
+}
