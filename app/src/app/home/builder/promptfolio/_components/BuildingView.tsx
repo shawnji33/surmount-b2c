@@ -208,6 +208,7 @@ export function BuildingView({
             draft={session.draft}
             revealStage={session.revealStage}
             isThinking={session.isThinking}
+            recentlyAddedTickers={session.recentlyAddedTickers}
             onAddHolding={session.addHolding}
             onUpdateHoldingWeight={session.updateHoldingWeight}
             onRemoveHolding={handleRemoveHolding}

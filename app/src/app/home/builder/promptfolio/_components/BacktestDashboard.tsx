@@ -46,6 +46,7 @@ export function BacktestDashboard({
   draft,
   revealStage,
   isThinking,
+  recentlyAddedTickers,
   onAddHolding,
   onUpdateHoldingWeight,
   onRemoveHolding,
@@ -55,6 +56,7 @@ export function BacktestDashboard({
   draft: PromptfolioDraft | null;
   revealStage: number;
   isThinking: boolean;
+  recentlyAddedTickers: string[];
   onAddHolding: (ticker: string) => void;
   onUpdateHoldingWeight: (ticker: string, weight: number) => void;
   onRemoveHolding: (ticker: string) => void;
@@ -348,6 +350,7 @@ export function BacktestDashboard({
               <HoldingsAllocationsTable
                 rows={draft.rows}
                 templateName={draft.name}
+                recentlyAddedTickers={recentlyAddedTickers}
                 editable={false}
                 weightEditable
                 onAdd={onAddHolding}

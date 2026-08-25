@@ -37,7 +37,16 @@ export function ConversationPanel({
             );
           }
           if (turn.role === 'procedure') {
-            return <ThinkingProcedure key={turn.id} step={turn.step} complete={turn.complete} draft={turn.draft} />;
+            return (
+              <ThinkingProcedure
+                key={turn.id}
+                step={turn.step}
+                complete={turn.complete}
+                draft={turn.draft}
+                kind={turn.kind}
+                addedTickers={turn.addedTickers}
+              />
+            );
           }
           return (
             <article key={turn.id} className={s.assistantMessage}>

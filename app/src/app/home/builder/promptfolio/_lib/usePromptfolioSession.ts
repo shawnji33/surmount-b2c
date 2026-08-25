@@ -1,8 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { ASSET_UNIVERSE } from '../../_data';
 import { describeInput, extractMentionedTickers, generateStrategyIdentity, matchTemplate, mergeMentionedTickers } from './promptfolioEngine';
 import type { PromptfolioDraft } from '../_data';
+
+export type ProcedureKind = 'build' | 'asset-update';
 
 export type ConversationTurn =
   | {
@@ -16,6 +19,8 @@ export type ConversationTurn =
       step: number;
       complete: boolean;
       draft: PromptfolioDraft;
+      kind: ProcedureKind;
+      addedTickers: string[];
     };
 
 function rebalanceRows(rows: PromptfolioDraft['rows'], lockedTicker?: string, lockedWeight?: number) {
@@ -47,8 +52,11 @@ function rebalanceRows(rows: PromptfolioDraft['rows'], lockedTicker?: string, lo
 }
 
 const PROCEDURE_STEP_MS = 5000;
+const ASSET_UPDATE_STEP_MS = 3000;
 const BUILD_STATUS_DELAY_MS = 400;
 const BUILD_STATUS_HOLD_MS = 3500;
+const ASSET_UPDATE_STATUS_HOLD_MS = 1400;
+const ASSET_UPDATE_HIGHLIGHT_MS = 2200;
 const DRAFT_START_MS = 200;
 const REVEAL_HOLDINGS_MS = 300;
 const REVEAL_RULES_STAGGER_MS = 80;
@@ -68,6 +76,7 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
   const [draft, setDraft] = useState<PromptfolioDraft | null>(null);
   const [revealStage, setRevealStage] = useState(0);
   const [matchedTemplateName, setMatchedTemplateName] = useState<string | null>(null);
+  const [recentlyAddedTickers, setRecentlyAddedTickers] = useState<string[]>([]);
   const timersRef = useRef<number[]>([]);
   const startedRef = useRef(false);
   const turnCounterRef = useRef(0);
@@ -93,6 +102,7 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
     if (!trimmed) return;
 
     clearAllTimers();
+    setRecentlyAddedTickers([]);
     const isRefreshingCompletedDraft = draft !== null && revealStage >= 4;
     if (!isRefreshingCompletedDraft) setRevealStage(0);
     const procedureId = nextTurnId();
@@ -101,12 +111,33 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
 
     const matched = matchTemplate(trimmed);
     const mentioned = extractMentionedTickers(trimmed);
-    const mergedDraft = mergeMentionedTickers(matched.draft, mentioned);
-    const nextDraft = matched.id === 'generic'
-      ? generateStrategyIdentity(trimmed, mergedDraft)
-      : mergedDraft;
+    const addedTickers = isRefreshingCompletedDraft && draft
+      ? mentioned.filter((ticker) => !draft.rows.some((row) => row.ticker === ticker))
+      : [];
+    const procedureKind: ProcedureKind = addedTickers.length > 0 ? 'asset-update' : 'build';
+    const sourceDraft = procedureKind === 'asset-update' && draft ? draft : matched.draft;
+    const mergedDraft = mergeMentionedTickers(
+      sourceDraft,
+      procedureKind === 'asset-update' ? addedTickers : mentioned,
+      procedureKind === 'asset-update' ? 'after' : 'before',
+    );
+    const addedAssetNames = addedTickers.map((ticker) => (
+      ASSET_UNIVERSE.find((asset) => asset.ticker === ticker)?.name ?? ticker
+    ));
+    const nextDraft = procedureKind === 'asset-update' && draft
+      ? {
+          ...mergedDraft,
+          name: draft.name,
+          description: `${draft.description.replace(/\.$/, '')}. Now includes ${addedAssetNames.join(', ')} as a satellite position.`,
+        }
+      : matched.id === 'generic'
+        ? generateStrategyIdentity(trimmed, mergedDraft)
+        : mergedDraft;
+    const assistantReply = procedureKind === 'asset-update'
+      ? `${addedAssetNames.join(', ')} has been added at a 15% target weight. The existing holdings were proportionally rebalanced to keep the portfolio at 100%.`
+      : matched.assistantReply;
     if (!isRefreshingCompletedDraft) setDraft(nextDraft);
-    setMatchedTemplateName(matched.draft.name);
+    setMatchedTemplateName(nextDraft.name);
 
     // Acknowledge the submission with the user's prompt first. The live build status follows
     // 400ms later, then gets its own short beat before the first procedure row is revealed.
@@ -127,11 +158,15 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
       updateProcedure(4, true);
       setIsThinking(false);
       const assistantTurnId = nextTurnId();
-      setTurns((prev) => [...prev, { id: assistantTurnId, role: 'assistant', text: matched.assistantReply }]);
+      setTurns((prev) => [...prev, { id: assistantTurnId, role: 'assistant', text: assistantReply }]);
 
       if (isRefreshingCompletedDraft) {
         setDraft(nextDraft);
         setRevealStage(4);
+        if (addedTickers.length > 0) {
+          setRecentlyAddedTickers(addedTickers);
+          schedule(() => setRecentlyAddedTickers([]), ASSET_UPDATE_HIGHLIGHT_MS);
+        }
         return;
       }
 
@@ -161,19 +196,27 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
       schedule(() => {
         updateProcedure(step);
         advance(step + 1);
-      }, PROCEDURE_STEP_MS);
+      }, procedureKind === 'asset-update' ? ASSET_UPDATE_STEP_MS : PROCEDURE_STEP_MS);
     }
 
     schedule(() => {
       setTurns((prev) => [
         ...prev,
-        { id: procedureId, role: 'procedure', step: -1, complete: false, draft: nextDraft },
+        {
+          id: procedureId,
+          role: 'procedure',
+          step: -1,
+          complete: false,
+          draft: nextDraft,
+          kind: procedureKind,
+          addedTickers,
+        },
       ]);
 
       schedule(() => {
         updateProcedure(0);
         advance(1);
-      }, BUILD_STATUS_HOLD_MS);
+      }, procedureKind === 'asset-update' ? ASSET_UPDATE_STATUS_HOLD_MS : BUILD_STATUS_HOLD_MS);
     }, BUILD_STATUS_DELAY_MS);
   }
 
@@ -184,6 +227,7 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
     setDraft(null);
     setRevealStage(0);
     setMatchedTemplateName(null);
+    setRecentlyAddedTickers([]);
   }
 
   function updateRules(updater: (current: PromptfolioDraft['rules']) => PromptfolioDraft['rules']) {
@@ -238,6 +282,7 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
     draft,
     revealStage,
     matchedTemplateName,
+    recentlyAddedTickers,
     submit,
     reset,
     updateRules,

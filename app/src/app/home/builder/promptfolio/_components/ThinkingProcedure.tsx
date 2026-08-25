@@ -4,9 +4,16 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { CaretDown, Check, CopySimple, File, FileCode, Sparkle, TerminalWindow, type Icon } from '@phosphor-icons/react';
 import { ASSET_UNIVERSE } from '../../_data';
 import type { PromptfolioDraft } from '../_data';
+import type { ProcedureKind } from '../_lib/usePromptfolioSession';
 import s from './ThinkingProcedure.module.css';
 
-type ThinkingProcedureProps = { step: number; complete: boolean; draft: PromptfolioDraft };
+type ThinkingProcedureProps = {
+  step: number;
+  complete: boolean;
+  draft: PromptfolioDraft;
+  kind: ProcedureKind;
+  addedTickers: string[];
+};
 type ToolRow = { id: string; icon: Icon; label: string; chip: string; detail: ReactNode };
 
 const DIFFS = [
@@ -213,7 +220,7 @@ function StreamingCodeLines({ source, active }: { source: string; active: boolea
   );
 }
 
-export function ThinkingProcedure({ step, complete, draft }: ThinkingProcedureProps) {
+export function ThinkingProcedure({ step, complete, draft, kind, addedTickers }: ThinkingProcedureProps) {
   const [openRows, setOpenRows] = useState<Set<string>>(() => new Set(['thinking']));
   const [selectedDiff, setSelectedDiff] = useState<string | null>(null);
   const elapsed = useElapsed(!complete);
@@ -238,6 +245,34 @@ export function ThinkingProcedure({ step, complete, draft }: ThinkingProcedurePr
   };
   const strategySource = `export const strategy = ${JSON.stringify(strategyPayload, null, 2)} as const;`;
   const strategyLineCount = strategySource.split('\n').length;
+  const isAssetUpdate = kind === 'asset-update';
+  const addedAssets = addedTickers.map((ticker) => (
+    ASSET_UNIVERSE.find((asset) => asset.ticker === ticker)?.name ?? ticker
+  ));
+  const addedAssetLabel = addedAssets.join(', ') || 'the requested asset';
+  const addedTickerLabel = addedTickers.join(', ') || 'new asset';
+  const holdingsPatch = addedTickers
+    .map((ticker) => `+ { ticker: "${ticker}", targetWeight: 15 }`)
+    .join('\n');
+  const assetUpdateDiffs = [
+    { id: 'holdings', label: 'holdings.patch', add: Math.max(addedTickers.length, 1), del: 0, lines: [
+      { tone: 'context', text: 'positions: [' },
+      ...addedTickers.map((ticker) => ({ tone: 'add', text: `+  { ticker: "${ticker}", weight: 15 },` })),
+      { tone: 'context', text: ']' },
+    ] },
+    { id: 'weights', label: 'weights.config', add: 5, del: 4, lines: [
+      { tone: 'context', text: 'targetAllocation: {' },
+      { tone: 'delete', text: '-  existing: 100,' },
+      { tone: 'add', text: '+  existing: 85,' },
+      ...addedTickers.map((ticker) => ({ tone: 'add', text: `+  ${ticker}: 15,` })),
+      { tone: 'context', text: '}' },
+    ] },
+    { id: 'backtest', label: 'backtest.report', add: 6, del: 0, lines: [
+      { tone: 'add', text: `+  holdingsChanged: ${Math.max(addedTickers.length, 1)},` },
+      { tone: 'add', text: '+  weightsNormalized: true,' },
+      { tone: 'add', text: '+  refreshMetrics: true,' },
+    ] },
+  ];
 
   useEffect(() => {
     if (step < 0) {
@@ -247,7 +282,7 @@ export function ThinkingProcedure({ step, complete, draft }: ThinkingProcedurePr
     setOpenRows(new Set([complete ? 'write' : ACTIVE_ROW_IDS[Math.min(step, ACTIVE_ROW_IDS.length - 1)]]));
   }, [complete, step]);
 
-  const rows: ToolRow[] = [
+  const buildRows: ToolRow[] = [
     {
       id: 'thinking', icon: Sparkle, label: 'Thinking', chip: 'Planning the portfolio structure…',
       detail: <div className={s.mutedLines}><StreamingLine active={activeRowId === 'thinking'} text="Translate the prompt into theme, risk, and diversification constraints." /><StreamingLine active={activeRowId === 'thinking'} text="Plan a transparent allocation that can be refined in the builder." /></div>,
@@ -272,6 +307,29 @@ export function ThinkingProcedure({ step, complete, draft }: ThinkingProcedurePr
     },
   ];
 
+  const assetUpdateRows: ToolRow[] = [
+    {
+      id: 'thinking', icon: Sparkle, label: 'Review request', chip: `Add ${addedAssetLabel}`,
+      detail: <div className={s.mutedLines}><StreamingLine active={activeRowId === 'thinking'} text={`Match ${addedAssetLabel} to ${addedTickerLabel} in the supported asset universe.`} /><StreamingLine active={activeRowId === 'thinking'} text="Keep the existing strategy identity and risk rules unchanged." /></div>,
+    },
+    {
+      id: 'write', icon: FileCode, label: `Add ${addedTickers.length || 1} holding`, chip: 'holdings.patch',
+      detail: <CodeFrame title="holdings.patch" language="Portfolio diff" copyText={holdingsPatch}>
+        <StreamingCodeLines source={holdingsPatch} active={activeRowId === 'write'} />
+      </CodeFrame>,
+    },
+    {
+      id: 'verify', icon: TerminalWindow, label: 'Rebalance weights', chip: 'normalize to 100%',
+      detail: <div className={s.mutedLines}><StreamingLine active={activeRowId === 'verify'} text="Reserve a 15% target weight for the new position." /><StreamingLine active={activeRowId === 'verify'} text="Scale the existing holdings proportionally and normalize the portfolio to 100%." /></div>,
+    },
+    {
+      id: 'read', icon: File, label: 'Refresh results', chip: 'backtest --changed-assets',
+      detail: <div className={s.mutedLines}><StreamingLine active={activeRowId === 'read'} text="Recalculate return, drawdown, and diversification metrics." /><StreamingLine active={activeRowId === 'read'} text="Stage the updated allocation for the dashboard transition." /></div>,
+    },
+  ];
+  const rows = isAssetUpdate ? assetUpdateRows : buildRows;
+  const diffs = isAssetUpdate ? assetUpdateDiffs : DIFFS;
+
   function toggleRow(id: string) {
     setOpenRows((current) => {
       const next = new Set(current);
@@ -280,20 +338,20 @@ export function ThinkingProcedure({ step, complete, draft }: ThinkingProcedurePr
     });
   }
 
-  const selected = DIFFS.find((diff) => diff.id === selectedDiff) ?? null;
+  const selected = diffs.find((diff) => diff.id === selectedDiff) ?? null;
 
   return (
-    <section className={s.root} aria-label="Portfolio build procedure">
+    <section className={s.root} aria-label={isAssetUpdate ? 'Portfolio update procedure' : 'Portfolio build procedure'}>
       {!complete ? (
         <div className={s.runHeader}>
           <span className={s.liveStatus} role="status">
             <PixelLoader />
-            <span className={s.shimmerLabel}>Building portfolio</span>
+            <span className={s.shimmerLabel}>{isAssetUpdate ? 'Updating portfolio' : 'Building portfolio'}</span>
             <span className={s.elapsed}>{elapsed}</span>
           </span>
         </div>
       ) : (
-        <span className={s.srOnly} role="status">Portfolio build complete</span>
+        <span className={s.srOnly} role="status">{isAssetUpdate ? 'Portfolio update complete' : 'Portfolio build complete'}</span>
       )}
 
       <div className={s.procedureBody}>
@@ -321,7 +379,7 @@ export function ThinkingProcedure({ step, complete, draft }: ThinkingProcedurePr
 
         {step >= 4 && <div className={s.diffArea}>
           <div className={s.diffChips}>
-            {DIFFS.map((diff) => <button key={diff.id} type="button" className={s.diffChip} data-selected={selectedDiff === diff.id} aria-expanded={selectedDiff === diff.id} onClick={() => setSelectedDiff((current) => current === diff.id ? null : diff.id)}>
+            {diffs.map((diff) => <button key={diff.id} type="button" className={s.diffChip} data-selected={selectedDiff === diff.id} aria-expanded={selectedDiff === diff.id} onClick={() => setSelectedDiff((current) => current === diff.id ? null : diff.id)}>
               <span>{diff.label}</span><span className={s.addCount}>+{diff.add}</span>{diff.del > 0 && <span className={s.deleteCount}>−{diff.del}</span>}
             </button>)}
             <span className={s.moreFiles}>+2 more</span>

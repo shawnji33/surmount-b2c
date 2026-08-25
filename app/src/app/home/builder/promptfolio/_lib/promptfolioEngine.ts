@@ -41,9 +41,8 @@ export function describeInput(input: string): string {
 
 const MENTION_RE = /@([A-Za-z]{1,5})\b/g;
 
-// Grounds the composer's @ mention menu in something real: any @TICKER the user typed that's an
-// actual ASSET_UNIVERSE holding gets pulled into the generated draft (see mergeMentionedTickers)
-// instead of the mention being purely cosmetic text.
+// Grounds the composer's @ mention menu in something real and also recognizes explicit asset
+// names/tickers in natural-language follow-ups (for example, "add Robinhood" → HOOD).
 export function extractMentionedTickers(input: string): string[] {
   const found: string[] = [];
   let match: RegExpExecArray | null;
@@ -54,13 +53,28 @@ export function extractMentionedTickers(input: string): string[] {
       found.push(ticker);
     }
   }
+
+  const normalized = input.toLowerCase();
+  ASSET_UNIVERSE.forEach((asset) => {
+    const primaryName = asset.name.toLowerCase().split(/\s+/)[0].replace(/[^a-z0-9]/g, '');
+    const tickerMentioned = asset.ticker.length > 1
+      && new RegExp(`\\b${asset.ticker.toLowerCase()}\\b`).test(normalized);
+    const nameMentioned = normalized.includes(asset.name.toLowerCase())
+      || (primaryName.length >= 4 && new RegExp(`\\b${primaryName}\\b`).test(normalized));
+    if ((tickerMentioned || nameMentioned) && !found.includes(asset.ticker)) found.push(asset.ticker);
+  });
+
   return found;
 }
 
-// Weaves any explicitly @-mentioned tickers into the matched template's draft — each mention
-// reserves a flat 15% (capped at 45% combined across mentions), and the template's own rows are
-// scaled down proportionally to make room. A no-op when every mention is already in the draft.
-export function mergeMentionedTickers(draft: PromptfolioDraft, mentioned: string[]): PromptfolioDraft {
+// Weaves requested tickers into a draft — each reserves a flat 15% (capped at 45% combined), and
+// the existing rows scale down proportionally. Initial builds lead with requested assets; follow-up
+// edits append them so the inserted table row has an obvious, stable transition target.
+export function mergeMentionedTickers(
+  draft: PromptfolioDraft,
+  mentioned: string[],
+  placement: 'before' | 'after' = 'before',
+): PromptfolioDraft {
   const missing = mentioned.filter((ticker) => !draft.rows.some((r) => r.ticker === ticker));
   if (missing.length === 0) return draft;
 
@@ -72,9 +86,15 @@ export function mergeMentionedTickers(draft: PromptfolioDraft, mentioned: string
   const mentionWeight = round2(reserved / missing.length);
   const mentionRows = missing.map((ticker) => ({ ticker, weight: mentionWeight }));
 
-  const rows = [...mentionRows, ...scaledRows];
+  const rows = placement === 'after'
+    ? [...scaledRows, ...mentionRows]
+    : [...mentionRows, ...scaledRows];
   const drift = round2(100 - rows.reduce((sum, r) => sum + r.weight, 0));
-  if (drift !== 0) rows[0] = { ...rows[0], weight: round2(rows[0].weight + drift) };
+  const correctionIndex = placement === 'after' ? rows.length - 1 : 0;
+  if (drift !== 0) rows[correctionIndex] = {
+    ...rows[correctionIndex],
+    weight: round2(rows[correctionIndex].weight + drift),
+  };
 
   return { ...draft, rows };
 }

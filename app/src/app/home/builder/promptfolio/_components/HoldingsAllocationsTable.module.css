@@ -125,6 +125,10 @@
   transition: background 100ms ease;
 }
 
+.row[data-new='true'] {
+  animation: assetRowEnter 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .row:hover {
     background: var(--color-bg-secondary);
@@ -344,6 +348,12 @@
   min-width: 0;
   flex: 1;
   border-radius: 2px;
+  transition: background-color 250ms ease-in-out, opacity 250ms ease-in-out;
+}
+
+.weightValue {
+  display: inline-block;
+  animation: weightValueSwap 150ms ease-in-out both;
 }
 
 .barFilled {
@@ -408,11 +418,49 @@
   outline-offset: 2px;
 }
 
+@keyframes assetRowEnter {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes weightValueSwap {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .row,
   .deleteBtn,
   .addHolding button,
   .weightButton {
+    transition: none;
+  }
+
+  .row[data-new='true'],
+  .weightValue {
+    animation: none;
+  }
+
+  .barFilled,
+  .barEmpty {
     transition: none;
   }
 }

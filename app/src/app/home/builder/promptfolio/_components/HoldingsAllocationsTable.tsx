@@ -101,6 +101,7 @@ function WeightInput({
 export function HoldingsAllocationsTable({
   rows,
   templateName,
+  recentlyAddedTickers,
   editable = false,
   weightEditable = false,
   onAdd,
@@ -109,6 +110,7 @@ export function HoldingsAllocationsTable({
 }: {
   rows: AllocationRow[];
   templateName: string | null;
+  recentlyAddedTickers: string[];
   editable?: boolean;
   weightEditable?: boolean;
   onAdd: (ticker: string) => void;
@@ -183,9 +185,11 @@ export function HoldingsAllocationsTable({
             <div
               className={s.row}
               key={row.ticker}
+              data-new={recentlyAddedTickers.includes(row.ticker)}
               data-weight-editable={canEditWeights}
               data-selection-context={`${row.ticker} holding`}
               data-selection-text={`${row.ticker} ${row.weight}%`}
+              style={{ animationDelay: `${i * 40}ms` }}
             >
               <span className={s.assetCell}>
                 <span className={s.avatar}>
@@ -230,10 +234,10 @@ export function HoldingsAllocationsTable({
                   aria-label={`Edit ${row.ticker} target weight, currently ${row.weight}%`}
                   onClick={() => setEditingTicker(row.ticker)}
                 >
-                  <span>{row.weight}</span><span aria-hidden="true">%</span>
+                  <span className={s.weightValue} key={row.weight}>{row.weight}</span><span aria-hidden="true">%</span>
                 </button>
               ) : (
-                <span className={s.cell}>{row.weight}%</span>
+                <span className={s.cell}><span className={s.weightValue} key={row.weight}>{row.weight}</span>%</span>
               )}
 
               <span className={[s.cell, s.reason].join(' ')}>{reasonFor(i, templateName)}</span>
