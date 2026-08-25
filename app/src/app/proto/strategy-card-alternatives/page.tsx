@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowUpRight, ChartLineUp, Clock, Plus, Star, Wallet } from '@phosphor-icons/react';
 import { Button } from '@/components/Button';
 import { HomeShell } from '@/app/home/HomeShell';
 import { MY_STRATEGIES, type StrategyCardData } from '@/app/home/builder/_data';
-import { ChooseBuilderModal } from '@/app/home/builder/_components/ChooseBuilderModal';
 import s from './page.module.css';
 
 const TABS = ['Active strategies', 'My strategies', 'Favorite strategies'] as const;
@@ -190,10 +190,10 @@ const VARIANTS = [
 ] as const;
 
 export default function StrategyCardAlternativesPrototype() {
+  const router = useRouter();
   const [active, setActive] = useState(0);
   const [remount, setRemount] = useState(0);
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>(TABS[0]);
-  const [modalOpen, setModalOpen] = useState(false);
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   const picker = useRef<HTMLElement>(null);
   const highlight = useRef<HTMLSpanElement>(null);
@@ -263,7 +263,7 @@ export default function StrategyCardAlternativesPrototype() {
               <h1>Strategy cards</h1>
               <p className={s.detail}>{variant.label}. Compare the same strategy data at full working size.</p>
             </div>
-            <Button type="button" fullWidth={false} iconLeading={<Plus weight="bold" />} onClick={() => setModalOpen(true)}>New strategy</Button>
+            <Button type="button" fullWidth={false} iconLeading={<Plus weight="bold" />} onClick={() => router.push('/home/builder/choose')}>New strategy</Button>
           </header>
 
           <div className={s.tabs} role="tablist" aria-label="Strategy groups">
@@ -284,7 +284,6 @@ export default function StrategyCardAlternativesPrototype() {
           <button className="proto-picker-item proto-picker-replay" aria-label="Replay animation (R)" onClick={() => setRemount((value) => value + 1)}>↻</button>
         </nav>
       </main>
-      {modalOpen && <ChooseBuilderModal onClose={() => setModalOpen(false)} />}
     </HomeShell>
   );
 }

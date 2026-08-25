@@ -1,15 +1,27 @@
 'use client';
 
 import { useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { X } from '@phosphor-icons/react';
 import { PromptComposer, type PromptComposerHandle } from './PromptComposer';
 import { ExamplePrompts } from './ExamplePrompts';
 import s from './PromptfolioHero.module.css';
 
 export function PromptfolioHero({ onSubmit }: { onSubmit: (input: string) => void }) {
+  const router = useRouter();
   const composerRef = useRef<PromptComposerHandle>(null);
 
   return (
     <div className={s.root}>
+      <button
+        type="button"
+        className={s.closeBtn}
+        aria-label="Close"
+        onClick={() => router.push('/home/builder')}
+      >
+        <X weight="bold" />
+      </button>
+
       <div className="dot-grid-panel" aria-hidden="true" />
 
       <div className={s.content}>

@@ -10,6 +10,10 @@
   max-width: 560px;
 }
 
+.rootPanel {
+  max-width: none;
+}
+
 .anchor {
   position: relative;
 }
@@ -29,6 +33,13 @@
 
 .shadowWrapWithAttach {
   border-radius: var(--radius-xl);
+}
+
+.rootPanel .shadowWrap,
+.rootPanel .shadowWrapWithAttach,
+.rootPanel .card,
+.rootPanel .cardWithAttach {
+  border-radius: var(--radius-lg);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -92,6 +103,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.annotationChip {
+  max-width: 100%;
+}
+
+.annotationChip .attachName {
+  max-width: min(240px, calc(100vw - 168px));
 }
 
 .attachRemove {
@@ -186,6 +205,18 @@
   color: var(--color-fg-quaternary-400);
 }
 
+.rootPanel .input {
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .rootPanel .input {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
 .controlsWide .input {
   grid-column: 1 / -1;
   grid-row: 1;
@@ -220,6 +251,18 @@
   content: '';
   position: absolute;
   inset: -2px;
+}
+
+.rootPanel .micBtn,
+.rootPanel .sendBtn {
+  width: 32px;
+  height: 32px;
+  justify-self: center;
+}
+
+.rootPanel .micBtn::before,
+.rootPanel .sendBtn::before {
+  inset: -4px;
 }
 
 .plusBtn {
@@ -416,6 +459,8 @@
   border: 0;
   border-radius: var(--radius-lg);
   background: transparent;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
   text-align: left;
   cursor: pointer;
 }

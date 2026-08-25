@@ -1,30 +1,30 @@
 'use client';
 
-import { ArrowsClockwise, TrendDown, TrendUp } from '@phosphor-icons/react';
 import type { RuleState } from '../../_shared/types';
 import s from './RuleSummaryList.module.css';
 
-// Read-only counterpart to RuleCards — same three rule names/copy, no toggle/slider controls,
-// since a Promptfolio draft is a passive preview until handed off into the real builder.
-export function RuleSummaryList({ rules }: { rules: RuleState }) {
+export function RuleSummaryList({
+  rules,
+  onChange,
+}: {
+  rules: RuleState;
+  onChange?: (updater: (current: RuleState) => RuleState) => void;
+}) {
   const items = [
     {
-      key: 'rebalance',
-      icon: ArrowsClockwise,
+      key: 'rebalance' as const,
       label: 'Auto rebalance',
       enabled: rules.rebalance.enabled,
       value: `Every ${rules.rebalance.every} ${rules.rebalance.unit.toLowerCase()}`,
     },
     {
-      key: 'stopLoss',
-      icon: TrendDown,
+      key: 'stopLoss' as const,
       label: 'Stop loss',
       enabled: rules.stopLoss.enabled,
       value: `${rules.stopLoss.percent}% from peak`,
     },
     {
-      key: 'takeProfit',
-      icon: TrendUp,
+      key: 'takeProfit' as const,
       label: 'Take profit',
       enabled: rules.takeProfit.enabled,
       value: `${rules.takeProfit.percent}% gain target`,
@@ -34,10 +34,34 @@ export function RuleSummaryList({ rules }: { rules: RuleState }) {
   return (
     <ul className={s.list}>
       {items.map((item) => (
-        <li key={item.key} className={[s.row, item.enabled ? '' : s.off].filter(Boolean).join(' ')}>
-          <item.icon weight="regular" className={s.icon} aria-hidden="true" />
-          <span className={s.label}>{item.label}</span>
-          <span className={s.value}>{item.enabled ? item.value : 'Off'}</span>
+        <li
+          key={item.key}
+          className={s.row}
+          data-enabled={item.enabled}
+          data-selection-context={`${item.label} rule`}
+          data-selection-text={`${item.label}: ${item.enabled ? item.value : 'Off'}`}
+        >
+          <span className={s.copy}>
+            <span className={s.label}>{item.label}</span>
+            <span className={s.value}>{item.enabled ? item.value : 'Off'}</span>
+          </span>
+          {onChange && (
+            <button
+              type="button"
+              role="switch"
+              aria-checked={item.enabled}
+              aria-label={`${item.enabled ? 'Disable' : 'Enable'} ${item.label}`}
+              className={s.switch}
+              onClick={() => onChange((current) => ({
+                ...current,
+                [item.key]: { ...current[item.key], enabled: !current[item.key].enabled },
+              }))}
+            >
+              <span className={s.switchTrack} aria-hidden="true">
+                <span className={s.switchThumb} />
+              </span>
+            </button>
+          )}
         </li>
       ))}
     </ul>

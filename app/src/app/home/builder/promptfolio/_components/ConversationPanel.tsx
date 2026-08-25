@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { ChatUserBubble } from '@/components/chat/ChatUserBubble';
-import { MatrixLoader } from '@/components/chat/MatrixLoader';
 import { TypewriterText } from '@/components/chat/TypewriterText';
 import type { ConversationTurn } from '../_lib/usePromptfolioSession';
 import { PromptComposer } from './PromptComposer';
+import { ThinkingProcedure } from './ThinkingProcedure';
 import s from './ConversationPanel.module.css';
 
 // TypewriterText/MatrixLoader have no built-in reduced-motion handling (confirmed by reading both
@@ -29,24 +29,22 @@ export function ConversationPanel({
 
   return (
     <div className={s.root}>
-      <div className={s.feed} aria-label="Conversation" aria-live="polite">
-        {turns.map((turn) =>
-          turn.role === 'user' ? (
-            <ChatUserBubble key={turn.id}>{turn.text}</ChatUserBubble>
-          ) : (
+      <div className={s.feed} aria-label="Conversation" aria-live="polite" aria-busy={isThinking}>
+        {turns.map((turn) => {
+          if (turn.role === 'user') {
+            return (
+              <ChatUserBubble key={turn.id} variant="compact">{turn.text}</ChatUserBubble>
+            );
+          }
+          if (turn.role === 'procedure') {
+            return <ThinkingProcedure key={turn.id} step={turn.step} complete={turn.complete} draft={turn.draft} />;
+          }
+          return (
             <article key={turn.id} className={s.assistantMessage}>
               {reduced ? <p>{turn.text}</p> : <p><TypewriterText speed={16} text={turn.text} /></p>}
             </article>
-          )
-        )}
-
-        {isThinking && (
-          reduced ? (
-            <p className={s.thinkingStatic}>Thinking…</p>
-          ) : (
-            <MatrixLoader label="Thinking" />
-          )
-        )}
+          );
+        })}
       </div>
 
       <div className={s.composerFooter}>

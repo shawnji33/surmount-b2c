@@ -1,11 +1,14 @@
 .root {
+  --font-family-body: var(--font-inter), Inter, system-ui, sans-serif;
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
+  font-family: var(--font-family-body);
   border: 1px solid var(--color-border-secondary);
   border-radius: var(--radius-lg);
   background: var(--color-bg-primary);
+  box-shadow: 0 2px 12px 0 rgba(10, 13, 18, 0.03);
   overflow: hidden;
 }
 
@@ -103,135 +106,43 @@
   color: var(--color-fg-tertiary-600);
 }
 
-/* ── reply sections ──────────────────────────────── */
-
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  transition: opacity 400ms cubic-bezier(0.23, 1, 0.32, 1), filter 400ms cubic-bezier(0.23, 1, 0.32, 1), transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
-  animation: sectionFadeUp 400ms cubic-bezier(0.23, 1, 0.32, 1) both;
-}
-
-.sectionResolving {
-  opacity: 0.55;
-  filter: blur(0.5px);
-  transform: scale(0.985);
-  transform-origin: top left;
-}
-
-@keyframes sectionFadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.sectionMeta {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-text-xs);
-}
-
-.sectionLabel {
-  font-weight: 500;
-  color: var(--color-fg-primary-900);
-}
-
-.sectionSub {
-  color: var(--color-fg-tertiary-600);
-}
-
-.sectionBody {
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-text-sm);
-  line-height: var(--line-height-text-sm);
-  color: var(--color-fg-secondary-700);
-}
-
 /* ── composer ─────────────────────────────────────── */
 
 .composerWrap {
+  position: relative;
+  z-index: 1;
   flex-shrink: 0;
   padding: var(--spacing-md);
+  background: var(--color-bg-primary);
 }
 
-.composer {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md) var(--spacing-lg);
-  border: 1px solid var(--color-border-primary);
-  border-radius: var(--radius-md);
-  background: var(--color-bg-secondary);
-  cursor: text;
-  transition: border-color 150ms ease;
+.composerWrap::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: 32px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--color-bg-primary) 12%, transparent) 24%,
+    color-mix(in srgb, var(--color-bg-primary) 42%, transparent) 52%,
+    color-mix(in srgb, var(--color-bg-primary) 78%, transparent) 78%,
+    var(--color-bg-primary) 100%
+  );
+  pointer-events: none;
 }
 
-.composer:focus-within {
-  border-color: var(--color-border-secondary);
-}
-
-.input {
-  flex: 1;
-  min-width: 0;
-  background: transparent;
-  border: 0;
-  outline: none;
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-text-sm);
-  color: var(--color-fg-primary-900);
-}
-
-.input::placeholder {
-  color: var(--color-fg-quaternary-400);
-}
-
-.sendBtn {
+.composerWrap > * {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-  border: 0;
-  border-radius: var(--radius-sm);
-  background: var(--color-fg-primary-900);
-  color: var(--color-fg-white);
-  cursor: pointer;
-  transition: background 150ms ease, transform 150ms ease-out;
-}
-
-.sendBtn svg {
-  width: 16px;
-  height: 16px;
-}
-
-.sendBtn:disabled {
-  background: var(--color-utility-gray-300);
-  cursor: default;
-}
-
-.sendBtn:enabled:active {
-  transform: scale(0.96);
+  z-index: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .section {
-    animation: none;
-    transition: none;
-  }
-
   .iconBtn,
-  .composer,
-  .sendBtn {
+  .composerWrap {
     transition: none;
   }
 }

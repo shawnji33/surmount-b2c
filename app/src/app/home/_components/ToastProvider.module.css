@@ -49,6 +49,10 @@
     filter var(--toast-open) var(--toast-ease);
 }
 
+.toast[data-interactive='true'] {
+  pointer-events: auto;
+}
+
 .icon {
   width: 18px;
   height: 18px;
@@ -56,8 +60,47 @@
   color: var(--color-fg-success-primary, #52c76a);
 }
 
+.action {
+  position: relative;
+  min-width: 48px;
+  min-height: 32px;
+  padding: 0 var(--spacing-md);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.14);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 150ms ease-out, transform 150ms ease-out;
+}
+
+.action::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .action:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
+}
+
+.action:active {
+  transform: scale(0.96);
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--color-fg-white);
+  outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .toast {
+    transition: none !important;
+  }
+
+  .action {
     transition: none !important;
   }
 }

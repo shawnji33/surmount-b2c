@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, FloppyDisk, Lightning, PencilSimple, X } from '@phosphor-icons/react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/Button';
 import s from './BuilderHeader.module.css';
 
 // Two shapes: a static `title` (matches the Figma "ETF Builder" header — name/description
@@ -19,6 +19,7 @@ type BuilderHeaderProps =
       onSave: () => void;
       saveDisabled?: boolean;
       onDeploy: () => void;
+      deployDisabled?: boolean;
       onClose: () => void;
       name?: undefined;
     }
@@ -37,7 +38,7 @@ export function BuilderHeader(props: BuilderHeaderProps) {
   const [descFocused, setDescFocused] = useState(false);
 
   if (props.title !== undefined) {
-    const { title, titleBadge, onSave, saveDisabled, onDeploy, onClose } = props;
+    const { title, titleBadge, onSave, saveDisabled, onDeploy, deployDisabled, onClose } = props;
     return (
       <div className={s.header}>
         <div className={s.titleRow}>
@@ -46,23 +47,40 @@ export function BuilderHeader(props: BuilderHeaderProps) {
         </div>
 
         <div className={s.actions}>
-          <Button type="button" variant="outline" size="lg" onClick={onSave} disabled={saveDisabled}>
-            <FloppyDisk weight="regular" aria-hidden="true" />
-            <span>Save</span>
-          </Button>
-          <Button type="button" size="lg" onClick={onDeploy}>
-            <Lightning weight="regular" aria-hidden="true" />
-            <span>Deploy</span>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            fullWidth={false}
+            className={s.actionButton}
+            iconLeading={<FloppyDisk weight="regular" aria-hidden="true" />}
+            onClick={onSave}
+            disabled={saveDisabled}
+          >
+            Save
           </Button>
           <Button
             type="button"
-            variant="outline"
-            size="icon-lg"
+            variant="primary"
+            size="sm"
+            fullWidth={false}
+            className={s.actionButton}
+            iconLeading={<Lightning weight="regular" aria-hidden="true" />}
+            onClick={onDeploy}
+            disabled={deployDisabled}
+          >
+            Deploy
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            fullWidth={false}
+            className={[s.actionButton, s.closeButton].join(' ')}
+            iconLeading={<X weight="regular" aria-hidden="true" />}
             onClick={onClose}
             aria-label="Close"
-          >
-            <X weight="regular" aria-hidden="true" />
-          </Button>
+          />
         </div>
       </div>
     );
@@ -104,8 +122,8 @@ export function BuilderHeader(props: BuilderHeaderProps) {
       </div>
 
       <div className={s.actions}>
-        <Button type="button" variant="outline" size="lg">Save</Button>
-        <Button type="button" size="lg" onClick={onDeploy}>Deploy</Button>
+        <Button type="button" variant="secondary" size="sm" fullWidth={false}>Save</Button>
+        <Button type="button" variant="primary" size="sm" fullWidth={false} onClick={onDeploy}>Deploy</Button>
       </div>
     </div>
   );

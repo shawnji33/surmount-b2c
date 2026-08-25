@@ -6,12 +6,19 @@ interface ChatUserBubbleProps {
   animationDelay?: number;
   className?: string;
   style?: CSSProperties;
+  variant?: 'default' | 'compact';
 }
 
-export function ChatUserBubble({ children, animationDelay, className, style }: ChatUserBubbleProps) {
+export function ChatUserBubble({
+  children,
+  animationDelay,
+  className,
+  style,
+  variant = 'default',
+}: ChatUserBubbleProps) {
   return (
     <div
-      className={[s.row, className].filter(Boolean).join(' ')}
+      className={[s.row, variant === 'compact' ? s.compact : '', className].filter(Boolean).join(' ')}
       style={{ ...(animationDelay !== undefined ? { animationDelay: `${animationDelay}ms` } : {}), ...style }}
     >
       <article className={s.bubble}>

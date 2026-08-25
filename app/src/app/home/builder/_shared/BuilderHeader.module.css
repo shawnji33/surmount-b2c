@@ -29,6 +29,26 @@
   flex-shrink: 0;
 }
 
+.actions .actionButton {
+  height: 40px;
+  min-height: 40px;
+}
+
+.actions .actionButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+.actions .closeButton {
+  width: 40px;
+  min-width: 40px;
+  padding: 0;
+}
+
+.actions .actionButton:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
 /* ─── Editable-name variant (No-Code Builder — no hero to relocate this into) ─── */
 
 .backBtn {

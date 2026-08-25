@@ -17,13 +17,19 @@ export function HomeShell({ children }: { children: React.ReactNode }) {
   // dashboard chrome) with its own edge-to-edge shell, so it needs zero ancestor padding —
   // unlike the agents surface, which still wants the 32px margin.
   const isPlansSurface = pathname === '/home/get-started/plans';
+  // "Choose a builder" is the same kind of full-screen decision takeover as choose-a-plan — a
+  // two-panel layout that needs the full viewport width, not the dashboard's 32px gutters.
+  const isChooseBuilderSurface = pathname === '/home/builder/choose';
   // Promptfolio's landing hero is the same kind of immersive, centered surface as /home/agents —
   // a dashboard sidebar would compete with the centered composer for attention. Once a
-  // conversation starts (?stage=building), it becomes a real builder screen (backtest, holdings
-  // table, Save/Deploy) and gets the normal sidebar + builder chrome back, same as ETF Builder.
-  const isPromptfolioBuilding = pathname === '/home/builder/promptfolio' && searchParams.get('stage') === 'building';
-  const isPromptfolioSurface = pathname === '/home/builder/promptfolio' && !isPromptfolioBuilding;
-  const isFullBleedSurface = isAgentsSurface || isAgentHomeExploration || isPlansSurface || isPromptfolioSurface;
+  // conversation starts, its building and summary stages become real workspace screens (backtest,
+  // holdings, review) and get the normal sidebar + builder chrome back, same as ETF Builder.
+  const promptfolioStage = searchParams.get('stage');
+  const isPromptfolioWorkspace = pathname === '/home/builder/promptfolio'
+    && (promptfolioStage === 'building' || promptfolioStage === 'summary');
+  const isPromptfolioSurface = pathname === '/home/builder/promptfolio' && !isPromptfolioWorkspace;
+  const isFullBleedSurface = isAgentsSurface || isAgentHomeExploration || isPlansSurface
+    || isPromptfolioSurface || isChooseBuilderSurface;
 
   return (
     <ToastProvider>
@@ -35,7 +41,7 @@ export function HomeShell({ children }: { children: React.ReactNode }) {
         <div className={[
           styles.mainWrapper,
           (isAgentsSurface || isAgentHomeExploration || isPromptfolioSurface) ? styles.mainWrapperNoSidebar : '',
-          isPlansSurface ? styles.mainWrapperFullBleed : '',
+          (isPlansSurface || isChooseBuilderSurface) ? styles.mainWrapperFullBleed : '',
         ].filter(Boolean).join(' ')}>
           {children}
         </div>

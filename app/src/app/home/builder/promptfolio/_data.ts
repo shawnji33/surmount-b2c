@@ -246,10 +246,10 @@ export const PROMPTFOLIO_TEMPLATES: PromptfolioTemplate[] = [
   {
     id: 'generic',
     matches: [],
-    assistantReply: "Here's a broad, diversified starting point based on what you described — you can refine it below or keep chatting to steer it further.",
+    assistantReply: "Here's a diversified quality strategy generated from what you described, including its target allocation and risk rules.",
     draft: {
-      name: 'Strategy name',
-      description: 'A diversified starting point — refine it as you go',
+      name: 'Quality Compounders',
+      description: 'Durable businesses with resilient cash flows, balanced by broad-market exposure and disciplined monthly rebalancing',
       rows: [
         { ticker: 'VTI', weight: 30 },
         { ticker: 'QQQ', weight: 25 },

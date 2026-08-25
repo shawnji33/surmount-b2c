@@ -44,17 +44,32 @@ function RuleCardShell({ title, desc, tooltip, enabled, onToggle, children }: {
   );
 }
 
-export function RuleCards({ rules, setRules, wrapped = false }: {
+export function RuleCards({
+  rules,
+  setRules,
+  wrapped = false,
+  density = 'comfortable',
+  showTitle = true,
+}: {
   rules: RuleState;
   setRules: (updater: (prev: RuleState) => RuleState) => void;
   /** Groups the three cards inside one gray panel, matching AddAssetsPanel's treatment right
-   * above it in the Figma design. Opt-in — No-Code Builder has no surrounding gray-panel visual
-   * language elsewhere, so it keeps the original bare layout unless this is passed. */
+  * above it in the Figma design. Opt-in — No-Code Builder has no surrounding gray-panel visual
+  * language elsewhere, so it keeps the original bare layout unless this is passed. */
   wrapped?: boolean;
+  /** Compact preserves the same controls and update behavior in constrained surfaces. */
+  density?: 'comfortable' | 'compact';
+  /** Lets a surrounding popover provide the accessible visible heading without duplication. */
+  showTitle?: boolean;
 }) {
   return (
-    <div className={wrapped ? s.wrappedSection : s.section}>
-      <div className={wrapped ? s.wrappedTitle : s.sectionTitle}>Custom rules</div>
+    <div
+      className={[
+        wrapped ? s.wrappedSection : s.section,
+        density === 'compact' ? s.compactSection : '',
+      ].filter(Boolean).join(' ')}
+    >
+      {showTitle && <div className={wrapped ? s.wrappedTitle : s.sectionTitle}>Custom rules</div>}
 
       <RuleCardShell
         title="Auto rebalance"

@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { MagicWand, Plus } from '@phosphor-icons/react';
 import { Button } from '@/components/Button';
 import { MY_STRATEGIES, DRAFT_STRATEGIES, ASSET_UNIVERSE, type StrategyCardData, type DraftStrategyCardData } from './_data';
 import type { RuleState } from './_shared/types';
-import { ChooseBuilderModal } from './_components/ChooseBuilderModal';
 import { MobileNotice } from './_components/MobileNotice';
 import s from './page.module.css';
 
@@ -138,9 +138,9 @@ function DraftStrategyCard({ strategy }: { strategy: DraftStrategyCardData }) {
 }
 
 export default function BuilderPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<StrategyTab>(TABS[0]);
   const [tabTransition, setTabTransition] = useState<TabTransition | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
   const transitionTimer = useRef<number | null>(null);
 
   useEffect(() => () => {
@@ -182,7 +182,7 @@ export default function BuilderPage() {
               type="button"
               fullWidth={false}
               iconLeading={<Plus weight="bold" />}
-              onClick={() => setModalOpen(true)}
+              onClick={() => router.push('/home/builder/choose')}
             >
               New strategy
             </Button>
@@ -240,7 +240,7 @@ export default function BuilderPage() {
                 variant="secondary"
                 fullWidth={false}
                 iconLeading={<Plus weight="bold" />}
-                onClick={() => setModalOpen(true)}
+                onClick={() => router.push('/home/builder/choose')}
               >
                 Build now
               </Button>
@@ -250,8 +250,6 @@ export default function BuilderPage() {
       </div>
 
       <MobileNotice />
-
-      {modalOpen && <ChooseBuilderModal onClose={() => setModalOpen(false)} />}
     </main>
   );
 }

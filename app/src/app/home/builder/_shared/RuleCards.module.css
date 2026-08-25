@@ -11,6 +11,71 @@
   color: var(--color-fg-primary-900);
 }
 
+.compactSection {
+  gap: var(--spacing-md);
+}
+
+.compactSection .card {
+  padding: 10px 12px;
+  border-color: transparent;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+}
+
+.compactSection .cardHead {
+  align-items: center;
+}
+
+.compactSection .cardDesc {
+  display: none;
+}
+
+.compactSection .helpIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.compactSection .rebalanceRow,
+.compactSection .sliderRow {
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.compactSection .rebalanceLabel,
+.compactSection .numberInput,
+.compactSection .unitSelect.unitSelect,
+.compactSection .sliderValue {
+  font-size: var(--font-size-text-xs);
+}
+
+.compactSection .numberInput {
+  width: 54px;
+  height: 32px;
+  padding: 0 8px;
+}
+
+.compactSection .unitSelect.unitSelect {
+  width: 82px;
+  height: 32px;
+}
+
+.compactSection .sliderValue {
+  width: 34px;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .compactSection .numberInput {
+    height: 44px;
+    font-size: 16px;
+  }
+
+  .compactSection .unitSelect.unitSelect {
+    height: 44px;
+    font-size: 16px;
+  }
+}
+
 /* Wrapped variant — one gray panel around all three cards, matching AddAssetsPanel exactly. */
 .wrappedSection {
   display: flex;
@@ -54,12 +119,14 @@
 
 .cardHeadText {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
 }
 
 .cardNameRow {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -92,7 +159,7 @@
 }
 
 .tooltipWrap {
-  position: relative;
+  position: static;
   display: inline-block;
 }
 
@@ -116,18 +183,20 @@
 
 .tooltip {
   position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
+  top: calc(100% + 8px);
+  left: 0;
   z-index: 2;
-  transform: translate(-50%, 0) scale(var(--tt-scale));
-  transform-origin: 50% 100%;
+  width: min(240px, 100%);
+  max-width: calc(100vw - 48px);
+  transform: translateY(-2px) scale(var(--tt-scale));
+  transform-origin: 16px 0;
   padding: 8px 12px;
   border-radius: 8px;
   background: var(--tt-bg);
   color: var(--tt-fg);
   font-size: var(--font-size-text-xs);
   line-height: 1.4;
-  white-space: nowrap;
+  white-space: normal;
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.06),
     0 2px 6px 0 rgba(0, 0, 0, 0.05),
@@ -142,10 +211,22 @@
 .tooltipWrap:hover .tooltip,
 .tooltipTrigger:focus-visible + .tooltip {
   opacity: 1;
-  transform: translate(-50%, 0) scale(1);
+  transform: translateY(0) scale(1);
   transition-duration: var(--tt-in-dur);
   transition-timing-function: var(--tt-in-ease);
   transition-delay: var(--tt-delay);
+}
+
+.card:last-child .tooltip {
+  top: auto;
+  bottom: calc(100% + 8px);
+  transform: translateY(2px) scale(var(--tt-scale));
+  transform-origin: 16px 100%;
+}
+
+.card:last-child .tooltipWrap:hover .tooltip,
+.card:last-child .tooltipTrigger:focus-visible + .tooltip {
+  transform: translateY(0) scale(1);
 }
 
 .cardDesc {

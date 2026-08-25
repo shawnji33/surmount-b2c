@@ -31,6 +31,29 @@
   letter-spacing: -0.5px;
 }
 
+/* Compact composer treatment from the original Promptfolio reference. */
+.compact {
+  padding-left: 56px;
+}
+
+.compact .bubble {
+  flex: 0 1 auto;
+  max-width: 100%;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--color-bg-secondary);
+  align-self: auto;
+}
+
+.compact .bubble p {
+  --promptfolio-message-font-size: 13px;
+  font-size: var(--promptfolio-message-font-size);
+  line-height: 1.4;
+  color: var(--color-fg-primary-900);
+  letter-spacing: -0.1px;
+}
+
 @keyframes bubbleEnter {
   from {
     opacity: 0;

@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowRight, ChartLineUp, Code, FlowArrow, MagicWand, Plus, Sparkle, SquaresFour } from '@phosphor-icons/react';
 import { Button } from '@/components/Button';
 import { HomeShell } from '@/app/home/HomeShell';
 import { MY_STRATEGIES, type StrategyCardData } from '@/app/home/builder/_data';
-import { ChooseBuilderModal } from '@/app/home/builder/_components/ChooseBuilderModal';
 import s from './page.module.css';
 
 const TABS = ['Active strategies', 'My strategies', 'Favorite strategies'] as const;
@@ -102,10 +102,10 @@ const VARIANTS = [
 ] as const;
 
 export default function CreateStrategyPagePrototype() {
+  const router = useRouter();
   const [active, setActive] = useState(0);
   const [remount, setRemount] = useState(0);
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>(TABS[0]);
-  const [modalOpen, setModalOpen] = useState(false);
   const picker = useRef<HTMLElement>(null);
   const highlight = useRef<HTMLSpanElement>(null);
   const items = useRef<(HTMLButtonElement | null)[]>([]);
@@ -117,5 +117,5 @@ export default function CreateStrategyPagePrototype() {
   useEffect(() => { const onKeydown = (event: KeyboardEvent) => { const target = event.target as HTMLElement; if (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable || event.metaKey || event.ctrlKey || event.altKey) return; if (event.key === 'ArrowRight') selectVariant((active + 1) % VARIANTS.length); else if (event.key === 'ArrowLeft') selectVariant((active - 1 + VARIANTS.length) % VARIANTS.length); else if (/^[1-3]$/.test(event.key)) selectVariant(Number(event.key) - 1); else if (event.key === 'r' || event.key === 'R') setRemount((value) => value + 1); }; window.addEventListener('keydown', onKeydown); return () => window.removeEventListener('keydown', onKeydown); }, [active, selectVariant]);
   const Layout = VARIANTS[active].Layout;
   const strategies = activeTab === TABS[1] ? MY_STRATEGIES.slice(0, 5) : activeTab === TABS[2] ? MY_STRATEGIES.slice(4, 8) : MY_STRATEGIES;
-  return <HomeShell><main className={s.shell}><div key={`${active}-${remount}`} className={s.stage}><Layout strategies={strategies} onBuild={() => setModalOpen(true)} tab={activeTab} setTab={setActiveTab} /></div><nav ref={picker} className="proto-picker" aria-label="Prototype variants"><span ref={highlight} className="proto-picker-highlight" aria-hidden="true" />{VARIANTS.map((variant, index) => <button key={variant.name} ref={(element) => { items.current[index] = element; }} className="proto-picker-item" data-active={active === index || undefined} aria-current={active === index ? 'true' : undefined} onClick={() => selectVariant(index)}>{variant.name}</button>)}<span className="proto-picker-divider" aria-hidden="true" /><button className="proto-picker-item proto-picker-replay" aria-label="Replay animation (R)" onClick={() => setRemount((value) => value + 1)}>↻</button></nav></main>{modalOpen && <ChooseBuilderModal onClose={() => setModalOpen(false)} />}</HomeShell>;
+  return <HomeShell><main className={s.shell}><div key={`${active}-${remount}`} className={s.stage}><Layout strategies={strategies} onBuild={() => router.push('/home/builder/choose')} tab={activeTab} setTab={setActiveTab} /></div><nav ref={picker} className="proto-picker" aria-label="Prototype variants"><span ref={highlight} className="proto-picker-highlight" aria-hidden="true" />{VARIANTS.map((variant, index) => <button key={variant.name} ref={(element) => { items.current[index] = element; }} className="proto-picker-item" data-active={active === index || undefined} aria-current={active === index ? 'true' : undefined} onClick={() => selectVariant(index)}>{variant.name}</button>)}<span className="proto-picker-divider" aria-hidden="true" /><button className="proto-picker-item proto-picker-replay" aria-label="Replay animation (R)" onClick={() => setRemount((value) => value + 1)}>↻</button></nav></main></HomeShell>;
 }

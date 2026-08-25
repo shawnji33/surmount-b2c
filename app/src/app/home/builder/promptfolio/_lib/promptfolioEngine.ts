@@ -78,3 +78,65 @@ export function mergeMentionedTickers(draft: PromptfolioDraft, mentioned: string
 
   return { ...draft, rows };
 }
+
+const GENERATED_IDENTITIES = [
+  {
+    matches: ['warren', 'buffett', 'berkshire'],
+    name: 'Quality Compounders',
+    focus: 'Quality-focused businesses with durable moats and resilient cash flows',
+  },
+  {
+    matches: ['cathie', 'wood', 'ark', 'disruptive'],
+    name: 'Disruptive Innovation Growth',
+    focus: 'Long-duration growth exposure to disruptive technology leaders',
+  },
+  {
+    matches: ['pension', 'institutional'],
+    name: 'Institutional Balance',
+    focus: 'Institutional diversification designed for steady long-term compounding',
+  },
+  {
+    matches: ['hedge fund', 'aggressive', 'high risk', 'high-risk'],
+    name: 'Opportunistic Alpha',
+    focus: 'High-conviction growth exposure built for asymmetric upside',
+  },
+  {
+    matches: ['artificial intelligence', ' ai ', 'ai-', 'technology', 'tech'],
+    name: 'AI & Technology Leaders',
+    focus: 'Technology platforms and infrastructure positioned for durable growth',
+  },
+  {
+    matches: ['retirement', 'long term', 'long-term', 'balanced'],
+    name: 'Long-Horizon Balanced Core',
+    focus: 'A balanced core designed for resilient long-term growth',
+  },
+  {
+    matches: ['low risk', 'low-risk', 'conservative', 'capital preservation'],
+    name: 'Steady Growth Reserve',
+    focus: 'Capital preservation with measured participation in market growth',
+  },
+  {
+    matches: ['esg', 'sustainable', 'sustainability'],
+    name: 'Sustainable Leaders',
+    focus: 'Diversified market leaders aligned with long-term sustainability themes',
+  },
+] as const;
+
+// The prototype has no model backend, so unmatched free-form prompts receive a deterministic
+// generated identity from the prompt's intent plus the portfolio that was actually assembled.
+export function generateStrategyIdentity(input: string, draft: PromptfolioDraft): PromptfolioDraft {
+  const normalized = ` ${input.trim().toLowerCase()} `;
+  const identity = GENERATED_IDENTITIES.find((candidate) => (
+    candidate.matches.some((keyword) => normalized.includes(keyword))
+  ));
+  const leaders = draft.rows.slice(0, 3).map((row) => row.ticker).join(', ');
+  const cadence = draft.rules.rebalance.enabled
+    ? `rebalanced every ${draft.rules.rebalance.every} ${draft.rules.rebalance.unit.toLowerCase()}`
+    : 'managed without automatic rebalancing';
+
+  return {
+    ...draft,
+    name: identity?.name ?? 'Adaptive Market Core',
+    description: `${identity?.focus ?? 'A diversified mix of growth and defensive exposure'}, led by ${leaders} and ${cadence}.`,
+  };
+}

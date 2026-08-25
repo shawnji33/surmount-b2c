@@ -18,6 +18,11 @@ export type PromptComposerHandle = {
   fillPrompt: (text: string) => void;
 };
 
+export type PromptComposerAnnotation = {
+  id: number;
+  text: string;
+};
+
 /* the last /word being typed, if any */
 function parseToken(draft: string): { kind: 'slash'; query: string; start: number } | null {
   const match = /(^|\s)\/([\w-]*)$/.exec(draft);
@@ -30,8 +35,20 @@ function parseToken(draft: string): { kind: 'slash'; query: string; start: numbe
 // composer's own wrap behavior, including its gliding highlight in the attach / slash menu.
 export const PromptComposer = forwardRef<
   PromptComposerHandle,
-  { size?: 'hero' | 'compact'; placeholder?: string; onSubmit: (text: string) => void }
->(function PromptComposer({ size = 'hero', placeholder = 'Write a message…', onSubmit }, ref) {
+  {
+    size?: 'hero' | 'compact' | 'panel';
+    placeholder?: string;
+    annotations?: PromptComposerAnnotation[];
+    onRemoveAnnotation?: (id: number) => void;
+    onSubmit: (text: string) => void;
+  }
+>(function PromptComposer({
+  size = 'hero',
+  placeholder = 'Write a message…',
+  annotations = [],
+  onRemoveAnnotation,
+  onSubmit,
+}, ref) {
   const [value, setValue] = useState('');
   const [dismissed, setDismissed] = useState(false);
   const [plusOpen, setPlusOpen] = useState(false);
@@ -48,6 +65,7 @@ export const PromptComposer = forwardRef<
   const controlsRef = useRef<HTMLDivElement>(null);
   const rowRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const dictationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestAnnotationId = annotations.at(-1)?.id;
 
   useImperativeHandle(ref, () => ({
     fillPrompt(text: string) {
@@ -101,6 +119,13 @@ export const PromptComposer = forwardRef<
     autoGrow(textareaRef.current);
   }, [value]);
 
+  // A selected-page edit arrives as composer context, not as typed copy. Keep the textarea
+  // untouched and move focus here so the user can add an instruction alongside the new chip.
+  useEffect(() => {
+    if (latestAnnotationId === undefined) return;
+    textareaRef.current?.focus();
+  }, [latestAnnotationId]);
+
   // Dictation resolves after a beat, like a real transcript landing — decorative (no speech
   // recognition wired up), same established convention as the mic button elsewhere in this app.
   useEffect(() => {
@@ -141,7 +166,7 @@ export const PromptComposer = forwardRef<
 
   function submit() {
     const trimmed = value.trim();
-    if (!trimmed && attachments.length === 0) return;
+    if (!trimmed && attachments.length === 0 && annotations.length === 0) return;
     onSubmit(trimmed);
     setValue('');
     setAttachments([]);
@@ -178,10 +203,17 @@ export const PromptComposer = forwardRef<
     }
   }
 
-  const canSend = value.trim().length > 0 || attachments.length > 0;
+  const canSend = value.trim().length > 0 || attachments.length > 0 || annotations.length > 0;
 
   return (
-    <div className={[s.root, size === 'compact' ? s.rootCompact : ''].filter(Boolean).join(' ')} data-promptbar>
+    <div
+      className={[
+        s.root,
+        size === 'compact' ? s.rootCompact : '',
+        size === 'panel' ? s.rootPanel : '',
+      ].filter(Boolean).join(' ')}
+      data-promptbar
+    >
       <div className={s.anchor}>
         {menu && (
           <div className={s.menuPanel} role="listbox" aria-label={menu === 'attach' ? 'Attach a file' : 'Slash commands'}>
@@ -248,11 +280,33 @@ export const PromptComposer = forwardRef<
          * rounded shape — that also clips any box-shadow on .card, since a shadow bleeds outside
          * its own box. Carrying the shadow on this outer wrapper instead keeps it outside that
          * clip while the radius still tracks .card's (see .shadowWrapWithAttach). */}
-        <div className={[s.shadowWrap, attachments.length > 0 || wide ? s.shadowWrapWithAttach : ''].filter(Boolean).join(' ')}>
+        <div className={[s.shadowWrap, attachments.length > 0 || annotations.length > 0 || wide ? s.shadowWrapWithAttach : ''].filter(Boolean).join(' ')}>
         <BorderBeam size="line" colorVariant="colorful" theme="light">
-        <div className={[s.card, attachments.length > 0 || wide ? s.cardWithAttach : ''].filter(Boolean).join(' ')}>
-          {attachments.length > 0 && (
+        <form
+          className={[s.card, attachments.length > 0 || annotations.length > 0 || wide ? s.cardWithAttach : ''].filter(Boolean).join(' ')}
+          onSubmit={(event) => {
+            event.preventDefault();
+            submit();
+          }}
+        >
+          {(attachments.length > 0 || annotations.length > 0) && (
             <div className={s.attachRow}>
+              {annotations.map((annotation) => (
+                <span key={annotation.id} className={[s.attachChip, s.annotationChip].join(' ')} title={annotation.text}>
+                  <Paperclip weight="regular" />
+                  <span className={s.attachName}>{annotation.text}</span>
+                  {onRemoveAnnotation && (
+                    <button
+                      type="button"
+                      aria-label={`Remove annotation: ${annotation.text}`}
+                      className={s.attachRemove}
+                      onClick={() => onRemoveAnnotation(annotation.id)}
+                    >
+                      <X weight="bold" />
+                    </button>
+                  )}
+                </span>
+              ))}
               {attachments.map((file, i) => (
                 <span key={`${file}-${i}`} className={s.attachChip}>
                   <Paperclip weight="regular" />
@@ -295,6 +349,8 @@ export const PromptComposer = forwardRef<
               rows={1}
               value={value}
               aria-label={placeholder}
+              autoComplete="off"
+              spellCheck={false}
               onChange={(e) => {
                 setValue(e.target.value);
                 setDismissed(false);
@@ -321,11 +377,11 @@ export const PromptComposer = forwardRef<
               )}
             </button>
 
-            <button type="button" className={s.sendBtn} disabled={!canSend} onClick={submit} aria-label="Submit">
+            <button type="submit" className={s.sendBtn} disabled={!canSend} aria-label="Submit">
               <ArrowUp weight="bold" />
             </button>
           </div>
-        </div>
+        </form>
         </BorderBeam>
         </div>
       </div>

@@ -9,6 +9,41 @@
   overflow: hidden;
 }
 
+.closeBtn {
+  position: absolute;
+  top: var(--spacing-4xl);
+  right: var(--spacing-4xl);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-tertiary);
+  color: var(--color-fg-tertiary-600);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.closeBtn:hover {
+  background: var(--color-border-secondary);
+  color: var(--color-fg-primary-900);
+}
+
+.closeBtn svg {
+  width: 14px;
+  height: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .closeBtn {
+    transition: none;
+  }
+}
+
 .content {
   position: relative;
   z-index: 1;
