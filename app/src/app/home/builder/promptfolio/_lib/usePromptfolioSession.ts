@@ -47,7 +47,6 @@ function rebalanceRows(rows: PromptfolioDraft['rows'], lockedTicker?: string, lo
 }
 
 const PROCEDURE_STEP_MS = 5000;
-const USER_PROMPT_HOLD_MS = 2000;
 const BUILD_STATUS_HOLD_MS = 3500;
 const DRAFT_START_MS = 200;
 const REVEAL_HOLDINGS_MS = 300;
@@ -95,7 +94,7 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
     clearAllTimers();
     setRevealStage(0);
     const procedureId = nextTurnId();
-    setIsThinking(false);
+    setIsThinking(true);
 
     const matched = matchTemplate(trimmed);
     const mentioned = extractMentionedTickers(trimmed);
@@ -106,11 +105,12 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
     setDraft(draft);
     setMatchedTemplateName(matched.draft.name);
 
-    // Let the submitted prompt land in the new workspace before any agent activity appears.
-    // The build status then gets its own short beat before the first procedure row is revealed.
+    // Acknowledge the submission immediately with both the user's prompt and the live build
+    // status. The status then gets its own short beat before the first procedure row is revealed.
     setTurns((prev) => [
       ...prev,
       { id: nextTurnId(), role: 'user', text: describeInput(trimmed) },
+      { id: procedureId, role: 'procedure', step: -1, complete: false, draft },
     ]);
 
     function updateProcedure(step: number, complete = false) {
@@ -156,17 +156,9 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
     }
 
     schedule(() => {
-      setIsThinking(true);
-      setTurns((prev) => [
-        ...prev,
-        { id: procedureId, role: 'procedure', step: -1, complete: false, draft },
-      ]);
-
-      schedule(() => {
-        updateProcedure(0);
-        advance(1);
-      }, BUILD_STATUS_HOLD_MS);
-    }, USER_PROMPT_HOLD_MS);
+      updateProcedure(0);
+      advance(1);
+    }, BUILD_STATUS_HOLD_MS);
   }
 
   function reset() {
