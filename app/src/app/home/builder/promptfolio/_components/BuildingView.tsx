@@ -159,9 +159,9 @@ export function BuildingView({
           />
         }
         onSave={handleReview}
-        saveDisabled={!session.draft || session.revealStage < 4}
+        saveDisabled={session.isThinking || !session.draft || session.revealStage < 4}
         onDeploy={handleReview}
-        deployDisabled={!session.draft || session.revealStage < 4}
+        deployDisabled={session.isThinking || !session.draft || session.revealStage < 4}
         onClose={onBack}
       />
 

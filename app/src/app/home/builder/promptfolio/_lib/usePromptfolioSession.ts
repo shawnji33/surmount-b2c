@@ -93,17 +93,18 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
     if (!trimmed) return;
 
     clearAllTimers();
-    setRevealStage(0);
+    const isRefreshingCompletedDraft = draft !== null && revealStage >= 4;
+    if (!isRefreshingCompletedDraft) setRevealStage(0);
     const procedureId = nextTurnId();
-    setIsThinking(false);
+    setIsThinking(true);
 
     const matched = matchTemplate(trimmed);
     const mentioned = extractMentionedTickers(trimmed);
     const mergedDraft = mergeMentionedTickers(matched.draft, mentioned);
-    const draft = matched.id === 'generic'
+    const nextDraft = matched.id === 'generic'
       ? generateStrategyIdentity(trimmed, mergedDraft)
       : mergedDraft;
-    setDraft(draft);
+    if (!isRefreshingCompletedDraft) setDraft(nextDraft);
     setMatchedTemplateName(matched.draft.name);
 
     // Acknowledge the submission with the user's prompt first. The live build status follows
@@ -126,13 +127,19 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
       setIsThinking(false);
       setTurns((prev) => [...prev, { id: nextTurnId(), role: 'assistant', text: matched.assistantReply }]);
 
+      if (isRefreshingCompletedDraft) {
+        setDraft(nextDraft);
+        setRevealStage(4);
+        return;
+      }
+
       schedule(() => {
         setRevealStage(1);
 
         schedule(() => {
           setRevealStage(2);
 
-          const rulesDelay = REVEAL_RULES_BASE_MS + draft.rows.length * REVEAL_RULES_STAGGER_MS;
+          const rulesDelay = REVEAL_RULES_BASE_MS + nextDraft.rows.length * REVEAL_RULES_STAGGER_MS;
           schedule(() => {
             setRevealStage(3);
 
@@ -156,10 +163,9 @@ export function usePromptfolioSession(initialInput: string | null, autoStart = t
     }
 
     schedule(() => {
-      setIsThinking(true);
       setTurns((prev) => [
         ...prev,
-        { id: procedureId, role: 'procedure', step: -1, complete: false, draft },
+        { id: procedureId, role: 'procedure', step: -1, complete: false, draft: nextDraft },
       ]);
 
       schedule(() => {
