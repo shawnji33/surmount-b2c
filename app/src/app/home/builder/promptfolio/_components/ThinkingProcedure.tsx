@@ -217,7 +217,9 @@ export function ThinkingProcedure({ step, complete, draft }: ThinkingProcedurePr
   const [openRows, setOpenRows] = useState<Set<string>>(() => new Set(['thinking']));
   const [selectedDiff, setSelectedDiff] = useState<string | null>(null);
   const elapsed = useElapsed(!complete);
-  const activeRowId = complete ? null : ACTIVE_ROW_IDS[Math.min(step, ACTIVE_ROW_IDS.length - 1)];
+  const activeRowId = complete || step < 0
+    ? null
+    : ACTIVE_ROW_IDS[Math.min(step, ACTIVE_ROW_IDS.length - 1)];
   const strategyPayload = {
     recommendations: draft.rows.map((row) => {
       const asset = ASSET_UNIVERSE.find((candidate) => candidate.ticker === row.ticker);
@@ -238,6 +240,10 @@ export function ThinkingProcedure({ step, complete, draft }: ThinkingProcedurePr
   const strategyLineCount = strategySource.split('\n').length;
 
   useEffect(() => {
+    if (step < 0) {
+      setOpenRows(new Set());
+      return;
+    }
     setOpenRows(new Set([complete ? 'write' : ACTIVE_ROW_IDS[Math.min(step, ACTIVE_ROW_IDS.length - 1)]]));
   }, [complete, step]);
 
@@ -292,7 +298,7 @@ export function ThinkingProcedure({ step, complete, draft }: ThinkingProcedurePr
 
       <div className={s.procedureBody}>
         <div className={s.toolRows} data-loading={!complete}>
-          {rows.slice(0, Math.min(step + 1, rows.length)).map((row) => {
+          {rows.slice(0, step < 0 ? 0 : Math.min(step + 1, rows.length)).map((row) => {
             const rowOpen = openRows.has(row.id);
             const IconComponent = row.icon;
             return (
