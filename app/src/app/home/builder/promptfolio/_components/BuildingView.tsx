@@ -111,6 +111,7 @@ export function BuildingView({
   }
 
   function handleSubmit(text: string) {
+    if (session.isThinking) return;
     const request = [text.trim(), ...promptAnnotations.map((annotation) => annotation.text)]
       .filter(Boolean)
       .join('\n');

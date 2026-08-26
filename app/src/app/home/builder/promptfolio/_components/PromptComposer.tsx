@@ -40,6 +40,7 @@ export const PromptComposer = forwardRef<
     placeholder?: string;
     annotations?: PromptComposerAnnotation[];
     onRemoveAnnotation?: (id: number) => void;
+    disabled?: boolean;
     onSubmit: (text: string) => void;
   }
 >(function PromptComposer({
@@ -47,6 +48,7 @@ export const PromptComposer = forwardRef<
   placeholder = 'Write a message…',
   annotations = [],
   onRemoveAnnotation,
+  disabled = false,
   onSubmit,
 }, ref) {
   const [value, setValue] = useState('');
@@ -165,6 +167,7 @@ export const PromptComposer = forwardRef<
   }
 
   function submit() {
+    if (disabled) return;
     const trimmed = value.trim();
     if (!trimmed && attachments.length === 0 && annotations.length === 0) return;
     onSubmit(trimmed);
@@ -203,7 +206,7 @@ export const PromptComposer = forwardRef<
     }
   }
 
-  const canSend = value.trim().length > 0 || attachments.length > 0 || annotations.length > 0;
+  const canSend = !disabled && (value.trim().length > 0 || attachments.length > 0 || annotations.length > 0);
 
   return (
     <div
@@ -333,6 +336,7 @@ export const PromptComposer = forwardRef<
               type="button"
               aria-label="Attach a file"
               aria-expanded={plusOpen}
+              disabled={disabled}
               className={[s.plusBtn, plusOpen ? s.iconBtnActive : ''].filter(Boolean).join(' ')}
               onClick={() => {
                 setPlusOpen((current) => !current);
@@ -349,6 +353,7 @@ export const PromptComposer = forwardRef<
               rows={1}
               value={value}
               aria-label={placeholder}
+              disabled={disabled}
               autoComplete="off"
               spellCheck={false}
               onChange={(e) => {
@@ -363,6 +368,7 @@ export const PromptComposer = forwardRef<
               type="button"
               aria-label={listening ? 'Stop dictation' : 'Start dictation'}
               aria-pressed={listening}
+              disabled={disabled}
               className={[s.micBtn, listening ? s.micBtnActive : ''].filter(Boolean).join(' ')}
               onClick={() => setListening((current) => !current)}
             >
@@ -377,7 +383,7 @@ export const PromptComposer = forwardRef<
               )}
             </button>
 
-            <button type="submit" className={s.sendBtn} disabled={!canSend} aria-label="Submit">
+            <button type="submit" className={s.sendBtn} disabled={!canSend} aria-label={disabled ? 'Updating portfolio' : 'Submit'}>
               <ArrowUp weight="bold" />
             </button>
           </div>

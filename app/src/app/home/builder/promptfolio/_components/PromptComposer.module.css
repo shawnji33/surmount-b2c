@@ -372,15 +372,25 @@
 }
 
 .sendBtn:active:not(:disabled),
-.micBtn:active,
-.plusBtn:active {
-  transform: scale(0.94);
+.micBtn:active:not(:disabled),
+.plusBtn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.sendBtn:disabled,
+.micBtn:disabled,
+.plusBtn:disabled {
+  cursor: default;
 }
 
 .sendBtn:disabled {
   background: var(--color-utility-gray-300);
   color: var(--color-fg-white);
-  cursor: default;
+}
+
+.input:disabled {
+  color: var(--color-fg-tertiary-600);
+  cursor: wait;
 }
 
 .plusBtn svg,

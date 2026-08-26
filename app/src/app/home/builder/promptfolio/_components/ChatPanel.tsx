@@ -70,6 +70,7 @@ export function ChatPanel({
                 draft={turn.draft}
                 kind={turn.kind}
                 addedTickers={turn.addedTickers}
+                revisionSummary={turn.revisionSummary}
               />
             );
           }
@@ -91,7 +92,8 @@ export function ChatPanel({
       <div className={s.composerWrap}>
         <PromptComposer
           size="panel"
-          placeholder="Write a message…"
+          placeholder={isThinking ? 'Updating draft…' : 'Write a message…'}
+          disabled={isThinking}
           annotations={promptAnnotations}
           onRemoveAnnotation={onRemovePromptAnnotation}
           onSubmit={onSubmit}

@@ -45,6 +45,7 @@ export function ConversationPanel({
                 draft={turn.draft}
                 kind={turn.kind}
                 addedTickers={turn.addedTickers}
+                revisionSummary={turn.revisionSummary}
               />
             );
           }
@@ -57,7 +58,7 @@ export function ConversationPanel({
       </div>
 
       <div className={s.composerFooter}>
-        <PromptComposer size="compact" placeholder="Refine your agent…" onSubmit={onSubmit} />
+        <PromptComposer size="compact" placeholder={isThinking ? 'Updating draft…' : 'Refine your agent…'} disabled={isThinking} onSubmit={onSubmit} />
       </div>
     </div>
   );

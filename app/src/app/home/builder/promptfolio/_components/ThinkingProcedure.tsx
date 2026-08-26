@@ -13,6 +13,7 @@ type ThinkingProcedureProps = {
   draft: PromptfolioDraft;
   kind: ProcedureKind;
   addedTickers: string[];
+  revisionSummary: string;
 };
 type ToolRow = { id: string; icon: Icon; label: string; chip: string; detail: ReactNode };
 
@@ -220,7 +221,7 @@ function StreamingCodeLines({ source, active }: { source: string; active: boolea
   );
 }
 
-export function ThinkingProcedure({ step, complete, draft, kind, addedTickers }: ThinkingProcedureProps) {
+export function ThinkingProcedure({ step, complete, draft, kind, addedTickers, revisionSummary }: ThinkingProcedureProps) {
   const [openRows, setOpenRows] = useState<Set<string>>(() => new Set(['thinking']));
   const [selectedDiff, setSelectedDiff] = useState<string | null>(null);
   const elapsed = useElapsed(!complete);
@@ -245,7 +246,7 @@ export function ThinkingProcedure({ step, complete, draft, kind, addedTickers }:
   };
   const strategySource = `export const strategy = ${JSON.stringify(strategyPayload, null, 2)} as const;`;
   const strategyLineCount = strategySource.split('\n').length;
-  const isAssetUpdate = kind === 'asset-update';
+  const isRevision = kind === 'revision';
   const addedAssets = addedTickers.map((ticker) => (
     ASSET_UNIVERSE.find((asset) => asset.ticker === ticker)?.name ?? ticker
   ));
@@ -254,11 +255,12 @@ export function ThinkingProcedure({ step, complete, draft, kind, addedTickers }:
   const holdingsPatch = addedTickers
     .map((ticker) => `+ { ticker: "${ticker}", targetWeight: 15 }`)
     .join('\n');
-  const assetUpdateDiffs = [
-    { id: 'holdings', label: 'holdings.patch', add: Math.max(addedTickers.length, 1), del: 0, lines: [
-      { tone: 'context', text: 'positions: [' },
-      ...addedTickers.map((ticker) => ({ tone: 'add', text: `+  { ticker: "${ticker}", weight: 15 },` })),
-      { tone: 'context', text: ']' },
+  const revisionDiffs = [
+    { id: 'draft', label: 'portfolio.patch', add: Math.max(addedTickers.length, 1), del: 0, lines: [
+      { tone: 'context', text: 'currentDraft: {' },
+      { tone: 'add', text: `+  change: "${revisionSummary}",` },
+      ...addedTickers.map((ticker) => ({ tone: 'add', text: `+  holding: "${ticker}",` })),
+      { tone: 'context', text: '}' },
     ] },
     { id: 'weights', label: 'weights.config', add: 5, del: 4, lines: [
       { tone: 'context', text: 'targetAllocation: {' },
@@ -307,15 +309,15 @@ export function ThinkingProcedure({ step, complete, draft, kind, addedTickers }:
     },
   ];
 
-  const assetUpdateRows: ToolRow[] = [
+  const revisionRows: ToolRow[] = [
     {
-      id: 'thinking', icon: Sparkle, label: 'Review request', chip: `Add ${addedAssetLabel}`,
-      detail: <div className={s.mutedLines}><StreamingLine active={activeRowId === 'thinking'} text={`Match ${addedAssetLabel} to ${addedTickerLabel} in the supported asset universe.`} /><StreamingLine active={activeRowId === 'thinking'} text="Keep the existing strategy identity and risk rules unchanged." /></div>,
+      id: 'thinking', icon: Sparkle, label: 'Review request', chip: revisionSummary,
+      detail: <div className={s.mutedLines}><StreamingLine active={activeRowId === 'thinking'} text={addedTickers.length > 0 ? `Match ${addedAssetLabel} to ${addedTickerLabel} in the supported asset universe.` : 'Translate the follow-up into a focused change to the current draft.'} /><StreamingLine active={activeRowId === 'thinking'} text="Keep the existing conversation, strategy, and dashboard context intact." /></div>,
     },
     {
-      id: 'write', icon: FileCode, label: `Add ${addedTickers.length || 1} holding`, chip: 'holdings.patch',
-      detail: <CodeFrame title="holdings.patch" language="Portfolio diff" copyText={holdingsPatch}>
-        <StreamingCodeLines source={holdingsPatch} active={activeRowId === 'write'} />
+      id: 'write', icon: FileCode, label: 'Apply draft changes', chip: addedTickers.length > 0 ? 'holdings.patch' : 'portfolio.patch',
+      detail: <CodeFrame title="portfolio.patch" language="Portfolio diff" copyText={holdingsPatch || `+ ${revisionSummary}`}>
+        <StreamingCodeLines source={holdingsPatch || `+ ${revisionSummary}`} active={activeRowId === 'write'} />
       </CodeFrame>,
     },
     {
@@ -327,8 +329,8 @@ export function ThinkingProcedure({ step, complete, draft, kind, addedTickers }:
       detail: <div className={s.mutedLines}><StreamingLine active={activeRowId === 'read'} text="Recalculate return, drawdown, and diversification metrics." /><StreamingLine active={activeRowId === 'read'} text="Stage the updated allocation for the dashboard transition." /></div>,
     },
   ];
-  const rows = isAssetUpdate ? assetUpdateRows : buildRows;
-  const diffs = isAssetUpdate ? assetUpdateDiffs : DIFFS;
+  const rows = isRevision ? revisionRows : buildRows;
+  const diffs = isRevision ? revisionDiffs : DIFFS;
 
   function toggleRow(id: string) {
     setOpenRows((current) => {
@@ -341,17 +343,17 @@ export function ThinkingProcedure({ step, complete, draft, kind, addedTickers }:
   const selected = diffs.find((diff) => diff.id === selectedDiff) ?? null;
 
   return (
-    <section className={s.root} aria-label={isAssetUpdate ? 'Portfolio update procedure' : 'Portfolio build procedure'}>
+    <section className={s.root} aria-label={isRevision ? 'Portfolio update procedure' : 'Portfolio build procedure'}>
       {!complete ? (
         <div className={s.runHeader}>
           <span className={s.liveStatus} role="status">
             <PixelLoader />
-            <span className={s.shimmerLabel}>{isAssetUpdate ? 'Updating portfolio' : 'Building portfolio'}</span>
+            <span className={s.shimmerLabel}>{isRevision ? 'Updating portfolio' : 'Building portfolio'}</span>
             <span className={s.elapsed}>{elapsed}</span>
           </span>
         </div>
       ) : (
-        <span className={s.srOnly} role="status">{isAssetUpdate ? 'Portfolio update complete' : 'Portfolio build complete'}</span>
+        <span className={s.srOnly} role="status">{isRevision ? 'Portfolio update complete' : 'Portfolio build complete'}</span>
       )}
 
       <div className={s.procedureBody}>

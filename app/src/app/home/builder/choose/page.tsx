@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Check, Code, FlowArrow, Sparkle, SquaresFour, X, type Icon } from '@phosphor-icons/react';
 import { Button } from '@/components/Button';
+import { Badge } from '@/components/ui/badge';
 import { BUILDER_TYPES, BUILDER_ORDER, type BuilderSlug } from '../_data';
 import { MobileNotice } from '../_components/MobileNotice';
 import { BuilderPreview } from './_components/BuilderPreview';
@@ -15,13 +16,6 @@ const BUILDER_ICONS: Record<BuilderSlug, Icon> = {
   'no-code': FlowArrow,
   code: Code,
   promptfolio: Sparkle,
-};
-
-const BADGE_CLASS: Record<BuilderSlug, string> = {
-  etf: s.badgeBeginner,
-  'no-code': s.badgeIntermediate,
-  code: s.badgeAdvanced,
-  promptfolio: '',
 };
 
 export default function ChooseBuilderPage() {
@@ -86,7 +80,7 @@ export default function ChooseBuilderPage() {
                         {isAi ? (
                           <img src="/assets/badges/ai-badge.svg" alt="Surmount AI" className={s.aiBadge} />
                         ) : (
-                          <span className={[s.badge, BADGE_CLASS[slug]].filter(Boolean).join(' ')}>{type.badgeLabel}</span>
+                          <Badge variant="secondary" size="sm">{type.badgeLabel}</Badge>
                         )}
                       </span>
                       <span className={s.optionDesc}>{type.shortDesc}</span>

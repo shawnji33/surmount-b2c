@@ -7,11 +7,33 @@
   display: grid;
   grid-template-columns: 42fr 58fr;
   min-height: 100dvh;
+  animation: builder-choose-enter 250ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform, filter;
+}
+
+@keyframes builder-choose-enter {
+  from {
+    opacity: 0.45;
+    transform: translateX(6px);
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
 }
 
 @media (max-width: 760px) {
   .desktopOnly {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .desktopOnly {
+    animation: none;
   }
 }
 
@@ -200,37 +222,10 @@
   color: var(--color-fg-primary-900);
 }
 
-.badge {
-  display: inline-flex;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-text-xs);
-  font-weight: 500;
-  border: 1px solid transparent;
-}
-
 .aiBadge {
   height: 20px;
   width: auto;
   flex-shrink: 0;
-}
-
-.badgeBeginner {
-  background: var(--color-utility-success-50);
-  border-color: var(--color-utility-success-200);
-  color: var(--color-utility-success-700);
-}
-
-.badgeIntermediate {
-  background: var(--color-utility-blue-50);
-  border-color: var(--color-utility-blue-200);
-  color: var(--color-utility-blue-700);
-}
-
-.badgeAdvanced {
-  background: var(--color-utility-warning-50);
-  border-color: var(--color-utility-warning-200);
-  color: var(--color-utility-warning-700);
 }
 
 .optionDesc {

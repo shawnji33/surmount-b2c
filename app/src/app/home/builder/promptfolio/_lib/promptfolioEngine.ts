@@ -99,6 +99,153 @@ export function mergeMentionedTickers(
   return { ...draft, rows };
 }
 
+type DraftRevision = {
+  draft: PromptfolioDraft;
+  addedTickers: string[];
+  removedTickers: string[];
+  summary: string;
+  assistantReply: string;
+};
+
+function normalizeRows(
+  rows: PromptfolioDraft['rows'],
+  lockedTicker?: string,
+  lockedWeight?: number,
+) {
+  if (rows.length === 0) return rows;
+  if (rows.length === 1) return [{ ...rows[0], weight: 100 }];
+
+  const locked = lockedTicker ? rows.find((row) => row.ticker === lockedTicker) : undefined;
+  const target = locked ? Math.max(0, Math.min(100, round2(lockedWeight ?? locked.weight))) : 0;
+  const flexible = locked ? rows.filter((row) => row.ticker !== locked.ticker) : rows;
+  const available = locked ? 100 - target : 100;
+  const flexibleTotal = flexible.reduce((sum, row) => sum + row.weight, 0);
+  const scaled = flexible.map((row) => ({
+    ...row,
+    weight: round2(flexibleTotal > 0
+      ? (row.weight / flexibleTotal) * available
+      : available / flexible.length),
+  }));
+  const drift = round2(available - scaled.reduce((sum, row) => sum + row.weight, 0));
+  if (scaled[0]) scaled[0] = { ...scaled[0], weight: round2(scaled[0].weight + drift) };
+
+  return rows.map((row) => (
+    locked && row.ticker === locked.ticker
+      ? { ...row, weight: target }
+      : scaled.find((candidate) => candidate.ticker === row.ticker) ?? row
+  ));
+}
+
+function requestedWeight(input: string, ticker: string) {
+  const asset = ASSET_UNIVERSE.find((candidate) => candidate.ticker === ticker);
+  const labels = [ticker, asset?.name, asset?.name.split(/\s+/)[0]].filter(Boolean) as string[];
+  for (const label of labels) {
+    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const after = new RegExp(`\\b${escaped}\\b[^%\\d]{0,8}(\\d{1,3}(?:\\.\\d+)?)\\s*%`, 'i').exec(input);
+    if (after) return Number(after[1]);
+    const before = new RegExp(`(\\d{1,3}(?:\\.\\d+)?)\\s*%[^a-z0-9]{0,12}\\b${escaped}\\b`, 'i').exec(input);
+    if (before) return Number(before[1]);
+  }
+  return null;
+}
+
+// Follow-up prompts revise the live draft instead of selecting a fresh template. This intentionally
+// covers the high-value deterministic edits in the prototype: add/remove a holding, set a target
+// weight, and adjust risk/rebalancing rules. Unrecognized copy still becomes a recorded refinement
+// without wiping out the portfolio the user is looking at.
+export function applyDraftRevision(current: PromptfolioDraft, input: string): DraftRevision {
+  const normalized = input.toLowerCase();
+  const mentioned = extractMentionedTickers(input);
+  const removeIntent = /\b(remove|drop|exclude|sell|delete|without)\b/i.test(input);
+  const removedTickers = removeIntent
+    ? mentioned.filter((ticker) => current.rows.some((row) => row.ticker === ticker))
+    : [];
+  const addCandidates = removeIntent ? [] : mentioned;
+  const addedTickers = addCandidates.filter((ticker) => !current.rows.some((row) => row.ticker === ticker));
+  const changes: string[] = [];
+
+  let draft: PromptfolioDraft = {
+    ...current,
+    rows: current.rows.map((row) => ({ ...row })),
+    rules: {
+      rebalance: { ...current.rules.rebalance },
+      stopLoss: { ...current.rules.stopLoss },
+      takeProfit: { ...current.rules.takeProfit },
+    },
+  };
+
+  if (removedTickers.length > 0) {
+    draft = { ...draft, rows: normalizeRows(draft.rows.filter((row) => !removedTickers.includes(row.ticker))) };
+    changes.push(`removed ${removedTickers.join(', ')}`);
+  }
+
+  if (addedTickers.length > 0) {
+    draft = mergeMentionedTickers(draft, addedTickers, 'after');
+    changes.push(`added ${addedTickers.join(', ')}`);
+  }
+
+  mentioned.forEach((ticker) => {
+    if (!draft.rows.some((row) => row.ticker === ticker)) return;
+    const weight = requestedWeight(input, ticker);
+    if (weight === null) return;
+    draft = { ...draft, rows: normalizeRows(draft.rows, ticker, weight) };
+    changes.push(`set ${ticker} to ${Math.max(0, Math.min(100, weight))}%`);
+  });
+
+  const stopLossValue = /stop[- ]?loss[^%\d]{0,20}(\d{1,3}(?:\.\d+)?)\s*%/i.exec(input)?.[1];
+  const stopLossOff = /\b(?:disable|remove|no|without|turn off)\b[^.]{0,24}stop[- ]?loss|stop[- ]?loss[^.]{0,24}\b(?:off|disabled)\b/i.test(input);
+  if (stopLossOff) {
+    draft.rules.stopLoss.enabled = false;
+    changes.push('disabled the stop loss');
+  } else if (stopLossValue) {
+    draft.rules.stopLoss = { enabled: true, percent: Math.min(100, Number(stopLossValue)) };
+    changes.push(`set the stop loss to ${draft.rules.stopLoss.percent}%`);
+  }
+
+  const takeProfitValue = /take[- ]?profit[^%\d]{0,20}(\d{1,3}(?:\.\d+)?)\s*%/i.exec(input)?.[1];
+  const takeProfitOff = /\b(?:disable|remove|no|without|turn off)\b[^.]{0,24}take[- ]?profit|take[- ]?profit[^.]{0,24}\b(?:off|disabled)\b/i.test(input);
+  if (takeProfitOff) {
+    draft.rules.takeProfit.enabled = false;
+    changes.push('disabled take profit');
+  } else if (takeProfitValue) {
+    draft.rules.takeProfit = { enabled: true, percent: Math.min(100, Number(takeProfitValue)) };
+    changes.push(`set take profit to ${draft.rules.takeProfit.percent}%`);
+  }
+
+  const cadence = /every\s+(\d+)\s*(day|week|month)s?/i.exec(input);
+  const namedCadence = normalized.includes('quarterly')
+    ? { every: 3, unit: 'Months' as const }
+    : normalized.includes('monthly')
+      ? { every: 1, unit: 'Months' as const }
+      : normalized.includes('weekly')
+        ? { every: 1, unit: 'Weeks' as const }
+        : normalized.includes('daily')
+          ? { every: 1, unit: 'Days' as const }
+          : null;
+  if (/\b(?:disable|remove|no|without|turn off)\b[^.]{0,24}rebalanc/i.test(input)) {
+    draft.rules.rebalance.enabled = false;
+    changes.push('disabled automatic rebalancing');
+  } else if (cadence || namedCadence) {
+    const unit = cadence
+      ? `${cadence[2][0].toUpperCase()}${cadence[2].slice(1).toLowerCase()}s` as 'Days' | 'Weeks' | 'Months'
+      : namedCadence!.unit;
+    const every = cadence ? Math.max(1, Number(cadence[1])) : namedCadence!.every;
+    draft.rules.rebalance = { enabled: true, every, unit };
+    changes.push(`rebalances every ${every} ${unit.toLowerCase()}`);
+  }
+
+  const summary = changes.length > 0 ? changes.join(', ') : 'refined the current draft';
+  return {
+    draft,
+    addedTickers,
+    removedTickers,
+    summary,
+    assistantReply: changes.length > 0
+      ? `Done — I ${summary}. The rest of the draft stays unchanged.`
+      : 'I kept the current portfolio intact and recorded this direction for the next refinement.',
+  };
+}
+
 const GENERATED_IDENTITIES = [
   {
     matches: ['warren', 'buffett', 'berkshire'],
